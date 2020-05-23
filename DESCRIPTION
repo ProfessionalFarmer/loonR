@@ -1,0 +1,11 @@
+Package: loonR
+Type: Package
+Title: Common function in bioinformatics analysis
+Version: 0.1.0
+Author: Zhongxu
+Maintainer: Zhongxu
+Description: More about what it does (maybe more than one line)
+    Use four spaces when indenting paragraphs within the Description.
+License: GPL
+Encoding: UTF-8
+LazyData: true

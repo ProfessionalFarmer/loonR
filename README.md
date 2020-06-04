@@ -12,7 +12,7 @@ Don't reinvent the wheel, just standing on the shoulders of giants.
 
 ```r
 devtools::install_github("ProfessionalFarmer/loonR")
-library(rmytools)
+library(loonR)
 ```
 
 

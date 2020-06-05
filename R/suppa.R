@@ -57,6 +57,8 @@ SuppaEventPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "",
 
 
 
+
+
 #' Combine dpis, psi and tpm file together
 #' I modified the code from https://github.com/comprna/SUPPA/blob/master/scripts/Volcano_MA_plot.R
 #'
@@ -143,6 +145,51 @@ SuppaGetFinalTable <- function(sample.names = "", psi = "", dpsi = "", event.tpm
 
   return(final_table)
 }
+
+
+
+
+
+
+
+
+#' Title
+#'
+#' @param dirPath Simple set the directory which contains Salmon output folder
+#'
+#' @return A tximport ojject
+#' @export
+#'
+#' @examples
+SuppaLoadSalmonMatrix <- function(dirPath){
+
+  library(tximport)
+
+  sample.names <- system(paste("ls ",dirPath," | grep quant | cut -f 1 -d _",sep = ''),  intern = TRUE)
+  sample.salmon.pathes <- system(paste("ls ",dirPath,"/*quant/quant.sf",sep = ''),  intern = TRUE)
+
+  cat("No. of samples:",length(sample.names),"\n")
+
+  names(sample.salmon.pathes) <- sample.names
+
+  tpm <- tximport(sample.salmon.pathes, type = "salmon", txIn = TRUE, txOut = TRUE)
+
+  tpm
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

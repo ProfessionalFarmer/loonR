@@ -6,9 +6,9 @@
 \usage{
 DrawMutationType(
   data,
-  color = "ucscgb",
+  color = "jco",
   colid = 2,
-  alpha = 0.7,
+  alpha = 0.8,
   title = "",
   border = "white"
 )

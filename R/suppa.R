@@ -25,7 +25,7 @@ SuppaEventPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "",
   }
   n.color <- length(unique(data))
   if(n.color >= 10 ){
-    stop("Please check, too many colors")
+    stop("Please check, too many colors (More than 9)")
   }
 
 
@@ -153,7 +153,7 @@ SuppaGetFinalTable <- function(sample.names = "", psi = "", dpsi = "", event.tpm
 
 
 
-#' Title
+#' Read Salmon output
 #'
 #' @param dirPath Simple set the directory which contains Salmon output folder
 #'

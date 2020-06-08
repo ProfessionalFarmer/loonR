@@ -2,7 +2,7 @@
 % Please edit documentation in R/suppa.R
 \name{SuppaLoadSalmonMatrix}
 \alias{SuppaLoadSalmonMatrix}
-\title{Title}
+\title{Read Salmon output}
 \usage{
 SuppaLoadSalmonMatrix(dirPath)
 }
@@ -13,5 +13,5 @@ SuppaLoadSalmonMatrix(dirPath)
 A tximport ojject
 }
 \description{
-Title
+Read Salmon output
 }

@@ -90,6 +90,8 @@ DrawMutationTypeBarPlot <- function(data, color = "jco", alpha = 0.8 ,
   library(ggplot2)
   library(ggsci)
 
+  n.color <- length(unique(data$variable))
+
   f <- parse(text=paste("pal_", color, sep = "")  )
 
   if(n.color >= 10 ){

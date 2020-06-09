@@ -14,7 +14,7 @@
 #'
 #' @examples DrawMutationType(res$Func.refGene, title = "# of mutation")
 #' or DrawMutationType(res, col = 6, title = "# of mutation")
-DrawMutationType <- function(data, color = "jco", colid = 2, alpha = 0.8 , title = "", border="white"){
+DrawMutationTypePie <- function(data, color = "jco", colid = 2, alpha = 0.8 , title = "", border="white"){
 
   if( inherits(data, "data.frame")  ){
     data <- unique(data)
@@ -83,7 +83,7 @@ DrawMutationType <- function(data, color = "jco", colid = 2, alpha = 0.8 , title
 #' )
 #' DrawBarPlot(data)
 #'
-DrawBarPlot <- function(data, color = "jco", alpha = 0.8 ,
+DrawMutationTypeBarPlot <- function(data, color = "jco", alpha = 0.8 ,
                         title = "", x = "Sample", y = "Number of mutations (SNV+INDEL)",
                         position = "stack"){
 

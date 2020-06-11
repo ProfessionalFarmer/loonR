@@ -36,7 +36,7 @@ DrawMutationTypePie <- function(data, color = "jco", colid = 2, alpha = 0.8 , ti
   Prop <- unclass(table(data))
 
   lbls <- names(  unclass(table(data))  )
-  pct <- round(Prop/sum(Prop)*100,4)
+  pct <- round(Prop/sum(Prop)*100,1)
   lbls <- paste(lbls, pct) # add percents to labels
   lbls <- paste(lbls,"%",sep="") # add % to labels
   lbls <- paste(lbls,paste(" (",Prop,")",sep=""),sep="") # add value
@@ -85,7 +85,7 @@ DrawMutationTypePie <- function(data, color = "jco", colid = 2, alpha = 0.8 , ti
 #'
 DrawMutationTypeBarPlot <- function(data, color = "jco", alpha = 0.8 ,
                         title = "", x = "Sample", y = "Number of mutations (SNV+INDEL)",
-                        position = "stack"){
+                        position = "stack", flip=FALSE){
 
   library(ggplot2)
   library(ggsci)
@@ -101,12 +101,19 @@ DrawMutationTypeBarPlot <- function(data, color = "jco", alpha = 0.8 ,
     myPalette <- eval(f)(alpha = alpha)(n.color)
   }
 
-  ggplot(data, aes(x=Sample, y=as.numeric(value), fill=variable, label=value)) +
+  P <- ggplot(data, aes(x=Sample, y=as.numeric(value), fill=variable, label=value)) +
     geom_bar(position=position, stat="identity") + # position 参数为fill的时候，所有bar 等高
     labs(title=title,  x=x, y = y, fill="Class") +
-    scale_fill_manual(values = myPalette) + cowplot::theme_cowplot(font_family = "Arial") +
+    scale_fill_manual(values = myPalette) + cowplot::theme_cowplot(font_family = "Arial")
     #geom_text(size = 3, position = position_stack(vjust = 0.5))+  # 控制显示数目
-    theme(axis.text.x = element_text(angle = 40, hjust = 1))
+
+  if (flip){
+    p <- p + coord_flip()
+  }else{
+    p <- p + theme(axis.text.x = element_text(angle = 40, hjust = 1))
+  }
+
+  p
 
 }
 

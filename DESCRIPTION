@@ -6,7 +6,8 @@ Author: Zhongxu
 Depends: 
   R (>= 3.0.1),
   tximport (>= 1.0.1),
-  ggplot2
+  ggplot2,
+  ggsci
 Description: My first personal R package
 License: GPL
 Encoding: UTF-8

@@ -101,7 +101,7 @@ DrawMutationTypeBarPlot <- function(data, color = "jco", alpha = 0.8 ,
     myPalette <- eval(f)(alpha = alpha)(n.color)
   }
 
-  P <- ggplot(data, aes(x=Sample, y=as.numeric(value), fill=variable, label=value)) +
+  p <- ggplot(data, aes(x=Sample, y=as.numeric(value), fill=variable, label=value)) +
     geom_bar(position=position, stat="identity") + # position 参数为fill的时候，所有bar 等高
     labs(title=title,  x=x, y = y, fill="Class") +
     scale_fill_manual(values = myPalette) + cowplot::theme_cowplot(font_family = "Arial")

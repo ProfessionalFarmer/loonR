@@ -172,7 +172,6 @@ DrawTargetCoveragePlot <- function(dir){
 
   # Save the graph to a file
   #png("exome-coverage-plots.png", h=1000, w=1000, pointsize=20)
-  png(args[7], h=1000, w=1000, pointsize=20)
 
   # Create plot area, but do not plot anything. Add gridlines and axis labels.
   plot(cov[[1]][2:401, 2], cov_cumul[[1]][1:400], type='n', xlab="Depth", ylab="Fraction of capture target bases \u2265 depth", ylim=c(0,1.0), main="Target Region Coverage")
@@ -194,7 +193,6 @@ DrawTargetCoveragePlot <- function(dir){
   # Add a legend using the nice sample labeles rather than the full filenames.
   legend("topright", legend=labs, col=cols, lty=1, lwd=4)
 
-  dev.off()
 
 }
 

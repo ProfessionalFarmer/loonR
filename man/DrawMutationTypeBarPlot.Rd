@@ -11,7 +11,8 @@ DrawMutationTypeBarPlot(
   title = "",
   x = "Sample",
   y = "Number of mutations (SNV+INDEL)",
-  position = "stack"
+  position = "stack",
+  flip = FALSE
 )
 }
 \arguments{

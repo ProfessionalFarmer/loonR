@@ -2,6 +2,7 @@
 
 export(DrawMutationTypeBarPlot)
 export(DrawMutationTypePie)
+export(DrawTargetCoveragePlot)
 export(SuppaEventPie)
 export(SuppaGetFinalTable)
 export(SuppaLoadSalmonMatrix)

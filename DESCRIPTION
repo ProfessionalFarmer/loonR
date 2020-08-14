@@ -1,13 +1,14 @@
 Package: loonR
 Type: Package
 Title: Common function in bioinformatics analysis
-Version: 0.1.0
+Version: 0.1.001
 Author: Zhongxu
 Depends: 
   R (>= 3.0.1),
   tximport (>= 1.0.1),
   ggplot2,
-  ggsci
+  ggsci,
+  ggpubr
 Description: My first personal R package
 License: GPL
 Encoding: UTF-8
@@ -15,4 +16,5 @@ LazyData: true
 RoxygenNote: 7.1.1
 Imports:
  ggplot2,
- ggsci
+ ggsci,
+ ggpubr

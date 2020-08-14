@@ -33,8 +33,8 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 #' @return ggplot2 object
 #' @export
 #'
-#' @examples PlotPCA(expression, group)
-PlotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class", main.title = ""){
+#' @examples plot.pca(expression, group)
+plot.pca <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class", main.title = ""){
 
 
   df_pca <- prcomp(df) #计算主成分

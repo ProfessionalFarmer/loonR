@@ -6,7 +6,7 @@
 #' @export
 #'
 #' @examples
-GetMostDistinctColorPalette <- function(n=20){
+get.mostDistint.color.palette <- function(n=20){
   library(RColorBrewer)
   n <- 60
   qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
@@ -29,7 +29,7 @@ GetMostDistinctColorPalette <- function(n=20){
 #' @export
 #'
 #' @examples
-GetGGSciColor <- function(palette="nrc", alpha=1, n = 10){
+get.ggsci.color <- function(palette="nrc", alpha=1, n = 10){
 
   library(ggsci)
   f <- parse(text=paste("pal_", palette, sep = "")  )

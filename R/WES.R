@@ -12,9 +12,9 @@
 #' @return ggplot2 object
 #' @export
 #'
-#' @examples DrawMutationType(res$Func.refGene, title = "# of mutation")
-#' or DrawMutationType(res, col = 6, title = "# of mutation")
-DrawMutationTypePie <- function(data, color = "jco", colid = 2, alpha = 0.8 , title = "", border="white"){
+#' @examples draw.mutation.type(res$Func.refGene, title = "# of mutation")
+#' or draw.mutation.type(res, col = 6, title = "# of mutation")
+draw.mutation.type <- function(data, color = "jco", colid = 2, alpha = 0.8 , title = "", border="white"){
 
   if( inherits(data, "data.frame")  ){
     data <- unique(data)
@@ -81,9 +81,9 @@ DrawMutationTypePie <- function(data, color = "jco", colid = 2, alpha = 0.8 , ti
 #'                     Sample = c("S1","S2","S3","S1","S2","S3"),
 #'                     value = c(1,2,3,4,5,6)
 #' )
-#' DrawBarPlot(data)
+#' draw.mutation.type.barplot(data)
 #'
-DrawMutationTypeBarPlot <- function(data, color = "jco", alpha = 0.8 ,
+draw.mutation.type.barplot <- function(data, color = "jco", alpha = 0.8 ,
                         title = "", x = "Sample", y = "Number of mutations (SNV+INDEL)",
                         position = "stack", flip=FALSE){
 
@@ -129,7 +129,7 @@ DrawMutationTypeBarPlot <- function(data, color = "jco", alpha = 0.8 ,
 #'
 #' @examples
 #'
-DrawTargetCoveragePlot <- function(dir){
+draw.target.coverage.plot <- function(dir){
 
   # Get a list of the bedtools output files you'd like to read in
   print(files <- list.files(path=dir,pattern="hist.all.txt$"))

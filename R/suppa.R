@@ -13,11 +13,11 @@
 #' @export
 #'
 #' @examples
-#' SuppaEventPie(ioe.events.df$Type, title = "# of events")
-#' or SuppaEventPie(ioe.events.df, col = 2, title = "# of events")
+#' suppa.event.pie(ioe.events.df$Type, title = "# of events")
+#' or suppa.event.pie(ioe.events.df, col = 2, title = "# of events")
 
 
-SuppaEventPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", border="white"){
+suppa.event.pie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", border="white"){
 
   if( inherits(data, "data.frame")  ){
     data <- unique(data)
@@ -75,13 +75,13 @@ SuppaEventPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "",
 #'
 #' @examples
 #'
-#' SuppaGetFinalTable(sample.names = smp.names,
+#' suppa.get.final.table(sample.names = smp.names,
 #'          dpsi = "analysis/05suppa/diffSplice.events.dpsi.temp.0",
 #'          psi  = "analysis/05suppa/diffSplice.events.psivec",
 #'          event.tpm = "analysis/05suppa/diffSplice.events_avglogtpm.tab",
 #'          dpsi.cutoff = dpsi.cutoff, pval.cutoff = pval.cutoff, tpm.cutoff = tpm.cutoff)
 #'
-SuppaGetFinalTable <- function(sample.names = "", psi = "", dpsi = "", event.tpm = "", pval.cutoff = 0.05, dpsi.cutoff = 0.3, tpm.cutoff = 0){
+suppa.get.final.table <- function(sample.names = "", psi = "", dpsi = "", event.tpm = "", pval.cutoff = 0.05, dpsi.cutoff = 0.3, tpm.cutoff = 0){
 
   if (sample.names=="" | psi=="" | dpsi=="" | event.tpm==""){
     stop("NA found in parameter")
@@ -157,11 +157,11 @@ SuppaGetFinalTable <- function(sample.names = "", psi = "", dpsi = "", event.tpm
 #'
 #' @param dirPath Simple set the directory which contains Salmon output folder
 #'
-#' @return A tximport ojject
+#' @return A tximport oject
 #' @export
 #'
 #' @examples
-SuppaLoadSalmonMatrix <- function(dirPath){
+suppa.load.salmon.matrix <- function(dirPath){
 
   library(tximport)
 

@@ -18,6 +18,7 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 
 
 
+
 #' Title
 #'
 #' @param df
@@ -27,14 +28,14 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 #' or custom color palette e.g. c("blue", "red");
 #' and scientific journal palettes from ggsci R package, e.g.: "npg", "aaas", "lancet", "jco", "ucscgb", "uchicago", "simpsons" and "rickandmorty".
 #' @param ellipse Whether to add elipse.
-#' @param lengend.title Default "Class"
+#' @param legend.title  legend.title
 #' @param main.title main title
 #'
-#' @return ggplot2 object
+#' @return
 #' @export
 #'
-#' @examples plot.pca(expression, group)
-plot.pca <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class", main.title = ""){
+#' @examples
+plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class", main.title = ""){
 
 
   df_pca <- prcomp(df) #计算主成分

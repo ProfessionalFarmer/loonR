@@ -4,17 +4,33 @@
 \alias{PlotPCA}
 \title{Title}
 \usage{
-PlotPCA(df, group, palette = "npg")
+PlotPCA(
+  df,
+  group,
+  palette = "npg",
+  ellipse = FALSE,
+  legend.title = "Class",
+  main.title = ""
+)
 }
 \arguments{
 \item{palette}{Default npg. The color palette to be used for coloring or filling by groups.
 Allowed values include "grey" for grey color palettes; brewer palettes e.g. "RdBu", "Blues", ...;
 or custom color palette e.g. c("blue", "red");
 and scientific journal palettes from ggsci R package, e.g.: "npg", "aaas", "lancet", "jco", "ucscgb", "uchicago", "simpsons" and "rickandmorty".}
+
+\item{ellipse}{Whether to add elipse.}
+
+\item{main.title}{main title}
+
+\item{lengend.title}{Default "Class"}
 }
 \value{
-
+ggplot2 object
 }
 \description{
 Title
+}
+\examples{
+PlotPCA(expression, group)
 }

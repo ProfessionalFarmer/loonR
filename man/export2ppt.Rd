@@ -20,5 +20,6 @@ NA
 Export figure to PPT
 }
 \examples{
+export2ppt(ggplot2.obj)
 
 }

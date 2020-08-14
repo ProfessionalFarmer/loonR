@@ -26,12 +26,15 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 #' Allowed values include "grey" for grey color palettes; brewer palettes e.g. "RdBu", "Blues", ...;
 #' or custom color palette e.g. c("blue", "red");
 #' and scientific journal palettes from ggsci R package, e.g.: "npg", "aaas", "lancet", "jco", "ucscgb", "uchicago", "simpsons" and "rickandmorty".
+#' @param ellipse Whether to add elipse.
+#' @param lengend.title Default "Class"
+#' @param main.title main title
 #'
 #' @return ggplot2 object
 #' @export
 #'
 #' @examples PlotPCA(expression, group)
-PlotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class"){
+PlotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class", main.title = ""){
 
 
   df_pca <- prcomp(df) #计算主成分
@@ -50,7 +53,7 @@ PlotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
           xlab(percentage[1]) +
           ylab(percentage[2])
 
-  p <- ggpar(p, legend = "right", legend.title = legend.title)
+  p <- ggpar(p, legend = "right", legend.title = legend.title, main = main.title)
 
   if (ellipse){
     p <- p + stat_ellipse(level = 0.95, show.legend = F)

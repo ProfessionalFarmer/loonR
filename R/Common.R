@@ -31,13 +31,13 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 #' @export
 #'
 #' @examples PlotPCA(expression, group)
-PlotPCA <- function(df, group, palette = 'npg'){
+PlotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class"){
 
 
   df_pca <- prcomp(df) #计算主成分
   df_pcs <-data.frame(df_pca$x,
-                      class = factor(group)
-  ) #定义分组
+                      Class = factor(group) #定义分组
+  )
 
   #定义百分比
   percentage<-round(df_pca$sdev / sum(df_pca$sdev) * 100, 2)
@@ -46,9 +46,16 @@ PlotPCA <- function(df, group, palette = 'npg'){
   library(ggplot2)
   library(ggpubr)
 
-  p <- ggscatter(df_pcs, x="PC1", y="PC2", color="class", palette = palette) +
+  p <- ggscatter(df_pcs, x="PC1", y="PC2", color="Class", palette = palette) +
           xlab(percentage[1]) +
           ylab(percentage[2])
+
+  p <- ggpar(p, legend = "right", legend.title = legend.title)
+
+  if (ellipse){
+    p <- p + stat_ellipse(level = 0.95, show.legend = F)
+  }
+
   p
 
 

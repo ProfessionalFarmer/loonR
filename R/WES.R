@@ -199,21 +199,8 @@ DrawTargetCoveragePlot <- function(dir){
 
 
 
-#' Generate a most distinctive color palatte
-#'
-#' @param n Number of colors
-#'
-#' @return Color vector
-#' @export
-#'
-#' @examples
-GetMostDistinctColorPalette <- function(n=20){
-  library(RColorBrewer)
-  n <- 60
-  qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
-  col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
 
-  set.seed(123)
-  col = sample(col_vector, n)
-  return(col)
-}
+
+
+
+

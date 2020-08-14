@@ -3,6 +3,7 @@
 export(DrawMutationTypeBarPlot)
 export(DrawMutationTypePie)
 export(DrawTargetCoveragePlot)
+export(GetGGSciColor)
 export(GetMostDistinctColorPalette)
 export(GetSampleProjectInfoMap)
 export(SuppaEventPie)

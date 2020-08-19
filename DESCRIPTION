@@ -8,7 +8,9 @@ Depends:
   tximport (>= 1.0.1),
   ggplot2,
   ggsci,
-  ggpubr
+  ggpubr,
+  cowplot,
+  scales
 Description: My first personal R package
 License: GPL
 Encoding: UTF-8
@@ -17,4 +19,6 @@ RoxygenNote: 7.1.1
 Imports:
  ggplot2,
  ggsci,
- ggpubr
+ ggpubr,
+ cowplot,
+ scales

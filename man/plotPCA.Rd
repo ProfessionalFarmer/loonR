@@ -2,7 +2,8 @@
 % Please edit documentation in R/Common.R
 \name{plotPCA}
 \alias{plotPCA}
-\title{Title}
+\title{PCA plot
+Please note: scale will be performed autmaticly}
 \usage{
 plotPCA(
   df,
@@ -10,10 +11,13 @@ plotPCA(
   palette = "npg",
   ellipse = FALSE,
   legend.title = "Class",
-  main.title = ""
+  main.title = "",
+  alpha = 1
 )
 }
 \arguments{
+\item{df}{Row: sample, Column: gene expression}
+
 \item{palette}{Default npg. The color palette to be used for coloring or filling by groups.
 Allowed values include "grey" for grey color palettes; brewer palettes e.g. "RdBu", "Blues", ...;
 or custom color palette e.g. c("blue", "red");
@@ -29,5 +33,9 @@ and scientific journal palettes from ggsci R package, e.g.: "npg", "aaas", "lanc
 
 }
 \description{
-Title
+PCA plot
+Please note: scale will be performed autmaticly
+}
+\examples{
+plotPCA(df, group, "aaas")
 }

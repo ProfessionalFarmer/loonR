@@ -4,18 +4,21 @@
 \alias{get.ggsci.color}
 \title{Get colors by ggsci}
 \usage{
-get.ggsci.color(palette = "nrc", alpha = 1, n = 10)
+get.ggsci.color(palette = "nrc", n = 7, alpha = 1)
 }
 \arguments{
 \item{palette}{default: nrc. Palette ref: https://nanx.me/ggsci/articles/ggsci.html}
 
-\item{alpha}{1}
+\item{n}{number of colors, default n = 7}
 
-\item{n}{number of colors, default n = 10}
+\item{alpha}{1}
 }
 \value{
 
 }
 \description{
 Get colors by ggsci
+}
+\examples{
+get.ggsci.color("nrc", n = 2, alpha = 0.7)
 }

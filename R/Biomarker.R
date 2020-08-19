@@ -88,10 +88,157 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100){
 
 
 
+#' Get confusion matrix
+#'
+#' @param groups
+#' @param rs
+#' @param cancer Cancer Name
+#' @param best.cutoff If not set, use youden index instead
+#'
+#' @return A data.frame object
+#' @export
+#'
+#' @examples confusion_matrix(label,risk.probability,cancer = "ESCC")
+#'
+confusion_matrix <- function(groups, rs, cancer="Cancer", best.cutoff = NA){
+  if( is.na(best.cutoff) ){
+
+    best.cutoff <- coords(roc(groups, rs), "best", transpose = TRUE, input="threshold", best.method="youden")
+    if( inherits(best.cutoff, "matrix")  ){ # 当youden index有重复的时候，取第一个
+      best.cutoff <- best.cutoff[c("threshold"),c(1)]
+    }else{
+      best.cutoff <- best.cutoff[c("threshold")]
+    }
+
+  }
+
+  results <- confusionMatrix( factor(rs > best.cutoff), factor(groups) , positive = "TRUE" )
+  results.tl <- as.table(results)
+
+
+  result.reformat <- data.frame(matrix(nrow = 6, ncol = 3))
+  rownames(result.reformat) <- c("Normal",cancer,"Totals","Correct","Sensitivity","Specificity")
+  colnames(result.reformat)  <- c("Normal",cancer,NA)
+
+  result.reformat[1:2,1:2] <- results.tl
+  result.reformat[2,3] <- c("Totals")
+
+  result.reformat[c("Totals"),1:2] <- colSums(results.tl)
+  result.reformat[c("Totals"),3]   <- sum(results.tl)
+
+  result.reformat[c("Correct"), 1:2] <- diag(results.tl)
+  result.reformat[c("Correct"), 3] <- sum( diag(results.tl) )
+
+  result.reformat[c("Sensitivity"), 2] <- round(as.matrix(results, what = "classes")[c("Sensitivity"),][1],  3)
+  result.reformat[c("Specificity"), 1] <- round(as.matrix(results, what = "classes")[c("Specificity"),][1],  3)
+  result.reformat[c("Specificity"), 3] <- round(sum( diag(results.tl) )/sum(results.tl),  3)
+
+  result.reformat
+  # as.matrix(results, what = "overall")
+  # as.matrix(results, what = "classes")
+
+}
 
 
 
 
+
+
+#' Title Get model performace, sensitivity, sepcificity and others
+#'
+#' @param pred
+#' @param labels
+#'
+#' @return
+#' @export
+#'
+#' @examples get_performance(risk.probability, label)
+get_performance <- function(pred, labels, best.cutoff =NA){  #  x="best", input = "threshold"
+
+  #pred <- df_plot[tmp.ind,]$RS
+  #lables <- as.factor(tmp.label)
+  # pred=kumamoto_rs_cv
+  # labels= kumamoto$label
+  # x="best"
+  # input="threshold"
+
+  input="threshold"
+
+  if( is.na(best.cutoff) ){
+
+    best.cutoff <- coords(roc(labels, pred), "best", transpose = TRUE, input="threshold", best.method="youden")
+    if( inherits(best.cutoff, "matrix")  ){ # 当youden index有重复的时候，取第一个
+      best.cutoff <- best.cutoff[c("threshold"),c(1)]
+    }else{
+      best.cutoff <- best.cutoff[c("threshold")]
+    }
+
+  }
+  # calculate OR
+  results <- confusionMatrix( factor(pred > best.cutoff), factor(labels) , positive = "TRUE" )
+  results.tl <- as.table(results)
+
+  or <- vcd::oddsratio(results.tl,log=FALSE)
+  or.ci <- confint(vcd::oddsratio(results.tl,log=FALSE), level = 0.95)
+  or <- sprintf("%.2f (%.2f-%.2f)",exp(or$coefficients),or.ci[1],or.ci[2]) # Odds ratio
+
+  # count sample
+  t.c <- sum(labels==TRUE)
+  n.c <- length(labels) - t.c
+
+  # get AUC CI
+  set.seed(100)
+  roc.obj <- pROC::roc(labels, pred, ci=TRUE, plot=FALSE)
+  auc <- pROC::ci(roc.obj,boot.n=2000)[c(2, 1, 3)]
+  auc <- round(auc,2)
+  auc <- sprintf("%s (%.2f-%.2f)", auc[1], auc[2], auc[3])
+
+  # get performance
+  set.seed(100)
+  rets <- c("threshold", "specificity", "sensitivity", "accuracy", "tn", "tp", "fn", "fp", "npv",
+            "ppv", "1-specificity", "1-sensitivity", "1-accuracy", "1-npv", "1-ppv", "precision", "recall")
+  others <- pROC::ci.coords(roc.obj, x = best.cutoff, boot.n = 2000, input = input, ret = rets, best.policy = "random", transpose = TRUE)
+  # to be continue
+
+  # ppv Precision  https://www.rdocumentation.org/packages/pROC/versions/1.16.2/topics/coords
+  # sensitivity recall
+  #f1.score <- (2 * others$precision[1,c("50%")] * others$recall[1,c("50%")]) / (others$precision[1,c("50%")] + others$recall[1,c("50%")])
+  #f1.score <- round(f1.score,2)
+
+  res <- c(
+    n.c,
+    t.c,
+    auc[1], # AUC
+    sprintf("%.2f (%.2f-%.2f)", others$accuracy[1,c("50%")],  others$accuracy[1,c("2.5%")],  others$accuracy[1,c("97.5%")]), # accuracy
+    sprintf("%.2f (%.2f-%.2f)", others$precision[1,c("50%")], others$precision[1,c("2.5%")], others$precision[1,c("97.5%")]),# precision
+    sprintf("%.2f (%.2f-%.2f)", others$recall[1,c("50%")],    others$recall[1,c("2.5%")],    others$recall[1,c("97.5%")]),#recall
+    sprintf("%.2f (%.2f-%.2f)", others$specificity[1,c("50%")],others$specificity[1,c("2.5%")],others$specificity[1,c("97.5%")]),#specificity
+    sprintf("%.2f (%.2f-%.2f)", others$npv[1,c("50%")],others$npv[1,c("2.5%")],others$npv[1,c("97.5%")]),#npv
+    or  # Odds ratio
+  )
+  names(res) <- c("Ncount", "Tcount", "AUC (CI)",  "Accuracy", "Precision", "Recall", "Specificity", "NPV","Odds Ratio")
+
+  res
+
+}
+
+#' Title Row: sample, Column: gene expression
+#'
+#' @param df
+#' @param label
+#'
+#' @return
+#' @export
+#'
+#' @examples
+multivariate_or <- function(df, label){
+
+  res <- glm(Event ~ . , data = as.data.frame(tmp.df, Event=label), family=binomial(logit))
+  exp( coef(res) )
+  summary(res)
+
+  exp( cbind(coef(res), confint(res) )  )
+}
 
 
 

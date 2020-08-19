@@ -43,7 +43,6 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
 
   # Visualize eigenvalues (scree plot). Show the percentage of variances explained by each principal component.
   # factoextra::fviz_eig(res.pca)
-
   df_pcs <-data.frame(df_pca$x,
                       Class = factor(group) #定义分组
   )
@@ -54,7 +53,6 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
 
   #利用标准差的结果计算,与上面结果一致
   #pcvar <- df_pca$sdev^2/sum(df_pca$sdev^2)
-
 
   pcvar <- round(pcvar*100,1)
   percentage <-paste(colnames(df_pcs)," (", paste(as.character(pcvar), "%", ")", sep=""),sep="")
@@ -74,5 +72,8 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
 
 
 }
+
+
+
 
 

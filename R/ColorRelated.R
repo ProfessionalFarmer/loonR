@@ -71,3 +71,4 @@ get.palette.color <- function(palette="nrc", n = 7, alpha=1){
 
 
 
+

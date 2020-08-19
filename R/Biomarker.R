@@ -227,7 +227,16 @@ get_performance <- function(pred, labels, best.cutoff =NA){  #  x="best", input 
   )
   names(res) <- c("Ncount", "Tcount", "AUC (CI)",  "Accuracy", "Precision", "Recall", "Specificity", "NPV","Odds Ratio")
 
-  res
+  # value (conf) -> value  conf
+  rname <- names(res)
+  value <- sapply(strsplit(res," \\("), function(x) paste(x[1]) )
+
+  tmp <- sapply(strsplit(res," \\("), function(x) paste(x[2]) )
+  conf <- sapply(strsplit(tmp,"\\)"), function(x) paste(x[1]) )
+
+  df <- data.frame(Name = rname, value = value, confidence = conf)
+
+  df
 
 }
 

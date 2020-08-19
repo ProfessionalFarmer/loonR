@@ -320,3 +320,28 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, lgfold, risk.pro, sca
 }
 
 
+
+#' Plot miR's correlation
+#'
+#' @param df Row: miR expression, Column: Sample
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot_miRCorrelation <- function(df){
+  cor.res <- cor(t(df))
+  cor.res <- round(cor.res, 3)#保留两位小数
+
+  library(corrplot)#先加载包
+  corrplot(cor.res, type = "upper",
+           order = "hclust", tl.col = "black", tl.srt = 90, mar=c(0,0,2,0),
+           cl.lim = c(-0.5,1), addgrid.col=FALSE, title ="miRs' correlation - TCGA" )
+  + cowplot::theme_cowplot(font_family = "Arial")
+
+}
+
+
+
+
+

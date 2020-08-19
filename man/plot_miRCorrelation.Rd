@@ -15,3 +15,7 @@ plot_miRCorrelation(df)
 \description{
 Plot miR's correlation
 }
+\examples{
+plot_miRCorrelation(data[candi,])
+
+}

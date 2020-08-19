@@ -20,6 +20,8 @@ heatmap.with.lgfold.riskpro(
 
 \item{lgfold}{corresponded to row name sequence}
 
+\item{scale}{Default "TRUE"}
+
 \item{group.name}{Default "Cancer"}
 
 \item{risk.procorresponded}{to sample sequence}

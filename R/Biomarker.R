@@ -101,6 +101,10 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100){
 #' @examples confusion_matrix(label,risk.probability,cancer = "ESCC")
 #'
 confusion_matrix <- function(groups, rs, cancer="Cancer", best.cutoff = NA){
+
+  groups = label
+  rs = risk.pro
+  library(caret)
   if( is.na(best.cutoff) ){
 
     best.cutoff <- coords(roc(groups, rs), "best", transpose = TRUE, input="threshold", best.method="youden")
@@ -127,17 +131,22 @@ confusion_matrix <- function(groups, rs, cancer="Cancer", best.cutoff = NA){
   result.reformat[c("Totals"),3]   <- sum(results.tl)
 
   result.reformat[c("Correct"), 1:2] <- diag(results.tl)
-  result.reformat[c("Correct"), 3] <- sum( diag(results.tl) )
+  result.reformat[c("Correct"), 3] <-  sum( diag(results.tl) )
 
-  result.reformat[c("Sensitivity"), 2] <- round(as.matrix(results, what = "classes")[c("Sensitivity"),][1],  3)
-  result.reformat[c("Specificity"), 1] <- round(as.matrix(results, what = "classes")[c("Specificity"),][1],  3)
-  result.reformat[c("Specificity"), 3] <- round(sum( diag(results.tl) )/sum(results.tl),  3)
+
+  value = round(as.data.frame( as.matrix(results, what = "classes"))[c("Sensitivity"),][1], 3)
+  result.reformat[c("Sensitivity"), 2] <- as.character(value)
+
+  value = round(as.data.frame( as.matrix(results, what = "classes"))[c("Specificity"),][1], 3)
+  result.reformat[c("Specificity"), 1] <- as.character(value)
+  result.reformat[c("Specificity"), 3] <- as.character( round(sum( diag(results.tl) )/sum(results.tl),  3)  )
 
   result.reformat
   # as.matrix(results, what = "overall")
   # as.matrix(results, what = "classes")
 
 }
+
 
 
 
@@ -253,6 +262,7 @@ multivariate_or <- function(df, label){
 #' @param lgfold corresponded to row name sequence
 #' @param risk.procorresponded to sample sequence
 #' @param group.name Default "Cancer"
+#' @param scale Default "TRUE"
 #'
 #' @return
 #' @export

@@ -245,3 +245,68 @@ multivariate_or <- function(df, label){
 
 
 
+
+#' Plot heatmap with log 2 fold change and risk probability information
+#'
+#' @param heatmap.df Row: miRNA, Column: Sample
+#' @param label A factor with labels TURE/FALSE
+#' @param lgfold corresponded to row name sequence
+#' @param risk.procorresponded to sample sequence
+#' @param group.name Default "Cancer"
+#'
+#' @return
+#' @export
+#'
+#' @examples heatmap.with.lgfold.riskpro(data.tmp[candi,],label, logfd,  risk.pro)
+heatmap.with.lgfold.riskpro <- function(heatmap.df, label, lgfold, risk.pro, scale=TRUE, group.name="Cancer"){
+
+  label = factor(label)
+
+  if(scale){
+    heatmap.df = t(scale(t(heatmap.df)))
+    heatmap.df[ heatmap.df > 2] <- 2
+    heatmap.df[ heatmap.df < -2] <- -2
+  }
+
+  library(ComplexHeatmap)
+  # 根据risk score排序
+  heatmap.df <- cbind(
+    heatmap.df[, label==levels(label)[1] ][, order(risk.pro[ label==levels(label)[1] ] ) ],
+    heatmap.df[, label==levels(label)[2] ][, order(risk.pro[ label==levels(label)[2] ] ) ]  )
+
+  # 对riskscore排序
+  risk.pro <- c(
+    risk.pro[label==levels(label)[1] ][order(risk.pro[label==levels(label)[1] ] ) ],
+    risk.pro[label==levels(label)[2] ][order(risk.pro[label==levels(label)[2] ] ) ]  )
+
+
+
+  # heatmap和barplot一起画
+  row_ha = rowAnnotation( Log2FC = anno_barplot(logfd, gp = gpar(fill = "black",col="black")))
+
+  label = factor(label)
+  Tumor = loonR::get.palette.color("jama_classic", n = 2)
+  names(Tumor) = levels(label)
+
+  # rename annotation names
+  annotation <- data.frame(Tmp = label)
+  colnames(annotation) <- group.name
+
+  ann_colors = list(Tmp = Tumor)
+  names(ann_colors) = group.name
+
+  ha = HeatmapAnnotation(df = annotation,
+                         col = ann_colors,
+                         Risk_Probability = anno_points(risk.pro, pch = 16, size = unit(1, "mm"),gp = gpar(col = "black"), ylim = c(0, 1), axis_param = list( side = "left", at = c(0, 1), labels = c("0", "1") )) )
+
+
+  # 根据risk probility先组内排序
+  Heatmap(heatmap.df,
+          name = " ", cluster_rows = FALSE, cluster_columns = FALSE,
+          show_row_names = TRUE, show_column_names = FALSE, height = unit(5, "cm"),
+          top_annotation = ha,
+          right_annotation = row_ha)
+
+}
+
+

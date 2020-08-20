@@ -313,7 +313,10 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
   names(Tumor) = levels(label)
 
   # rename annotation names
-  annotation <- data.frame(Tmp = c(label[ label==levels(label)[1] ], label[ label==levels(label)[2] ])  )
+  annotation <- data.frame(Tmp = label[ c(which(label==levels(label)[1]),
+                                          which(label==levels(label)[2]) )
+                                        ]
+                           )
   colnames(annotation) <- group.name
 
   ann_colors = list(Tmp = Tumor)
@@ -321,7 +324,12 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
 
   ha = HeatmapAnnotation(df = annotation,
                          col = ann_colors,
-                         Risk = anno_points(risk.pro, pch = 16, size = unit(1, "mm"),gp = gpar(col = "black"), ylim = ylim, axis_param = list( side = "left", at = ylim, labels = as.character(ylim) )) )
+                         Risk = anno_points(risk.pro, pch = 16, size = unit(1, "mm"),
+                                            gp = gpar(col = "black"),
+                                            ylim = ylim,
+                                            axis_param = list( side = "left", at = ylim, labels = as.character(ylim) )
+                                            )
+                         )
 
 
   #
@@ -341,9 +349,6 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
             top_annotation = ha  )
 
   }
-
-
-
 
 
 }

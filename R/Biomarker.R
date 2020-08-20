@@ -102,7 +102,6 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100){
 #'
 confusion_matrix <- function(groups, risk.pro, cancer="Cancer", best.cutoff = NA){
 
-  groups = label
   library(caret)
   if( is.na(best.cutoff) ){
 

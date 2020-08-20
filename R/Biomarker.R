@@ -275,7 +275,12 @@ multivariate_or <- function(df, label){
 #' @export
 #'
 #' @examples heatmap.with.lgfold.riskpro(data.tmp[candi,],label, logfd,  risk.pro)
-heatmap.with.lgfold.riskpro <- function(heatmap.df, label, lgfold, risk.pro, scale=TRUE, group.name="Cancer", ylim = c(0, 1) ){
+heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, scale=TRUE, group.name="Cancer", ylim = c(0, 1), show.lgfold = TRUE ){
+
+  if (is.na(lgfold)){
+    show.lgfold = FALSE
+    lgfold = replicate(nrow(heatmap.df),1)
+  }
 
   label = factor(label)
 
@@ -317,12 +322,27 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, lgfold, risk.pro, sca
                          Risk = anno_points(risk.pro, pch = 16, size = unit(1, "mm"),gp = gpar(col = "black"), ylim = ylim, axis_param = list( side = "left", at = ylim, labels = as.character(ylim) )) )
 
 
-  # 根据risk probility先组内排序
-  Heatmap(heatmap.df,
-          name = " ", cluster_rows = FALSE, cluster_columns = FALSE,
-          show_row_names = TRUE, show_column_names = FALSE, height = unit(5, "cm"),
-          top_annotation = ha,
-          right_annotation = row_ha)
+  #
+  if(show.lgfold){
+
+    Heatmap(heatmap.df,
+            name = " ", cluster_rows = FALSE, cluster_columns = FALSE,
+            show_row_names = TRUE, show_column_names = FALSE, height = unit(5, "cm"),
+            top_annotation = ha,
+            right_annotation = row_ha  )
+
+  }else{
+
+    Heatmap(heatmap.df,
+            name = " ", cluster_rows = FALSE, cluster_columns = FALSE,
+            show_row_names = TRUE, show_column_names = FALSE, height = unit(5, "cm"),
+            top_annotation = ha  )
+
+  }
+
+
+
+
 
 }
 

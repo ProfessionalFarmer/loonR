@@ -314,7 +314,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, lgfold, risk.pro, sca
 
   ha = HeatmapAnnotation(df = annotation,
                          col = ann_colors,
-                         Risk = anno_points(risk.pro, pch = 16, size = unit(1, "mm"),gp = gpar(col = "black"), ylim = ylim, axis_param = list( side = "left", at = c(0, 1), labels = c("0", "1") )) )
+                         Risk = anno_points(risk.pro, pch = 16, size = unit(1, "mm"),gp = gpar(col = "black"), ylim = ylim, axis_param = list( side = "left", at = ylim, labels = as.character(ylim) )) )
 
 
   # 根据risk probility先组内排序

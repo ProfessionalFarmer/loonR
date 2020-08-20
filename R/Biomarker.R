@@ -301,7 +301,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, lgfold, risk.pro, sca
 
 
   # heatmap和barplot一起画
-  row_ha = rowAnnotation( Log2FC = anno_barplot(logfd, gp = gpar(fill = "black",col="black")))
+  row_ha = rowAnnotation( Log2FC = anno_barplot(lgfold, gp = gpar(fill = "black",col="black")))
 
   label = factor(label)
   Tumor = loonR::get.palette.color("jama_classic", n = 2)

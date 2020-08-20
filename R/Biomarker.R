@@ -100,14 +100,13 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100){
 #'
 #' @examples confusion_matrix(label,risk.probability,cancer = "ESCC")
 #'
-confusion_matrix <- function(groups, rs, cancer="Cancer", best.cutoff = NA){
+confusion_matrix <- function(groups, risk.pro, cancer="Cancer", best.cutoff = NA){
 
   groups = label
-  rs = risk.pro
   library(caret)
   if( is.na(best.cutoff) ){
 
-    best.cutoff <- coords(roc(groups, rs), "best", transpose = TRUE, input="threshold", best.method="youden")
+    best.cutoff <- coords(roc(groups, risk.pro), "best", transpose = TRUE, input="threshold", best.method="youden")
     if( inherits(best.cutoff, "matrix")  ){ # 当youden index有重复的时候，取第一个
       best.cutoff <- best.cutoff[c("threshold"),c(1)]
     }else{
@@ -116,7 +115,7 @@ confusion_matrix <- function(groups, rs, cancer="Cancer", best.cutoff = NA){
 
   }
 
-  results <- confusionMatrix( factor(rs > best.cutoff), factor(groups) , positive = "TRUE" )
+  results <- confusionMatrix( factor(risk.pro > best.cutoff), factor(groups) , positive = "TRUE" )
   results.tl <- as.table(results)
 
 

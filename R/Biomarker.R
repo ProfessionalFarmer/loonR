@@ -270,6 +270,8 @@ multivariate_or <- function(df, label){
 #' @param risk.procorresponded to sample sequence
 #' @param group.name Default "Cancer"
 #' @param scale Default "TRUE"
+#' @param ylim = c(0, 1), risk score range.
+#' @param show.lgfold = TRUE。 Whether to show right panel.
 #'
 #' @return
 #' @export
@@ -311,7 +313,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
   names(Tumor) = levels(label)
 
   # rename annotation names
-  annotation <- data.frame(Tmp = label)
+  annotation <- data.frame(Tmp = c(label[ label==levels(label)[1] ], label[ label==levels(label)[2] ])  )
   colnames(annotation) <- group.name
 
   ann_colors = list(Tmp = Tumor)

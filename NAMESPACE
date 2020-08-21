@@ -2,6 +2,7 @@
 
 export(confusion_matrix)
 export(cross.validation)
+export(download.geo.dataset)
 export(draw.mutation.type)
 export(draw.mutation.type.barplot)
 export(draw.target.coverage.plot)

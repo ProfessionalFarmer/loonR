@@ -559,3 +559,62 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
 }
 
 
+
+
+#' Download dataset from GEO by accession ID and platform
+#'
+#' @param geo.accession.id GEO Accession ID
+#' @param platform Platform
+#' @param destdir Default tempdir()
+#'
+#' @return list(expression, phenotype, probe.annotation)
+#' @export
+#'
+#' @examples
+download.geo.dataset <- function(geo.accession.id, platform, destdir = tempdir()){
+
+  if (missing("geo.accession.id") | missing("platform")){
+    stop("Please provide both geo.accession.id and platform")
+  }
+
+
+  library(GEOquery)
+
+  # load series and platform data from GEO
+  gset <- getGEO(geo.accession.id, GSEMatrix =TRUE, AnnotGPL=TRUE)
+  if (length(gset) > 1) idx <- grep(platform, attr(gset, "names")) else idx <- 1
+  gset <- gset[[idx]]
+  gpl.annotation <- fData(gset)
+
+  # show(gset)
+
+  # make proper column names to match toptable
+  fvarLabels(gset) <- make.names(fvarLabels(gset))
+
+  phenotype <- pData(gset)
+
+  # eliminate samples
+  exp.df <- exprs(gset)
+
+  # if log2 transform.    VALUE	Normalized log2 data represent microRNA expression levels
+  qx <- as.numeric(quantile(exp.df, c(0., 0.25, 0.5, 0.75, 0.99, 1.0), na.rm=T))
+  LogC <- (qx[5] > 100) ||
+    (qx[6]-qx[1] > 50 && qx[2] > 0) ||
+    (qx[2] > 0 && qx[2] < 1 && qx[4] > 1 && qx[4] < 2)
+  if (LogC) { exp.df[which(exp.df <= 0)] <- NaN
+  exp.df <- log2(exp.df) }
+  rm(qx, LogC)
+
+  result <- list(expression = exp.df,
+                 phenotype  = phenotype,
+                 probe.annotation = gpl.annotation)
+
+  return(result)
+
+}
+
+
+
+
+
+

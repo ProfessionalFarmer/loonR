@@ -2,16 +2,20 @@
 % Please edit documentation in R/Biomarker.R
 \name{multivariate_or}
 \alias{multivariate_or}
-\title{Title Row: sample, Column: gene expression}
+\title{Variate logistic analysis
+Row: sample, Column: gene expression}
 \usage{
 multivariate_or(df, label)
 }
 \arguments{
-\item{label}{}
+\item{df}{Data.frame --- Row: sample, Column: gene expression}
+
+\item{label}{True label}
 }
 \value{
 
 }
 \description{
-Title Row: sample, Column: gene expression
+Variate logistic analysis
+Row: sample, Column: gene expression
 }

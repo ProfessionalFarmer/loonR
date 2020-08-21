@@ -4,12 +4,16 @@
 \alias{confusion_matrix}
 \title{Get confusion matrix}
 \usage{
-confusion_matrix(groups, rs, cancer = "Cancer", best.cutoff = NA)
+confusion_matrix(groups, risk.pro, cancer = "Cancer", best.cutoff = NA)
 }
 \arguments{
+\item{groups}{True label}
+
 \item{cancer}{Cancer Name}
 
 \item{best.cutoff}{If not set, use youden index instead}
+
+\item{rs}{Predicted score}
 }
 \value{
 A data.frame object

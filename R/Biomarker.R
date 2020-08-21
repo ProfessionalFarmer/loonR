@@ -46,7 +46,7 @@ getOneRoundCVRes <- function(df, label, k){
 #' Title
 #'
 #' @param df data.frame. Col is sample, row is gene
-#' @param label
+#' @param label True label
 #' @param k Folds
 #' @param n Repeat times
 #'
@@ -90,8 +90,8 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100){
 
 #' Get confusion matrix
 #'
-#' @param groups
-#' @param rs
+#' @param groups True label
+#' @param rs Predicted score
 #' @param cancer Cancer Name
 #' @param best.cutoff If not set, use youden index instead
 #'
@@ -153,8 +153,8 @@ confusion_matrix <- function(groups, risk.pro, cancer="Cancer", best.cutoff = NA
 
 #' Title Get model performace, sensitivity, sepcificity and others
 #'
-#' @param pred
-#' @param labels
+#' @param pred Predicted score
+#' @param labels True label
 #'
 #' @return
 #' @export
@@ -238,10 +238,11 @@ get_performance <- function(pred, labels, best.cutoff =NA){  #  x="best", input 
 
 }
 
-#' Title Row: sample, Column: gene expression
+#' Variate logistic analysis
+#' Row: sample, Column: gene expression
 #'
-#' @param df
-#' @param label
+#' @param df Data.frame --- Row: sample, Column: gene expression
+#' @param label True label
 #'
 #' @return
 #' @export
@@ -258,7 +259,39 @@ multivariate_or <- function(df, label){
 
 
 
+#' Variate logistic analysis
+#' Row: sample, Column: gene expression
+#' score E.g.: Gene or miRNA expression, or risk score
+#' @param df Data.frame --- Row: sample, Column: gene expression
+#' @param label True Sample label
+#'
+#' @return c(OR, 2.5% CI, 97.5% CI)
+#' @export
+#'
+#' @examples univariate_or(risk.df, label)
+univariate_or <- function(df, label){
 
+  library(foreach)
+
+  res <- foreach(i=1:ncol(df), .combine = rbind) %do%{
+
+      res <- glm(Event ~ . , data = data.frame(Score = score, Event=label), family=binomial(logit))
+      exp( coef(res) )
+      summary(res)
+
+      res <- exp( cbind(coef(res), confint(res) )  )[2,]
+      or <- res[,1]
+      upper <- res[,2]
+      lower <- res[,3]
+      res <- c(or, upper, lower)
+      names(res) <- c("OR", "2.5 %", "97.5 %")
+      round(res,3)
+
+  }
+
+  res
+
+}
 
 
 
@@ -378,5 +411,133 @@ plot_miRCorrelation <- function(df){
 
 
 
+
+
+
+#' plot ROC with CI. Stratified bootstrap 2000 times
+#'
+#' @param label True label
+#' @param rs Predicted score
+#' @param font Font
+#' @param palette
+#' @param legend.pos
+#' @param title
+#' @param fontsize
+#' @param panel panel的第一列为factor，event，class等
+#'
+#' @return ggplot object
+#' @export
+#'
+#' @examples roc_with_ci(labels, rs,
+#' font = "Arial",
+#' palette = "jama_classic",
+#' title = "HGD vs Healthy",
+#' panel = data.frame(Evebt=labels, data)
+#' )
+roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos = c(0.4, 0.2), title = NULL, fontsize = 16, panel = NULL) {
+
+  library(pROC)
+  obj = roc(label, rs, ci=TRUE, plot=FALSE)
+
+  # panel的第一列为factor，event，class等
+
+  library(doParallel)
+  registerDoParallel(40)
+  set.seed(100)
+
+  ciobj <- ci.se(obj, specificities = seq(0, 1, l = 100), boot.n = 2000, parallel = TRUE)
+  dat.ci <- data.frame(x = as.numeric(rownames(ciobj)),
+                       se.lower = ciobj[, 1],
+                       se.upper = ciobj[, 3])
+
+  library(doParallel)
+  registerDoParallel(40)
+  set.seed(100)
+
+  ciobj <- ci.sp(obj, sensitivities = seq(0, 1, l = 100), boot.n = 2000, parallel = TRUE)
+  dat.ci$y <- as.numeric(rownames(ciobj))
+  dat.ci$sp.lower <- ciobj[, 1]
+  dat.ci$sp.upper <- ciobj[, 3]
+
+  aucs <- pROC::ci(obj)[c(2, 1, 3)]
+  others <- pROC::coords(obj, "best", ret = c("sensitivity", "specificity"), best.policy = "omit")
+
+  annot <- sprintf("AUC %.2f\n(%.2f-%.2f)", aucs[1], aucs[2], aucs[3])
+  #annot <- sprintf("AUC %.2f\nSensitivity %.2f\nSpecificity %.2f", aucs[1],others[1],others[2])
+
+
+  p <- ggroc(obj, colour = loonR::get.ggsci.color(palette, n=length(annot)) , size=0.93, legacy.axes = TRUE ) +
+    labs(x = "1 - Specificity", y = "Sensitivity") +
+    scale_color_manual(labels = annot) + annotate("text", x = 0.55, y = 0.1, label =annot, size = fontsize/3) +
+    theme(legend.position = legend.pos, legend.title = element_blank()) +
+    theme_classic() + cowplot::theme_cowplot(font_family = font) +
+    #geom_abline( slope = 1,  intercept = 1, linetype = "dashed", alpha = 0.7) +
+    geom_abline(linetype = "dashed", alpha = 0.3) +
+    coord_equal() +
+    geom_ribbon(
+      data = dat.ci,
+      aes(x = 1-x, xmin = 1-sp.upper, xmax = 1-sp.lower, y=y, ymin = se.lower, ymax = se.upper), # note 1 -
+      fill = get_color(palette, length(annot)),
+      alpha = 0.1
+    ) + ggtitle(title)  + theme(plot.title = element_text(hjust = 0.5)) # capture.output(obj$ci)
+
+
+  ### if else
+  if(is.null(panel)){
+    p
+  }else{
+
+    panel = as.data.frame(panel)
+
+    ## calculate panel member's sensitivity and specificity
+    library(foreach)
+    library(doParallel)
+    registerDoParallel(20)
+
+    p.mem.res <-
+      foreach(p.mem = colnames(panel[,-c(1)]), .combine = rbind) %dopar% {
+        cat(p.mem,"\n")
+        set.seed(100)
+        obj <- pROC::roc( panel[,c(1)], panel[,p.mem], ci=TRUE, plot=FALSE)
+
+        # get performance
+        set.seed(100)
+        others <- ci.coords(obj, x="best", input="threshold", best.policy = "random")
+
+        tmp.res <- c(as.numeric( round(as.vector(others[["specificity"]]),2)  )  )
+        tmp.res <- c(tmp.res, as.numeric( round(as.vector(others[["sensitivity"]]),2)  )  )
+        as.numeric(tmp.res)
+      }
+    p.mem.res <- as.data.frame(p.mem.res)
+
+    colnames(p.mem.res) <- c("specificity.low", "specificity.median", "specificity.high", "sensitivity.low", "sensitivity.median", "sensitivity.high")
+    row.names(p.mem.res) <- colnames(panel[,-c(1)])
+
+
+    p + geom_segment(data=p.mem.res, color="#009090",
+                     aes(x=1-specificity.high,
+                         xend=1-specificity.low,
+                         ymin=(sensitivity.low+sensitivity.high)/2,
+                         ymax=(sensitivity.low+sensitivity.high)/2,
+                         y=(sensitivity.low+sensitivity.high)/2,
+                         yend=(sensitivity.low+sensitivity.high)/2)
+    )  +
+      geom_segment(data=p.mem.res,  color="#009090",
+                   aes(x=(1-specificity.high+1-specificity.low)/2,
+                       xend=(1-specificity.high+1-specificity.low)/2,
+                       ymin=sensitivity.low,
+                       ymax=sensitivity.high,
+                       y=sensitivity.low,
+                       yend=sensitivity.high)
+      ) +
+      geom_point(data=p.mem.res, mapping=aes(x=(1-specificity.high+1-specificity.low)/2,
+                                             y=(sensitivity.low+sensitivity.high)/2,
+                                             ymin=0,ymax=0),
+                 size=3.5, shape=16, fill="#009090",color="#009090")
+
+  }
+  ## if else
+
+}
 
 

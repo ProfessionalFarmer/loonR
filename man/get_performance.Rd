@@ -7,7 +7,9 @@
 get_performance(pred, labels, best.cutoff = NA)
 }
 \arguments{
-\item{labels}{}
+\item{pred}{Predicted score}
+
+\item{labels}{True label}
 }
 \value{
 

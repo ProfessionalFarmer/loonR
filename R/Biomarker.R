@@ -241,20 +241,31 @@ get_performance <- function(pred, labels, best.cutoff =NA){  #  x="best", input 
 #' Variate logistic analysis
 #' Row: sample, Column: gene expression
 #'
-#' @param df Data.frame --- Row: sample, Column: gene expression
+#' @param d.frame Data.frame --- Row: sample, Column: gene expression
 #' @param label True label
 #'
 #' @return
 #' @export
 #'
 #' @examples
-multivariate_or <- function(df, label){
+multivariate_or <- function(d.frame, label){
 
-  res <- glm(Event ~ . , data = as.data.frame(tmp.df, Event=label), family=binomial(logit))
-  exp( coef(res) )
-  summary(res)
+  res <- glm(Event ~ . , data = data.frame(d.frame, Event=label), family=binomial(logit))
+  #exp( coef(res) )
+  #summary(res)
 
-  exp( cbind(coef(res), confint(res) )  )
+  res <- data.frame(
+    exp( cbind(coef(res), confint(res) )  ) ,
+    Estimate = as.vector(summary(res)$coefficients[,1] ),
+    Pr = as.vector(summary(res)$coefficients[,4] )
+  )
+
+  res <- data.frame(Vairate=row.names(res), round(res,3) )
+  res[,2:ncol(res)] <- data.frame(lapply(res[,2:ncol(res)],as.numeric))
+
+  colnames(res) <- c("Variate","OR", "2.5%", "97.5%", "Estimate" , "Pr")
+  res
+
 }
 
 
@@ -262,37 +273,44 @@ multivariate_or <- function(df, label){
 #' Variate logistic analysis
 #' Row: sample, Column: gene expression
 #' score E.g.: Gene or miRNA expression, or risk score
-#' @param df Data.frame --- Row: sample, Column: gene expression
+#' @param d.frame Data.frame --- Row: sample, Column: gene expression
 #' @param label True Sample label
 #'
 #' @return c(OR, 2.5% CI, 97.5% CI)
 #' @export
 #'
 #' @examples univariate_or(risk.df, label)
-univariate_or <- function(df, label){
+univariate_or <- function(d.frame, label){
 
   library(foreach)
 
-  res <- foreach(i=1:ncol(df), .combine = rbind) %do%{
+  all.res <- foreach(i=1:ncol(d.frame), .combine = rbind) %do%{
+    #   for(i in 1:ncol(d.frame) ){
+    res <- glm(Event ~ . , data = data.frame(Score = d.frame[,i], Event=label), family=binomial(logit))
+    #exp( coef(res) )
+    #summary(res)
 
-      res <- glm(Event ~ . , data = data.frame(Score = score, Event=label), family=binomial(logit))
-      exp( coef(res) )
-      summary(res)
+    # column name
+    c.name <- colnames(d.frame)[i]
 
-      res <- exp( cbind(coef(res), confint(res) )  )[2,]
-      or <- res[,1]
-      upper <- res[,2]
-      lower <- res[,3]
-      res <- c(or, upper, lower)
-      names(res) <- c("OR", "2.5 %", "97.5 %")
-      round(res,3)
+
+    res <- c( exp( cbind(coef(res), confint(res) )  )[2,] , #  c("OR", "2.5 %", "97.5 %")
+              summary(res)$coefficients[2,1], # "Estimate"
+              summary(res)$coefficients[2,1]  # "Pr"
+    )
+    # names(res) <- c("OR", "2.5 %", "97.5 %")
+    c( Name=c.name, round(res,3))
 
   }
 
-  res
+  all.res <- data.frame(all.res, stringsAsFactors = F)
+  row.names(all.res) <- all.res$Name
+  colnames(all.res) <- c("Variate", "OR", "2.5%", "97.5%","Estimate" , "Pr")
+
+  all.res[,2:ncol(all.res)] <- data.frame(lapply(all.res[,2:ncol(all.res)],as.numeric))
+  all.res
 
 }
-
 
 
 #' Plot heatmap with log 2 fold change and risk probability information

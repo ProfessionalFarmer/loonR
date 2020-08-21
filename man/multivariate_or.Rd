@@ -5,10 +5,10 @@
 \title{Variate logistic analysis
 Row: sample, Column: gene expression}
 \usage{
-multivariate_or(df, label)
+multivariate_or(d.frame, label)
 }
 \arguments{
-\item{df}{Data.frame --- Row: sample, Column: gene expression}
+\item{d.frame}{Data.frame --- Row: sample, Column: gene expression}
 
 \item{label}{True label}
 }

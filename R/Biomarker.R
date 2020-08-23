@@ -481,7 +481,7 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
   others <- pROC::coords(obj, "best", ret = c("sensitivity", "specificity"), best.policy = "omit")
 
   annot <- sprintf("AUC %.2f\n(%.2f-%.2f)", aucs[1], aucs[2], aucs[3])
-  #annot <- sprintf("AUC %.2f\nSensitivity %.2f\nSpecificity %.2f", aucs[1],others[1],others[2])
+  #annot <- sprintf("AUC %.2f\nSensitivity %.2f\nSpecificity %.2f", aucs[1],others[1,1],others[2,1])
 
 
   p <- ggroc(obj, colour = loonR::get.ggsci.color(palette, n=length(annot)) , size=0.93, legacy.axes = TRUE ) +
@@ -495,7 +495,7 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
     geom_ribbon(
       data = dat.ci,
       aes(x = 1-x, xmin = 1-sp.upper, xmax = 1-sp.lower, y=y, ymin = se.lower, ymax = se.upper), # note 1 -
-      fill = get_color(palette, length(annot)),
+      fill = loonR::get.ggsci.color(palette, length(annot)),
       alpha = 0.1
     ) + ggtitle(title)  + theme(plot.title = element_text(hjust = 0.5)) # capture.output(obj$ci)
 

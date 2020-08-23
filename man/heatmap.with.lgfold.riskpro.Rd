@@ -12,7 +12,9 @@ heatmap.with.lgfold.riskpro(
   scale = TRUE,
   group.name = "Cancer",
   ylim = c(0, 1),
-  show.lgfold = TRUE
+  show.lgfold = TRUE,
+  show.risk.pro = TRUE,
+  height = 5
 )
 }
 \arguments{
@@ -30,7 +32,7 @@ heatmap.with.lgfold.riskpro(
 
 \item{show.lgfold}{= TRUE。 Whether to show right panel.}
 
-\item{risk.procorresponded}{to sample sequence}
+\item{show.risk.pro}{}
 }
 \value{
 

@@ -31,3 +31,23 @@ get.sample.project.infomap <- function(project=NA){
   return(df)
 
 }
+
+
+#' Convert FPKM data fram to TPM
+#'
+#' @param fpkm.exp.df
+#'
+#' @return
+#' @export
+#'
+#' @examples
+fpkm2tpm <- function(fpkm.exp.df){
+
+  tpm <- apply(fpkm.exp.df, 2, function(x){
+      tpm <- exp(log(fpkm) - log(sum(fpkm,na.rm=T)) + log(1e6))
+      tpm[which(is.na(tpm))] <- 0
+      tpm
+  })
+
+  return(tpm)
+}

@@ -317,18 +317,19 @@ univariate_or <- function(d.frame, label){
 #'
 #' @param heatmap.df Row: miRNA, Column: Sample
 #' @param label A factor with labels TURE/FALSE
+#' @param risk.pro
 #' @param lgfold corresponded to row name sequence
-#' @param risk.procorresponded to sample sequence
 #' @param group.name Default "Cancer"
 #' @param scale Default "TRUE"
 #' @param ylim = c(0, 1), risk score range.
 #' @param show.lgfold = TRUE。 Whether to show right panel.
+#' @param show.risk.pro
 #'
 #' @return
 #' @export
 #'
 #' @examples heatmap.with.lgfold.riskpro(data.tmp[candi,],label, logfd,  risk.pro)
-heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, scale=TRUE, group.name="Cancer", ylim = c(0, 1), show.lgfold = TRUE ){
+heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, scale=TRUE, group.name="Cancer", ylim = c(0, 1), show.lgfold = TRUE, show.risk.pro = TRUE, height = 5 ){
 
   if (is.na(lgfold)){
     show.lgfold = FALSE
@@ -344,16 +345,17 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
   }
 
   library(ComplexHeatmap)
+  if(show.risk.pro){
   # 根据risk score排序
-  heatmap.df <- cbind(
-    heatmap.df[, label==levels(label)[1] ][, order(risk.pro[ label==levels(label)[1] ] ) ],
-    heatmap.df[, label==levels(label)[2] ][, order(risk.pro[ label==levels(label)[2] ] ) ]  )
+    heatmap.df <- cbind(
+      heatmap.df[, label==levels(label)[1] ][, order(risk.pro[ label==levels(label)[1] ] ) ],
+      heatmap.df[, label==levels(label)[2] ][, order(risk.pro[ label==levels(label)[2] ] ) ]  )
 
-  # 对riskscore排序
-  risk.pro <- c(
-    risk.pro[label==levels(label)[1] ][order(risk.pro[label==levels(label)[1] ] ) ],
-    risk.pro[label==levels(label)[2] ][order(risk.pro[label==levels(label)[2] ] ) ]  )
-
+    # 对riskscore排序
+    risk.pro <- c(
+      risk.pro[label==levels(label)[1] ][order(risk.pro[label==levels(label)[1] ] ) ],
+      risk.pro[label==levels(label)[2] ][order(risk.pro[label==levels(label)[2] ] ) ]  )
+    }
 
 
   # heatmap和barplot一起画
@@ -373,6 +375,8 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
   ann_colors = list(Tmp = Tumor)
   names(ann_colors) = group.name
 
+
+  if(show.risk.pro){
   ha = HeatmapAnnotation(df = annotation,
                          col = ann_colors,
                          Risk = anno_points(risk.pro, pch = 16, size = unit(1, "mm"),
@@ -381,14 +385,17 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
                                             axis_param = list( side = "left", at = ylim, labels = as.character(ylim) )
                                             )
                          )
-
+  }else{
+    ha = HeatmapAnnotation(df = annotation,
+                           col = ann_colors    )
+  }
 
   #
   if(show.lgfold){
 
     Heatmap(heatmap.df,
             name = " ", cluster_rows = FALSE, cluster_columns = FALSE,
-            show_row_names = TRUE, show_column_names = FALSE, height = unit(5, "cm"),
+            show_row_names = TRUE, show_column_names = FALSE, height = unit(height, "cm"),
             top_annotation = ha,
             right_annotation = row_ha  )
 
@@ -396,7 +403,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
 
     Heatmap(heatmap.df,
             name = " ", cluster_rows = FALSE, cluster_columns = FALSE,
-            show_row_names = TRUE, show_column_names = FALSE, height = unit(5, "cm"),
+            show_row_names = TRUE, show_column_names = FALSE, height = unit(height, "cm"),
             top_annotation = ha  )
 
   }

@@ -194,7 +194,12 @@ remove.verylong.isoform.gff <- function(gff, interval.length = 1500000){
 
   library(plyranges)
 
-  gff <- read_gff(gff)
+  if(class(gff)=="character"){
+    gff <- read_gff(gff)
+  }else{
+    gff <- gff
+  }
+
   gff.tmp <- gff %>% select(transcript_id, gene_id, gene_name)
   gff.tmp <- as.data.frame(gff.tmp)
 

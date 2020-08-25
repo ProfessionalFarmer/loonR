@@ -588,7 +588,7 @@ download.geo.dataset <- function(geo.accession.id, platform, destdir = tempdir()
   library(GEOquery)
 
   # load series and platform data from GEO
-  gset <- getGEO(geo.accession.id, GSEMatrix =TRUE, AnnotGPL=TRUE)
+  gset <- getGEO(geo.accession.id, GSEMatrix =TRUE, AnnotGPL=TRUE, destdir = destdir)
   if (length(gset) > 1) idx <- grep(platform, attr(gset, "names")) else idx <- 1
   gset <- gset[[idx]]
   gpl.annotation <- fData(gset)
@@ -622,6 +622,82 @@ download.geo.dataset <- function(geo.accession.id, platform, destdir = tempdir()
 
 
 
+
+#' Download RAN expression by TCGAbiolinks
+#' @param project E.g. TCGA-LIHC
+#' @param remove.Raw If to remove raw data
+#' @return list(clinical = clinical, expression = expression.df, group = group)
+#' Expression was log2 transformed.
+#' Group is a data.frame including label, short name and sample barcode
+#' Clinical is a list
+#' @export
+#'
+#' @examples
+tcgabiolinks.get.RNA.expression.log2tpm <- function(project, remove.Raw = FALSE){
+
+  fpkm2tpm <- function(fpkm){
+    tpm <- exp(log(fpkm) - log(sum(fpkm,na.rm=T)) + log(1e6))
+    tpm[which(is.na(tpm))] <- 0
+    return(tpm)
+  }
+
+
+  query <- TCGAbiolinks::GDCquery(project = project,
+                                  data.category = "Transcriptome Profiling",
+                                  workflow.type = "HTSeq - FPKM", # HTSeq - FPKM-UQ or HTSeq - Counts
+                                  data.type = "Gene Expression Quantification",
+                                  experimental.strategy = "RNA-Seq",
+                                  legacy = FALSE
+  )
+  TCGAbiolinks::GDCdownload(query)
+  project.data <- TCGAbiolinks::GDCprepare(query = query)
+
+
+  # Expression
+  expression.df <- SummarizedExperiment::assay(project.data)
+  rm(project.data)
+  # convert to tpm
+  expression.df <- apply(expression.df, 2, fpkm2tpm)
+
+  normal.sample <- TCGAquery_SampleTypes(barcode = colnames(expression.df),
+                                         typesample = "NT")
+  tumor.sample <- TCGAquery_SampleTypes(barcode = colnames(expression.df),
+                                        typesample = "TP")
+
+  group <- data.frame(
+    Label = rep( c("Normal","Tumor"), c(length(normal.sample), length(tumor.sample))  ),
+    Short.Name = substr(c(normal.sample,tumor.sample),1,12),
+    Barcode = c(normal.sample,tumor.sample),
+    stringsAsFactors = FALSE
+  )
+
+  # log2 transformation
+  expression.df <- log2(expression.df[,c(normal.sample,tumor.sample)])
+
+
+
+  ## clinical
+  query <- TCGAbiolinks::GDCquery(project = "TCGA-LIHC",
+                                  data.category = "Clinical",
+                                  data.type = "Clinical Supplement",
+                                  data.format = "BCR Biotab")
+  TCGAbiolinks::GDCdownload(query)
+  clinical <- TCGAbiolinks::GDCprepare(query)
+
+
+  #clinical <- lihc.clinical$clinical_patient_lihc
+
+
+  if(remove.Raw){
+    file.remove( paste("GDCdata/",project,sep="",collapse = "")  )
+  }
+
+  result <- list(clinical = clinical,
+                 expression = expression.df,
+                 group = group
+  )
+  return(result)
+}
 
 
 

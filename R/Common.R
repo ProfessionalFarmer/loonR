@@ -61,7 +61,7 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
   library(ggplot2)
   library(ggpubr)
 
-  p <- ggscatter(df_pcs, x="PC1", y="PC2", color="Class", palette = get.palette.color(palette, n=2, alpha=alpha), ellipse = ellipse) +
+  p <- ggscatter(df_pcs, x="PC1", y="PC2", color="Class", palette = get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha), ellipse = ellipse) +
           xlab(percentage[1]) +
           ylab(percentage[2])
 

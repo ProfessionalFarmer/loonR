@@ -4,7 +4,7 @@
 \alias{getOneRoundCVRes}
 \title{Title}
 \usage{
-getOneRoundCVRes(df, label, k)
+getOneRoundCVRes(df, label, k, seed = 1)
 }
 \arguments{
 \item{df}{data.frame. Col is sample, row is gene}

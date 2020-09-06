@@ -8,9 +8,9 @@
 #' @return
 #'
 #' @examples
-getOneRoundCVRes <- function(df, label, k){
+getOneRoundCVRes <- function(df, label, k, seed = 1){
 
-  set.seed(666+i)
+  set.seed(666+seed)
   require(caret)
   flds <- createFolds(label, k = k, list = FALSE, returnTrain = FALSE)
 
@@ -67,13 +67,15 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100){
 
   library(doParallel)
   library(foreach)
+  require(dplyr)
+
   cl = parallel::makeCluster(40)
   doParallel::registerDoParallel(cl)
 
   cv.res <- foreach::foreach(i= 1:n, .combine = rbind, .packages="foreach", .export=c("getOneRoundCVRes")) %dopar% {
   #res <- foreach::foreach(i= 1:n, .combine = rbind) %do% {
 
-    getOneRoundCVRes(df, label, k)
+    getOneRoundCVRes(df, label, k, seed=i)
 
   }
 
@@ -491,7 +493,7 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
   #annot <- sprintf("AUC %.2f\nSensitivity %.2f\nSpecificity %.2f", aucs[1],others[1,1],others[2,1])
 
 
-  p <- ggroc(obj, colour = loonR::get.ggsci.color(palette, n=length(annot)) , size=0.93, legacy.axes = TRUE ) +
+  p <- ggroc(obj, colour = loonR::get.palette.color(palette, n=length(annot)) , size=0.93, legacy.axes = TRUE ) +
     labs(x = "1 - Specificity", y = "Sensitivity") +
     scale_color_manual(labels = annot) + annotate("text", x = 0.55, y = 0.1, label =annot, size = fontsize/3) +
     theme(legend.position = legend.pos, legend.title = element_blank()) +
@@ -502,7 +504,7 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
     geom_ribbon(
       data = dat.ci,
       aes(x = 1-x, xmin = 1-sp.upper, xmax = 1-sp.lower, y=y, ymin = se.lower, ymax = se.upper), # note 1 -
-      fill = loonR::get.ggsci.color(palette, length(annot)),
+      fill = loonR::get.palette.color(palette, length(annot)),
       alpha = 0.1
     ) + ggtitle(title)  + theme(plot.title = element_text(hjust = 0.5)) # capture.output(obj$ci)
 
@@ -564,6 +566,181 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
   ## if else
 
 }
+
+
+
+#' Plot multiple ROCs in one figure
+#'
+#' @param scores A list or a data.frame. If list, labels shoule also be a list
+#' @param labels
+#' @param font
+#' @param palette
+#' @param legend.pos
+#' @param title
+#' @param panel
+#' @param color specify the color manually
+#'
+#' @return
+#' @export
+#'
+#' @examples multi_roc_with_ci(rss, labels, font = "Arial", palette = "jama")
+multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", legend.pos = c(0.4, 0.2), title = NULL, panel = NULL, color = NULL, ci =TRUE) {
+
+  # panel的第一列为factor，event，class等
+  set.seed(100)
+
+  if(inherits(scores, "list") ) {
+    roclist <- lapply(1:length(scores), function(i){
+      index <- !is.na(scores[[i]])
+      pROC::roc(labels[[i]][index], scores[[i]][index])
+    })
+    names(roclist) <- names(scores)
+
+  }else{
+    roclist <- apply(scores, 2, function(x) roc(labels,x) )
+    # https://stackoverflow.com/questions/57608056/how-to-change-legend-description-on-ggroc-function
+  }
+
+
+  dat.ci <- data.frame( x=NA, se.lower=NA, se.upper=NA, group = NA, y =NA, sp.lower = NA, sp.upper = NA )
+
+  if (ci){
+
+  }else {
+      for(group_name in names(roclist)){
+
+        library(doParallel)
+        registerDoParallel(40)
+        set.seed(100)
+
+        se.ciobj <- ci.se(roclist[[group_name]], specificities = seq(0, 1, l = 100), boot.n = 2000, parallel = TRUE)
+
+        library(doParallel)
+        registerDoParallel(40)
+        set.seed(100)
+
+        sp.ciobj <- ci.sp(roclist[[group_name]], sensitivities = seq(0, 1, l = 100), boot.n = 2000, parallel = TRUE)
+
+        dat.ci.tmp <- data.frame(x = as.numeric(rownames(se.ciobj)),
+                                 se.lower = se.ciobj[, 1],
+                                 se.upper = se.ciobj[, 3],
+                                 group = group_name,
+                                 y = as.numeric(rownames(sp.ciobj)),
+                                 sp.lower = sp.ciobj[, 1],
+                                 sp.upper = se.ciobj[, 3]
+        )
+
+        dat.ci <- rbind(dat.ci, dat.ci.tmp)
+        rm(dat.ci.tmp)
+      }
+      # remove first line
+      dat.ci <- dat.ci[-c(1),]
+  }
+
+
+  annot <- c()
+  aucs <- c()
+  for(group_name in names(roclist)){
+    auc <- pROC::ci(roclist[[group_name]])[c(2, 1, 3)]
+
+    cat(sprintf("%s  AUC %.2f  (%.2f-%.2f)\n", group_name, auc[1], auc[2], auc[3]) )
+    annot <- c(annot, sprintf("%s  AUC %.2f  (%.2f-%.2f)", group_name, auc[1], auc[2], auc[3])  )
+
+    aucs <- c(aucs, auc[1])
+  }
+
+  annot <- paste0(stringr::str_pad(names(roclist), max(sapply(names(roclist), nchar))+1, "right"), "\t", sprintf("AUC %.2f", aucs))
+
+  if(is.null(color)){
+    colors <- get.palette.color(palette, length(annot))
+  }else{
+    colors <- color
+  }
+
+  names(colors) <- names(roclist)
+
+  p <- ggroc(roclist, legacy.axes = TRUE, size=0.93) +
+    labs(x = "1 - Specificity", y = "Sensitivity") +
+    scale_color_manual(labels = annot, values = colors ) +
+    theme_classic() + cowplot::theme_cowplot(font_family = font) +
+    #geom_abline( slope = 1,  intercept = 1, linetype = "dashed", alpha = 0.7) +
+    geom_abline(linetype = "dashed", alpha = 0.3) +
+    coord_equal()
+
+  if(ci){
+
+    p  +
+      geom_ribbon(
+        data = dat.ci, inherit.aes = FALSE, show.legend = FALSE,
+        aes(x = 1-x, xmin = 1-sp.upper, xmax = 1-sp.lower, y =y, ymin = se.lower, ymax = se.upper, group=group, fill=as.factor(group)), # note 1 -
+        alpha = 0.1
+      ) + scale_fill_manual(values=colors) +
+      theme(legend.position = legend.pos, legend.title = element_blank()) +
+      ggtitle(title)  # capture.output(obj$ci)
+
+  }
+
+
+  ### if else
+  if(is.null(panel)){
+    p
+  }else{
+    ## calculate panel member's sensitivity and specificity
+    library(foreach)
+    library(doParallel)
+    registerDoParallel(20)
+
+    p.mem.res <-
+      foreach(p.mem = colnames(panel[,-c(1)]), .combine = rbind) %dopar% {
+        cat(p.mem,"\n")
+        set.seed(100)
+        obj <- pROC::roc( panel[,c(1)], panel[,p.mem], ci=TRUE, plot=FALSE)
+
+        # get performance
+        set.seed(100)
+        others <- ci.coords(obj, x="best", input="threshold", best.policy = "random")
+
+        tmp.res <- c(as.numeric( round(as.vector(others[["specificity"]]),2)  )  )
+        tmp.res <- c(tmp.res, as.numeric( round(as.vector(others[["sensitivity"]]),2)  )  )
+        as.numeric(tmp.res)
+      }
+    p.mem.res <- as.data.frame(p.mem.res)
+
+    #cat(dim(p.mem.res))
+
+
+    colnames(p.mem.res) <- c("specificity.low", "specificity.median", "specificity.high", "sensitivity.low", "sensitivity.median", "sensitivity.high")
+    row.names(p.mem.res) <- colnames(panel[,-c(1)])
+
+
+    p + geom_segment(data=p.mem.res, color="#009090",
+                     aes(x=1-specificity.high,
+                         xend=1-specificity.low,
+                         ymin=(sensitivity.low+sensitivity.high)/2,
+                         ymax=(sensitivity.low+sensitivity.high)/2,
+                         y=(sensitivity.low+sensitivity.high)/2,
+                         yend=(sensitivity.low+sensitivity.high)/2)
+    )  +
+      geom_segment(data=p.mem.res,  color="#009090",
+                   aes(x=(1-specificity.high+1-specificity.low)/2,
+                       xend=(1-specificity.high+1-specificity.low)/2,
+                       ymin=sensitivity.low,
+                       ymax=sensitivity.high,
+                       y=sensitivity.low,
+                       yend=sensitivity.high)
+      ) +
+      geom_point(data=p.mem.res, mapping=aes(x=(1-specificity.high+1-specificity.low)/2,
+                                             y=(sensitivity.low+sensitivity.high)/2,
+                                             ymin=0,ymax=0),
+                 size=3.5, shape=16, fill="#009090",color="#009090")
+
+  }
+  ## if else
+
+}
+
+
+
 
 
 

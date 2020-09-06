@@ -70,7 +70,7 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100){
   cl = parallel::makeCluster(40)
   doParallel::registerDoParallel(cl)
 
-  res <- foreach::foreach(i= 1:n, .combine = rbind, .packages="foreach", .export=c("getOneRoundCVRes")) %dopar% {
+  cv.res <- foreach::foreach(i= 1:n, .combine = rbind, .packages="foreach", .export=c("getOneRoundCVRes")) %dopar% {
   #res <- foreach::foreach(i= 1:n, .combine = rbind) %do% {
 
     getOneRoundCVRes(df, label, k)

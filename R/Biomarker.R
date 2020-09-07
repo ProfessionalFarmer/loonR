@@ -589,6 +589,9 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
   # panel的第一列为factor，event，class等
   set.seed(100)
 
+  require(pROC)
+  require(ggplot2)
+
   if(inherits(scores, "list") ) {
     roclist <- lapply(1:length(scores), function(i){
       index <- !is.na(scores[[i]])
@@ -605,8 +608,6 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
   dat.ci <- data.frame( x=NA, se.lower=NA, se.upper=NA, group = NA, y =NA, sp.lower = NA, sp.upper = NA )
 
   if (ci){
-
-  }else {
       for(group_name in names(roclist)){
 
         library(doParallel)
@@ -635,7 +636,9 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
       }
       # remove first line
       dat.ci <- dat.ci[-c(1),]
+  }else {
   }
+
 
 
   annot <- c()
@@ -643,23 +646,30 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
   for(group_name in names(roclist)){
     auc <- pROC::ci(roclist[[group_name]])[c(2, 1, 3)]
 
-    cat(sprintf("%s  AUC %.2f  (%.2f-%.2f)\n", group_name, auc[1], auc[2], auc[3]) )
-    annot <- c(annot, sprintf("%s  AUC %.2f  (%.2f-%.2f)", group_name, auc[1], auc[2], auc[3])  )
+    cat(sprintf("%s %.2f (%.2f-%.2f)\n", group_name, auc[1], auc[2], auc[3]) )
+    #annot <- c(annot, sprintf("%s %.2f (%.2f-%.2f)", group_name, auc[1], auc[2], auc[3])  )
+    annot <- c(annot, sprintf("%.2f (%.2f-%.2f)", auc[1], auc[2], auc[3])  )
 
     aucs <- c(aucs, auc[1])
   }
 
-  annot <- paste0(stringr::str_pad(names(roclist), max(sapply(names(roclist), nchar))+1, "right"), "\t", sprintf("AUC %.2f", aucs))
+  # Without CI information
+  # annot <- paste0(stringr::str_pad(names(roclist), max(sapply(names(roclist), nchar))+1, "right"), "\t", sprintf("%.2f", aucs))
+  # With Ci information
+  annot <- paste0(stringr::str_pad(names(roclist), max(sapply(names(roclist), nchar))+1, "right"), "\t", annot)
+
+
 
   if(is.null(color)){
-    colors <- get.palette.color(palette, length(annot))
+    colors <- loonR::get.palette.color(palette, length(annot))
   }else{
     colors <- color
   }
 
   names(colors) <- names(roclist)
 
-  p <- ggroc(roclist, legacy.axes = TRUE, size=0.93) +
+
+  p <- pROC::ggroc(roclist, legacy.axes = TRUE, size=0.93) +
     labs(x = "1 - Specificity", y = "Sensitivity") +
     scale_color_manual(labels = annot, values = colors ) +
     theme_classic() + cowplot::theme_cowplot(font_family = font) +
@@ -669,15 +679,22 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
 
   if(ci){
 
-    p  +
+    p <- p  +
       geom_ribbon(
         data = dat.ci, inherit.aes = FALSE, show.legend = FALSE,
         aes(x = 1-x, xmin = 1-sp.upper, xmax = 1-sp.lower, y =y, ymin = se.lower, ymax = se.upper, group=group, fill=as.factor(group)), # note 1 -
         alpha = 0.1
-      ) + scale_fill_manual(values=colors) +
-      theme(legend.position = legend.pos, legend.title = element_blank()) +
-      ggtitle(title)  # capture.output(obj$ci)
+      ) + scale_fill_manual(values=colors)
 
+  }
+
+  # if so many ROCs, put legend in the right
+  if(length(roclist)>5){
+    p <- p + theme(legend.title = element_blank()) +
+      ggtitle(title)  # capture.output(obj$ci)
+  }else{
+    p <- p + theme(legend.position = legend.pos, legend.title = element_blank()) +
+      ggtitle(title)  # capture.output(obj$ci)
   }
 
 

@@ -11,7 +11,8 @@ Depends:
   ggpubr,
   cowplot,
   scales,
-  plyranges
+  plyranges,
+  pROC
 Description: My first personal R package
 License: GPL
 Encoding: UTF-8
@@ -20,4 +21,5 @@ RoxygenNote: 7.1.1
 Imports:
  ggplot2,
  ggpubr,
- cowplot
+ cowplot,
+ pROC

@@ -15,8 +15,9 @@ getOneRoundCVRes <- function(df, label, k, seed = 1){
   flds <- createFolds(label, k = k, list = FALSE, returnTrain = FALSE)
 
   # Every fold will be used in one round.
-
   res <- foreach::foreach(i= 1:k, .combine = rbind) %do% {
+  # only predict one fold
+  #res <- foreach::foreach(i= 1:1, .combine = rbind) %do% {
 
     piece.ind <- which(flds==i)
 

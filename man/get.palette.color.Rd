@@ -9,9 +9,14 @@ get.palette.color(palette = "nrc", n = 7, alpha = 1)
 }
 \arguments{
 \item{palette}{Default npg. The color palette to be used for coloring or filling by groups.
-Allowed values include "grey" for grey color palettes; brewer palettes e.g. "RdBu", "Blues", ...;
-or custom color palette e.g. c("blue", "red");
-and scientific journal palettes from ggsci R package, e.g.: "npg", "aaas", "lancet", "jco", "ucscgb", "uchicago", "simpsons" and "rickandmorty".}
+Allowed values include "grey" for grey color palettes;
+Rbrewer palettes e.g. "RdBu", "Blues", ...;
+Custom color palette e.g. c("blue", "red");
+Scientific journal palettes from ggsci R package, e.g.: "npg", "aaas", "lancet", "jco", "ucscgb", "uchicago", "simpsons" and "rickandmorty".
+    https://github.com/nanxstats/ggsci
+Wes Anderson color palettes: "BottleRocket1"  "BottleRocket2"  "Rushmore1" "Rushmore" "Royal1" "Royal2" "Zissou1" "Darjeeling1" "Darjeeling2" "Chevalier1" "FantasticFox1" "Moonrise1" "Moonrise2" "Moonrise3" "Cavalcanti1" "GrandBudapest1" "GrandBudapest2" "IsleofDogs1" "IsleofDogs2"
+    https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/
+Color blind palette: cbPalette, cbbPalette}
 
 \item{n}{number of colors, default n = 7}
 

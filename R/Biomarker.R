@@ -4,18 +4,19 @@
 #' @param df data.frame. Col is sample, row is gene
 #' @param label
 #' @param k Folds
+#' @param times Default: 1. the number of pieces was use to predict. E.g. times = 5, will run 5 times, each time use a different piece to predict.
 #'
 #' @return
 #'
 #' @examples
-getOneRoundCVRes <- function(df, label, k, seed = 1){
+getOneRoundCVRes <- function(df, label, k, seed = 1, times = 1){
 
   set.seed(666+seed)
   require(caret)
   flds <- createFolds(label, k = k, list = FALSE, returnTrain = FALSE)
 
   # Every fold will be used in one round.
-  res <- foreach::foreach(i= 1:k, .combine = rbind) %do% {
+  res <- foreach::foreach(i= 1:sample(k,times), .combine = rbind) %do% {
   # only predict one fold
   #res <- foreach::foreach(i= 1:1, .combine = rbind) %do% {
 

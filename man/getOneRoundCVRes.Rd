@@ -4,12 +4,14 @@
 \alias{getOneRoundCVRes}
 \title{Title}
 \usage{
-getOneRoundCVRes(df, label, k, seed = 1)
+getOneRoundCVRes(df, label, k, seed = 1, times = 1)
 }
 \arguments{
 \item{df}{data.frame. Col is sample, row is gene}
 
 \item{k}{Folds}
+
+\item{times}{Default: 1. the number of pieces was use to predict. E.g. times = 5, will run 5 times, each time use a different piece to predict.}
 }
 \value{
 

@@ -333,7 +333,7 @@ univariate_or <- function(d.frame, label){
 #' @export
 #'
 #' @examples heatmap.with.lgfold.riskpro(data.tmp[candi,],label, logfd,  risk.pro)
-heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, scale=TRUE, group.name="Cancer", ylim = c(0, 1), show.lgfold = TRUE, show.risk.pro = TRUE, height = 5 ){
+heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, scale=TRUE, group.name="Cancer", bar.name = "Log2FC", ylim = c(0, 1), show.lgfold = TRUE, show.risk.pro = TRUE, height = 5 ){
 
   if (is.na(lgfold)){
     show.lgfold = FALSE
@@ -363,6 +363,8 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
 
 
   # heatmap和barplot一起画
+
+  #row_ha = rowAnnotation( assign(eval(bar.name), anno_barplot(lgfold, gp = gpar(fill = "black",col="black")))   )
   row_ha = rowAnnotation( Log2FC = anno_barplot(lgfold, gp = gpar(fill = "black",col="black")))
 
   label = factor(label)

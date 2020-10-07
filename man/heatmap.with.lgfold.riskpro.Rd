@@ -11,6 +11,7 @@ heatmap.with.lgfold.riskpro(
   lgfold = NA,
   scale = TRUE,
   group.name = "Cancer",
+  bar.name = "Log2FC",
   ylim = c(0, 1),
   show.lgfold = TRUE,
   show.risk.pro = TRUE,

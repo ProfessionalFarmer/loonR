@@ -898,4 +898,26 @@ tcgabiolinks.get.RNA.expression.log2tpm <- function(project, remove.Raw = FALSE)
 }
 
 
+#' Title Remove redundant gene expression data, and select the maximum one
+#'
+#' @param expression.df Please note the first column must be gene names
+#'
+#' @return A clean expression data.frame
+#' @export
+#'
+#' @examples
+unique_gene_expression <- function(expression.df){
+
+  expression.df <- aggregate(expression.df[,-c(1)],
+                             by = list(gene = expression.df$miRNA),
+                             FUN = max,
+                             na.rm = TRUE)
+
+  row.names(expression.df) <- expression.df$gene
+  expression.df <- expression.df[, -c(1)]
+  expression.df
+
+}
+
+
 

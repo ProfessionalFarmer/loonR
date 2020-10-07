@@ -7,7 +7,7 @@
 getGeneRelatedTranscripts.Gff(
   gff.Path,
   gene.vector,
-  max.transcript.length = 1e+05
+  max.transcript.length = 1500000
 )
 }
 \arguments{
@@ -15,7 +15,7 @@ getGeneRelatedTranscripts.Gff(
 
 \item{gene.vector}{Target genes}
 
-\item{max.transcript.length}{Transcript start - end, default 100000}
+\item{max.transcript.length}{Transcript start - end, default 1500000}
 }
 \value{
 plyranges object

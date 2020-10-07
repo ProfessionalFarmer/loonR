@@ -144,6 +144,7 @@ suppa.get.final.table <- function(sample.names = "", psi = "", dpsi = "", event.
   final_table$Isoform <- sapply( strsplit(as.character(final_table$Name), ";") , function(x) paste(x[2])  )
 
   return(final_table)
+
 }
 
 

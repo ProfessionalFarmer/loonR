@@ -9,6 +9,8 @@
 #' @examples remove.verylong.isoform.gff("/data/home2/Zhongxu/work/3.filter.gtf")
 remove.verylong.isoform.gff <- function(gff, interval.length = 1500000){
 
+  library(GenomicRanges)
+  library(dplyr)
   library(plyranges)
 
   if(class(gff)=="character"){
@@ -39,17 +41,18 @@ remove.verylong.isoform.gff <- function(gff, interval.length = 1500000){
 #'
 #' @param gff.Path Annotation file path
 #' @param gene.vector Target genes
-#' @param max.transcript.length Transcript start - end, default 100000
+#' @param max.transcript.length Transcript start - end, default 1500000
 #'
 #' @return plyranges object
 #' @export
 #'
 #' @examples
-getGeneRelatedTranscripts.Gff <- function(gff.Path, gene.vector, max.transcript.length=100000){
+getGeneRelatedTranscripts.Gff <- function(gff.Path, gene.vector, max.transcript.length=1500000){
 
-  library(plyranges)
+
   library(dplyr)
-
+  library(GenomicRanges)
+  library(plyranges)
 
   gr <- read_gff(gff.Path)
   gr <- gr %>% filter(gene_id %in% gene.vector )

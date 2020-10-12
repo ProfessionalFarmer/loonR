@@ -7,7 +7,7 @@
 cross.validation(df = "", label = "", k = 5, n = 100)
 }
 \arguments{
-\item{df}{data.frame. Col is sample, row is gene}
+\item{df}{data.frame. Row is sample, col is gene}
 
 \item{label}{True label}
 

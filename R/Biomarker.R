@@ -1,8 +1,8 @@
 
 #' Title
 #'
-#' @param df data.frame. Col is sample, row is gene
-#' @param label
+#' @param df data.frame. Row is sample, col is gene
+#' @param label TRUE/FALSE vector
 #' @param k Folds
 #' @param times Default: 1. the number of pieces was use to predict. E.g. times = 5, will run 5 times, each time use a different piece to predict.
 #'
@@ -47,7 +47,7 @@ getOneRoundCVRes <- function(df, label, k, seed = 1, times = 1){
 
 #' Title
 #'
-#' @param df data.frame. Col is sample, row is gene
+#' @param df data.frame. Row is sample, col is gene
 #' @param label True label
 #' @param k Folds
 #' @param n Repeat times
@@ -71,10 +71,10 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100){
   library(foreach)
   require(dplyr)
 
-  cl = parallel::makeCluster(40)
-  doParallel::registerDoParallel(cl)
+  #cl = parallel::makeCluster(40)
+  #doParallel::registerDoParallel(cl)
 
-  cv.res <- foreach::foreach(i= 1:n, .combine = rbind, .packages="foreach", .export=c("getOneRoundCVRes")) %dopar% {
+  cv.res <- foreach::foreach(i= 1:n, .combine = rbind, .packages="foreach", .export=c("getOneRoundCVRes")) %do% {
   #res <- foreach::foreach(i= 1:n, .combine = rbind) %do% {
 
     getOneRoundCVRes(df, label, k, seed=i)
@@ -83,7 +83,7 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100){
 
   cv.res.mean <- cv.res %>% group_by(Name, Label) %>% summarize(Mean = mean(Logit))
 
-  stopCluster(cl)
+  #stopCluster(cl)
 
   cv.res.mean
 }
@@ -898,26 +898,25 @@ tcgabiolinks.get.RNA.expression.log2tpm <- function(project, remove.Raw = FALSE)
 }
 
 
-#' Title Remove redundant gene expression data, and select the maximum one
+
+
+#' Title
 #'
-#' @param expression.df Please note the first column must be gene names
+#' @param logit
 #'
-#' @return A clean expression data.frame
+#' @return
 #' @export
 #'
 #' @examples
-unique_gene_expression <- function(expression.df){
-
-  expression.df <- aggregate(expression.df[,-c(1)],
-                             by = list(gene = expression.df$miRNA),
-                             FUN = max,
-                             na.rm = TRUE)
-
-  row.names(expression.df) <- expression.df$gene
-  expression.df <- expression.df[, -c(1)]
-  expression.df
-
+logit2prob <- function(logit){
+  odds <- exp(logit)
+  prob <- odds / (1 + odds)
+  return(prob)
 }
+
+
+
+
 
 
 

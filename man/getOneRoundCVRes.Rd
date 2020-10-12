@@ -7,7 +7,9 @@
 getOneRoundCVRes(df, label, k, seed = 1, times = 1)
 }
 \arguments{
-\item{df}{data.frame. Col is sample, row is gene}
+\item{df}{data.frame. Row is sample, col is gene}
+
+\item{label}{TRUE/FALSE vector}
 
 \item{k}{Folds}
 

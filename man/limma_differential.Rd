@@ -4,20 +4,25 @@
 \alias{limma_differential}
 \title{Differential analysis by LIMMA}
 \usage{
-limma_differential(df, group, rawcount = FALSE, voom = FALSE)
+limma_differential(df, group, rawcount = FALSE, voom = FALSE, pre.filter = 0)
 }
 \arguments{
 \item{df}{raw count or log2(TPM+1), default log2(TPM+1)}
 
-\item{group}{}
+\item{group}{factor, first control then experiment}
 
 \item{rawcount}{true or false}
 
 \item{voom}{true or false. If library size changed too much.}
+
+\item{pre.filter}{Cutoff for mean log2(TPM)}
 }
 \value{
 
 }
 \description{
 Differential analysis by LIMMA
+}
+\examples{
+loonR::limma_differential(tpm.table, group)
 }

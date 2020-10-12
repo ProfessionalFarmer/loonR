@@ -13,7 +13,8 @@ Depends:
   scales,
   plyranges,
   pROC,
-  biomaRt
+  biomaRt,
+  limma
 Description: My first personal R package
 License: GPL
 Encoding: UTF-8

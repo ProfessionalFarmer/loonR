@@ -36,7 +36,7 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 #' @export
 #'
 #' @examples plotPCA(df, group, "aaas")
-plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class", main.title = "", alpha=1){
+plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class", main.title = "", alpha=1, return.percentage = FALSE){
 
   # Compute PCA
   df_pca <- prcomp(df, scale = TRUE) #计算主成分,强制scale
@@ -68,7 +68,12 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
   p <- ggpar(p, legend = "right", legend.title = legend.title, main = main.title)
 
   p <- p + cowplot::theme_cowplot(font_family = "Arial")
-  p
+
+  if(return.percentage){
+    df_pcs
+  }else{
+    p
+  }
 
 
 }

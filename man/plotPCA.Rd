@@ -12,7 +12,8 @@ plotPCA(
   ellipse = FALSE,
   legend.title = "Class",
   main.title = "",
-  alpha = 1
+  alpha = 1,
+  return.percentage = FALSE
 )
 }
 \arguments{

@@ -76,56 +76,56 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
 #' @examples
 DESeq2_differential <- function(rawcount, group, pre.filter = 0, return.normalized.df = FALSE){
 
-   group = factor( group, levels = unique(as.character(group)), labels = c("Control","Experiment") )
+  group = factor( group, levels = unique(as.character(group)), labels = c("Control","Experiment") )
 
-   # https://lashlock.github.io/compbio/R_presentation.html
-   if(pre.filter!=0){
-     # Pre-filtering the dataset
-     # http://master.bioconductor.org/packages/release/workflows/vignettes/rnaseqGene/inst/doc/rnaseqGene.html#exploratory-analysis-and-visualization
-     keep <- rowSums(rawcount) > pre.filter
-     rawcount <- rawcount[keep,]
-   }
+  # https://lashlock.github.io/compbio/R_presentation.html
+  if(pre.filter!=0){
+    # Pre-filtering the dataset
+    # http://master.bioconductor.org/packages/release/workflows/vignettes/rnaseqGene/inst/doc/rnaseqGene.html#exploratory-analysis-and-visualization
+    keep <- rowSums(rawcount) > pre.filter
+    rawcount <- rawcount[keep,]
+  }
 
-   library(DESeq2)
-   # some values in assay are not integers
-   countData =  as.data.frame(sapply(rawcount, as.integer),row.names = row.names(rawcount) )
-   # Must add first column
-   countData = data.frame(Gene=row.names(countData),countData)
-
-
-   # Construct DESEQDataSet Object
-   dds <- DESeqDataSetFromMatrix(
-     countData=countData,
-     colData=data.frame(row.names = colnames(rawcount),
-                        Sample = colnames(rawcount),
-                        Group = group),
-     design=~Group, tidy = TRUE)
-
-   # estimation of size factors（estimateSizeFactors) --> estimation of dispersion（estimateDispersons) --> Negative Binomial GLM fitting and Wald statistics（nbinomWaldTest）
-   dds <- DESeq(dds)
-
-   # normalized count
-   normalized.count <- counts(dds, normalized=TRUE)
-
-   if(return.normalized.df){
-     return(normalized.count)
-   }
-
-   # result
-   res <- results(dds)
-   # sort by p-value
-   res <- as.data.frame(res[order(res$padj),])
-
-   AUC <- apply(normalized.count, 1,function(x){
-     suppressMessages(roc <- pROC::roc(group, x)  )
-     roc$auc
-   })
-
-   res$AUC = AUC[row.names(res)]
+  library(DESeq2)
+  # some values in assay are not integers
+  countData =  as.data.frame(sapply(rawcount, as.integer),row.names = row.names(rawcount) )
+  # Must add first column
+  countData = data.frame(Gene=row.names(countData),countData)
 
 
+  # Construct DESEQDataSet Object
+  dds <- DESeqDataSetFromMatrix(
+    countData=countData,
+    colData=data.frame(row.names = colnames(rawcount),
+                       Sample = colnames(rawcount),
+                       Group = group),
+    design=~Group, tidy = TRUE)
 
-   res
+  # estimation of size factors（estimateSizeFactors) --> estimation of dispersion（estimateDispersons) --> Negative Binomial GLM fitting and Wald statistics（nbinomWaldTest）
+  dds <- DESeq(dds)
+
+  # normalized count
+  normalized.count <- counts(dds, normalized=TRUE)
+
+  if(return.normalized.df){
+    return(normalized.count)
+  }
+
+  # result
+  res <- results(dds)
+  # sort by p-value
+  res <- as.data.frame(res[order(res$padj),])
+
+  AUC <- apply(normalized.count, 1,function(x){
+    suppressMessages(roc <- pROC::roc(group, x)  )
+    roc$auc
+  })
+
+  res$AUC = AUC[row.names(res)]
+
+
+
+  res
 }
 
 
@@ -162,31 +162,32 @@ unique_gene_expression <- function(expression.df){
 #' @param lg2fc Default cufoff 1
 #' @param p Default cutoff 0.05
 #' @param restrict.vector  A TURE/FALSE factor. Only show TRUE point in the vector.
+#' @param label Point names which you want to show in plot. If you don't want to show, set NA
 #'
 #' @return
 #' @export
 #'
-#' @examples
+#' @examples loonR::volcano_plot( tissue.exp.df.res$logFC, tissue.exp.df.res$adj.P.Val, lg2fc = 0.5, p = 0.05, label = label, restrict.vector = (tissue.exp.df.res$AUC > 0.7 & tissue.exp.df.res$AveExpr > 10)  )
 volcano_plot <- function(x,y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)",
                          lg2fc = 1, p = 0.05, restrict.vector=NA, label = NA){
   # add text
   # https://biocorecrg.github.io/CRG_RIntroduction/volcano-plots.html
 
   df = data.frame(log2=x, P=y, label = label, stringsAsFactors = FALSE)
-  df$`Differential Expression` <- "No"
-  df$`Differential Expression`[ df$log2 > lg2fc  & df$P < p] <- "Up"
-  df$`Differential Expression`[ df$log2 < -lg2fc & df$P < p] <- "Down"
+  df$Significant <- "No"
+  df$Significant[ df$log2 > lg2fc  & df$P < p] <- "Up"
+  df$Significant[ df$log2 < -lg2fc & df$P < p] <- "Down"
 
   if(!is.na(restrict.vector)){
-    df$`Differential Expression`[!restrict.vector] <- 'No'
+    df$Significant[!restrict.vector] <- 'No'
   }
 
-  t = unlist( table(df$`Differential Expression`) )
-  df$`Differential Expression`[ df$`Differential Expression` == "Up" ] = paste("Up ","(",t["Up"],")",sep="")
-  df$`Differential Expression`[ df$`Differential Expression` == "Down" ] = paste("Down ","(",t["Down"],")",sep="")
-  df$`Differential Expression`[ df$`Differential Expression` == "No" ] = paste("No ","(",t["No"],")",sep="")
+  t = unlist( table(df$Significant) )
+  df$Significant[ df$Significant == "Up" ] = paste("Up ","(",t["Up"],")",sep="")
+  df$Significant[ df$Significant == "Down" ] = paste("Down ","(",t["Down"],")",sep="")
+  df$Significant[ df$Significant == "No" ] = paste("No ","(",t["No"],")",sep="")
 
-  df$`Differential Expression` <- factor(df$`Differential Expression`)
+  df$Significant <- factor(df$Significant)
 
 
   df$P <- -log10(df$P)
@@ -194,14 +195,67 @@ volcano_plot <- function(x,y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)"
   ggscatter(df,
             x="log2", y="P",
             xlab = xlab, ylab = ylab,
-            color = "Differential Expression", palette = c("blue", "gray",  "red"),
-            legend = "right", label = "label", repel = TRUE
+            color = "Significant", palette = c("blue", "gray",  "red"),
+            legend = "right", label = "label", font.label = c(12, "plain", "black"), repel = TRUE
   ) +
-  geom_vline(xintercept=c(-lg2fc, lg2fc), col="gray") +
-  # rremove("legend") +
-  geom_hline(yintercept=-log10(p), col="gray")
+    geom_vline(xintercept=c(-lg2fc, lg2fc), col="gray") +
+    # rremove("legend") +
+    geom_hline(yintercept=-log10(p), col="gray")
 
 }
+
+
+
+#' M-A plot
+#'
+#' @param M Fold change or log ratio
+#' @param A Average exprssion
+#' @param p Adjusted P
+#' @param m.cutoff Default 0
+#' @param a.cutoff Default 0
+#' @param p.cutoff Default 0.05
+#' @param mlab Default 'Log2 Fold Change'
+#' @param alab Default 'Average Expression'
+#' @param restrict.vector  A TURE/FALSE factor. Only show TRUE point in the vector.
+#' @param label Point names which you want to show in plot. If you don't want to show, set NA
+#'
+#' @return
+#' @export
+#'
+#' @examples MA_plot(tissue.exp.df.res$logFC, tissue.exp.df.res$AveExpr, tissue.exp.df.res$adj.P.Val)
+MA_plot <- function(M, A, p, m.cutoff=0, a.cutoff=0, p.cutoff=0.05,
+                    mlab="Log2 Fold Change", alab="Average Expression", restrict.vector=NA, label = NA){
+
+  df = data.frame(M=M, A=A, P = p, label = label, stringsAsFactors = FALSE)
+
+  df$Significant <- "No"
+  df$Significant[ df$M > m.cutoff  & df$P < p.cutoff & df$A > a.cutoff ] <- "Up"
+  df$Significant[ df$M < m.cutoff  & df$P < p.cutoff & df$A > a.cutoff ] <- "Down"
+
+  if(!is.na(restrict.vector)){
+    df$Significant[!restrict.vector] <- 'No'
+  }
+
+  t = unlist( table(df$Significant) )
+  df$Significant[ df$Significant == "Up" ] = paste("Up ","(",t["Up"],")",sep="")
+  df$Significant[ df$Significant == "Down" ] = paste("Down ","(",t["Down"],")",sep="")
+  df$Significant[ df$Significant == "No" ] = paste("No ","(",t["No"],")",sep="")
+
+  df$Significant <- factor(df$Significant)
+
+  df$P <- -log10(df$P)
+
+  ggscatter(df,
+            x="A", y="M",
+            xlab = alab, ylab = mlab,
+            color = "Significant", palette = c("blue", "gray",  "red"),
+            legend = "right", label = "label", font.label = c(12, "plain", "black"), repel = TRUE
+  )
+
+
+
+}
+
 
 
 

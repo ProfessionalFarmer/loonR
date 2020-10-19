@@ -29,10 +29,15 @@ volcano_plot(
 \item{p}{Default cutoff 0.05}
 
 \item{restrict.vector}{A TURE/FALSE factor. Only show TRUE point in the vector.}
+
+\item{label}{Point names which you want to show in plot. If you don't want to show, set NA}
 }
 \value{
 
 }
 \description{
 Volcano Plot
+}
+\examples{
+loonR::volcano_plot( tissue.exp.df.res$logFC, tissue.exp.df.res$adj.P.Val, lg2fc = 0.5, p = 0.05, label = label, restrict.vector = (tissue.exp.df.res$AUC > 0.7 & tissue.exp.df.res$AveExpr > 10)  )
 }

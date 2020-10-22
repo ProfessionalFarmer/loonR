@@ -51,6 +51,7 @@ get.ggsci.color <- function(palette="nrc", n = 7, alpha=1){
 #' Wes Anderson color palettes: "BottleRocket1"  "BottleRocket2"  "Rushmore1" "Rushmore" "Royal1" "Royal2" "Zissou1" "Darjeeling1" "Darjeeling2" "Chevalier1" "FantasticFox1" "Moonrise1" "Moonrise2" "Moonrise3" "Cavalcanti1" "GrandBudapest1" "GrandBudapest2" "IsleofDogs1" "IsleofDogs2"
 #'     https://www.datanovia.com/en/blog/top-r-color-palettes-to-know-for-great-data-visualization/
 #' Color blind palette: cbPalette, cbbPalette
+#'
 #' @param alpha default 1
 #' @param n number of colors, default n = 7
 #'
@@ -73,8 +74,10 @@ get.palette.color <- function(palette="nrc", n = 7, alpha=1){
 
   if(palette %in% names(my_palettes) ){
     colors = head(my_palettes[[c(palette)]],n)
+
   }else if (palette %in% c(names(wesanderson::wes_palettes)) ) {
-    colors = head(wesanderson::wes_palettes[[c(palette)]],n)
+    colors = head(wesanderson::wes_palettes[[c(palette)]],n, type = c("discrete"))
+
   }else{
      colors = ggpubr::get_palette(palette = palette, k = n)
   }
@@ -82,6 +85,10 @@ get.palette.color <- function(palette="nrc", n = 7, alpha=1){
   # set alpha
   scales::alpha(colors, alpha)
   # scales::show_col(colorBlindGrey8)
+
+
+
+
 }
 
 

@@ -23,7 +23,7 @@ getOneRoundCVRes <- function(df, label, k, seed = 1, times = 1){
     piece.ind <- which(flds==i)
 
     lg.df <- data.frame(label= factor( label[-piece.ind], levels = c(FALSE, TRUE), labels = c(0,1) ),
-                        df[-piece.ind, ])
+                        df[-piece.ind, ], check.names = FALSE)
 
     #colnames(lg.df) <- gsub("\\.", "-", colnames(lg.df) )
 
@@ -40,6 +40,10 @@ getOneRoundCVRes <- function(df, label, k, seed = 1, times = 1){
                stringsAsFactors = FALSE)
   }
 
+  # sometimes logit will be very verylarge e+15. We dont use it
+  if(mean(abs(res$Logit)) > 6e+3){
+    res$Logit = 0
+  }
   res
 
 }
@@ -254,7 +258,7 @@ get_performance <- function(pred, labels, best.cutoff =NA){  #  x="best", input 
 #' @examples
 multivariate_or <- function(d.frame, label){
 
-  res <- glm(Event ~ . , data = data.frame(d.frame, Event=label), family=binomial(logit))
+  res <- glm(Event ~ . , data = data.frame(d.frame, Event=label), family=binomial(logit), check.names = FALSE)
   #exp( coef(res) )
   #summary(res)
 
@@ -763,9 +767,6 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
 
 
 
-
-
-
 #' Download dataset from GEO by accession ID and platform
 #'
 #' @param geo.accession.id GEO Accession ID
@@ -910,11 +911,163 @@ tcgabiolinks.get.RNA.expression.log2tpm <- function(project, remove.Raw = FALSE)
 #' @examples
 logit2prob <- function(logit){
   odds <- exp(logit)
+  odds[ is.infinite(odds) ] = 500
   prob <- odds / (1 + odds)
   return(prob)
 }
 
 
+
+#' Return heatmpa, cv-roc, average risk score
+#'
+#' @param normal.sample
+#' @param tumor.sample
+#' @param expression.exp No log2 transformation
+#' @param candidate.miRNA Default c()
+#' @param AUC.cutoff Default 0.8
+#' @param FC.cutoff Default 1.5
+#' @param P.cutoff Default 0.05
+#' @param k Default 2
+#' @param n Default 100
+#'
+#' @return A list
+#' @export
+#'
+#' @examples biomarker.discovery.pipeline(samsung.healthy.exosome.samples, samsung.pdac.exosome.samples, all.sample.normlized.exp.df)
+biomarker.discovery.pipeline <- function(normal.sample, tumor.sample, expression.exp, candidate.miRNA = c(), AUC.cutoff = 0.8, FC.cutoff = 1.5, P.cutoff = 0.05, k = 2, n =100){
+
+
+  # 以下的变量尽量做到通用
+  samples <- c(normal.sample, tumor.sample)
+  group <- factor(c(rep("Normal", length(normal.sample)), rep("Tumor", length(tumor.sample))))
+
+  analysis.exp <- expression.exp[, samples]
+
+
+  # filter low expression
+  keep = rowSums(analysis.exp) > ncol(analysis.exp)
+  analysis.exp <- analysis.exp[keep,]
+  cat("After low expression filtering, remained miRNAs: ", nrow(analysis.exp), "\n\n")
+
+  # log2 transformation
+  analysis.exp <- log2(analysis.exp+1)
+
+
+  ## PCA
+  pca = loonR::plotPCA(t(analysis.exp), group)
+  pca.value <- loonR::plotPCA(t(analysis.exp), group, return.percentage = TRUE)[,c(1,2)]
+
+  # check  match(row.names(pca.value), row.names(t(train.exp)))
+  pca.value$Group <- group
+  pca.value$Count <- colSums(all.sample.count.df[,3:ncol(all.sample.count.df)])[row.names(pca.value)]
+
+
+  ## Differential analysis
+  diff.analysis.res <- loonR::limma_differential( analysis.exp, group )
+  ## M-A plot
+  MAplot = loonR::MA_plot(diff.analysis.res$logFC, diff.analysis.res$AveExpr, diff.analysis.res$adj.P.Val)
+
+
+  # Volcano plot
+  # candidate, up regulated
+  AUC.cutoff = AUC.cutoff
+  Exp.cutoff = median(diff.analysis.res$AveExpr)
+  FC.cutoff = FC.cutoff
+  P.cutoff = P.cutoff
+
+  if(length(candidate.miRNA)!=0){
+    diff.analysis.res.candidate = diff.analysis.res[  candidate.miRNA,  ]
+  }else{
+
+    diff.analysis.res.candidate <- diff.analysis.res[ diff.analysis.res$AUC > AUC.cutoff &
+                                                        diff.analysis.res$AveExpr > Exp.cutoff &
+                                                        diff.analysis.res$logFC > FC.cutoff & diff.analysis.res$adj.P.Val < P.cutoff
+                                                      , ]
+  }
+  candidate.names <- row.names(diff.analysis.res.candidate)
+
+
+
+
+  label <- row.names( diff.analysis.res )
+  label[-match(candidate.names, label)] <- NA
+
+
+  volcanoplot = loonR::volcano_plot( diff.analysis.res$logFC,
+                                     diff.analysis.res$adj.P.Val,
+                                     lg2fc = FC.cutoff, p = P.cutoff, label = label,
+                                     restrict.vector = (diff.analysis.res$AUC > AUC.cutoff & diff.analysis.res$AveExpr > Exp.cutoff)  )
+
+  ####
+  logit2prob <- function(logit){
+    odds <- exp(logit)
+    odds[ is.infinite(odds) ] = 500
+    prob <- odds / (1 + odds)
+    return(prob)
+  }
+
+
+
+  # build model
+  glm.df <- data.frame(Group = group, scale( t(analysis.exp[candidate.names,]) ), check.names = FALSE )
+  model <- glm(Group~., glm.df, family = binomial(logit))
+
+  average.riskscore <- loonR::cross.validation(data.frame(scale( t(analysis.exp[candidate.names,]) ), check.names = FALSE), group=="Tumor", k = k, n = n)
+
+
+  # performance
+  performance = loonR::get_performance(average.riskscore$Mean, average.riskscore$Label)
+  confusion.matrix = loonR::confusion_matrix(average.riskscore$Label, average.riskscore$Mean)
+
+
+  cv.roc = loonR::roc_with_ci(average.riskscore$Label, average.riskscore$Mean)
+
+
+  heatmap = loonR::heatmap.with.lgfold.riskpro(analysis.exp[candidate.names, ],
+                                               group,
+                                               logit2prob(average.riskscore[match(colnames(analysis.exp), average.riskscore$Name ),]$Mean),
+                                               show.risk.pro = TRUE, lgfold = diff.analysis.res.candidate$logFC, group.name = "Cancer")
+
+
+
+
+
+  #### boxplot - expression
+
+  library(ggpubr)
+
+  miRNAs = candidate.names
+
+  tmp.df <- data.frame(t(analysis.exp[miRNAs,]), Group = group, check.names = FALSE)
+
+  plots <- lapply(miRNAs, function(miRNA){
+
+    miRNA.exp <- as.numeric( as.vector(tmp.df[,miRNA])  )
+    miRNA.group <- tmp.df$Group
+    miRNA.tmp.df <- data.frame(Group = miRNA.group, Expression = miRNA.exp, stringsAsFactors = FALSE)
+
+    p <- ggdotplot(miRNA.tmp.df, y="Expression", x= "Group", add = "boxplot", title = miRNA,
+                   color = "Group", palette = loonR::get.palette.color("aaas",2,0.7),
+                   short.panel.labs = FALSE, ylim = c(floor(min(miRNA.tmp.df$Expression)), ceiling(max(miRNA.tmp.df$Expression))+0.5) ) +
+      stat_compare_means(
+        aes(label = paste0("p = ", ..p.format..),
+            method = "wilcox.test",
+            comparisons = list(c("Normal","Tumor")),
+            label.y= (max(miRNA.tmp.df$Expression)+1) ) )
+
+    p
+  }
+  )
+
+
+  result = list(Sample = samples, Group = group, Model = model, Risk.average = average.riskscore, Volcano.plot = volcanoplot,
+                Expression = analysis.exp, Expression.plots = plots, PCA.plot = pca, PCA.value = pca.value,
+                Differential.analysis.result = diff.analysis.res, Candidate.result = diff.analysis.res.candidate, Candidate.miRNA = candidate.miRNA,
+                Performance = performance, Confusion.matrix = confusion.matrix, ROC.CV = cv.roc, Heatmap = heatmap
+  )
+
+
+}
 
 
 

@@ -51,7 +51,7 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
   fit <- limma::contrasts.fit(fit, contrast.matrix)
   fit <- limma::eBayes(fit, trend=TRUE)
 
-  tempOutput = limma::topTable(fit,  n=Inf) # coef
+  tempOutput = limma::topTable(fit,  n=Inf, adjust.method="BH",) # coef
   DEG_voom = na.omit(tempOutput)
   # 关联基因
   DEG_voom$REF = row.names(DEG_voom)
@@ -112,7 +112,7 @@ DESeq2_differential <- function(rawcount, group, pre.filter = 0, return.normaliz
   }
 
   # result
-  res <- results(dds)
+  res <- results(dds, pAdjustMethod = "BH")
   # sort by p-value
   res <- as.data.frame(res[order(res$padj),])
 
@@ -182,6 +182,18 @@ volcano_plot <- function(x,y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)"
     df$Significant[!restrict.vector] <- 'No'
   }
 
+  palette = c()
+  if(sum(df$Significant=="Down")!=0){
+    palette = c("blue")
+  }
+  if(sum(df$Significant=="No")!=0){
+    palette = c(palette, "gray")
+  }
+  if(sum(df$Significant=="Up")!=0){
+    palette = c(palette, "red")
+  }
+
+
   t = unlist( table(df$Significant) )
   df$Significant[ df$Significant == "Up" ] = paste("Up ","(",t["Up"],")",sep="")
   df$Significant[ df$Significant == "Down" ] = paste("Down ","(",t["Down"],")",sep="")
@@ -195,7 +207,7 @@ volcano_plot <- function(x,y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)"
   ggscatter(df,
             x="log2", y="P",
             xlab = xlab, ylab = ylab,
-            color = "Significant", palette = c("blue", "gray",  "red"),
+            color = "Significant", palette = palette,
             legend = "right", label = "label", font.label = c(12, "plain", "black"), repel = TRUE
   ) +
     geom_vline(xintercept=c(-lg2fc, lg2fc), col="gray") +
@@ -255,6 +267,8 @@ MA_plot <- function(M, A, p, m.cutoff=0, a.cutoff=0, p.cutoff=0.05,
 
 
 }
+
+
 
 
 

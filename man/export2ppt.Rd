@@ -2,7 +2,8 @@
 % Please edit documentation in R/Common.R
 \name{export2ppt}
 \alias{export2ppt}
-\title{Export figure to PPT}
+\title{Export figure to PPT
+https://github.com/tomwenseleers/export}
 \usage{
 export2ppt(obj, file = "~/test.pptx", append = TRUE)
 }
@@ -11,13 +12,14 @@ export2ppt(obj, file = "~/test.pptx", append = TRUE)
 
 \item{file}{default is "~/test.pptx"}
 
-\item{append}{}
+\item{append}{Default TRUE}
 }
 \value{
 NA
 }
 \description{
 Export figure to PPT
+https://github.com/tomwenseleers/export
 }
 \examples{
 export2ppt(ggplot2.obj)

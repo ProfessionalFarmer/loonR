@@ -1,10 +1,11 @@
 
 
 #' Export figure to PPT
+#' https://github.com/tomwenseleers/export
 #'
 #' @param obj ggplot object
 #' @param file default is "~/test.pptx"
-#' @param append
+#' @param append Default TRUE
 #'
 #' @return NA
 #' @export

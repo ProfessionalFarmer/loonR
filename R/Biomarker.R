@@ -88,7 +88,7 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100){
   cv.res.mean <- cv.res %>% group_by(Name, Label) %>% summarize(Mean = mean(Logit))
 
   #stopCluster(cl)
-
+  cv.res.mean <- cv.res.mean[match(row.names(df), cv.res.mean$Name), ]
   cv.res.mean
 }
 
@@ -111,7 +111,7 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100){
 confusion_matrix <- function(groups, risk.pro, cancer="Cancer", best.cutoff = NA){
 
   library(caret)
-  if( is.na(best.cutoff) ){
+  if( anyNA(best.cutoff) ){
 
     best.cutoff <- coords(roc(groups, risk.pro), "best", transpose = TRUE, input="threshold", best.method="youden")
     if( inherits(best.cutoff, "matrix")  ){ # 当youden index有重复的时候，取第一个
@@ -170,6 +170,8 @@ confusion_matrix <- function(groups, risk.pro, cancer="Cancer", best.cutoff = NA
 #' @examples get_performance(risk.probability, label)
 get_performance <- function(pred, labels, best.cutoff =NA){  #  x="best", input = "threshold"
 
+  library(pROC)
+
   #pred <- df_plot[tmp.ind,]$RS
   #lables <- as.factor(tmp.label)
   # pred=kumamoto_rs_cv
@@ -179,7 +181,7 @@ get_performance <- function(pred, labels, best.cutoff =NA){  #  x="best", input 
 
   input="threshold"
 
-  if( is.na(best.cutoff) ){
+  if( anyNA(best.cutoff) ){
 
     best.cutoff <- coords(roc(labels, pred), "best", transpose = TRUE, input="threshold", best.method="youden")
     if( inherits(best.cutoff, "matrix")  ){ # 当youden index有重复的时候，取第一个
@@ -339,7 +341,7 @@ univariate_or <- function(d.frame, label){
 #' @examples heatmap.with.lgfold.riskpro(data.tmp[candi,],label, logfd,  risk.pro)
 heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, scale=TRUE, group.name="Cancer", bar.name = "Log2FC", ylim = c(0, 1), show.lgfold = TRUE, show.risk.pro = TRUE, height = 5 ){
 
-  if (is.na(lgfold)){
+  if (anyNA(lgfold)){
     show.lgfold = FALSE
     lgfold = replicate(nrow(heatmap.df),1)
   }
@@ -929,12 +931,19 @@ logit2prob <- function(logit){
 #' @param P.cutoff Default 0.05
 #' @param k Default 2
 #' @param n Default 100
+#' @param Exp.cutoff
+#' @param heatmap.group
+#' @param donwregulated.biomarker
+#' @param scale Please note. Default FALSE
 #'
 #' @return A list
 #' @export
 #'
 #' @examples biomarker.discovery.pipeline(samsung.healthy.exosome.samples, samsung.pdac.exosome.samples, all.sample.normlized.exp.df)
-biomarker.discovery.pipeline <- function(normal.sample, tumor.sample, expression.exp, candidate.miRNA = c(), AUC.cutoff = 0.8, FC.cutoff = 1.5, P.cutoff = 0.05, k = 2, n =100){
+biomarker.discovery.pipeline <- function(normal.sample, tumor.sample, expression.exp, candidate.miRNA = c(),
+                                         AUC.cutoff = 0.8, FC.cutoff = 1.5, P.cutoff = 0.05, Exp.cutoff = -1, k = 2, n =100, heatmap.group = "Cancer",
+                                         donwregulated.biomarker = FALSE, scale = FALSE
+                                         ){
 
 
   # 以下的变量尽量做到通用
@@ -971,7 +980,9 @@ biomarker.discovery.pipeline <- function(normal.sample, tumor.sample, expression
   # Volcano plot
   # candidate, up regulated
   AUC.cutoff = AUC.cutoff
-  Exp.cutoff = median(diff.analysis.res$AveExpr)
+  if (Exp.cutoff == -1){
+    Exp.cutoff = median(diff.analysis.res$AveExpr)
+  }
   FC.cutoff = FC.cutoff
   P.cutoff = P.cutoff
 
@@ -981,7 +992,8 @@ biomarker.discovery.pipeline <- function(normal.sample, tumor.sample, expression
 
     diff.analysis.res.candidate <- diff.analysis.res[ diff.analysis.res$AUC > AUC.cutoff &
                                                         diff.analysis.res$AveExpr > Exp.cutoff &
-                                                        diff.analysis.res$logFC > FC.cutoff & diff.analysis.res$adj.P.Val < P.cutoff
+                                                        (diff.analysis.res$logFC > FC.cutoff | (donwregulated.biomarker & diff.analysis.res$logFC < (-1)*FC.cutoff)) &
+                                                        diff.analysis.res$adj.P.Val < P.cutoff
                                                       , ]
   }
   candidate.names <- row.names(diff.analysis.res.candidate)
@@ -996,23 +1008,14 @@ biomarker.discovery.pipeline <- function(normal.sample, tumor.sample, expression
   volcanoplot = loonR::volcano_plot( diff.analysis.res$logFC,
                                      diff.analysis.res$adj.P.Val,
                                      lg2fc = FC.cutoff, p = P.cutoff, label = label,
-                                     restrict.vector = (diff.analysis.res$AUC > AUC.cutoff & diff.analysis.res$AveExpr > Exp.cutoff)  )
-
-  ####
-  logit2prob <- function(logit){
-    odds <- exp(logit)
-    odds[ is.infinite(odds) ] = 500
-    prob <- odds / (1 + odds)
-    return(prob)
-  }
-
+                                     restrict.vector = (diff.analysis.res$AUC > AUC.cutoff  & diff.analysis.res$AveExpr > Exp.cutoff)  )
 
 
   # build model
-  glm.df <- data.frame(Group = group, scale( t(analysis.exp[candidate.names,]) ), check.names = FALSE )
+  glm.df <- data.frame(Group = group, scale( t(analysis.exp[candidate.names,]), center = scale, scale = scale), check.names = FALSE )
   model <- glm(Group~., glm.df, family = binomial(logit))
 
-  average.riskscore <- loonR::cross.validation(data.frame(scale( t(analysis.exp[candidate.names,]) ), check.names = FALSE), group=="Tumor", k = k, n = n)
+  average.riskscore <- loonR::cross.validation(data.frame(scale( t(analysis.exp[candidate.names,]) , center = scale, scale = scale), check.names = FALSE), group=="Tumor", k = k, n = n)
 
 
   # performance
@@ -1025,10 +1028,10 @@ biomarker.discovery.pipeline <- function(normal.sample, tumor.sample, expression
 
   heatmap = loonR::heatmap.with.lgfold.riskpro(analysis.exp[candidate.names, ],
                                                group,
-                                               logit2prob(average.riskscore[match(colnames(analysis.exp), average.riskscore$Name ),]$Mean),
-                                               show.risk.pro = TRUE, lgfold = diff.analysis.res.candidate$logFC, group.name = "Cancer")
+                                               loonR::logit2prob(average.riskscore[match(colnames(analysis.exp), average.riskscore$Name ),]$Mean),
+                                               show.risk.pro = TRUE, lgfold = diff.analysis.res.candidate$logFC, group.name = heatmap.group, height = length(candidate.names)/1.7 )
 
-
+  waterfall <- loonR::plot_waterfall(loonR::logit2prob(average.riskscore$Mean)-0.5, average.riskscore$Label, xlab = "Risk score", yticks.labl=NA)
 
 
 
@@ -1047,28 +1050,64 @@ biomarker.discovery.pipeline <- function(normal.sample, tumor.sample, expression
     miRNA.tmp.df <- data.frame(Group = miRNA.group, Expression = miRNA.exp, stringsAsFactors = FALSE)
 
     p <- ggdotplot(miRNA.tmp.df, y="Expression", x= "Group", add = "boxplot", title = miRNA,
-                   color = "Group", palette = loonR::get.palette.color("aaas",2,0.7),
+                   color = "Group", palette = loonR::get.palette.color("aaas",2,0.7), xlab = "", show.legend = FALSE, legend = '',
                    short.panel.labs = FALSE, ylim = c(floor(min(miRNA.tmp.df$Expression)), ceiling(max(miRNA.tmp.df$Expression))+0.5) ) +
       stat_compare_means(
         aes(label = paste0("p = ", ..p.format..),
             method = "wilcox.test",
             comparisons = list(c("Normal","Tumor")),
-            label.y= (max(miRNA.tmp.df$Expression)+1) ) )
+            label.y= (max(Expression)+1) ) )
 
     p
   }
   )
 
 
-  result = list(Sample = samples, Group = group, Model = model, Risk.average = average.riskscore, Volcano.plot = volcanoplot,
+  result = list(Sample = samples, Group = group, Model = model, Risk.average = average.riskscore, Volcano.plot = volcanoplot, MAplot = MAplot, WaterfallPlot = waterfall,
                 Expression = analysis.exp, Expression.plots = plots, PCA.plot = pca, PCA.value = pca.value,
-                Differential.analysis.result = diff.analysis.res, Candidate.result = diff.analysis.res.candidate, Candidate.miRNA = candidate.miRNA,
+                Differential.analysis.result = diff.analysis.res, Candidate.result = diff.analysis.res.candidate, Candidate.miRNA = candidate.names,
                 Performance = performance, Confusion.matrix = confusion.matrix, ROC.CV = cv.roc, Heatmap = heatmap
   )
 
 
 }
 
+
+
+#' Waterfall plot
+#'
+#' @param risk.score
+#' @param label
+#' @param xlab Risk probability
+#' @param palette
+#' @param title seq(0,1,by = 0.25) c(0,0.25,0.5,0.75,1)
+#' @param yticks.labl
+#'
+#' @return
+#' @export
+#'
+#' @examples loonR::plot_waterfall(average.riskscore$Mean, average.riskscore$Label, xlab = "Risk probability")
+plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette = "jco", title = "", yticks.labl = c(0,0.25,0.5,0.75,1)){
+
+    library(ggpubr)
+    risk.score = risk.score
+    idx = order(risk.score)
+    risk.score <- risk.score[idx]
+    label = label[idx]
+
+
+    tmp.df <- data.frame(Risk=risk.score, Class = label, ID=1:length(risk.score) )
+    colnames(tmp.df)[1] <- xlab
+
+    p <- ggbarplot(tmp.df, x = "ID", y = xlab, xlab = "", color = "Class", fill = "Class", palette = palette, legend = "right", title = title) +
+      rremove("x.axis") + rremove("x.text") + rremove("x.ticks")
+
+    if(!anyNA(yticks.labl)){
+      p <- p + scale_y_continuous(labels =  yticks.labl)
+    }
+
+   p
+}
 
 
 

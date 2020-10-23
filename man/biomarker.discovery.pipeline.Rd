@@ -12,8 +12,11 @@ biomarker.discovery.pipeline(
   AUC.cutoff = 0.8,
   FC.cutoff = 1.5,
   P.cutoff = 0.05,
+  Exp.cutoff = -1,
   k = 2,
-  n = 100
+  n = 100,
+  heatmap.group = "Cancer",
+  donwregulated.biomarker = FALSE
 )
 }
 \arguments{

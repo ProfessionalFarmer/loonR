@@ -30,7 +30,7 @@ getOneRoundCVRes <- function(df, label, k, seed = 1, times = 1){
     set.seed(666)
 
     # The type="response" option tells R to output probabilities of the form P(Y = 1|X), as opposed to other information such as the logit.
-    glm.fit <- glm(label ~ ., data = lg.df, family = binomial(logit))
+    suppressWarnings( glm.fit <- glm(label ~ ., data = lg.df, family = binomial(logit)) )
 
     pre.res <- predict(glm.fit, df[piece.ind, ])
 
@@ -428,20 +428,21 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
 #' Plot miR's correlation
 #'
 #' @param df Row: miR expression, Column: Sample
+#' @param title miRs' correlation
 #'
 #' @return
 #' @export
 #'
 #' @examples plot_miRCorrelation(data[candi,])
 #'
-plot_miRCorrelation <- function(df){
+plot_miRCorrelation <- function(df, title="miRs' correlation"){
   cor.res <- cor(t(df))
   cor.res <- round(cor.res, 3)#保留两位小数
 
   library(corrplot)#先加载包
   corrplot(cor.res, type = "upper",
            order = "hclust", tl.col = "black", tl.srt = 90, mar=c(0,0,2,0),
-           cl.lim = c(-0.5,1), addgrid.col=FALSE, title ="miRs' correlation - TCGA" ) +
+           cl.lim = c(-0.5,1), addgrid.col=FALSE, title = title ) +
   cowplot::theme_cowplot(font_family = "Arial")
 
 }
@@ -499,8 +500,8 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
   aucs <- pROC::ci(obj)[c(2, 1, 3)]
   others <- pROC::coords(obj, "best", ret = c("sensitivity", "specificity"), best.policy = "omit")
 
-  annot <- sprintf("AUC %.2f\n(%.2f-%.2f)", aucs[1], aucs[2], aucs[3])
-  #annot <- sprintf("AUC %.2f\nSensitivity %.2f\nSpecificity %.2f", aucs[1],others[1,1],others[2,1])
+  #annot <- sprintf("AUC %.2f\n(%.2f-%.2f)", aucs[1], aucs[2], aucs[3])
+  annot <- sprintf("AUC %.2f\nSensitivity %.2f\nSpecificity %.2f", aucs[1],others[1,1],others[1,2])
 
 
   p <- ggroc(obj, colour = loonR::get.palette.color(palette, n=length(annot)) , size=0.93, legacy.axes = TRUE ) +
@@ -595,6 +596,9 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
 #'
 #' @examples multi_roc_with_ci(rss, labels, font = "Arial", palette = "jama")
 multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", legend.pos = c(0.4, 0.2), title = NULL, panel = NULL, color = NULL, ci =TRUE) {
+  oldw <- getOption("warn")
+  options(warn = -1)
+
 
   # panel的第一列为factor，event，class等
   set.seed(100)
@@ -655,10 +659,13 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
   aucs <- c()
   for(group_name in names(roclist)){
     auc <- pROC::ci(roclist[[group_name]])[c(2, 1, 3)]
+    others <- pROC::coords(roclist[[group_name]], "best", ret = c("sensitivity", "specificity"), best.policy = "omit")
 
     cat(sprintf("%s %.2f (%.2f-%.2f)\n", group_name, auc[1], auc[2], auc[3]) )
     #annot <- c(annot, sprintf("%s %.2f (%.2f-%.2f)", group_name, auc[1], auc[2], auc[3])  )
-    annot <- c(annot, sprintf("%.2f (%.2f-%.2f)", auc[1], auc[2], auc[3])  )
+    #annot <- c(annot, sprintf("%.2f (%.2f-%.2f)", auc[1], auc[2], auc[3])  ) # 常用，AUC CI
+    #annot <- c(annot, sprintf("AUC %.2f\nSensitivity %.2f\nSpecificity %.2f", aucs[1],others[1,1],others[1,2]) )
+    annot <- c(annot, sprintf("%.2f (SE %.2f, SP %.2f)", auc[1], others[1,1],others[1,2] )  ) # SE, SP
 
     aucs <- c(aucs, auc[1])
   }
@@ -738,7 +745,7 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
 
     colnames(p.mem.res) <- c("specificity.low", "specificity.median", "specificity.high", "sensitivity.low", "sensitivity.median", "sensitivity.high")
     row.names(p.mem.res) <- colnames(panel[,-c(1)])
-
+    options(warn = oldw)
 
     p + geom_segment(data=p.mem.res, color="#009090",
                      aes(x=1-specificity.high,
@@ -945,6 +952,9 @@ biomarker.discovery.pipeline <- function(normal.sample, tumor.sample, expression
                                          donwregulated.biomarker = FALSE, scale = FALSE
                                          ){
 
+  oldw <- getOption("warn")
+  options(warn = -1)
+
 
   # 以下的变量尽量做到通用
   samples <- c(normal.sample, tumor.sample)
@@ -1015,7 +1025,7 @@ biomarker.discovery.pipeline <- function(normal.sample, tumor.sample, expression
   glm.df <- data.frame(Group = group, scale( t(analysis.exp[candidate.names,]), center = scale, scale = scale), check.names = FALSE )
   model <- glm(Group~., glm.df, family = binomial(logit))
 
-  average.riskscore <- loonR::cross.validation(data.frame(scale( t(analysis.exp[candidate.names,]) , center = scale, scale = scale), check.names = FALSE), group=="Tumor", k = k, n = n)
+  suppressWarnings( average.riskscore <- loonR::cross.validation(data.frame(scale( t(analysis.exp[candidate.names,]) , center = scale, scale = scale), check.names = FALSE), group=="Tumor", k = k, n = n) )
 
 
   # performance
@@ -1031,7 +1041,7 @@ biomarker.discovery.pipeline <- function(normal.sample, tumor.sample, expression
                                                loonR::logit2prob(average.riskscore[match(colnames(analysis.exp), average.riskscore$Name ),]$Mean),
                                                show.risk.pro = TRUE, lgfold = diff.analysis.res.candidate$logFC, group.name = heatmap.group, height = length(candidate.names)/1.7 )
 
-  waterfall <- loonR::plot_waterfall(loonR::logit2prob(average.riskscore$Mean)-0.5, average.riskscore$Label, xlab = "Risk score", yticks.labl=NA)
+  waterfall <- loonR::plot_waterfall(average.riskscore$Mean, average.riskscore$Label, xlab = "Risk score", yticks.labl=NA)
 
 
 
@@ -1069,6 +1079,8 @@ biomarker.discovery.pipeline <- function(normal.sample, tumor.sample, expression
                 Performance = performance, Confusion.matrix = confusion.matrix, ROC.CV = cv.roc, Heatmap = heatmap
   )
 
+
+  options(warn = oldw)
 
 }
 
@@ -1109,6 +1121,269 @@ plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette
    p
 }
 
+
+
+
+
+
+#' Title
+#'
+#' @param normal.samples
+#' @param tumor.samples
+#' @param expression.df
+#' @param n CV times. Default 100 times.
+#' @param train.proportion
+#' @param train.auc.cutoff Cutoff
+#' @param fc Fold change cutoff in train dataset
+#' @param validate.auc.cutoff Cutoff
+#' @param candidate.fre Frequence
+#' @param candidate.mean.auc Cutoff
+#' @param seed Default 500
+#' @param experiment.name
+#' @param ca19 CA19-9
+#' @param final.train.samples Vector. Final split train sample. If specified, will not randomly select train samples.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+biomarker_discovery_by_CV <- function(normal.samples, tumor.samples, expression.df, n = 100,
+              train.proportion = 0.7, train.auc.cutoff = 0.65, fc = 1, validate.auc.cutoff = 0.7,
+              candidate.fre = 50, candidate.mean.auc = 0.7, seed = 500, experiment.name = "Tumor",
+              ca19 = -1, final.train.samples = -1){
+
+  oldw <- getOption("warn")
+  options(warn = -1)
+  library(dplyr)
+
+
+  group = c(rep("Normal", length(normal.samples)), rep(experiment.name, length(tumor.samples)))
+  cat("# of Samples: ", table(group), names(unlist(table(group))), '\n')
+
+
+  discovery.design = data.frame(Sample=c(normal.samples, tumor.samples), Group = group, stringsAsFactors = FALSE)
+
+
+  discovery_df <- expression.df[, discovery.design$Sample]
+  # filter
+  discovery_df <- discovery_df[rowMeans(discovery_df) > 0.5 ,]
+  # log2 transformation
+  discovery_df <- log2(discovery_df+1)
+
+
+  library(foreach)
+  library(doParallel)
+
+  #setup parallel backend to use many processors
+  cl <- makeCluster(60) #not to overload your computer
+  registerDoParallel(cl)
+
+  # cross validation
+  cv.discover.raw.res <- foreach::foreach(i=1:n, .combine = rbind, .packages = c("dplyr")) %dopar% {
+    set.seed(i+seed)
+    train.design <- discovery.design %>% group_by(Group) %>% sample_frac(train.proportion)
+    validation.design <- anti_join(discovery.design, train.design, by = 'Sample')
+
+    train.df <- discovery_df[, train.design$Sample ]
+    train.diff.res <- loonR::limma_differential(train.df, train.design$Group, pre.filter = 2)
+    train.candidate.res <- train.diff.res[train.diff.res$logFC > fc &
+                                            train.diff.res$AUC > train.auc.cutoff &
+                                            train.diff.res$adj.P.Val < 0.05, ]
+
+
+    validation.df <- discovery_df[, validation.design$Sample ]
+    validation.diff.res <- loonR::limma_differential(validation.df, validation.design$Group, pre.filter = 0)
+    validation.candidate.res <- validation.diff.res[validation.diff.res$logFC > 0 &  # here is 0, please note, not fc
+                                                      validation.diff.res$AUC > validate.auc.cutoff &
+                                                      validation.diff.res$adj.P.Val < 0.05, ]
+
+
+    common_candidate.mirna <- intersect(validation.candidate.res$REF, train.candidate.res$REF)
+
+    one.round.res <- validation.candidate.res %>% filter(REF %in% common_candidate.mirna)
+    one.round.res
+  }
+
+  #stop cluster
+  stopCluster(cl)
+
+  candidate.occurence <- data.frame( unlist( table(cv.discover.raw.res$REF) ), stringsAsFactors = FALSE )
+  colnames(candidate.occurence) <- c("miRNA","Freq")
+
+  candidate.auc <- aggregate(cv.discover.raw.res%>%select(AUC, AveExpr), by = list(cv.discover.raw.res$REF), FUN = mean)
+  names(candidate.auc) <- c("miRNA","Mean AUC","Mean (log2 CPM)")
+
+  candidate.res <- full_join(candidate.occurence, candidate.auc, by="miRNA")
+
+  candidate.res <- candidate.res %>% filter(`Mean AUC` > candidate.mean.auc, Freq > candidate.fre) # filter
+  rm(candidate.occurence, candidate.auc)
+
+  cat("We got candidate miRNAs: ", candidate.res$miRNA, "\nTotal number: ", length(candidate.res$miRNA), "\n\n")
+
+
+
+
+  # Final split
+  set.seed(seed*5-333)
+  if(final.train.samples==-1){
+    train.design <- discovery.design %>% group_by(Group) %>% sample_frac(train.proportion)
+  }else{
+    train.design <- discovery.design %>% filter(Sample %in% final.train.samples)
+    train.design <- train.design[match(final.train.samples, train.design$Sample), ]
+  }
+
+
+  validation.design <- anti_join(discovery.design, train.design, by = 'Sample')
+
+
+  # ------------------------ information in training dataset ---
+  train.diff.res <- loonR::limma_differential(discovery_df[ , train.design$Sample], train.design$Group, pre.filter = 0)
+
+
+  train.df <- data.frame(check.names = F, Group = train.design$Group == experiment.name,
+                         t( discovery_df[candidate.res$miRNA, train.design$Sample ] )
+  )
+
+  model = glm(Group~., train.df, family = binomial(logit))
+  train.average.cv.risk.score <- loonR::cross.validation( data.frame(t( discovery_df[candidate.res$miRNA, train.design$Sample ] ), check.names = F),
+                                                          train.design$Group == experiment.name, k=2)
+
+  #  randome forest model
+  tmp.train.df <- train.df
+  names(tmp.train.df) <- make.names(names(tmp.train.df))
+  library(randomForest)
+  train.random.forest.model <- randomForest(Group~., data = tmp.train.df)
+  rm(tmp.train.df)
+
+  train.samples.risk.score <- predict(model, data.frame(t( discovery_df[candidate.res$miRNA, train.design$Sample ] ), check.names = F) )
+
+  train.cv.roc <- loonR::roc_with_ci(train.average.cv.risk.score$Label, train.average.cv.risk.score$Mean)
+
+
+  train.heatmap = loonR::heatmap.with.lgfold.riskpro(discovery_df[candidate.res$miRNA, train.design$Sample],
+                                                     train.design$Group,
+                                                     loonR::logit2prob(train.average.cv.risk.score[match(train.design$Sample, train.average.cv.risk.score$Name ),]$Mean),
+                                                     show.risk.pro = TRUE, lgfold = train.diff.res[candidate.res$miRNA,]$logFC,
+                                                     group.name = experiment.name, height = length(candidate.res$miRNA)/2.5 )
+
+  train.waterfall <- loonR::plot_waterfall(train.average.cv.risk.score$Mean, train.average.cv.risk.score$Label, xlab = "Risk score", yticks.labl=NA)
+
+  train.original.pca = loonR::plotPCA(t( discovery_df[, train.design$Sample ] ), train.design$Group)
+  train.after.pca = loonR::plotPCA(t( discovery_df[candidate.res$miRNA, train.design$Sample ] ), train.design$Group)
+
+  train.ma.plot = loonR::MA_plot(train.diff.res$logFC, train.diff.res$AveExpr, train.diff.res$adj.P.Val)
+
+  label <- row.names( train.diff.res )
+  label[-match(candidate.res$miRNA, label)] <- NA
+
+  train.volcanoplot = loonR::volcano_plot( train.diff.res$logFC,
+                                           train.diff.res$adj.P.Val,
+                                           lg2fc = fc, p = 0.05, label = label   )
+
+  train.ca19.roc <- loonR::roc_with_ci(train.design$Group, ca19[train.design$Sample])
+
+
+  train.candidate.plots <- lapply(candidate.res$miRNA, function(miRNA){
+
+    miRNA.exp <- as.numeric( t(discovery_df[miRNA, train.design$Sample])  )
+    miRNA.group <- train.design$Group
+    miRNA.tmp.df <- data.frame(Group = miRNA.group, Expression = miRNA.exp, stringsAsFactors = FALSE)
+
+    p <- ggdotplot(miRNA.tmp.df, y="Expression", x= "Group", add = "boxplot", title = miRNA,
+                   color = "Group", palette = loonR::get.palette.color("aaas",2,0.7), xlab = "", show.legend = FALSE, legend = '',
+                   short.panel.labs = FALSE, ylim = c(floor(min(miRNA.tmp.df$Expression)), ceiling(max(miRNA.tmp.df$Expression))+0.5) ) +
+      stat_compare_means(
+        aes(label = paste0("p = ", ..p.format..),
+            method = "wilcox.test",
+            comparisons = list(c("Normal","Tumor")),
+            label.y= (max(Expression)+1) ) )
+
+    p
+  })
+
+
+
+
+
+
+  # ------------------------ information in validation dataset##--
+  validation.df <- discovery_df[candidate.res$miRNA, validation.design$Sample ]
+  validation.diff.res <- loonR::limma_differential(validation.df, validation.design$Group, pre.filter = 0)
+
+
+  validation.risk.score <- predict(model,   data.frame( t(validation.df[candidate.res$miRNA, validation.design$Sample]), check.names = F)       )
+  validation.ci.roc <- loonR::roc_with_ci(validation.design$Group, validation.risk.score[validation.design$Sample])
+  validation.heatmap <- loonR::heatmap.with.lgfold.riskpro(validation.df[candidate.res$miRNA, validation.design$Sample],
+                                                           validation.design$Group,
+                                                           loonR::logit2prob(validation.risk.score[validation.design$Sample]),
+                                                           show.risk.pro = TRUE, lgfold = validation.diff.res[candidate.res$miRNA,]$logFC,
+                                                           group.name = experiment.name, height = length(candidate.res$miRNA)/2.5 )
+
+  validation.waterfall <- loonR::plot_waterfall(validation.risk.score[validation.design$Sample], validation.design$Group, xlab = "Risk score", yticks.labl=NA)
+
+  validation.original.pca = loonR::plotPCA( t( discovery_df[, validation.design$Sample ] ), validation.design$Group)
+  validation.after.pca = loonR::plotPCA(t( discovery_df[candidate.res$miRNA, validation.design$Sample ] ), validation.design$Group)
+
+  validation.ca19.roc <- loonR::roc_with_ci(validation.design$Group, ca19[validation.design$Sample])
+
+  validation.candidate.plots <- lapply(candidate.res$miRNA, function(miRNA){
+
+    miRNA.exp <- as.numeric( t(discovery_df[miRNA, validation.design$Sample])  )
+    miRNA.group <- validation.design$Group
+    miRNA.tmp.df <- data.frame(Group = miRNA.group, Expression = miRNA.exp, stringsAsFactors = FALSE)
+
+    p <- ggdotplot(miRNA.tmp.df, y="Expression", x= "Group", add = "boxplot", title = miRNA,
+                   color = "Group", palette = loonR::get.palette.color("aaas",2,0.7), xlab = "", show.legend = FALSE, legend = '',
+                   short.panel.labs = FALSE, ylim = c(floor(min(Expression)), ceiling(max(Expression))+0.5) ) +
+      stat_compare_means(
+        aes(label = paste0("p = ", ..p.format..),
+            method = "wilcox.test",
+            comparisons = list(c("Normal","Tumor")),
+            label.y= (max(Expression)+1) ) )
+
+    p
+  })
+
+  #obtain random forest score
+  tmp.validation.df <- t(validation.df[, validation.design$Sample])
+  colnames(tmp.validation.df) <- make.names(colnames(tmp.validation.df))
+  validation.random.forest.score <- predict(train.random.forest.model, tmp.validation.df)
+  rm(tmp.validation.df)
+  validation.rf.roc <- loonR::roc_with_ci(validation.design$Group, validation.random.forest.score[validation.design$Sample])
+  validation.rf.waterfall <- loonR::plot_waterfall(validation.random.forest.score[validation.design$Sample] - 0.5, validation.design$Group, xlab = "Risk score", yticks.labl=NA)
+
+
+
+  train.multi.roc <- loonR::multi_roc_with_ci(
+    list(`Train-CV`=train.average.cv.risk.score$Mean,
+         `CA19-9`=ca19[train.design$Sample]),
+    list(`Train-CV`=train.average.cv.risk.score$Label,
+         `CA19-9`=train.design$Group )        )
+
+
+  validation.multi.roc <- loonR::multi_roc_with_ci(
+    list(Validation=validation.risk.score[validation.design$Sample],
+         `CA19-9`=ca19[validation.design$Sample]),
+    list(Validation=validation.design$Group,
+         `CA19-9`=validation.design$Group )   )
+
+
+
+  options(warn = oldw)
+  RES = list(Expression.Log2.DF = discovery_df, Candidate.res = candidate.res, miRNA.CV.res = cv.discover.raw.res, Design = discovery.design,
+             Train.Design = train.design, Validation.Design = validation.design, Model = model,
+             Train.CV.Risk.Score = train.average.cv.risk.score, Trian.Risk.score = train.samples.risk.score, Train.CV.ROC = train.cv.roc,
+             Train.Candidate.Heatmap = train.heatmap, Train.CV.Waterfall = train.waterfall,
+             Validation.Risk.Score = validation.risk.score, Validation.CI.ROC= validation.ci.roc, Validation.Heatmp = validation.heatmap, Validation.Waterfall = validation.waterfall,
+             Train.Before.PCA = train.original.pca, Train.After.PCA = train.after.pca, Train.MA.Plot = train.ma.plot, Train.Vocano.Plot = train.volcanoplot,
+             validation.Before.PCA = validation.original.pca, validation.After.PCA = validation.after.pca,
+             Train.CA19.ROC = train.ca19.roc, Train.Multi.ROC = train.multi.roc, Validation.CA19.ROC = validation.ca19.roc, Validation.Multi.ROC = validation.multi.roc,
+             Train.Candidate.Expression.Plots = train.candidate.plots, Validation.Candidate.Expression.Plots = validation.candidate.plots,
+             Train.Random.Forest.Model = train.random.forest.model,
+             Validation.Random.Forest.Score = validation.random.forest.score, Validation.Random.Forest.ROC = validation.rf.roc, Validation.Random.Forest.Waterfall = validation.rf.waterfall)
+
+  RES
+}
 
 
 

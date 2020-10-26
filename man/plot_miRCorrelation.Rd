@@ -4,10 +4,12 @@
 \alias{plot_miRCorrelation}
 \title{Plot miR's correlation}
 \usage{
-plot_miRCorrelation(df)
+plot_miRCorrelation(df, title = "miRs' correlation")
 }
 \arguments{
 \item{df}{Row: miR expression, Column: Sample}
+
+\item{title}{miRs' correlation}
 }
 \value{
 

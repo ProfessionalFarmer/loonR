@@ -16,7 +16,8 @@ biomarker.discovery.pipeline(
   k = 2,
   n = 100,
   heatmap.group = "Cancer",
-  donwregulated.biomarker = FALSE
+  donwregulated.biomarker = FALSE,
+  scale = FALSE
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ biomarker.discovery.pipeline(
 \item{k}{Default 2}
 
 \item{n}{Default 100}
+
+\item{scale}{Please note. Default FALSE}
 }
 \value{
 A list

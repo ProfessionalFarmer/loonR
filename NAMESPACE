@@ -2,8 +2,6 @@
 
 export(DESeq2_differential)
 export(MA_plot)
-export(biomarker.discovery.pipeline)
-export(biomarker_discovery_by_CV)
 export(confusion_matrix)
 export(cross.validation)
 export(download.geo.dataset)

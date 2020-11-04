@@ -39,3 +39,14 @@ refSeq_Ensembl <- function(nm.accessions){
     attributes=c("refseq_mrna", "ensembl_transcript_id", "entrezgene_id", "hgnc_symbol"),
     values=nm.accessions, mart=ensembl      )
 }
+
+
+ensembl_EntrezID <- function(ensembl.ids){
+  library("org.Hs.eg.db")
+  library(dplyr)
+  df <- as.data.frame(org.Hs.egENSEMBL2EG) %>%  filter(gene_id %in% candidate.tar$`Target Gene (Entrez ID)`)
+  df
+}
+
+
+

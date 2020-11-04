@@ -154,31 +154,6 @@ suppa.get.final.table <- function(sample.names = "", psi = "", dpsi = "", event.
 
 
 
-#' Read Salmon output
-#'
-#' @param dirPath Simple set the directory which contains Salmon output folder
-#'
-#' @return A tximport oject
-#' @export
-#'
-#' @examples
-suppa.load.salmon.matrix <- function(dirPath){
-
-  library(tximport)
-
-  sample.names <- system(paste("ls ",dirPath," | grep quant | cut -f 1 -d _",sep = ''),  intern = TRUE)
-  sample.salmon.pathes <- system(paste("ls ",dirPath,"/*quant/quant.sf",sep = ''),  intern = TRUE)
-
-  cat("No. of samples:",length(sample.names),"\n")
-
-  names(sample.salmon.pathes) <- sample.names
-
-  tpm <- tximport(sample.salmon.pathes, type = "salmon", txIn = TRUE, txOut = TRUE)
-
-  tpm
-
-}
-
 
 
 

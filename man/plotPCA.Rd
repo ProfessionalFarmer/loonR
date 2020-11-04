@@ -29,6 +29,8 @@ and scientific journal palettes from ggsci R package, e.g.: "npg", "aaas", "lanc
 \item{legend.title}{legend.title}
 
 \item{main.title}{main title}
+
+\item{return.percentage}{If TRUE, reture PCA percentage instead of PCA lot}
 }
 \value{
 

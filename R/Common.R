@@ -32,6 +32,8 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 #' @param ellipse Whether to add elipse.
 #' @param legend.title  legend.title
 #' @param main.title main title
+#' @param alpha
+#' @param return.percentage If TRUE, reture PCA percentage instead of PCA lot
 #'
 #' @return
 #' @export

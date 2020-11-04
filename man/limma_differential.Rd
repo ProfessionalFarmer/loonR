@@ -7,7 +7,7 @@
 limma_differential(df, group, rawcount = FALSE, voom = FALSE, pre.filter = 0)
 }
 \arguments{
-\item{df}{raw count or log2(TPM+1), default log2(TPM+1)}
+\item{df}{raw count or log2(TPM+1), default log2(TPM+1). Must be data.frame, not matrix.}
 
 \item{group}{factor, first control then experiment}
 

@@ -1,6 +1,6 @@
 #' Differential analysis by LIMMA
 #'
-#' @param df raw count or log2(TPM+1), default log2(TPM+1)
+#' @param df raw count or log2(TPM+1), default log2(TPM+1). Must be data.frame, not matrix.
 #' @param group factor, first control then experiment
 #' @param rawcount true or false
 #' @param voom true or false. If library size changed too much.
@@ -138,11 +138,11 @@ DESeq2_differential <- function(rawcount, group, pre.filter = 0, return.normaliz
 #' @export
 #'
 #' @examples loonR::unique_gene_expression(normlized.exp.df)
-unique_gene_expression <- function(expression.df){
+unique_gene_expression <- function(expression.df, f = "max"){
 
   expression.df <- aggregate(expression.df[,-c(1)],
                              by = list(gene = expression.df[,c(1)]),
-                             FUN = max,
+                             FUN = eval(f),
                              na.rm = TRUE)
 
   row.names(expression.df) <- expression.df[,c(1)]
@@ -269,8 +269,86 @@ MA_plot <- function(M, A, p, m.cutoff=0, a.cutoff=0, p.cutoff=0.05,
 }
 
 
+#' Read Salmon output
+#'
+#' @param dirPath Simple set the directory which contains Salmon output folder
+#'
+#' @return A tximport oject
+#' @export
+#'
+#' @examples
+#' Directory tree: dir/sample_quant/quant.sf
+#'
+load.salmon.matrix <- function(dirPath){
+
+  library(tximport)
+  sample.salmon.pathes <- list.files(path = dirpath, full.names = TRUE)
+  sample.salmon.pathes <- list.files(path = dirpath, full.names = TRUE, pattern = "isoforms.results")
+
+  sample.names <- basename(sample.salmon.pathes)
+  sample.names <- unlist(lapply( strsplit(base.name,"_"), function(x) {x[1]} ))
+
+  cat("No. of samples:",length(sample.names),"\n")
+
+  names(sample.salmon.pathes) <- sample.names
+
+  tpm <- tximport(sample.salmon.pathes, type = "salmon", txIn = TRUE, txOut = TRUE)
+
+  tpm
+
+}
 
 
+
+#' Title
+#'
+#' @param dirpath Simple set the directory which contains RSEM output folder
+#' @param isoform specify data type. isoforma specific or not.
+#' @param subdirs If existing in subdirectory
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' Directory tree subdirs = TRUE: dir/sample/prefix.genes.results or
+#' Directory tree subdirs = TRUE: dir/sample/prefix.isoforms.results
+#' Directory tree subdirs = FALSE: dir/sample.prefix.genes.results or
+#' Directory tree subdirs = FALSE: dir/sample.prefix.isoforms.results
+#'
+load.rsem.matrix <- function(dirpath, isoform = FALSE, subdirs = TRUE){
+
+  library(tximport)
+
+  if (subdirs){
+    subdirs <- list.files(path = dirpath, full.names = TRUE)
+    if (isoform){
+      sample.rsem.pathes <- list.files(path = subdirs, full.names = TRUE, pattern = "isoforms.results")
+    } else{
+      sample.rsem.pathes <- list.files(path = subdirs, full.names = TRUE, pattern = "genes.results")
+    }
+
+  }else{
+    if (isoform){
+      sample.rsem.pathes <- list.files(path = dirpath, full.names = TRUE, pattern = "isoforms.results")
+    } else{
+      sample.rsem.pathes <- list.files(path = dirpath, full.names = TRUE, pattern = "genes.results")
+    }
+  }
+  base.name <- basename(sample.rsem.pathes)
+  sample.names <- unlist(lapply( strsplit(base.name,"\\."), function(x) {x[1]} ))
+
+
+  cat("No. of samples:",length(sample.names),"\n")
+
+  names(sample.rsem.pathes) <- sample.names
+
+  expr <- tximport(sample.rsem.pathes, type = "rsem", txIn = isoform, txOut = isoform)
+
+  expr
+
+
+
+}
 
 
 

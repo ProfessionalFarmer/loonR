@@ -13,7 +13,8 @@ plotPCA(
   legend.title = "Class",
   main.title = "",
   alpha = 1,
-  return.percentage = FALSE
+  return.percentage = FALSE,
+  pre.filter = 0.01
 )
 }
 \arguments{

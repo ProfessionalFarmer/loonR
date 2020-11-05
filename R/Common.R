@@ -39,7 +39,9 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 #' @export
 #'
 #' @examples plotPCA(df, group, "aaas")
-plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class", main.title = "", alpha=1, return.percentage = FALSE){
+plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class", main.title = "", alpha=1, return.percentage = FALSE, pre.filter = 0.01){
+
+  df <- df[, colMeans(df) > pre.filter]
 
   # Compute PCA
   df_pca <- prcomp(df, scale = TRUE) #计算主成分,强制scale
@@ -81,7 +83,62 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
 
 }
 
+#' Count each event type and draw pie chart
+#'
+#' @param data A data.frame or list object.
+#' @param color ggsci color palette
+#' @param colid If provide data.frame, column id need to be set
+#' @param alpha Alpha value in plot
+#' @param title Pie title
+#' @param border Border color
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' plotPie(ioe.events.df$Type, title = "# of events")
+#' or plotPie(ioe.events.df, col = 2, title = "# of events")
+#'
+plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", border="white"){
 
+  if( inherits(data, "data.frame")  ){
+    data <- unique(data)
+    data <- as.vector(data[,colid]) # now data is a vector class
+  }
+  n.color <- length(unique(data))
+  if(n.color >= 10 ){
+    stop("Please check, too many colors (More than 9)")
+  }
 
+  library(ggpubr)
+  myPalette <- loonR::get.palette.color(palette = color, alpha = alpha, n = n.color)
 
+  Prop <- unclass(table(data))
+
+  lbls <- names(  unclass(table(data))  )
+  lbls.bak <-lbls
+  pct <- round(Prop/sum(Prop)*100)
+  lbls <- paste(lbls, pct) # add percents to labels
+  lbls <- paste(lbls,"%",sep="") # add % to labels
+  lbls <- paste(lbls,paste(" (",Prop,")",sep=""),sep="") # add value
+
+  if (title == ""){
+    title <- paste(" Total ", sum(Prop), sep = "" )
+  }else{
+    title <- paste(title, " (Total ", sum(Prop),")",sep = "" )
+  }
+
+  # draw
+  # You can change the border of each area with the classical parameters:
+  tmp.pie.df <- data.frame(Type=lbls,
+                           Prop = as.numeric(Prop),
+                           Label = lbls.bak,
+                           stringsAsFactors = F)
+
+  p <- ggpie(tmp.pie.df, "Prop", label = "Label", fill = "Type",
+        color = border, palette = myPalette, title = title, legend = "right" , legend.title = "",
+        font.family = "Arial")
+
+  p
+}
 

@@ -41,12 +41,49 @@ refSeq_Ensembl <- function(nm.accessions){
 }
 
 
+#' Title
+#'
+#' @param ensembl.ids
+#'
+#' @return
+#' @export
+#'
+#' @examples
 ensembl_EntrezID <- function(ensembl.ids){
   library("org.Hs.eg.db")
   library(dplyr)
   df <- as.data.frame(org.Hs.egENSEMBL2EG) %>%  filter(gene_id %in% candidate.tar$`Target Gene (Entrez ID)`)
   df
 }
+
+
+#' Title
+#'
+#' @param IDS
+#' @param key
+#' @param column
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' keytypes(org.Hs.eg.db)
+#'  [1] "ACCNUM"       "ALIAS"        "ENSEMBL"      "ENSEMBLPROT"  "ENSEMBLTRANS" "ENTREZID"
+#'  [7] "ENZYME"       "EVIDENCE"     "EVIDENCEALL"  "GENENAME"     "GO"           "GOALL"
+#'  [13] "IPI"          "MAP"          "OMIM"         "ONTOLOGY"     "ONTOLOGYALL"  "PATH"
+#'  [19] "PFAM"         "PMID"         "PROSITE"      "REFSEQ"       "SYMBOL"       "UCSCKG"
+#'  [25] "UNIGENE"      "UNIPROT"
+#'
+id_mapping <- function(IDS, key = "ENSEMBL", column = c("SYMBOL") ){
+
+  library("org.Hs.eg.db")
+  symbols <- mapIds(org.Hs.eg.db,
+                    keys = IDS,
+                    keytype = key,
+                    column = column)
+
+}
+
 
 
 

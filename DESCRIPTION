@@ -1,7 +1,7 @@
 Package: loonR
 Type: Package
 Title: Common function in bioinformatics analysis
-Version: 0.1.019
+Version: 0.1.119
 Author: Zhongxu
 Depends: 
   R (>= 3.0.2),
@@ -14,7 +14,9 @@ Depends:
   plyranges,
   pROC,
   biomaRt,
-  limma
+  limma,
+  dplyr,
+  reshape2
 Description: My first personal R package
 License: GPL
 Encoding: UTF-8
@@ -24,4 +26,6 @@ Imports:
  ggplot2,
  ggpubr,
  cowplot,
- pROC
+ pROC,
+ dplyr,
+ reshape2

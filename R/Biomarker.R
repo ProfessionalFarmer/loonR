@@ -413,7 +413,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
   #
   if(show.lgfold){
 
-    Heatmap(heatmap.df,
+    Heatmap(heatmap.df, col = c("#0c3e74","#77a8cd","white","#d86652","#7e0821"),
             name = " ", cluster_rows = FALSE, cluster_columns = FALSE,
             show_row_names = TRUE, show_column_names = FALSE, height = unit(height, "cm"),
             top_annotation = ha,
@@ -421,7 +421,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
 
   }else{
 
-    Heatmap(heatmap.df,
+    Heatmap(heatmap.df, col = c("#0c3e74","#77a8cd","white","#d86652","#7e0821"),
             name = " ", cluster_rows = FALSE, cluster_columns = FALSE,
             show_row_names = TRUE, show_column_names = FALSE, height = unit(height, "cm"),
             top_annotation = ha  )
@@ -470,6 +470,7 @@ plot_miRCorrelation <- function(df, title="miRs' correlation"){
 #' @param title
 #' @param fontsize
 #' @param panel panel的第一列为factor，event，class等
+#' @param SE.SP Whether to show SE and SP instead of CI of AUC
 #'
 #' @return ggplot object
 #' @export
@@ -480,7 +481,7 @@ plot_miRCorrelation <- function(df, title="miRs' correlation"){
 #' title = "HGD vs Healthy",
 #' panel = data.frame(Evebt=labels, data)
 #' )
-roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos = c(0.4, 0.2), title = NULL, fontsize = 16, panel = NULL) {
+roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos = c(0.4, 0.2), title = NULL, fontsize = 16, panel = NULL, SE.SP = FALSE) {
 
   library(pROC)
   obj = roc(label, rs, ci=TRUE, plot=FALSE)
@@ -508,8 +509,11 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
   aucs <- pROC::ci(obj)[c(2, 1, 3)]
   others <- pROC::coords(obj, "best", ret = c("sensitivity", "specificity"), best.policy = "omit")
 
-  #annot <- sprintf("AUC %.2f\n(%.2f-%.2f)", aucs[1], aucs[2], aucs[3])
-  annot <- sprintf("AUC %.2f\nSensitivity %.2f\nSpecificity %.2f", aucs[1],others[1,1],others[1,2])
+  if(!SE.SP){
+    annot <- sprintf("AUC %.2f\n(%.2f-%.2f)", aucs[1], aucs[2], aucs[3])
+  }else{
+    annot <- sprintf("AUC %.2f\nSensitivity %.2f\nSpecificity %.2f", aucs[1],others[1,1],others[1,2])
+  }
 
 
   p <- ggroc(obj, colour = loonR::get.palette.color(palette, n=length(annot)) , size=0.93, legacy.axes = TRUE ) +
@@ -598,12 +602,14 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
 #' @param title
 #' @param panel
 #' @param color specify the color manually
+#' @param ci
+#' @param SE.SP Whether to show SE and SP instead of CI of AUC
 #'
 #' @return
 #' @export
 #'
 #' @examples multi_roc_with_ci(rss, labels, font = "Arial", palette = "jama")
-multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", legend.pos = c(0.4, 0.2), title = NULL, panel = NULL, color = NULL, ci =TRUE) {
+multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", legend.pos = c(0.4, 0.2), title = NULL, panel = NULL, color = NULL, ci =TRUE, SE.SP = FALSE) {
   oldw <- getOption("warn")
   options(warn = -1)
 
@@ -671,9 +677,15 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
 
     cat(sprintf("%s %.2f (%.2f-%.2f)\n", group_name, auc[1], auc[2], auc[3]) )
     #annot <- c(annot, sprintf("%s %.2f (%.2f-%.2f)", group_name, auc[1], auc[2], auc[3])  )
-    #annot <- c(annot, sprintf("%.2f (%.2f-%.2f)", auc[1], auc[2], auc[3])  ) # 常用，AUC CI
     #annot <- c(annot, sprintf("AUC %.2f\nSensitivity %.2f\nSpecificity %.2f", aucs[1],others[1,1],others[1,2]) )
-    annot <- c(annot, sprintf("%.2f (SE %.2f, SP %.2f)", auc[1], others[1,1],others[1,2] )  ) # SE, SP
+    if(!SE.SP){
+      annot <- c(annot, sprintf("%.2f (%.2f-%.2f)", auc[1], auc[2], auc[3])  ) # 常用，AUC CI
+    }else{
+      annot <- c(annot, sprintf("%.2f (SE %.2f, SP %.2f)", auc[1], others[1,1],others[1,2] )  ) # SE, SP
+    }
+    #
+
+
 
     aucs <- c(aucs, auc[1])
   }
@@ -893,6 +905,250 @@ plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette
 
    p
 }
+
+
+#' Title
+#' https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html#log
+#' https://stackoverflow.com/questions/62170965/looping-cv-glmnet-and-get-the-best-coefficients
+#'
+#' @param d.matrix Row is sample
+#' @param group
+#' @param family Default binomial
+#' @param type.measure class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.
+#' @param nfolds Default 5
+#' @param nreps Default 1000
+#'
+#' @return
+#' @export
+#'
+#' @examples
+lasso_best_lamda <- function(d.matrix, group, family = "binomial", type.measure = "class", nfolds = 5, nreps = 1000 ){
+
+  library(glmnet)
+  X = as.matrix(d.matrix)
+  Y = group
+
+  library(foreach)
+  library(parallel)
+  registerDoParallel(cores=10)
+  parallel::mcaffinity(c(1:10))
+
+
+  res = foreach(i = 1:nreps, .combine = rbind, .export = c("glmnet") )%dopar%{
+    set.seed(666+i)
+    fit = cv.glmnet(x=X, y=Y, nfolds=nfolds, family = family, type.measure = type.measure)
+    data.frame(`MSE_mean`=fit$cvm, lambda= fit$lambda, se = fit$cvsd)
+  }
+
+
+  library(dplyr)
+
+  summarized_res = res %>%
+    group_by(lambda) %>%
+    summarise(MSE=mean(`MSE_mean`),se=mean(se)) %>%
+    arrange(desc(lambda))
+
+
+
+  idx = which.min(summarized_res$MSE)
+  lambda.min = summarized_res$lambda[idx]
+
+
+  index_1se = with(summarized_res, which(MSE < MSE[idx]+se[idx])[1])
+  lambda_1se = summarized_res$lambda[index_1se]
+
+
+  library(ggplot2)
+  p <- ggplot(res,aes(x=log10(lambda),y=MSE_mean)) + stat_summary(fun=mean,size=2,geom="point") +
+    geom_vline(xintercept=log10(c(lambda.min,lambda_1se))) + theme_bw()
+
+
+  fit = glmnet(x=X, y=Y, family = family, type.measure = type.measure, lambda = lambda.min)
+
+  feature.coef = coef(fit, s=lambda.min)
+  feature.coef = data.frame(name = feature.coef@Dimnames[[1]][feature.coef@i + 1], coefficient = feature.coef@x)
+
+
+  res = list(lambda.min = lambda.min, lambda_1se = lambda_1se, res = res,
+             summarized_res = summarized_res, plot = p,
+             fit = fit, feature.coef = feature.coef
+             )
+  res
+}
+
+
+#' Title
+#'
+#' @param data.matrix Row is sample
+#' @param label
+#' @param folds
+#' @param seed
+#' @param family Default binomial
+#' @param type.measure class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.
+#' @param s Defalut is lambda.min. User can specify
+#'
+#' @return
+#' @export
+#'
+#' @examples
+lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
+                                    family = "binomial", type.measure = "class" , s = NA){
+  library(foreach)
+  library(dplyr)
+
+
+  set.seed(seed)
+  require(caret)
+  cvfit = cv.glmnet(as.matrix(data.matrix), label, nfolds = folds,
+                      family = family, type.measure = type.measure)
+
+  if (is.null(s)) {
+    s = lambda.min
+  }else{
+    s = cvfit$lambda.min
+  }
+
+
+  feature.coef = coef(cvfit, s = s)
+  feature.coef = data.frame(name = feature.coef@Dimnames[[1]][feature.coef@i + 1], coefficient = feature.coef@x)
+
+  feature.coef = feature.coef[-c(1), ] # remove Intercept
+  feature.coef$auc = apply(data.matrix[,feature.coef$name], 2,function(x){
+    suppressMessages(roc <- pROC::roc(label, x)  )
+    roc$auc
+  })
+
+  feature.coef
+
+
+}
+
+
+#' Title
+#'
+#' @param data.matrix Row is sample
+#' @param label
+#' @param folds
+#' @param seed
+#' @param family Default binomial
+#' @param n 100
+#' @param cores 50
+#' @param type.measure class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+lasso.cv.select.feature <- function(data.matrix, label, folds = 5, seed = 666, n = 100,
+                                 family = "binomial", type.measure = "class" , cores = 50){
+  library(foreach)
+  library(dplyr)
+  library(parallel, doParallel)
+
+
+  set.seed(seed)
+  require(caret)
+  doParallel::registerDoParallel(cores=cores)
+  parallel::mcaffinity(c(1:cores)) # limit cores to use
+
+  res.raw <- foreach::foreach(i=1:n, .combine = rbind, .packages = c("dplyr")) %dopar% {
+
+    set.seed(seed+i)
+    flds <- createFolds(label, k = folds, list = FALSE, returnTrain = FALSE)
+    ind = !(flds == 1)
+
+    cvfit = cv.glmnet(as.matrix(data.matrix[ind,]), label[ind], nfolds = folds,
+                      family = family, type.measure = type.measure)
+
+
+    feature.coef = coef(cvfit, s=cvfit$lambda.min)
+    feature.coef = data.frame(name = feature.coef@Dimnames[[1]][feature.coef@i + 1], coefficient = feature.coef@x)
+
+    feature.coef = feature.coef[-c(1), ] # remove Intercept
+    feature.coef$auc = apply(data.frame( data.matrix[ind,feature.coef$name]) , 2,function(x){
+      suppressMessages(roc <- pROC::roc(label[ind], x)  )
+      roc$auc
+    })
+
+    feature.coef
+  }
+
+  # identify candidates
+  candidate.occurence <- data.frame( unlist( table(res.raw$name) ), stringsAsFactors = FALSE )
+  colnames(candidate.occurence) <- c("Name","Freq")
+
+  candidate.auc <- aggregate(res.raw%>%select(coefficient, auc), by = list(res.raw$name), FUN = mean)
+  names(candidate.auc) <- c("Name", "Coefficient", "AUC")
+
+  candidate.raw.res <- full_join(candidate.occurence, candidate.auc, by="Name")
+  candidate.raw.res$Freq <- round(candidate.raw.res$Freq/n, 2)
+
+  res = list(Raw = res.raw, Summarized = candidate.raw.res)
+  res
+
+
+}
+
+
+#' Title
+#'
+#' @param log.df Row is gene, col is samples
+#' @param discovery.design Please note, this parameter is data.frame. Must have Sample and Group column names
+#' @param folds 5
+#' @param seed 666
+#' @param n 1000
+#' @param cores 50
+#' @param ACU.cut.off 0.8
+#' @param FoldC.cut.off 1
+#'
+#' @return
+#' @export
+#'
+#' @examples
+limma.differential.cv.selection <- function(log.df, discovery.design,
+                  folds = 5, seed = 666, n = 1000, cores = 50, ACU.cut.off = 0.8, FoldC.cut.off = 1){
+
+
+
+
+  library(foreach)
+  library(parallel)
+  registerDoParallel(cores=cores)
+  parallel::mcaffinity(c(1:cores)) # limit cores to use
+
+
+  # cross validation
+  cv.discover.raw.res <- foreach::foreach(i=1:n, .combine = rbind, .packages = c("dplyr")) %dopar% {
+    set.seed(i+seed)
+    train.design <- discovery.design %>% group_by(Group) %>% sample_frac((folds-1)/folds)
+    validation.design <- anti_join(discovery.design, train.design, by = 'Sample')
+
+    train.df <- log.df[, train.design$Sample ]
+    train.diff.res <- loonR::limma_differential(train.df, train.design$Group, pre.filter = 1)
+    train.candidate.res <- train.diff.res[train.diff.res$logFC > FoldC.cut.off &
+                                            train.diff.res$AUC > ACU.cut.off &
+                                            train.diff.res$adj.P.Val < 0.05, ]
+
+    train.candidate.res
+  }
+
+
+  # identify candidates
+  candidate.occurence <- data.frame( unlist( table(cv.discover.raw.res$REF) ), stringsAsFactors = FALSE )
+  colnames(candidate.occurence) <- c("Name","Freq")
+
+  candidate.auc <- aggregate(cv.discover.raw.res%>%select(logFC, AUC, AveExpr), by = list(cv.discover.raw.res$REF), FUN = mean)
+  names(candidate.auc) <- c("Name", "Mean (LogFC)", "Mean AUC","Mean (log2 CPM)")
+
+  candidate.raw.res <- full_join(candidate.occurence, candidate.auc, by="Name")
+  candidate.raw.res$Freq <- round(candidate.raw.res$Freq/n, 2)
+
+  res = list(Raw = cv.discover.raw.res, Summarized = candidate.raw.res)
+  res
+
+
+}
+
 
 
 

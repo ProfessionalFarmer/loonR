@@ -9,7 +9,10 @@ run_SNF(
   alpha = 0.5,
   K = 20,
   Iterations = 20,
-  dist.method = "Euclidean Distance"
+  dist.method = "Euclidean",
+  survival = NA,
+  max.cluster = 5,
+  std.normalize = TRUE
 )
 }
 \arguments{
@@ -21,7 +24,9 @@ run_SNF(
 
 \item{Iterations}{T.Default 20. Number of Iterations, usually (10~50)}
 
-\item{dist.method}{"Euclidean Distance", Pearson, Spearman, mutualInfo}
+\item{dist.method}{Euclidean, Pearson, Spearman, mutualInfo, Manhattan, KLD}
+
+\item{survival}{Must a data frame. colnames OS.time, OS.event, RFS.time, RFS.event. Rownames must be sample name. Two columns or four columns.}
 }
 \value{
 
@@ -32,4 +37,5 @@ Title Similarity network fusion
 \examples{
 run_SNF( list( t(mRNA.snf.df), t(methylation.snf.df), t(cnv.snf.df) ),  alpha = 0.5, K = 20, Iterations = 20    )
 https://cran.r-project.org/web/packages/SNFtool/SNFtool.pdf
+Distance reference: https://www.rdocumentation.org/packages/bioDist/versions/1.44.0
 }

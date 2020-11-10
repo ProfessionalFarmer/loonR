@@ -8,7 +8,6 @@
 #' @examples
 get.mostDistint.color.palette <- function(n=20){
   library(RColorBrewer)
-  n <- 60
   qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
   col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
 
@@ -77,6 +76,9 @@ get.palette.color <- function(palette="nrc", n = 7, alpha=1){
 
   }else if (palette %in% c(names(wesanderson::wes_palettes)) ) {
     colors = head(wesanderson::wes_palettes[[c(palette)]],n, type = c("discrete"))
+
+  }else if (palette == "Most"){
+    colors = loonR::get.mostDistint.color.palette(n)
 
   }else{
      colors = ggpubr::get_palette(palette = palette, k = n)

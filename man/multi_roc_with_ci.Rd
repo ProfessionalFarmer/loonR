@@ -13,13 +13,16 @@ multi_roc_with_ci(
   title = NULL,
   panel = NULL,
   color = NULL,
-  ci = TRUE
+  ci = TRUE,
+  SE.SP = FALSE
 )
 }
 \arguments{
 \item{scores}{A list or a data.frame. If list, labels shoule also be a list}
 
 \item{color}{specify the color manually}
+
+\item{SE.SP}{Whether to show SE and SP instead of CI of AUC}
 }
 \value{
 

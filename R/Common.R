@@ -91,6 +91,7 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
 #' @param alpha Alpha value in plot
 #' @param title Pie title
 #' @param border Border color
+#' @param label Whether to show labels
 #'
 #' @return
 #' @export
@@ -99,14 +100,14 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
 #' plotPie(ioe.events.df$Type, title = "# of events")
 #' or plotPie(ioe.events.df, col = 2, title = "# of events")
 #'
-plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", border="white"){
+plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", border="white" , label = FALSE){
 
   if( inherits(data, "data.frame")  ){
     data <- unique(data)
     data <- as.vector(data[,colid]) # now data is a vector class
   }
   n.color <- length(unique(data))
-  if(n.color >= 10 ){
+  if(n.color >= 9 & color != "Most" ){
     stop("Please check, too many colors (More than 9)")
   }
 
@@ -130,15 +131,20 @@ plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", borde
 
   # draw
   # You can change the border of each area with the classical parameters:
+  if(!label){
+    lbls.bak = ""
+  }
   tmp.pie.df <- data.frame(Type=lbls,
                            Prop = as.numeric(Prop),
                            Label = lbls.bak,
                            stringsAsFactors = F)
 
-  p <- ggpie(tmp.pie.df, "Prop", label = "Label", fill = "Type",
+  p <- ggpie(tmp.pie.df, "Prop", fill = "Type", label = "Label",
         color = border, palette = myPalette, title = title, legend = "right" , legend.title = "",
         font.family = "Arial")
 
   p
 }
+
+
 

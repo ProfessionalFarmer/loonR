@@ -20,5 +20,5 @@ SNF_Similairity_Hist(affinityL = NULL, evidence.type = NULL, group = NULL)
 Title
 }
 \examples{
-
+loonR::SNF_Similairity_Hist(tmp$AffinityL,evidence.type = c("RNA","Methylation", "CNV"), group = snf.group)
 }

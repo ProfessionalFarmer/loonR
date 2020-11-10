@@ -10,7 +10,8 @@ plotPie(
   colid = 2,
   alpha = 1,
   title = "",
-  border = "white"
+  border = "white",
+  label = FALSE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ plotPie(
 \item{title}{Pie title}
 
 \item{border}{Border color}
+
+\item{label}{Whether to show labels}
 }
 \value{
 

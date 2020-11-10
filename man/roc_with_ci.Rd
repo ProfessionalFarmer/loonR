@@ -12,7 +12,8 @@ roc_with_ci(
   legend.pos = c(0.4, 0.2),
   title = NULL,
   fontsize = 16,
-  panel = NULL
+  panel = NULL,
+  SE.SP = FALSE
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ roc_with_ci(
 \item{font}{Font}
 
 \item{panel}{panel的第一列为factor，event，class等}
+
+\item{SE.SP}{Whether to show SE and SP instead of CI of AUC}
 }
 \value{
 ggplot object

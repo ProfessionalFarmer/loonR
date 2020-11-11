@@ -6,7 +6,7 @@
 \usage{
 limma.differential.cv.selection(
   log.df,
-  discovery.design,
+  label,
   folds = 5,
   seed = 666,
   n = 1000,
@@ -18,7 +18,7 @@ limma.differential.cv.selection(
 \arguments{
 \item{log.df}{Row is gene, col is samples}
 
-\item{discovery.design}{Please note, this parameter is data.frame. Must have Sample and Group column names}
+\item{label}{Normal first}
 
 \item{folds}{5}
 

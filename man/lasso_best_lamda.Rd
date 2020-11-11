@@ -10,7 +10,7 @@ lasso_best_lamda(
   d.matrix,
   group,
   family = "binomial",
-  type.measure = "class",
+  type.measure = "auc",
   nfolds = 5,
   nreps = 1000
 )

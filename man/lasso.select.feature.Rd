@@ -10,7 +10,7 @@ lasso.select.feature(
   folds = 5,
   seed = 666,
   family = "binomial",
-  type.measure = "class",
+  type.measure = "auc",
   s = NA
 )
 }

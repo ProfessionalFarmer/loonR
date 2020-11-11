@@ -922,7 +922,7 @@ plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette
 #' @export
 #'
 #' @examples
-lasso_best_lamda <- function(d.matrix, group, family = "binomial", type.measure = "class", nfolds = 5, nreps = 1000 ){
+lasso_best_lamda <- function(d.matrix, group, family = "binomial", type.measure = "auc", nfolds = 5, nreps = 1000 ){
 
   library(glmnet)
   X = as.matrix(d.matrix)
@@ -992,7 +992,7 @@ lasso_best_lamda <- function(d.matrix, group, family = "binomial", type.measure 
 #'
 #' @examples
 lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
-                                    family = "binomial", type.measure = "class" , s = NA){
+                                    family = "binomial", type.measure = "auc" , s = NA){
   library(foreach)
   library(dplyr)
 
@@ -1044,7 +1044,7 @@ lasso.cv.select.feature <- function(data.matrix, label, folds = 5, seed = 666, n
   library(foreach)
   library(dplyr)
   library(parallel, doParallel)
-
+  library(glmnet)
 
   set.seed(seed)
   require(caret)
@@ -1057,7 +1057,7 @@ lasso.cv.select.feature <- function(data.matrix, label, folds = 5, seed = 666, n
     flds <- createFolds(label, k = folds, list = FALSE, returnTrain = FALSE)
     ind = !(flds == 1)
 
-    cvfit = cv.glmnet(as.matrix(data.matrix[ind,]), label[ind], nfolds = folds,
+    cvfit = cv.glmnet(as.matrix(data.matrix[ind,]), label[ind], nfolds = folds-1, # cross validatin fold - 1
                       family = family, type.measure = type.measure)
 
 
@@ -1093,7 +1093,7 @@ lasso.cv.select.feature <- function(data.matrix, label, folds = 5, seed = 666, n
 #' Title
 #'
 #' @param log.df Row is gene, col is samples
-#' @param discovery.design Please note, this parameter is data.frame. Must have Sample and Group column names
+#' @param label Normal first
 #' @param folds 5
 #' @param seed 666
 #' @param n 1000
@@ -1105,45 +1105,55 @@ lasso.cv.select.feature <- function(data.matrix, label, folds = 5, seed = 666, n
 #' @export
 #'
 #' @examples
-limma.differential.cv.selection <- function(log.df, discovery.design,
-                  folds = 5, seed = 666, n = 1000, cores = 50, ACU.cut.off = 0.8, FoldC.cut.off = 1){
+limma.differential.cv.selection <- function(log.df, label,
+                  folds = 5, seed = 666, n = 1000, cores = 50, AUC.cut.off = 0.8, FoldC.cut.off = 1){
 
 
+
+  discovery.design <- data.frame(Group = label,
+                                 Sample = colnames(log.df),
+                                 stringsAsFactors = F)
 
 
   library(foreach)
   library(parallel)
+  library(doParallel)
   registerDoParallel(cores=cores)
   parallel::mcaffinity(c(1:cores)) # limit cores to use
 
 
   # cross validation
-  cv.discover.raw.res <- foreach::foreach(i=1:n, .combine = rbind, .packages = c("dplyr")) %dopar% {
+  cv.raw.res <- foreach::foreach(i=1:n, .combine = rbind, .packages = c("dplyr")) %dopar% {
     set.seed(i+seed)
     train.design <- discovery.design %>% group_by(Group) %>% sample_frac((folds-1)/folds)
     validation.design <- anti_join(discovery.design, train.design, by = 'Sample')
 
     train.df <- log.df[, train.design$Sample ]
     train.diff.res <- loonR::limma_differential(train.df, train.design$Group, pre.filter = 1)
-    train.candidate.res <- train.diff.res[train.diff.res$logFC > FoldC.cut.off &
-                                            train.diff.res$AUC > ACU.cut.off &
-                                            train.diff.res$adj.P.Val < 0.05, ]
 
-    train.candidate.res
+    train.diff.res
   }
 
+  cv.discover.raw.res <- cv.raw.res %>% filter(logFC > FoldC.cut.off & AUC.cut.off & adj.P.Val < 0.05)
 
-  # identify candidates
+  # identify candidates frequency
   candidate.occurence <- data.frame( unlist( table(cv.discover.raw.res$REF) ), stringsAsFactors = FALSE )
   colnames(candidate.occurence) <- c("Name","Freq")
 
-  candidate.auc <- aggregate(cv.discover.raw.res%>%select(logFC, AUC, AveExpr), by = list(cv.discover.raw.res$REF), FUN = mean)
+  # candidate frequency in all rounds
+  candidate.auc <- aggregate(cv.raw.res %>% select(logFC, AUC, AveExpr), by = list(cv.raw.res$REF), FUN = mean)
   names(candidate.auc) <- c("Name", "Mean (LogFC)", "Mean AUC","Mean (log2 CPM)")
+  candidate.auc <- candidate.auc %>% filter(Name %in% candidate.occurence$Name)
+
 
   candidate.raw.res <- full_join(candidate.occurence, candidate.auc, by="Name")
   candidate.raw.res$Freq <- round(candidate.raw.res$Freq/n, 2)
 
-  res = list(Raw = cv.discover.raw.res, Summarized = candidate.raw.res)
+  tmp.plot <- cv.raw.res %>% filter(Ref %in% candidate.raw.res$Name) %>% select(Name, AUC)
+  candidate.auc.in.cv.boxplot <- ggboxplot(tmp.plot, x = "Name", y = "AUC", xlab = "") + rotate_x_text(45)
+
+
+  res = list(Raw = cv.raw.res, Candidate.Raw = cv.discover.raw.res, Summarized = candidate.raw.res, Plot = candidate.auc.in.cv.boxplot)
   res
 
 

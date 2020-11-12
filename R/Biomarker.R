@@ -342,12 +342,15 @@ univariate_or <- function(d.frame, label){
 #' @param ylim = c(0, 1), risk score range.
 #' @param show.lgfold = TRUE。 Whether to show right panel.
 #' @param show.risk.pro
+#' @param bar.name
+#' @param height
+#' @param show_column_names Default False
 #'
 #' @return
 #' @export
 #'
 #' @examples heatmap.with.lgfold.riskpro(data.tmp[candi,],label, logfd,  risk.pro)
-heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, scale=TRUE, group.name="Cancer", bar.name = "Log2FC", ylim = c(0, 1), show.lgfold = TRUE, show.risk.pro = TRUE, height = 5 ){
+heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, scale=TRUE, group.name="Cancer", bar.name = "Log2FC", ylim = c(0, 1), show.lgfold = TRUE, show.risk.pro = TRUE, height = 5, show_column_names = FALSE ){
 
   if (anyNA(lgfold)){
     show.lgfold = FALSE
@@ -415,7 +418,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
 
     Heatmap(heatmap.df, col = c("#0c3e74","#77a8cd","white","#d86652","#7e0821"),
             name = " ", cluster_rows = FALSE, cluster_columns = FALSE,
-            show_row_names = TRUE, show_column_names = FALSE, height = unit(height, "cm"),
+            show_row_names = TRUE, show_column_names = show_column_names, height = unit(height, "cm"),
             top_annotation = ha,
             right_annotation = row_ha  )
 
@@ -423,7 +426,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
 
     Heatmap(heatmap.df, col = c("#0c3e74","#77a8cd","white","#d86652","#7e0821"),
             name = " ", cluster_rows = FALSE, cluster_columns = FALSE,
-            show_row_names = TRUE, show_column_names = FALSE, height = unit(height, "cm"),
+            show_row_names = TRUE, show_column_names = show_column_names, height = unit(height, "cm"),
             top_annotation = ha  )
 
   }
@@ -1098,7 +1101,7 @@ lasso.cv.select.feature <- function(data.matrix, label, folds = 5, seed = 666, n
 #' @param seed 666
 #' @param n 1000
 #' @param cores 50
-#' @param ACU.cut.off 0.8
+#' @param AUC.cut.off 0.8
 #' @param FoldC.cut.off 1
 #'
 #' @return
@@ -1134,26 +1137,32 @@ limma.differential.cv.selection <- function(log.df, label,
     train.diff.res
   }
 
-  cv.discover.raw.res <- cv.raw.res %>% filter(logFC > FoldC.cut.off & AUC.cut.off & adj.P.Val < 0.05)
+  cv.discover.raw.res <- cv.raw.res %>% filter(logFC > FoldC.cut.off & AUC > AUC.cut.off & adj.P.Val < 0.05)
 
   # identify candidates frequency
   candidate.occurence <- data.frame( unlist( table(cv.discover.raw.res$REF) ), stringsAsFactors = FALSE )
   colnames(candidate.occurence) <- c("Name","Freq")
 
-  # candidate frequency in all rounds
+  # candidate mean in all rounds
   candidate.auc <- aggregate(cv.raw.res %>% select(logFC, AUC, AveExpr), by = list(cv.raw.res$REF), FUN = mean)
+
   names(candidate.auc) <- c("Name", "Mean (LogFC)", "Mean AUC","Mean (log2 CPM)")
+  summarize.raw <-candidate.auc
   candidate.auc <- candidate.auc %>% filter(Name %in% candidate.occurence$Name)
 
 
   candidate.raw.res <- full_join(candidate.occurence, candidate.auc, by="Name")
   candidate.raw.res$Freq <- round(candidate.raw.res$Freq/n, 2)
 
-  tmp.plot <- cv.raw.res %>% filter(Ref %in% candidate.raw.res$Name) %>% select(Name, AUC)
-  candidate.auc.in.cv.boxplot <- ggboxplot(tmp.plot, x = "Name", y = "AUC", xlab = "") + rotate_x_text(45)
+  tmp.plot <- cv.raw.res %>% filter(REF %in% candidate.raw.res$Name) %>% select(REF, AUC)
+  candidate.auc.in.cv.boxplot <- ggboxplot(tmp.plot, x = "REF", y = "AUC", xlab = "") + rotate_x_text(45)
 
 
-  res = list(Raw = cv.raw.res, Candidate.Raw = cv.discover.raw.res, Summarized = candidate.raw.res, Plot = candidate.auc.in.cv.boxplot)
+  res = list(Raw = cv.raw.res,
+             Candidate.Raw = cv.discover.raw.res,
+             Summarized.Candidate = candidate.raw.res,
+             Summarized.Raw = summarize.raw,
+             Plot = candidate.auc.in.cv.boxplot)
   res
 
 

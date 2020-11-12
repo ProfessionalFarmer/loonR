@@ -15,7 +15,8 @@ heatmap.with.lgfold.riskpro(
   ylim = c(0, 1),
   show.lgfold = TRUE,
   show.risk.pro = TRUE,
-  height = 5
+  height = 5,
+  show_column_names = FALSE
 )
 }
 \arguments{
@@ -33,7 +34,7 @@ heatmap.with.lgfold.riskpro(
 
 \item{show.lgfold}{= TRUE。 Whether to show right panel.}
 
-\item{show.risk.pro}{}
+\item{show_column_names}{Default False}
 }
 \value{
 

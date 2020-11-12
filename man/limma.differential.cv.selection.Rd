@@ -11,7 +11,7 @@ limma.differential.cv.selection(
   seed = 666,
   n = 1000,
   cores = 50,
-  ACU.cut.off = 0.8,
+  AUC.cut.off = 0.8,
   FoldC.cut.off = 1
 )
 }
@@ -28,7 +28,7 @@ limma.differential.cv.selection(
 
 \item{cores}{50}
 
-\item{ACU.cut.off}{0.8}
+\item{AUC.cut.off}{0.8}
 
 \item{FoldC.cut.off}{1}
 }

@@ -148,3 +148,36 @@ plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", borde
 
 
 
+
+#' Perform hclustering analysis
+#'
+#' @param df row is gene, col is sample
+#' @param group
+#' @param dist.method Default euclidean
+#' @param hclust.method Default ward.D2
+#' @param color.pla Default npg
+#' @param main Title
+#'
+#' @return
+#' @export
+#'
+#' @examples
+show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = "ward.D2", color.pla = "npg", main = ""){
+
+  sample.dist <- dist(t(df), method = dist.method )
+  sample.dist_hc <- hclust(d = sample.dist, method =hclust.method )
+  p <- fviz_dend(sample.dist_hc, cex = 0.6,
+            label_cols = factor(group[sample.dist_hc$order],
+                                labels = loonR::get.palette.color(color.pla, length(unique(group)),0.7)
+                                ),
+            main = main
+  )
+  p
+
+}
+
+
+
+
+
+

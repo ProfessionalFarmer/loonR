@@ -265,7 +265,7 @@ get_performance <- function(pred, labels, best.cutoff =NA){  #  x="best", input 
 #' @return
 #' @export
 #'
-#' @examples
+#' @examples multivariate_or(data.frame, label)
 multivariate_or <- function(d.frame, label){
 
   res <- glm(Event ~ . , data = data.frame(d.frame, Event=label, check.names = FALSE), family=binomial(logit))
@@ -346,7 +346,7 @@ univariate_or <- function(d.frame, label){
 #' @param height
 #' @param show_column_names Default False
 #'
-#' @return
+#' @return A heatmap plot by complex heatmap
 #' @export
 #'
 #' @examples heatmap.with.lgfold.riskpro(data.tmp[candi,],label, logfd,  risk.pro)
@@ -357,7 +357,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
     lgfold = replicate(nrow(heatmap.df),1)
   }
 
-  label = factor(label)
+  label = factor(label, levels = unique(label))
 
   if(scale){
     heatmap.df = t(scale(t(heatmap.df)))
@@ -441,7 +441,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
 #' @param df Row: miR expression, Column: Sample
 #' @param title miRs' correlation
 #'
-#' @return
+#' @return Plot
 #' @export
 #'
 #' @examples plot_miRCorrelation(data[candi,])
@@ -474,6 +474,7 @@ plot_miRCorrelation <- function(df, title="miRs' correlation"){
 #' @param fontsize
 #' @param panel panel的第一列为factor，event，class等
 #' @param SE.SP Whether to show SE and SP instead of CI of AUC
+#' @param ci Default draw CI interval
 #'
 #' @return ggplot object
 #' @export
@@ -484,9 +485,10 @@ plot_miRCorrelation <- function(df, title="miRs' correlation"){
 #' title = "HGD vs Healthy",
 #' panel = data.frame(Evebt=labels, data)
 #' )
-roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos = c(0.4, 0.2), title = NULL, fontsize = 16, panel = NULL, SE.SP = FALSE) {
+roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos = c(0.4, 0.2), title = NULL, fontsize = 16, panel = NULL, SE.SP = FALSE, ci = TRUE) {
 
   library(pROC)
+  library(ggplot2)
   obj = roc(label, rs, ci=TRUE, plot=FALSE)
 
   # panel的第一列为factor，event，class等
@@ -495,19 +497,25 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
   registerDoParallel(40)
   set.seed(100)
 
-  ciobj <- ci.se(obj, specificities = seq(0, 1, l = 100), boot.n = 2000, parallel = TRUE)
-  dat.ci <- data.frame(x = as.numeric(rownames(ciobj)),
-                       se.lower = ciobj[, 1],
-                       se.upper = ciobj[, 3])
 
-  library(doParallel)
-  registerDoParallel(40)
-  set.seed(100)
 
-  ciobj <- ci.sp(obj, sensitivities = seq(0, 1, l = 100), boot.n = 2000, parallel = TRUE)
-  dat.ci$y <- as.numeric(rownames(ciobj))
-  dat.ci$sp.lower <- ciobj[, 1]
-  dat.ci$sp.upper <- ciobj[, 3]
+  if(ci){
+    library(doParallel)
+    registerDoParallel(40)
+    set.seed(100)
+
+    ciobj <- ci.se(obj, specificities = seq(0, 1, l = 100), boot.n = 2000, parallel = TRUE)
+    dat.ci <- data.frame(x = as.numeric(rownames(ciobj)),
+                         se.lower = ciobj[, 1],
+                         se.upper = ciobj[, 3])
+
+    ciobj <- ci.sp(obj, sensitivities = seq(0, 1, l = 100), boot.n = 2000, parallel = TRUE)
+    dat.ci$y <- as.numeric(rownames(ciobj))
+    dat.ci$sp.lower <- ciobj[, 1]
+    dat.ci$sp.upper <- ciobj[, 3]
+  }else{
+
+  }
 
   aucs <- pROC::ci(obj)[c(2, 1, 3)]
   others <- pROC::coords(obj, "best", ret = c("sensitivity", "specificity"), best.policy = "omit")
@@ -518,22 +526,32 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
     annot <- sprintf("AUC %.2f\nSensitivity %.2f\nSpecificity %.2f", aucs[1],others[1,1],others[1,2])
   }
 
-
-  p <- ggroc(obj, colour = loonR::get.palette.color(palette, n=length(annot)) , size=0.93, legacy.axes = TRUE ) +
-    labs(x = "1 - Specificity", y = "Sensitivity") +
-    scale_color_manual(labels = annot) + annotate("text", x = 0.55, y = 0.1, label =annot, size = fontsize/3) +
-    theme(legend.position = legend.pos, legend.title = element_blank()) +
-    theme_classic() + cowplot::theme_cowplot(font_family = font) +
-    #geom_abline( slope = 1,  intercept = 1, linetype = "dashed", alpha = 0.7) +
-    geom_abline(linetype = "dashed", alpha = 0.3) +
-    coord_equal() +
-    geom_ribbon(
-      data = dat.ci,
-      aes(x = 1-x, xmin = 1-sp.upper, xmax = 1-sp.lower, y=y, ymin = se.lower, ymax = se.upper), # note 1 -
-      fill = loonR::get.palette.color(palette, length(annot)),
-      alpha = 0.1
-    ) + ggtitle(title)  + theme(plot.title = element_text(hjust = 0.5)) # capture.output(obj$ci)
-
+  if(ci){
+    p <- ggroc(obj, colour = loonR::get.palette.color(palette, n=length(annot)) , size=0.93, legacy.axes = TRUE ) +
+      labs(x = "1 - Specificity", y = "Sensitivity") +
+      scale_color_manual(labels = annot) + annotate("text", x = 0.55, y = 0.1, label =annot, size = fontsize/3) +
+      theme(legend.position = legend.pos, legend.title = element_blank()) +
+      theme_classic() + cowplot::theme_cowplot(font_family = font) +
+      #geom_abline( slope = 1,  intercept = 1, linetype = "dashed", alpha = 0.7) +
+      geom_abline(linetype = "dashed", alpha = 0.3) +
+      coord_equal() +
+      geom_ribbon(
+        data = dat.ci,
+        aes(x = 1-x, xmin = 1-sp.upper, xmax = 1-sp.lower, y=y, ymin = se.lower, ymax = se.upper), # note 1 -
+        fill = loonR::get.palette.color(palette, length(annot)),
+        alpha = 0.1
+      ) + ggtitle(title)  + theme(plot.title = element_text(hjust = 0.5)) # capture.output(obj$ci)
+  }else{
+    p <- ggroc(obj, colour = loonR::get.palette.color(palette, n=length(annot)) , size=0.93, legacy.axes = TRUE ) +
+      labs(x = "1 - Specificity", y = "Sensitivity") +
+      scale_color_manual(labels = annot) + annotate("text", x = 0.55, y = 0.1, label =annot, size = fontsize/3) +
+      theme(legend.position = legend.pos, legend.title = element_blank()) +
+      theme_classic() + cowplot::theme_cowplot(font_family = font) +
+      #geom_abline( slope = 1,  intercept = 1, linetype = "dashed", alpha = 0.7) +
+      geom_abline(linetype = "dashed", alpha = 0.3) +
+      coord_equal() +
+      ggtitle(title)  + theme(plot.title = element_text(hjust = 0.5)) # capture.output(obj$ci)
+  }
 
   ### if else
   if(is.null(panel)){
@@ -857,7 +875,7 @@ download.geo.dataset <- function(geo.accession.id, platform, destdir = tempdir()
 
 
 
-#' Title
+#' Convert logti to probability
 #'
 #' @param logit
 #'
@@ -910,7 +928,7 @@ plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette
 }
 
 
-#' Title
+#' Get best lamda by perform multiple round lasso-sv
 #' https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html#log
 #' https://stackoverflow.com/questions/62170965/looping-cv-glmnet-and-get-the-best-coefficients
 #'
@@ -980,7 +998,7 @@ lasso_best_lamda <- function(d.matrix, group, family = "binomial", type.measure 
 }
 
 
-#' Title
+#' Feature selection by lasso
 #'
 #' @param data.matrix Row is sample
 #' @param label
@@ -1027,7 +1045,7 @@ lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
 }
 
 
-#' Title
+#' Perform multiple round lasso to select stable feature
 #'
 #' @param data.matrix Row is sample
 #' @param label
@@ -1093,7 +1111,7 @@ lasso.cv.select.feature <- function(data.matrix, label, folds = 5, seed = 666, n
 }
 
 
-#' Title
+#' Perform multiple rounds differential analysis to select stable feature
 #'
 #' @param log.df Row is gene, col is samples
 #' @param label Normal first

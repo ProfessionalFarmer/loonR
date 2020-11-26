@@ -12,7 +12,7 @@ plot_miRCorrelation(df, title = "miRs' correlation")
 \item{title}{miRs' correlation}
 }
 \value{
-
+Plot
 }
 \description{
 Plot miR's correlation

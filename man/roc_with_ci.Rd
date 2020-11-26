@@ -13,7 +13,8 @@ roc_with_ci(
   title = NULL,
   fontsize = 16,
   panel = NULL,
-  SE.SP = FALSE
+  SE.SP = FALSE,
+  ci = TRUE
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ roc_with_ci(
 \item{panel}{panel的第一列为factor，event，class等}
 
 \item{SE.SP}{Whether to show SE and SP instead of CI of AUC}
+
+\item{ci}{Default draw CI interval}
 }
 \value{
 ggplot object

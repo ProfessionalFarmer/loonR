@@ -37,7 +37,7 @@ heatmap.with.lgfold.riskpro(
 \item{show_column_names}{Default False}
 }
 \value{
-
+A heatmap plot by complex heatmap
 }
 \description{
 Plot heatmap with log 2 fold change and risk probability information

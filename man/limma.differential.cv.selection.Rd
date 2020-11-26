@@ -2,7 +2,7 @@
 % Please edit documentation in R/Biomarker.R
 \name{limma.differential.cv.selection}
 \alias{limma.differential.cv.selection}
-\title{Title}
+\title{Perform multiple rounds differential analysis to select stable feature}
 \usage{
 limma.differential.cv.selection(
   log.df,
@@ -36,5 +36,5 @@ limma.differential.cv.selection(
 
 }
 \description{
-Title
+Perform multiple rounds differential analysis to select stable feature
 }

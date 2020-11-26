@@ -2,7 +2,7 @@
 % Please edit documentation in R/Biomarker.R
 \name{lasso.select.feature}
 \alias{lasso.select.feature}
-\title{Title}
+\title{Feature selection by lasso}
 \usage{
 lasso.select.feature(
   data.matrix,
@@ -27,5 +27,5 @@ lasso.select.feature(
 
 }
 \description{
-Title
+Feature selection by lasso
 }

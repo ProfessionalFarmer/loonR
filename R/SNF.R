@@ -254,7 +254,7 @@ run_SNF <- function(dataL = NULL, alpha = 0.5, K = 20, Iterations = 20, dist.met
   #Plot given similarity matrix by clusters
   #displayClusters(W, snf.group)
   p.survival = NA
-  if (!is.null(survival)) {
+  if (!is.na(survival)) {
     # 1对应的是2个分组
     tmp.surv.df <- survival[names(snf.group[[1]]),]
     best1 = estimationResult$`Eigen-gap best`

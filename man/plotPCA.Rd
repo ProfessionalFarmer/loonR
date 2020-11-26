@@ -14,7 +14,8 @@ plotPCA(
   main.title = "",
   alpha = 1,
   return.percentage = FALSE,
-  pre.filter = 0.01
+  pre.filter = 0.01,
+  label = NULL
 )
 }
 \arguments{
@@ -32,6 +33,8 @@ and scientific journal palettes from ggsci R package, e.g.: "npg", "aaas", "lanc
 \item{main.title}{main title}
 
 \item{return.percentage}{If TRUE, reture PCA percentage instead of PCA lot}
+
+\item{lable}{Must be a vector or NULL}
 }
 \value{
 

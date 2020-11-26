@@ -19,3 +19,6 @@ multivariate_or(d.frame, label)
 Variate logistic analysis
 Row: sample, Column: gene expression
 }
+\examples{
+multivariate_or(data.frame, label)
+}

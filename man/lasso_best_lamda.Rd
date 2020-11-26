@@ -2,7 +2,7 @@
 % Please edit documentation in R/Biomarker.R
 \name{lasso_best_lamda}
 \alias{lasso_best_lamda}
-\title{Title
+\title{Get best lamda by perform multiple round lasso-sv
 https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html#log
 https://stackoverflow.com/questions/62170965/looping-cv-glmnet-and-get-the-best-coefficients}
 \usage{
@@ -30,7 +30,7 @@ lasso_best_lamda(
 
 }
 \description{
-Title
+Get best lamda by perform multiple round lasso-sv
 https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html#log
 https://stackoverflow.com/questions/62170965/looping-cv-glmnet-and-get-the-best-coefficients
 }

@@ -30,3 +30,6 @@ show_hcluster(
 \description{
 Perform hclustering analysis
 }
+\examples{
+loonR::show_hcluster(data.frame, group)
+}

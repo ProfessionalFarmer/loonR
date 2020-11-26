@@ -353,3 +353,43 @@ load.rsem.matrix <- function(dirpath, isoform = FALSE, subdirs = TRUE){
 
 
 
+#' Draw expression by dotplot
+#' Need to be update
+#'
+#' @param df Row is gene, col is sample
+#' @param group
+#' @param nrow # of row to plot expression
+#' @param stat.method wilcox.test or t.test
+#'
+#' @return
+#' @export
+#'
+#' @examples loonR::draw.expression.dotplot(candidate.combined.df, group )
+draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.test"){
+  library(ggpubr)
+  # expression in all samples
+  candidate.plots.all.samples <- lapply(row.names(df), function(name){
+
+    exp <- as.numeric( t(df[name,])  )
+    tmp.df <- data.frame(Group = group, Expression = exp, stringsAsFactors = FALSE)
+
+    p <- ggdotplot(tmp.df, y="Expression", x= "Group", add = "boxplot", title = name,
+                   color = "Group", palette = loonR::get.palette.color("aaas",2,0.7), xlab = "", show.legend = FALSE, legend = '',
+                   short.panel.labs = FALSE, ylim = c(floor(min(tmp.df$Expression)), ceiling(max(tmp.df$Expression))+0.5) ) +
+      stat_compare_means(
+        aes(label = paste0("p = ", ..p.format..),
+            method = eval(stat.method),
+            comparisons = list(c("Normal","Tumor")),
+            label.y= (max(Expression)+1) ) )
+    p
+  })
+  cowplot::plot_grid(plotlist=candidate.plots.all.samples, nrow = nrow)
+
+}
+
+
+
+
+
+
+

@@ -34,12 +34,14 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 #' @param main.title main title
 #' @param alpha
 #' @param return.percentage If TRUE, reture PCA percentage instead of PCA lot
+#' @param pre.filter
+#' @param lable Must be a vector or NULL
 #'
 #' @return
 #' @export
 #'
 #' @examples plotPCA(df, group, "aaas")
-plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class", main.title = "", alpha=1, return.percentage = FALSE, pre.filter = 0.01){
+plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class", main.title = "", alpha=1, return.percentage = FALSE, pre.filter = 0.01, label = NULL){
 
   df <- df[, colMeans(df) > pre.filter]
 
@@ -66,7 +68,10 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
   library(ggplot2)
   library(ggpubr)
 
-  p <- ggscatter(df_pcs, x="PC1", y="PC2", color="Class", palette = get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha), ellipse = ellipse) +
+  p <- ggscatter(df_pcs, x="PC1", y="PC2", color="Class",
+                 palette = loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha),
+                 ellipse = ellipse,
+                 label = label) +
           xlab(percentage[1]) +
           ylab(percentage[2])
 
@@ -161,7 +166,7 @@ plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", borde
 #' @return
 #' @export
 #'
-#' @examples
+#' @examples loonR::show_hcluster(data.frame, group)
 show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = "ward.D2", color.pla = "npg", main = ""){
 
   sample.dist <- dist(t(df), method = dist.method )
@@ -177,7 +182,114 @@ show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = 
 }
 
 
+#' Plot bar with mean and standard error
+#'
+#' @param values vector
+#' @param group vector
+#' @param title
+#' @param xlab
+#' @param ylab
+#' @param color
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plotBarWithErr <- function(values, group, title = "", xlab = "X label", ylab = "Mean", color = "aaas"){
+  library(ggpubr)
+  tmp.df <- data.frame(Value = values, Group = as.factor(group), stringsAsFactors = FALSE, check.names = F)
+  colnames(tmp.df) <- c(ylab, xlab)
 
+  ggbarplot(tmp.df, x = xlab, y = ylab, add = "mean_se", fill = xlab, palette = color, title = title )
+
+}
+
+
+
+
+#' Title
+#'
+#' @param df row is feature, column is sample
+#' @param group
+#' @param color
+#' @param class
+#' @param label Default FALSE
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plotSilhouette <- function(df, group, color = "aaas", class = "Class", label=FALSE, alpha = 0.8){
+
+  if (is.null(group)) {
+    message("No 'group' value defined")
+    stop()
+  }
+
+
+  library(factoextra)
+  library(cluster)
+  set.seed(123)
+
+  sil <- silhouette( as.numeric(as.character(factor(group, levels = unique(group), labels = 1:length(unique(group)))   )  ),
+                     dist(t(df), method = "euclidean")  )
+
+  fviz_silhouette(sil, label = label) +
+    labs(fill = class,  labels = unique(group) ) +
+    scale_fill_manual( values=loonR::get.palette.color(color, length(unique(group)), alpha = alpha )  ) +
+    scale_color_manual(values=loonR::get.palette.color(color, length(unique(group)), alpha = alpha )  ) +
+    theme(panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
+}
+
+
+
+#' Title
+#'
+#' @param row.group
+#' @param col.group
+#' @param row.prefix
+#' @param col.prefix
+#' @param lower.tail Default FALSE
+#'
+#' @return
+#' @export
+#'
+#' @examples
+hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "", lower.tail = FALSE){
+
+  # https://www.omicsclass.com/article/324
+  # 1-phyper(抽取样本中属于“特定类别”的数量-1,总样本中“特定类别”的数量, 总样本数-总样本中“特定类别”的数量, 从总样本中随机抽取的数量,)
+
+    # 超几何检验，与原来的分组比较
+    geomatrix  = unclass(table(row.group, col.group))
+    # perform geometrix,把p值放在相同矩阵的数据框中
+    tmpgeo = matrix(nrow=length(row.names(geomatrix)),ncol=length(colnames(geomatrix)))
+    colnames(tmpgeo) = paste(col.prefix, colnames(geomatrix),sep="" )
+    rownames(tmpgeo) = paste(row.prefix, rownames(geomatrix),sep="" )
+    for(i in 1:length(row.names(tmpgeo))  ){ # row
+      for(j in 1:length(colnames(tmpgeo))){  # column
+        # 白球的个数，白球的总个数，黑球的总个数，抽的球（不是黑球，是球）个数
+        p = phyper(geomatrix[i,j]-1, sum(geomatrix[i,]), sum(geomatrix)-sum(geomatrix[i,]), sum(geomatrix[,j]), lower.tail = lower.tail   )
+        tmpgeo[i,j] = p
+      }
+    }
+   tmpgeo = as.data.frame(tmpgeo)
+
+   tmpgeo.log = -log10(tmpgeo)
+   pheatmap::pheatmap(tmpgeo.log,
+                      cluster_rows = F,
+                      cluster_cols = F,
+                      color = c (rep("#FFFFFF", 26), colorRampPalette(c("#FFFFFF", "#0269A4" ))(70) ),
+                      breaks=unique(c(seq(0,5, length=100-1  ))),
+                      display_numbers = format(tmpgeo, trim = TRUE, digits = 3, scientific = 3),
+                      main = ""
+   )
+   # reture formated value
+   format(tmpgeo, trim = TRUE, digits = 3, scientific = 3)
+
+
+}
 
 
 

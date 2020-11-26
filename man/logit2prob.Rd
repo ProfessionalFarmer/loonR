@@ -2,7 +2,7 @@
 % Please edit documentation in R/Biomarker.R
 \name{logit2prob}
 \alias{logit2prob}
-\title{Title}
+\title{Convert logti to probability}
 \usage{
 logit2prob(logit)
 }
@@ -13,5 +13,5 @@ logit2prob(logit)
 
 }
 \description{
-Title
+Convert logti to probability
 }

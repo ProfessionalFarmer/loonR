@@ -2,7 +2,7 @@
 % Please edit documentation in R/Biomarker.R
 \name{lasso.cv.select.feature}
 \alias{lasso.cv.select.feature}
-\title{Title}
+\title{Perform multiple round lasso to select stable feature}
 \usage{
 lasso.cv.select.feature(
   data.matrix,
@@ -30,5 +30,5 @@ lasso.cv.select.feature(
 
 }
 \description{
-Title
+Perform multiple round lasso to select stable feature
 }

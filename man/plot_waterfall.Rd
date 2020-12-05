@@ -16,9 +16,7 @@ plot_waterfall(
 \arguments{
 \item{xlab}{Risk probability}
 
-\item{title}{seq(0,1,by = 0.25) c(0,0.25,0.5,0.75,1)}
-
-\item{yticks.labl}{}
+\item{yticks.labl}{seq(0,1,by = 0.25) c(0,0.25,0.5,0.75,1)}
 }
 \value{
 

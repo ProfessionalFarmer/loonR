@@ -24,7 +24,7 @@ run_SNF(
 
 \item{Iterations}{T.Default 20. Number of Iterations, usually (10~50)}
 
-\item{dist.method}{Euclidean, Pearson, Spearman, mutualInfo, Manhattan, KLD}
+\item{dist.method}{Euclidean, Pearson, Spearman, mutualInfo, Manhattan, KLD, Chi-squared}
 
 \item{survival}{Must a data frame. colnames OS.time, OS.event, RFS.time, RFS.event. Rownames must be sample name. Two columns or four columns.}
 }

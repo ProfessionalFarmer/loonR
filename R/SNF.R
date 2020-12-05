@@ -171,7 +171,7 @@ tanimoto <- function(x, similarity=F) {
 #' @param alpha Default 0.5. hyperparameter, usually (0.3~0.8)   Variance for local model
 #' @param K Default 20. Number of neighbors, must be greater than 1. usually (10~30)  20
 #' @param Iterations T.Default 20. Number of Iterations, usually (10~50)
-#' @param dist.method Euclidean, Pearson, Spearman, mutualInfo, Manhattan, KLD
+#' @param dist.method Euclidean, Pearson, Spearman, mutualInfo, Manhattan, KLD, Chi-squared
 #' @param survival Must a data frame. colnames OS.time, OS.event, RFS.time, RFS.event. Rownames must be sample name. Two columns or four columns.
 #'
 #' @return
@@ -210,6 +210,8 @@ run_SNF <- function(dataL = NULL, alpha = 0.5, K = 20, Iterations = 20, dist.met
 
   if(dist.method == "Euclidean"){
     dataL.dist = lapply(dataL.normalized, function(x) (SNFtool::dist2(x, x)^(1/2)))   # Euclidean Distance
+  }else if(dist.method == "Chi-squared"){
+    dataL.dist = lapply(dataL.normalized, function(x) (SNFtool::chiDist2(x, x)^(1/2)))   # Chi-squared
   }else if(dist.method == "Pearson"){
     dataL.dist = lapply(dataL.normalized, function(x) bioDist::cor.dist(x) )   # Pearson correlational distance
   }else if(dist.method == "Spearman"){

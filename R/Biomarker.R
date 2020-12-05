@@ -898,8 +898,8 @@ logit2prob <- function(logit){
 #' @param label
 #' @param xlab Risk probability
 #' @param palette
-#' @param title seq(0,1,by = 0.25) c(0,0.25,0.5,0.75,1)
-#' @param yticks.labl
+#' @param title
+#' @param yticks.labl seq(0,1,by = 0.25) c(0,0.25,0.5,0.75,1)
 #'
 #' @return
 #' @export

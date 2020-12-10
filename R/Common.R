@@ -190,19 +190,60 @@ show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = 
 #' @param xlab
 #' @param ylab
 #' @param color
+#' @param comparisons list( c("N", "T") )
+#' @param method wilcox.test or t.test
+#' @param label.y
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plotBarWithErr <- function(values, group, title = "", xlab = "X label", ylab = "Mean", color = "aaas"){
+plotBarWithErr <- function(values, group, title = "", xlab = "X label", ylab = "Mean", color = "aaas", comparisons = '', method = "wilcox.test", label.y = NULL){
   library(ggpubr)
   tmp.df <- data.frame(Value = values, Group = as.factor(group), stringsAsFactors = FALSE, check.names = F)
   colnames(tmp.df) <- c(ylab, xlab)
 
-  ggbarplot(tmp.df, x = xlab, y = ylab, add = "mean_se", fill = xlab, palette = color, title = title )
+  p <- ggbarplot(tmp.df, x = xlab, y = ylab, add = "mean_se", fill = xlab, palette = color, title = title )
+  if(comparisons != ''){# label = "p.signif"
+    p <- p + stat_compare_means( method = method, comparisons =comparisons, label.y = label.y )
+  }
+  p
+}
+
+
+#' Boxplot with jitter
+#'
+#' @param values  vector
+#' @param group  vector
+#' @param title
+#' @param xlab
+#' @param ylab
+#' @param color
+#' @param comparisons list( c("N", "T") )
+#' @param method wilcox.test or t.test
+#' @param label.y
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plotJitterBoxplot <- function(values, group, title = "", xlab = "X label", ylab = "Value", color = "aaas", comparisons = '', method = "wilcox.test", label.y = NULL, add = "jitter"){
+  library(ggpubr)
+  tmp.df <- data.frame(Value = values, Group = as.factor(group), stringsAsFactors = FALSE, check.names = F)
+  colnames(tmp.df) <- c(ylab, xlab)
+
+  p <- ggboxplot(tmp.df, x=xlab, y=ylab,
+                 outlier.shape = NA, title = title,
+                 add = add,  color = xlab,
+                 palette = color )
+
+  if(comparisons != ''){# label = "p.signif"
+    p <- p + stat_compare_means(method = method, comparisons =comparisons, label.y = label.y )
+  }
+  p
 
 }
+
 
 
 

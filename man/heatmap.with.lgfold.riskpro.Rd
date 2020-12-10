@@ -16,7 +16,8 @@ heatmap.with.lgfold.riskpro(
   show.lgfold = TRUE,
   show.risk.pro = TRUE,
   height = 5,
-  show_column_names = FALSE
+  show_column_names = FALSE,
+  cluster_rows = FALSE
 )
 }
 \arguments{

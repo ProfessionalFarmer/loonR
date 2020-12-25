@@ -41,7 +41,9 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 #' @export
 #'
 #' @examples plotPCA(df, group, "aaas")
-plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class", main.title = "", alpha=1, return.percentage = FALSE, pre.filter = 0.01, label = NULL){
+plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class",
+                    main.title = "", alpha=1, return.percentage = FALSE,
+                    pre.filter = 0.01, label = NULL, plot3D = FALSE){
 
   df <- df[, colMeans(df) > pre.filter]
 
@@ -64,21 +66,27 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
   pcvar <- round(pcvar*100,1)
   percentage <-paste(colnames(df_pcs)," (", paste(as.character(pcvar), "%", ")", sep=""),sep="")
 
+  if(plot3D){
+    library(plotly)
+    p = plot_ly(df_pcs,
+            x = ~PC1, y = ~PC2, z = ~PC3, color = ~Class,  # c('#BF382A', '#0C4B8E')
+            colors = loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha) )
 
-  library(ggplot2)
-  library(ggpubr)
+  }else{
+      library(ggplot2)
+      library(ggpubr)
 
-  p <- ggscatter(df_pcs, x="PC1", y="PC2", color="Class",
-                 palette = loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha),
-                 ellipse = ellipse,
-                 label = label) +
-          xlab(percentage[1]) +
-          ylab(percentage[2])
+      p <- ggscatter(df_pcs, x="PC1", y="PC2", color="Class",
+                     palette = loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha),
+                     ellipse = ellipse,
+                     label = label) +
+              xlab(percentage[1]) +
+              ylab(percentage[2])
 
-  p <- ggpar(p, legend = "right", legend.title = legend.title, main = main.title)
+      p <- ggpar(p, legend = "right", legend.title = legend.title, main = main.title)
 
-  p <- p + cowplot::theme_cowplot(font_family = "Arial")
-
+      p <- p + cowplot::theme_cowplot(font_family = "Arial")
+  }
   if(return.percentage){
     df_pcs
   }else{

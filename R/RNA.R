@@ -242,7 +242,7 @@ MA_plot <- function(M, A, p, m.cutoff=0, a.cutoff=0, p.cutoff=0.05,
 
   df$Significant <- "No"
   df$Significant[ df$M > m.cutoff  & df$P < p.cutoff & df$A > a.cutoff ] <- "Up"
-  df$Significant[ df$M < m.cutoff  & df$P < p.cutoff & df$A > a.cutoff ] <- "Down"
+  df$Significant[ df$M < -m.cutoff  & df$P < p.cutoff & df$A > a.cutoff ] <- "Down"
 
   if(!is.na(restrict.vector)){
     df$Significant[!restrict.vector] <- 'No'

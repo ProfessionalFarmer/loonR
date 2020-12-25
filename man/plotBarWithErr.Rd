@@ -12,7 +12,8 @@ plotBarWithErr(
   ylab = "Mean",
   color = "aaas",
   comparisons = "",
-  method = "wilcox.test"
+  method = "wilcox.test",
+  label.y = NULL
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ plotBarWithErr(
 \item{comparisons}{list( c("N", "T") )}
 
 \item{method}{wilcox.test or t.test}
+
+\item{label.y}{}
 }
 \value{
 

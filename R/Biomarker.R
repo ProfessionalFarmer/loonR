@@ -440,13 +440,14 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
 #'
 #' @param df Row: miR expression, Column: Sample
 #' @param title miRs' correlation
+#' @param cl.lim c(-0.5,1) correlation lims
 #'
 #' @return Plot
 #' @export
 #'
 #' @examples plot_miRCorrelation(data[candi,])
 #'
-plot_miRCorrelation <- function(df, title="miRs' correlation"){
+plot_miRCorrelation <- function(df, title="miRs' correlation", cl.lim = c(-0.5,1)){
   cor.res <- cor(t(df))
   cor.res <- round(cor.res, 3)#保留两位小数
 
@@ -1188,8 +1189,34 @@ limma.differential.cv.selection <- function(log.df, label,
 
 
 
+#' Get Youden index value
+#'
+#' @param pred
+#' @param label
+#'
+#' @return
+#' @export
+#'
+#' @examples get.YoudenIndex(risk.scores, labels)
+get.YoudenIndex <- function(pred, label){
 
 
+  library(pROC)
+  library(caret)
+
+  #pred <- df_plot[tmp.ind,]$RS
+
+  input="threshold"
+
+  best.cutoff <- coords(roc(label, pred), "best", transpose = TRUE, input="threshold", best.method="youden")
+  if( inherits(best.cutoff, "matrix")  ){ # 当youden index有重复的时候，取第一个
+      best.cutoff <- best.cutoff[c("threshold"),c(1)]
+  }else{
+      best.cutoff <- best.cutoff[c("threshold")]
+  }
+
+  best.cutoff
+}
 
 
 

@@ -9,10 +9,12 @@ plotJitterBoxplot(
   group,
   title = "",
   xlab = "X label",
-  ylab = "Mean",
+  ylab = "Value",
   color = "aaas",
   comparisons = "",
-  method = "wilcox.test"
+  method = "wilcox.test",
+  label.y = NULL,
+  add = "jitter"
 )
 }
 \arguments{
@@ -23,6 +25,8 @@ plotJitterBoxplot(
 \item{comparisons}{list( c("N", "T") )}
 
 \item{method}{wilcox.test or t.test}
+
+\item{label.y}{}
 }
 \value{
 

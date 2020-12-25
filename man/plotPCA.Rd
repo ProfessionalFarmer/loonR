@@ -15,7 +15,8 @@ plotPCA(
   alpha = 1,
   return.percentage = FALSE,
   pre.filter = 0.01,
-  label = NULL
+  label = NULL,
+  plot3D = FALSE
 )
 }
 \arguments{

@@ -81,6 +81,7 @@ id_mapping <- function(IDS, key = "ENSEMBL", column = c("SYMBOL") ){
                     keys = IDS,
                     keytype = key,
                     column = column)
+  symbols
 
 }
 

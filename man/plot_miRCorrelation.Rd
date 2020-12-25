@@ -4,12 +4,14 @@
 \alias{plot_miRCorrelation}
 \title{Plot miR's correlation}
 \usage{
-plot_miRCorrelation(df, title = "miRs' correlation")
+plot_miRCorrelation(df, title = "miRs' correlation", cl.lim = c(-0.5, 1))
 }
 \arguments{
 \item{df}{Row: miR expression, Column: Sample}
 
 \item{title}{miRs' correlation}
+
+\item{cl.lim}{c(-0.5,1) correlation lims}
 }
 \value{
 Plot

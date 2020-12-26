@@ -77,11 +77,10 @@ ensembl_EntrezID <- function(ensembl.ids){
 id_mapping <- function(IDS, key = "ENSEMBL", column = c("SYMBOL") ){
 
   library("org.Hs.eg.db")
-  symbols <- mapIds(org.Hs.eg.db,
-                    keys = IDS,
-                    keytype = key,
-                    column = column)
-  symbols
+
+  res <- clusterProfiler::bitr(IDS, fromType = key, toType = column, OrgDb = "org.Hs.eg.db")
+
+  res
 
 }
 

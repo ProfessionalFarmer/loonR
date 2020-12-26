@@ -342,3 +342,71 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
 
 
 
+
+#' Draw scatter plot
+#'
+#' @param xvalue Vector of values
+#' @param yvalue The same length wtih x value
+#' @param xlab
+#' @param ylab
+#' @param group
+#' @param color Default jco
+#' @param title
+#' @param margin Default TRUE, show margin plot
+#'
+#' @return
+#' @export
+#'
+#' @examples
+drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA, color = "jco", title = "", margin = TRUE){
+
+  # http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/78-perfect-scatter-plots-with-correlation-and-marginal-histograms/
+
+  if (anyNA(group)){
+    group = rep("Group", length(xvalue))
+
+  }
+  df = data.frame(x=xvalue, y=yvalue, Type = group)
+
+
+  library(cowplot)
+  library(ggplot2)
+
+  # Main plot
+  pmain <- ggplot(df, aes(x = x, y = y, color = Type))+
+    geom_point() + theme_bw() + labs(xlab=xlab, ylab=ylab, title = title)
+  ggpubr::color_palette(color)
+
+  if (!margin){
+    return(pmain)
+  }
+
+  # Marginal densities along x axis
+  xdens <- axis_canvas(pmain, axis = "x")+
+    geom_density(data = df, aes(x = x, fill = Type),
+                 alpha = 0.7, size = 0.2)+
+    ggpubr::fill_palette(color)
+
+  # Marginal densities along y axis
+  # Need to set coord_flip = TRUE, if you plan to use coord_flip()
+  ydens <- axis_canvas(pmain, axis = "y", coord_flip = TRUE)+
+    geom_density(data = df, aes(x = y, fill = Type),
+                 alpha = 0.7, size = 0.2)+
+    coord_flip()+
+    ggpubr::fill_palette(color)
+
+
+  p1 <- insert_xaxis_grob(pmain, xdens, grid::unit(.2, "null"), position = "top")
+  p2<- insert_yaxis_grob(p1, ydens, grid::unit(.2, "null"), position = "right")
+
+  ggdraw(p2)
+
+
+}
+
+
+
+
+
+
+

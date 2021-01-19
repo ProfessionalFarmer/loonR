@@ -5,12 +5,13 @@
 #' @param rawcount true or false
 #' @param voom true or false. If library size changed too much.
 #' @param pre.filter Cutoff for mean log2(TPM)
+#' @param cal.AUC If to calculate AUC
 #'
 #' @return
 #' @export
 #'
 #' @examples loonR::limma_differential(tpm.table, group)
-limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.filter = 0){
+limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.filter = 0, cal.AUC = TRUE){
 
   library(limma)
   library(edgeR)
@@ -41,10 +42,12 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
     df <- as.data.frame( voom(df, design, plot=FALSE)  )
   }
 
-  AUC <- apply(df, 1,function(x){
-    suppressMessages(roc <- pROC::roc(group, x)  )
-    roc$auc
-  })
+  if(cal.AUC){
+      AUC <- apply(df, 1,function(x){
+        suppressMessages(roc <- pROC::roc(group, x)  )
+        roc$auc
+      })
+  }
 
   fit <- limma::lmFit(df, design)  # limma 因为TPM不需要normalize，所以不用voom函数。v应该是log2转换之后的
   contrast.matrix <- limma::makeContrasts(Experiment-Control,levels = design)  # Low high的顺序决定谁比谁
@@ -56,11 +59,88 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
   # 关联基因
   DEG_voom$REF = row.names(DEG_voom)
 
-  DEG_voom$AUC = AUC[row.names(DEG_voom)]
+  if(cal.AUC){ DEG_voom$AUC = AUC[row.names(DEG_voom)] }
 
   DEG_voom
 
 }
+
+
+
+#' Title
+#'
+#' @param df
+#' @param group
+#' @param cal.AUC
+#' @param exclude.zore
+#' @param alternative c("two.sided", "less", "greater")
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' Calculate p value by t.test manually
+#'
+ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, alternative = "two.sided"){
+
+  cat("Pls note: Second unique variable is defined as experiment group\n")
+
+  library(foreach)
+  library(parallel)
+  library(doParallel)
+
+  g1 = unique(group)[1]
+  g2 = unique(group)[2]
+
+  res <- foreach::foreach(ind = rownames(df), .combine = rbind) %do% {
+
+    exp.val = df[ind, ]
+
+    f.group = group
+    f.exclude = rep(FALSE, length(exp.val))
+
+    # remove zore
+    if (exclude.zore){
+      f.exclude = exp.val ==0
+    }
+
+    # remove zore
+    f.group = f.group[!f.exclude]
+    exp.val = exp.val[!f.exclude]
+
+    f.g1.no = sum(f.group==g1)
+    f.g2.no = sum(f.group==g2)
+
+    t.res <- t.test(exp.val[f.group==g2], exp.val[f.group==g1], alternative = alternative)
+    p.val = t.res$p.value
+    t.statistic = round(t.res$statistic, 3)
+
+    mean.diff = round( mean(exp.val[f.group==g2]) - mean(exp.val[f.group==g1]) , 3)
+    mean = mean(exp.val)
+
+
+    if(cal.AUC){
+      auc = round(loonR::get.AUC(exp.val, f.group),3)
+      f.res = c(ind, p.val, t.statistic, f.g1.no, f.g2.no, mean.diff, mean, auc)
+      names(f.res) = c("Name", "P", "t statistic", g1, g2, "Difference", "Average", "AUC")
+    }else{
+      f.res = c(ind, p.val, t.statistic, f.g1.no, f.g2.no, mean.diff, mean)
+      names(f.res) = c("Name", "P", "t statistic", g1, g2, "Difference", "Average")
+    }
+
+    f.res
+
+  }
+  res = data.frame(res, stringsAsFactors = F, check.names = F)
+  res$`BH-Adjusted P` <- p.adjust(res$P, method = "BH")
+
+  row.names(res) <- res$Name
+  res
+
+}
+
+
+
 
 
 #' Differential analysis by DESEQ2
@@ -74,7 +154,7 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
 #' @export
 #'
 #' @examples
-DESeq2_differential <- function(rawcount, group, pre.filter = 0, return.normalized.df = FALSE){
+DESeq2_differential <- function(rawcount, group, pre.filter = 0, return.normalized.df = FALSE, cal.AUC = TRUE){
 
   group = factor( group, levels = unique(as.character(group)), labels = c("Control","Experiment") )
 
@@ -116,15 +196,14 @@ DESeq2_differential <- function(rawcount, group, pre.filter = 0, return.normaliz
   # sort by p-value
   res <- as.data.frame(res[order(res$padj),])
 
-  AUC <- apply(normalized.count, 1,function(x){
-    suppressMessages(roc <- pROC::roc(group, x)  )
-    roc$auc
-  })
+  if(cal.AUC){
+    AUC <- apply(normalized.count, 1,function(x){
+      suppressMessages(roc <- pROC::roc(group, x)  )
+      roc$auc
+    })
 
-  res$AUC = AUC[row.names(res)]
-
-
-
+    res$AUC = AUC[row.names(res)]
+  }
   res
 }
 
@@ -172,6 +251,8 @@ volcano_plot <- function(x,y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)"
                          lg2fc = 1, p = 0.05, restrict.vector=NA, label = NA){
   # add text
   # https://biocorecrg.github.io/CRG_RIntroduction/volcano-plots.html
+
+  library(ggpubr)
 
   df = data.frame(log2=x, P=y, label = label, stringsAsFactors = FALSE)
   df$Significant <- "No"
@@ -365,7 +446,7 @@ load.rsem.matrix <- function(dirpath, isoform = FALSE, subdirs = TRUE){
 #' @export
 #'
 #' @examples loonR::draw.expression.dotplot(candidate.combined.df, group )
-draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.test"){
+draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.test", show.stat.p = TRUE){
   library(ggpubr)
   # expression in all samples
   candidate.plots.all.samples <- lapply(row.names(df), function(name){
@@ -375,13 +456,16 @@ draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.t
 
     p <- ggdotplot(tmp.df, y="Expression", x= "Group", add = "boxplot", title = name,
                    color = "Group", palette = loonR::get.palette.color("aaas",2,0.7), xlab = "", show.legend = FALSE, legend = '',
-                   short.panel.labs = FALSE, ylim = c(floor(min(tmp.df$Expression)), ceiling(max(tmp.df$Expression))+0.5) ) +
-      stat_compare_means(
-        aes(label = paste0("p = ", ..p.format..),
-            method = eval(stat.method),
-            comparisons = list(c("Normal","Tumor")),
+                   short.panel.labs = FALSE, ylim = c(floor(min(tmp.df$Expression)), ceiling(max(tmp.df$Expression))+0.5) )
+
+    if(show.stat.p){
+      p = p + stat_compare_means(
+            aes(label = paste0("p = ", ..p.format..), method = eval(stat.method),comparisons = list(c("Normal","Tumor")  ),
             label.y= (max(Expression)+1) ) )
+    }
+
     p
+
   })
   cowplot::plot_grid(plotlist=candidate.plots.all.samples, nrow = nrow)
 
@@ -389,7 +473,15 @@ draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.t
 
 
 
-
-
-
+#' Title
+#'
+#' @param df
+#'
+#' @return
+#' @export
+#'
+#' @examples
+log2dfQantileNormalization <- function(df){
+  limma::normalizeBetweenArrays(df, method = "quantile")
+}
 

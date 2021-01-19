@@ -177,6 +177,8 @@ plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", borde
 #' @examples loonR::show_hcluster(data.frame, group)
 show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = "ward.D2", color.pla = "npg", main = ""){
 
+  library(factoextra)
+
   sample.dist <- dist(t(df), method = dist.method )
   sample.dist_hc <- hclust(d = sample.dist, method =hclust.method )
   p <- fviz_dend(sample.dist_hc, cex = 0.6,
@@ -354,11 +356,11 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
 #' @param title
 #' @param margin Default TRUE, show margin plot
 #'
-#' @return
+#' @return ggplot2 object
 #' @export
 #'
-#' @examples
-drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA, color = "jco", title = "", margin = TRUE){
+#' @examples loonR::drawScatter(sample.info$before_reads, sample.info$mirdeep2_mapped)
+drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA, color = "jco", title = "", margin = TRUE, xlim = NA){
 
   # http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/78-perfect-scatter-plots-with-correlation-and-marginal-histograms/
 
@@ -369,29 +371,39 @@ drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA, colo
   df = data.frame(x=xvalue, y=yvalue, Type = group)
 
 
+  if (anyNA(xlim)){
+    xlim = c(0,max(xvalue)*1.05)
+  }
+
   library(cowplot)
   library(ggplot2)
 
   # Main plot
-  pmain <- ggplot(df, aes(x = x, y = y, color = Type))+
-    geom_point() + theme_bw() + labs(xlab=xlab, ylab=ylab, title = title)
-  ggpubr::color_palette(color)
+  # pmain <- ggplot(df, aes(x = x, y = y, color = Type)) +
+  #   geom_point() + theme_bw() + labs(xlab=xlab, ylab=ylab, title = title) +
+  #   ggpubr::color_palette(color)  +
+  #   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+  #         panel.background = element_blank(), axis.line = element_line(colour = "black"))
+
+  # Main plot
+  pmain <- ggpubr::ggscatter(df, x="x", y="y", color = "Type", palette = color, xlim=xlim, xlab = xlab, ylab = ylab)
+
 
   if (!margin){
     return(pmain)
   }
 
   # Marginal densities along x axis
-  xdens <- axis_canvas(pmain, axis = "x")+
+  xdens <- axis_canvas(pmain, axis = "x") +
     geom_density(data = df, aes(x = x, fill = Type),
-                 alpha = 0.7, size = 0.2)+
+                 alpha = 0.7, size = 0.2) +
     ggpubr::fill_palette(color)
 
   # Marginal densities along y axis
   # Need to set coord_flip = TRUE, if you plan to use coord_flip()
-  ydens <- axis_canvas(pmain, axis = "y", coord_flip = TRUE)+
+  ydens <- axis_canvas(pmain, axis = "y", coord_flip = TRUE) +
     geom_density(data = df, aes(x = y, fill = Type),
-                 alpha = 0.7, size = 0.2)+
+                 alpha = 0.7, size = 0.2) +
     coord_flip()+
     ggpubr::fill_palette(color)
 

@@ -5,7 +5,13 @@
 \title{Draw expression by dotplot
 Need to be update}
 \usage{
-draw.expression.dotplot(df, group, nrow = 4, stat.method = "wilcox.test")
+draw.expression.dotplot(
+  df,
+  group,
+  nrow = 4,
+  stat.method = "wilcox.test",
+  show.stat.p = TRUE
+)
 }
 \arguments{
 \item{df}{Row is gene, col is sample}

@@ -2,11 +2,7 @@
 % Please edit documentation in R/WES.R
 \name{draw.target.coverage.plot}
 \alias{draw.target.coverage.plot}
-\title{Draw target coverage plot
-Clone from https://gist.github.com/stephenturner/9396409   Thanks
-input file from: bedtools coverage -hist -b  samp.01.bam -a target_regions.bed | grep ^all > samp.01.bam.hist.all.txt  or bedtools genomecov -ibam ../merge.bam -g genome.file.txt | grep ^genome > genome.cov
-bedtools -g and -sorted should be noticed
-Ref: http://www.gettinggeneticsdone.com/2014/03/visualize-coverage-exome-targeted-ngs-bedtools.html}
+\title{Draw target coverage plot}
 \usage{
 draw.target.coverage.plot(dir)
 }
@@ -18,11 +14,11 @@ draw.target.coverage.plot(dir)
 }
 \description{
 Draw target coverage plot
+}
+\examples{
 Clone from https://gist.github.com/stephenturner/9396409   Thanks
 input file from: bedtools coverage -hist -b  samp.01.bam -a target_regions.bed | grep ^all > samp.01.bam.hist.all.txt  or bedtools genomecov -ibam ../merge.bam -g genome.file.txt | grep ^genome > genome.cov
 bedtools -g and -sorted should be noticed
 Ref: http://www.gettinggeneticsdone.com/2014/03/visualize-coverage-exome-targeted-ngs-bedtools.html
-}
-\examples{
 
 }

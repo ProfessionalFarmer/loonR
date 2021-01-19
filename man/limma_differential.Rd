@@ -4,7 +4,14 @@
 \alias{limma_differential}
 \title{Differential analysis by LIMMA}
 \usage{
-limma_differential(df, group, rawcount = FALSE, voom = FALSE, pre.filter = 0)
+limma_differential(
+  df,
+  group,
+  rawcount = FALSE,
+  voom = FALSE,
+  pre.filter = 0,
+  cal.AUC = TRUE
+)
 }
 \arguments{
 \item{df}{raw count or log2(TPM+1), default log2(TPM+1). Must be data.frame, not matrix.}
@@ -16,6 +23,8 @@ limma_differential(df, group, rawcount = FALSE, voom = FALSE, pre.filter = 0)
 \item{voom}{true or false. If library size changed too much.}
 
 \item{pre.filter}{Cutoff for mean log2(TPM)}
+
+\item{cal.AUC}{If to calculate AUC}
 }
 \value{
 

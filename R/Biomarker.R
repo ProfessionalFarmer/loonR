@@ -345,12 +345,15 @@ univariate_or <- function(d.frame, label){
 #' @param bar.name
 #' @param height
 #' @param show_column_names Default False
+#' @param cluster_rows
+#' @param z.score.cutoff Default 2
 #'
 #' @return A heatmap plot by complex heatmap
 #' @export
 #'
 #' @examples heatmap.with.lgfold.riskpro(data.tmp[candi,],label, logfd,  risk.pro)
-heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, scale=TRUE, group.name="Cancer", bar.name = "Log2FC", ylim = c(0, 1), show.lgfold = TRUE, show.risk.pro = TRUE, height = 5, show_column_names = FALSE, cluster_rows = FALSE ){
+heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, scale=TRUE, group.name="Cancer", bar.name = "Log2FC", ylim = c(0, 1),
+                                        show.lgfold = TRUE, show.risk.pro = TRUE, height = 5, show_column_names = FALSE, cluster_rows = FALSE, z.score.cutoff = 2 ){
 
   if (anyNA(lgfold)){
     show.lgfold = FALSE
@@ -361,8 +364,8 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
 
   if(scale){
     heatmap.df = t(scale(t(heatmap.df)))
-    heatmap.df[ heatmap.df > 2] <- 2
-    heatmap.df[ heatmap.df < -2] <- -2
+    heatmap.df[ heatmap.df > z.score.cutoff] <- z.score.cutoff
+    heatmap.df[ heatmap.df < -z.score.cutoff] <- -z.score.cutoff
   }
 
   library(ComplexHeatmap)
@@ -1219,5 +1222,23 @@ get.YoudenIndex <- function(pred, label){
 }
 
 
+#' Title
+#'
+#' @param pred
+#' @param label
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get.AUC <- function(pred, label){
+
+  library(pROC)
+  library(caret)
+
+  roc_obj <- roc(label, pred, quiet=TRUE)
+  auc(roc_obj)
+
+}
 
 

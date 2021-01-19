@@ -12,7 +12,8 @@ drawScatter(
   group = NA,
   color = "jco",
   title = "",
-  margin = TRUE
+  margin = TRUE,
+  xlim = NA
 )
 }
 \arguments{
@@ -25,8 +26,11 @@ drawScatter(
 \item{margin}{Default TRUE, show margin plot}
 }
 \value{
-
+ggplot2 object
 }
 \description{
 Draw scatter plot
+}
+\examples{
+loonR::drawScatter(sample.info$before_reads, sample.info$mirdeep2_mapped)
 }

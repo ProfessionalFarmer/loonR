@@ -67,6 +67,7 @@ ensembl_EntrezID <- function(ensembl.ids){
 #' @export
 #'
 #' @examples
+#'
 #' keytypes(org.Hs.eg.db)
 #'  [1] "ACCNUM"       "ALIAS"        "ENSEMBL"      "ENSEMBLPROT"  "ENSEMBLTRANS" "ENTREZID"
 #'  [7] "ENZYME"       "EVIDENCE"     "EVIDENCEALL"  "GENENAME"     "GO"           "GOALL"
@@ -79,6 +80,9 @@ id_mapping <- function(IDS, key = "ENSEMBL", column = c("SYMBOL") ){
   library("org.Hs.eg.db")
 
   res <- clusterProfiler::bitr(IDS, fromType = key, toType = column, OrgDb = "org.Hs.eg.db")
+  res <- data.frame(Ref = IDS,
+                    res[match(IDS, res[,1]),]
+  )
 
   res
 

@@ -17,7 +17,8 @@ heatmap.with.lgfold.riskpro(
   show.risk.pro = TRUE,
   height = 5,
   show_column_names = FALSE,
-  cluster_rows = FALSE
+  cluster_rows = FALSE,
+  z.score.cutoff = 2
 )
 }
 \arguments{
@@ -36,6 +37,8 @@ heatmap.with.lgfold.riskpro(
 \item{show.lgfold}{= TRUE。 Whether to show right panel.}
 
 \item{show_column_names}{Default False}
+
+\item{z.score.cutoff}{Default 2}
 }
 \value{
 A heatmap plot by complex heatmap

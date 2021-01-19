@@ -8,7 +8,8 @@ DESeq2_differential(
   rawcount,
   group,
   pre.filter = 0,
-  return.normalized.df = FALSE
+  return.normalized.df = FALSE,
+  cal.AUC = TRUE
 )
 }
 \arguments{

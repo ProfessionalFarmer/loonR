@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNA.R
 \name{ttest_differential}
 \alias{ttest_differential}
-\title{Title}
+\title{Calculate p value by t.test manually}
 \usage{
 ttest_differential(
   df,
@@ -19,9 +19,9 @@ ttest_differential(
 
 }
 \description{
-Title
+Calculate p value by t.test manually
 }
 \examples{
-Calculate p value by t.test manually
+
 
 }

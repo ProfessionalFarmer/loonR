@@ -41,7 +41,7 @@ getOneRoundCVRes <- function(df, label, k, seed = 1, times = 1){
   }
 
   # sometimes logit will be very verylarge e+15. We dont use it
-  if(mean(abs(res$Logit)) > 6e+3){
+  if(mean(abs(res$Logit)) > 1e+3){
     res$Logit = 0
   }
   res
@@ -157,6 +157,47 @@ confusion_matrix <- function(groups, risk.pro, cancer="Cancer", best.cutoff = NA
 }
 
 
+#' Leave one out cross validation
+#'
+#' @param df
+#' @param label
+#' @param seed Default 999
+#'
+#' @return
+#' @export
+#'
+#' @examples
+loo.cv <- function(df, label, seed=999){
+
+  lg.df = data.frame(Label = label, df,
+                     check.names = FALSE,
+                     stringsAsFactors = FALSE)
+
+  n.samples = nrow(lg.df)
+  library(foreach)
+  library(dplyr)
+  loo.res <- foreach::foreach(i=1:n.samples, .combine = rbind) %do%{
+    loo.sample.data = lg.df[i,]
+
+    set.seed(seed)
+    train.sample.data = data.frame( lg.df[-i,],
+                                    stringsAsFactors = FALSE,
+                                    check.names = FALSE)
+
+    suppressWarnings( glm.fit <- glm(Label ~ ., data = train.sample.data, family = binomial(logit)) )
+
+    predicted.score = predict(glm.fit, loo.sample.data)
+    sample.label = lg.df[i,"Label"]
+    res <- c(predicted.score, as.character(sample.label))
+    names(res) = c("Score", "Label")
+    res
+  }
+
+  row.names(loo.res) <- row.names(lg.df)
+  loo.res = data.frame( loo.res, check.names = FALSE, stringsAsFactors = FALSE)
+  loo.res$Score = as.numeric(loo.res$Score)
+  loo.res
+}
 
 
 

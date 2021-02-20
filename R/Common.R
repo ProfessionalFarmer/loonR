@@ -68,7 +68,7 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
 
   if(plot3D){
     library(plotly)
-    p = plot_ly(df_pcs,
+    plot_ly(df_pcs,
             x = ~PC1, y = ~PC2, z = ~PC3, color = ~Class,  # c('#BF382A', '#0C4B8E')
             colors = loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha) )
 
@@ -419,6 +419,74 @@ drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA, colo
 
 
 
+#' Check if all values in a vector are the same
+#'
+#' @param x
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+AllEqual <- structure(function(
+  # from https://rdrr.io/rforge/greenbrown/src/R/AllEqual.R
+  ##title<<
+  ## Check if all values in a vector are the same
+  ##description<<
+  ## This function is used to check if all values in a vector are equal. It can be used for example to check if a time series contains only 0 or NA values.
 
+  x
+  ### numeric, character vector, or time series of type ts
+) {
+  res <- FALSE
+  x <- na.omit(as.vector(x))
+  if (length(unique(x)) == 1 | length(x) == 0) res <- TRUE
+  return(res)
+  ### The function returns TRUE if all values are equal and FALSE if it contains different values.
+},ex=function(){
+  # check if all values are equal in the following vectors:
+  AllEqual(1:10)
+  AllEqual(rep(0, 10))
+  AllEqual(letters)
+  AllEqual(rep(NA, 10))
+})
+
+
+
+#' Plot venn diagram
+#'
+#' @param l.list
+#' @param alpha 0.5
+#' @param palette aaas
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' l.list = list(`Up in early HCC` = early.up.genes,
+#' `Down in early HCC` = early.down.genes,
+#' `Up in advanced HCC` = advanced.up.genes,
+#' `Down in advanced HCC` = advanced.down.genes)
+#' plotVenn(l.list)
+plotVenn <- function(l.list, alpha = 0.5, palette = "aaas"){
+  library(VennDiagram)
+  temp <- venn.diagram(l.list),
+  fill = loonR::get.palette.color(palette = palette, n = length(l.list)),
+  alpha = alpha,
+  cex = 2, cat.fontfamily="arial",
+  lty =2,  filename = NULL)
+  grid.newpage()
+  grid.draw(temp)
+}
+
+
+plotUpset <- function(lt, mode = "intersect"){
+  # https://jokergoo.github.io/ComplexHeatmap-reference/book/upset-plot.html
+  library(ComplexHeatmap)
+  set.seed(123)
+  m1 = make_comb_mat(lt, mode = "intersect")
+
+
+}
 
 

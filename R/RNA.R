@@ -67,7 +67,7 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
 
 
 
-#' Title
+#' Calculate p value by t.test manually
 #'
 #' @param df
 #' @param group
@@ -79,9 +79,9 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
 #' @export
 #'
 #' @examples
-#' Calculate p value by t.test manually
 #'
-ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, alternative = "two.sided"){
+#'
+ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, exclude.na = TRUE, alternative = "two.sided", cores = 40){
 
   cat("Pls note: Second unique variable is defined as experiment group\n")
 
@@ -92,7 +92,8 @@ ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, 
   g1 = unique(group)[1]
   g2 = unique(group)[2]
 
-  res <- foreach::foreach(ind = rownames(df), .combine = rbind) %do% {
+  registerDoParallel(cores=cores)
+  res <- foreach::foreach(ind = rownames(df), .combine = rbind) %dopar% {
 
     exp.val = df[ind, ]
 
@@ -103,6 +104,10 @@ ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, 
     if (exclude.zore){
       f.exclude = exp.val ==0
     }
+    # remove na
+    if (exclude.na){
+      f.exclude = f.exclude | is.na(exp.val)
+    }
 
     # remove zore
     f.group = f.group[!f.exclude]
@@ -111,16 +116,27 @@ ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, 
     f.g1.no = sum(f.group==g1)
     f.g2.no = sum(f.group==g2)
 
-    t.res <- t.test(exp.val[f.group==g2], exp.val[f.group==g1], alternative = alternative)
-    p.val = t.res$p.value
-    t.statistic = round(t.res$statistic, 3)
+    if(loonR::AllEqual(exp.val) | loonR::AllEqual(exp.val[f.group==g2]) | loonR::AllEqual(exp.val[f.group==g1]) ){
+      p.val=NA
+      t.statistic = NA
+    } else{
+      t.res <- t.test(exp.val[f.group==g2], exp.val[f.group==g1], alternative = alternative)
+      p.val = t.res$p.value
+      t.statistic = round(t.res$statistic, 3)
+    }
+
+
 
     mean.diff = round( mean(exp.val[f.group==g2]) - mean(exp.val[f.group==g1]) , 3)
     mean = mean(exp.val)
 
 
     if(cal.AUC){
-      auc = round(loonR::get.AUC(exp.val, f.group),3)
+      if(is.na(p.val)){
+        auc = NA
+      }else{
+        auc = round(loonR::get.AUC(exp.val, f.group),3)
+      }
       f.res = c(ind, p.val, t.statistic, f.g1.no, f.g2.no, mean.diff, mean, auc)
       names(f.res) = c("Name", "P", "t statistic", g1, g2, "Difference", "Average", "AUC")
     }else{
@@ -138,9 +154,6 @@ ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, 
   res
 
 }
-
-
-
 
 
 #' Differential analysis by DESEQ2
@@ -247,14 +260,14 @@ unique_gene_expression <- function(expression.df, f = "max"){
 #' @export
 #'
 #' @examples loonR::volcano_plot( tissue.exp.df.res$logFC, tissue.exp.df.res$adj.P.Val, lg2fc = 0.5, p = 0.05, label = label, restrict.vector = (tissue.exp.df.res$AUC > 0.7 & tissue.exp.df.res$AveExpr > 10)  )
-volcano_plot <- function(x,y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)",
+volcano_plot <- function(x, y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)",
                          lg2fc = 1, p = 0.05, restrict.vector=NA, label = NA){
   # add text
   # https://biocorecrg.github.io/CRG_RIntroduction/volcano-plots.html
 
   library(ggpubr)
 
-  df = data.frame(log2=x, P=y, label = label, stringsAsFactors = FALSE)
+  df = data.frame(log2=as.numeric(x), P=as.numeric(y), label = label, stringsAsFactors = FALSE)
   df$Significant <- "No"
   df$Significant[ df$log2 > lg2fc  & df$P < p] <- "Up"
   df$Significant[ df$log2 < -lg2fc & df$P < p] <- "Down"

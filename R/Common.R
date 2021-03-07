@@ -68,7 +68,7 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
 
   if(plot3D){
     library(plotly)
-    plot_ly(df_pcs,
+    p = plot_ly(df_pcs,
             x = ~PC1, y = ~PC2, z = ~PC3, color = ~Class,  # c('#BF382A', '#0C4B8E')
             colors = loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha) )
 
@@ -470,7 +470,7 @@ AllEqual <- structure(function(
 #' plotVenn(l.list)
 plotVenn <- function(l.list, alpha = 0.5, palette = "aaas"){
   library(VennDiagram)
-  temp <- venn.diagram(l.list),
+  temp <- venn.diagram(l.list,
   fill = loonR::get.palette.color(palette = palette, n = length(l.list)),
   alpha = alpha,
   cex = 2, cat.fontfamily="arial",
@@ -480,12 +480,36 @@ plotVenn <- function(l.list, alpha = 0.5, palette = "aaas"){
 }
 
 
+#' Upset plot
+#'
+#' @param lt
+#' @param mode distinct, intersect, union
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' plotUpset(l.list)
 plotUpset <- function(lt, mode = "intersect"){
   # https://jokergoo.github.io/ComplexHeatmap-reference/book/upset-plot.html
   library(ComplexHeatmap)
   set.seed(123)
-  m1 = make_comb_mat(lt, mode = "intersect")
+  m = ComplexHeatmap::make_comb_mat(lt, mode = mode)
+  ss = set_size(m)
+  cs = comb_size(m)
 
+
+  ComplexHeatmap::UpSet(m,
+    comb_order = order(cs,decreasing = T),
+    left_annotation  = rowAnnotation(
+      'Size' = anno_barplot(ss,
+           axis_param = list(direction = "reverse"),
+           border = FALSE,
+           gp = gpar(fill = "black"),
+           width = unit(2, "cm")
+    )),
+    right_annotation = NULL
+    )
 
 }
 

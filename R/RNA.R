@@ -149,6 +149,7 @@ ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, 
   }
   res = data.frame(res, stringsAsFactors = F, check.names = F)
   res$`BH-Adjusted P` <- p.adjust(res$P, method = "BH")
+  res$Difference <- as.numeric(res$Difference)
 
   row.names(res) <- res$Name
   res
@@ -261,7 +262,7 @@ unique_gene_expression <- function(expression.df, f = "max"){
 #'
 #' @examples loonR::volcano_plot( tissue.exp.df.res$logFC, tissue.exp.df.res$adj.P.Val, lg2fc = 0.5, p = 0.05, label = label, restrict.vector = (tissue.exp.df.res$AUC > 0.7 & tissue.exp.df.res$AveExpr > 10)  )
 volcano_plot <- function(x, y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)",
-                         lg2fc = 1, p = 0.05, restrict.vector=NA, label = NA){
+                         lg2fc = 1, p = 0.05, restrict.vector=NA, label = NA, title = ''){
   # add text
   # https://biocorecrg.github.io/CRG_RIntroduction/volcano-plots.html
 
@@ -300,7 +301,7 @@ volcano_plot <- function(x, y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)
 
   ggscatter(df,
             x="log2", y="P",
-            xlab = xlab, ylab = ylab,
+            xlab = xlab, ylab = ylab, title = title,
             color = "Significant", palette = palette,
             legend = "right", label = "label", font.label = c(12, "plain", "black"), repel = TRUE
   ) +

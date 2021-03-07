@@ -9,7 +9,9 @@ ttest_differential(
   group,
   cal.AUC = TRUE,
   exclude.zore = FALSE,
-  alternative = "two.sided"
+  exclude.na = TRUE,
+  alternative = "two.sided",
+  cores = 40
 )
 }
 \arguments{

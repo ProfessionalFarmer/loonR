@@ -587,7 +587,10 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
         alpha = 0.1
       ) + ggtitle(title)  + theme(plot.title = element_text(hjust = 0.5)) # capture.output(obj$ci)
   }else{
-    p <- ggroc(obj, colour = loonR::get.palette.color(palette, n=length(annot)) , size=0.93, legacy.axes = TRUE ) +
+    p <- pROC::ggroc(obj,
+               colour = loonR::get.palette.color(palette, n=length(annot)) ,
+               size=0.93,
+               legacy.axes = TRUE ) +
       labs(x = "1 - Specificity", y = "Sensitivity") +
       scale_color_manual(labels = annot) + annotate("text", x = 0.55, y = 0.1, label =annot, size = fontsize/3) +
       theme(legend.position = legend.pos, legend.title = element_blank()) +
@@ -966,7 +969,7 @@ plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette
       rremove("x.axis") + rremove("x.text") + rremove("x.ticks")
 
     if(!anyNA(yticks.labl)){
-      p <- p + scale_y_continuous(labels =  yticks.labl)
+      p <- p + scale_y_continuous(labels = yticks.labl)
     }
 
    p

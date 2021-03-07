@@ -12,7 +12,8 @@ volcano_plot(
   lg2fc = 1,
   p = 0.05,
   restrict.vector = NA,
-  label = NA
+  label = NA,
+  title = ""
 )
 }
 \arguments{

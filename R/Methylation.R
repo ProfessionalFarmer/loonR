@@ -40,7 +40,28 @@ getPromoterRegions <- function(upstream=2000, downstream=500, ann = "Ensembl", r
 
 }
 
+#' Title
+#'
+#' @param dir
+#' @param arraytype EPIC or 450K
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' Reference: https://bioconductor.org/packages/release/bioc/vignettes/ChAMP/inst/doc/ChAMP.html
+#'
+loadArraryData <- function(dir, arraytype = 'EPIC'){
+  library(ChAMP)
+  myLoad <- champ.load(dir, arraytype = arraytype)
 
+  # champ.QC() function and QC.GUI() function would draw some plots for user to easily check their data’s quality.
+  champ.QC()
+  myNorm <-champ.norm(arraytype = arraytype, cores=50)
+  champ.SVD()
+
+
+}
 
 
 

@@ -93,6 +93,34 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100){
 }
 
 
+#' Title
+#'
+#' @param df Column is gene/miRNA, Row is sample
+#' @param group Two levels. Second unique variable is defined as experiment group
+#'
+#' @return
+#' @export
+#'
+#' @examples
+build.logistic.model <- function(df, group, seed = 666){
+
+  cat("Pls note: Second unique variable is defined as experiment group\n")
+
+  lg.df <- data.frame(
+    label = factor(group == unique(group)[2],
+      levels = c(FALSE, TRUE), labels = c(0, 1)
+    ),
+    df, check.names = FALSE
+  )
+
+  set.seed(seed)
+  # The type="response" option tells R to output probabilities of the form P(Y = 1|X), as opposed to other information such as the logit.
+  suppressWarnings( glm.fit <- glm(label ~ ., data = lg.df, family = binomial(logit)) )
+
+  glm.fit
+
+}
+
 
 
 

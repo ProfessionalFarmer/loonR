@@ -32,6 +32,8 @@ volcano_plot(
 \item{restrict.vector}{A TURE/FALSE factor. Only show TRUE point in the vector.}
 
 \item{label}{Point names which you want to show in plot. If you don't want to show, set NA}
+
+\item{title}{}
 }
 \value{
 

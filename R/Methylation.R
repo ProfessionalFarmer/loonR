@@ -51,7 +51,7 @@ getPromoterRegions <- function(upstream=2000, downstream=500, ann = "Ensembl", r
 #' @examples
 #' Reference: https://bioconductor.org/packages/release/bioc/vignettes/ChAMP/inst/doc/ChAMP.html
 #'
-loadArraryData <- function(dir, arraytype = 'EPIC'){
+loadMethylationArraryData <- function(dir, arraytype = 'EPIC'){
   library(ChAMP)
   myLoad <- champ.load(dir, arraytype = arraytype)
 

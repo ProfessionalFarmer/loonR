@@ -166,8 +166,8 @@ plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", borde
 #'
 #' @param df row is gene, col is sample
 #' @param group
-#' @param dist.method Default euclidean
-#' @param hclust.method Default ward.D2
+#' @param dist.method Default euclidean. This must be one of "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski". Any unambiguous substring can be given.
+#' @param hclust.method Default ward.D2. The agglomeration method to be used. This should be (an unambiguous abbreviation of) one of "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).
 #' @param color.pla Default npg
 #' @param main Title
 #'
@@ -513,4 +513,15 @@ plotUpset <- function(lt, mode = "intersect"){
 
 }
 
-
+#' Convert data frame to numeric
+#'
+#' @param df
+#'
+#' @return A data.frame with numeric element in it
+#' @export
+#'
+#' @examples
+#' convertDfToNumeric(df)
+convertDfToNumeric <- function(df){
+  data.frame(sapply(df, function(x) as.numeric(as.character(x))))
+}

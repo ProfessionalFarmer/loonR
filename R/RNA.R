@@ -256,6 +256,7 @@ unique_gene_expression <- function(expression.df, f = "max"){
 #' @param p Default cutoff 0.05
 #' @param restrict.vector  A TURE/FALSE factor. Only show TRUE point in the vector.
 #' @param label Point names which you want to show in plot. If you don't want to show, set NA
+#' @param title
 #'
 #' @return
 #' @export

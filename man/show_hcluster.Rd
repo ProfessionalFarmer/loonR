@@ -16,9 +16,9 @@ show_hcluster(
 \arguments{
 \item{df}{row is gene, col is sample}
 
-\item{dist.method}{Default euclidean}
+\item{dist.method}{Default euclidean. This must be one of "euclidean", "maximum", "manhattan", "canberra", "binary" or "minkowski". Any unambiguous substring can be given.}
 
-\item{hclust.method}{Default ward.D2}
+\item{hclust.method}{Default ward.D2. The agglomeration method to be used. This should be (an unambiguous abbreviation of) one of "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).}
 
 \item{color.pla}{Default npg}
 

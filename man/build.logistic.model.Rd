@@ -4,7 +4,7 @@
 \alias{build.logistic.model}
 \title{Title}
 \usage{
-build.logistic.model(df, group)
+build.logistic.model(df, group, seed = 666, scale = TRUE)
 }
 \arguments{
 \item{df}{Column is gene/miRNA, Row is sample}

@@ -355,12 +355,14 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
 #' @param color Default jco
 #' @param title
 #' @param margin Default TRUE, show margin plot
+#' @param xlim
+#' @param ylim
 #'
 #' @return ggplot2 object
 #' @export
 #'
 #' @examples loonR::drawScatter(sample.info$before_reads, sample.info$mirdeep2_mapped)
-drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA, color = "jco", title = "", margin = TRUE, xlim = NA){
+drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA, color = "jco", title = "", margin = TRUE, xlim = NA, ylim = NA){
 
   # http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/78-perfect-scatter-plots-with-correlation-and-marginal-histograms/
 
@@ -373,6 +375,9 @@ drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA, colo
 
   if (anyNA(xlim)){
     xlim = c(0,max(xvalue)*1.05)
+  }
+  if (anyNA(ylim)){
+    ylim = c(0,max(yvalue)*1.05)
   }
 
   library(cowplot)

@@ -13,7 +13,8 @@ drawScatter(
   color = "jco",
   title = "",
   margin = TRUE,
-  xlim = NA
+  xlim = NA,
+  ylim = NA
 )
 }
 \arguments{
@@ -24,6 +25,8 @@ drawScatter(
 \item{color}{Default jco}
 
 \item{margin}{Default TRUE, show margin plot}
+
+\item{ylim}{}
 }
 \value{
 ggplot2 object

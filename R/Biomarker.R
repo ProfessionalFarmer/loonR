@@ -102,9 +102,11 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100){
 #' @export
 #'
 #' @examples
-build.logistic.model <- function(df, group, seed = 666){
+build.logistic.model <- function(df, group, seed = 666, scale=TRUE){
 
   cat("Pls note: Second unique variable is defined as experiment group\n")
+
+  if(scale){df = scale(df, center = TRUE, scale = TRUE)}
 
   lg.df <- data.frame(
     label = factor(group == unique(group)[2],
@@ -121,7 +123,27 @@ build.logistic.model <- function(df, group, seed = 666){
 
 }
 
+#' Title
+#'
+#' @param d.frame Data.frame --- Row: sample, Column: gene expression
+#' @param status
+#' @param time OS, DFS, RFS et al.....
+#' @param seed Default 666
+#'
+#' @return
+#' @export
+#'
+#' @examples
+build.coxregression.model <- function(d.frame, status, time, seed=666){
 
+  library("survival")
+  library("survminer")
+
+  set.seed(seed)
+  cox.fit <- coxph( Surv(time, status) ~ . , data = data.frame(d.frame, Time=time, Status =status, check.names = F ) )
+  cox.fit
+
+}
 
 
 #' Get confusion matrix
@@ -380,10 +402,9 @@ univariate_or <- function(d.frame, label){
     # column name
     c.name <- colnames(d.frame)[i]
 
-
     res <- c( exp( cbind(coef(res), confint(res) )  )[2,] , #  c("OR", "2.5 %", "97.5 %")
               summary(res)$coefficients[2,1], # "Estimate"
-              summary(res)$coefficients[2,1]  # "Pr"
+              summary(res)$coefficients[2,4]  # "Pr"
     )
     # names(res) <- c("OR", "2.5 %", "97.5 %")
     c( Name=c.name, round(res,3))
@@ -399,6 +420,136 @@ univariate_or <- function(d.frame, label){
 
 }
 
+
+#' Title
+#'
+#' @param d.frame Data.frame --- Row: sample, Column: gene expression
+#' @param status
+#' @param time OS, DFS, RFS et al.....
+#'
+#' @return
+#' @export
+#'
+#' @examples
+univariate_cox <- function(d.frame, status, time){
+
+  library(foreach)
+  library("survival")
+  library("survminer")
+
+
+  all.res <- foreach(i=1:ncol(d.frame), .combine = rbind) %do%{
+
+
+    res <- coxph( Surv(time, status) ~ Score , data = data.frame(Score = d.frame[,i], Time=time, Status =status, check.names = F ) )
+    #exp( coef(res) )
+    #summary(res)
+
+    # column name
+    c.name <- colnames(d.frame)[i]
+    i.coef <- coef(res)
+    i.hazzardRation <- exp( coef(res) )
+    i.hr.upper = summary(res)$conf.int[4]
+    i.hr.lower = summary(res)$conf.int[3]
+    i.pvalue = summary(res)$waldtest[3]
+
+    res <- c( i.coef, # coef
+              i.hazzardRation, # HR
+              i.hr.lower, # lower
+              i.hr.upper, # upper
+              i.pvalue
+    )
+    c( Name=c.name, round(res,3))
+
+  }
+
+  all.res <- data.frame(all.res, stringsAsFactors = F)
+  row.names(all.res) <- all.res$Name
+  colnames(all.res) <- c("Variate", "coefficient" , "HR", "lower 95%", "upper 95%", "Pr")
+
+  all.res[,2:ncol(all.res)] <- data.frame(lapply(all.res[,2:ncol(all.res)],as.numeric))
+  all.res
+
+}
+
+#' Title
+#'
+#' @param d.frame Data.frame --- Row: sample, Column: gene expression
+#' @param status
+#' @param time OS, DFS, RFS et al.....
+#'
+#' @return
+#' @export
+#'
+#' @examples
+univariate_cox_sthda <- function(d.frame, status, time){
+
+  # Clone frome http://www.sthda.com/english/wiki/cox-proportional-hazards-model
+  covariates <- colnames(d.frame)
+
+  df <- data.frame(d.frame,
+                   Time=time,
+                   Status =status,
+                   check.names = F )
+
+  univ_formulas <- sapply(covariates,
+                          function(x) as.formula(paste('Surv(Time, Status)~`', x,'`', sep="")))
+
+  univ_models <- lapply( univ_formulas, function(x){coxph(x, data = df)})
+  # Extract data
+  univ_results <- lapply(univ_models,
+                         function(x){
+                           x <- summary(x)
+                           p.value<-signif(x$wald["pvalue"], digits=2)
+                           wald.test<-signif(x$wald["test"], digits=2)
+                           beta<-signif(x$coef[1], digits=2);#coeficient beta
+                           HR <-signif(x$coef[2], digits=2);#exp(beta)
+                           HR.confint.lower <- signif(x$conf.int[,"lower .95"], 2)
+                           HR.confint.upper <- signif(x$conf.int[,"upper .95"],2)
+                           HR <- paste0(HR, " (",
+                                        HR.confint.lower, "-", HR.confint.upper, ")")
+                           res<-c(beta, HR, wald.test, p.value)
+                           names(res)<-c("beta", "HR (95% CI for HR)", "wald.test",
+                                         "p.value")
+                           return(res)
+                           #return(exp(cbind(coef(x),confint(x))))
+                         })
+  res <- t(as.data.frame(univ_results, check.names = FALSE))
+  as.data.frame(res)
+
+}
+
+#' Title
+#'
+#' @param d.frame Data.frame --- Row: sample, Column: gene expression
+#' @param status
+#' @param time OS, DFS, RFS et al.....
+#'
+#' @return
+#' @export
+#'
+#' @examples
+multivariate_cox <- function(d.frame, status, time){
+
+  library("survival")
+  library("survminer")
+
+
+  res <- coxph( Surv(time, status) ~ . , data = data.frame(d.frame, Time=time, Status =status, check.names = F ) )
+
+  res <- data.frame(
+    exp( cbind(coef(res), confint(res) )  ) ,
+    Estimate = as.vector(summary(res)$coefficients[,1] ),
+    Pr = as.vector(summary(res)$coefficients[,5] )
+  )
+
+  res <- data.frame(Vairate=row.names(res), round(res,3) )
+  res[,2:ncol(res)] <- data.frame(lapply(res[,2:ncol(res)],as.numeric))
+
+  colnames(res) <- c("Variate","HR", "2.5%", "97.5%", "Estimate" , "Pr")
+  res
+
+}
 
 #' Plot heatmap with log 2 fold change and risk probability information
 #'

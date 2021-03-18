@@ -4,12 +4,14 @@
 \alias{multivariate_cox}
 \title{Title}
 \usage{
-multivariate_cox(d.frame, status, time)
+multivariate_cox(d.frame, status, time, scale = TRUE)
 }
 \arguments{
 \item{d.frame}{Data.frame --- Row: sample, Column: gene expression}
 
 \item{time}{OS, DFS, RFS et al.....}
+
+\item{scale}{}
 }
 \value{
 

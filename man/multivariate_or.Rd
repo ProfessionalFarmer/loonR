@@ -5,12 +5,14 @@
 \title{Variate logistic analysis
 Row: sample, Column: gene expression}
 \usage{
-multivariate_or(d.frame, label)
+multivariate_or(d.frame, label, scale = TRUE)
 }
 \arguments{
 \item{d.frame}{Data.frame --- Row: sample, Column: gene expression}
 
 \item{label}{True label}
+
+\item{scale}{}
 }
 \value{
 

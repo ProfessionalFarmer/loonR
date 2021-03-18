@@ -4,7 +4,7 @@
 \alias{build.coxregression.model}
 \title{Title}
 \usage{
-build.coxregression.model(d.frame, status, time, seed = 666)
+build.coxregression.model(d.frame, status, time, seed = 666, scale = TRUE)
 }
 \arguments{
 \item{d.frame}{Data.frame --- Row: sample, Column: gene expression}

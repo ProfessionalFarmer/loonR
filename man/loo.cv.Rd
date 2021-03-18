@@ -7,6 +7,8 @@
 loo.cv(df, label, seed = 999)
 }
 \arguments{
+\item{df}{Row is sample, column is gene/minRA/variat}
+
 \item{seed}{Default 999}
 }
 \value{

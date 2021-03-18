@@ -4,16 +4,18 @@
 \alias{univariate_cox_sthda}
 \title{Title}
 \usage{
-univariate_cox_sthda(d.frame, status, time)
+univariate_cox_sthda(d.frame, status, time, scale = TRUE)
 }
 \arguments{
 \item{d.frame}{Data.frame --- Row: sample, Column: gene expression}
 
 \item{time}{OS, DFS, RFS et al.....}
+
+\item{scale}{}
 }
 \value{
 
 }
 \description{
-Title
+Copy http://www.sthda.com/english/wiki/cox-proportional-hazards-model
 }

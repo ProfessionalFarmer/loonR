@@ -6,12 +6,14 @@
 Row: sample, Column: gene expression
 score E.g.: Gene or miRNA expression, or risk score}
 \usage{
-univariate_or(d.frame, label)
+univariate_or(d.frame, label, scale = TRUE)
 }
 \arguments{
 \item{d.frame}{Data.frame --- Row: sample, Column: gene expression}
 
 \item{label}{True Sample label}
+
+\item{scale}{}
 }
 \value{
 c(OR, 2.5% CI, 97.5% CI)

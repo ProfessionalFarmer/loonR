@@ -134,13 +134,32 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE){
 #' @export
 #'
 #' @examples
-build.coxregression.model <- function(d.frame, status, time, seed=666){
+build.coxregression.model <- function(d.frame, status, time, seed=666, scale = TRUE){
 
   library("survival")
   library("survminer")
 
+  covariates <- colnames(d.frame)
+
+  df <- data.frame(d.frame,
+                   Time=time,
+                   Status =status,
+                   check.names = F )
+
+  formula <- as.formula( paste0("Surv(time, status) ~ `",
+                                 paste0(covariates, sep='', collapse = '` + `'),
+                                 '`',
+                                 sep='', collapse = ""
+                                 )
+               )
+
+
+  if(scale){df = scale(df, center = TRUE, scale = TRUE)}
+  df = data.frame(df, stringsAsFactors = FALSE, check.names = F)
+
   set.seed(seed)
-  cox.fit <- coxph( Surv(time, status) ~ . , data = data.frame(d.frame, Time=time, Status =status, check.names = F ) )
+
+  cox.fit <- coxph( formula, data = df )
   cox.fit
 
 }
@@ -209,7 +228,7 @@ confusion_matrix <- function(groups, risk.pro, cancer="Cancer", best.cutoff = NA
 
 #' Leave one out cross validation
 #'
-#' @param df
+#' @param df Row is sample, column is gene/minRA/variat
 #' @param label
 #' @param seed Default 999
 #'
@@ -249,7 +268,49 @@ loo.cv <- function(df, label, seed=999){
   loo.res
 }
 
+#' Leave one out cross validation for cox regression
+#'
+#' @param df Row is sample, column is gene/minRA/variat
+#' @param seed Default 999
+#' @param status
+#' @param time
+#' @param label Default NA. Recommend to provide such information
+#'
+#' @return
+#' @export
+#'
+#' @examples
+loo.cv.cox <- function(df, status, time,  seed=999, label=NA){
 
+
+  library("survival")
+  library("survminer")
+
+  covariates <- colnames(df)
+
+  n.samples = nrow(df)
+
+  library(foreach)
+  library(dplyr)
+  loo.res <- foreach::foreach(i=1:n.samples, .combine = rbind) %do%{
+    loo.sample.data = df[i, ]
+
+    set.seed(seed)
+    cox.fit = loonR::build.coxregression.model(df[-c(i),], status[-c(i)], time[-c(i)] )
+
+    predicted.score = predict(cox.fit, loo.sample.data)
+
+    sample.label = label[i]
+    res <- c(predicted.score, as.character(sample.label))
+    names(res) = c("Score", "Label")
+    res
+  }
+
+  row.names(loo.res) <- row.names(df)
+  loo.res = data.frame( loo.res, check.names = FALSE, stringsAsFactors = FALSE)
+  loo.res$Score = as.numeric(loo.res$Score)
+  loo.res
+}
 
 
 
@@ -352,12 +413,15 @@ get_performance <- function(pred, labels, best.cutoff =NA){  #  x="best", input 
 #'
 #' @param d.frame Data.frame --- Row: sample, Column: gene expression
 #' @param label True label
+#' @param scale
 #'
 #' @return
 #' @export
 #'
 #' @examples multivariate_or(data.frame, label)
-multivariate_or <- function(d.frame, label){
+multivariate_or <- function(d.frame, label, scale=TRUE){
+
+  if(scale){df = scale(d.frame, center = TRUE, scale = TRUE)}
 
   res <- glm(Event ~ . , data = data.frame(d.frame, Event=label, check.names = FALSE), family=binomial(logit))
   #exp( coef(res) )
@@ -382,16 +446,20 @@ multivariate_or <- function(d.frame, label){
 #' Variate logistic analysis
 #' Row: sample, Column: gene expression
 #' score E.g.: Gene or miRNA expression, or risk score
+#'
 #' @param d.frame Data.frame --- Row: sample, Column: gene expression
 #' @param label True Sample label
+#' @param scale
 #'
 #' @return c(OR, 2.5% CI, 97.5% CI)
 #' @export
 #'
 #' @examples univariate_or(risk.df, label)
-univariate_or <- function(d.frame, label){
+univariate_or <- function(d.frame, label, scale=TRUE){
 
   library(foreach)
+
+  if(scale){df = scale(d.frame, center = TRUE, scale = TRUE)}
 
   all.res <- foreach(i=1:ncol(d.frame), .combine = rbind) %do%{
     #   for(i in 1:ncol(d.frame) ){
@@ -426,16 +494,19 @@ univariate_or <- function(d.frame, label){
 #' @param d.frame Data.frame --- Row: sample, Column: gene expression
 #' @param status
 #' @param time OS, DFS, RFS et al.....
+#' @param scale
 #'
 #' @return
 #' @export
 #'
 #' @examples
-univariate_cox <- function(d.frame, status, time){
+univariate_cox <- function(d.frame, status, time, scale=TRUE){
 
   library(foreach)
   library("survival")
   library("survminer")
+
+  if(scale){df = scale(d.frame, center = TRUE, scale = TRUE)}
 
 
   all.res <- foreach(i=1:ncol(d.frame), .combine = rbind) %do%{
@@ -474,15 +545,21 @@ univariate_cox <- function(d.frame, status, time){
 
 #' Title
 #'
+#' Copy http://www.sthda.com/english/wiki/cox-proportional-hazards-model
+#'
 #' @param d.frame Data.frame --- Row: sample, Column: gene expression
 #' @param status
 #' @param time OS, DFS, RFS et al.....
+#' @param scale
 #'
 #' @return
 #' @export
 #'
 #' @examples
-univariate_cox_sthda <- function(d.frame, status, time){
+univariate_cox_sthda <- function(d.frame, status, time, scale=TRUE){
+
+  if(scale){df = scale(d.frame, center = TRUE, scale = TRUE)}
+
 
   # Clone frome http://www.sthda.com/english/wiki/cox-proportional-hazards-model
   covariates <- colnames(d.frame)
@@ -524,18 +601,36 @@ univariate_cox_sthda <- function(d.frame, status, time){
 #' @param d.frame Data.frame --- Row: sample, Column: gene expression
 #' @param status
 #' @param time OS, DFS, RFS et al.....
+#' @param scale
 #'
 #' @return
 #' @export
 #'
 #' @examples
-multivariate_cox <- function(d.frame, status, time){
+multivariate_cox <- function(d.frame, status, time, scale=TRUE){
 
   library("survival")
   library("survminer")
 
+  covariates <- colnames(d.frame)
 
-  res <- coxph( Surv(time, status) ~ . , data = data.frame(d.frame, Time=time, Status =status, check.names = F ) )
+  df <- data.frame(d.frame,
+                   Time=time,
+                   Status =status,
+                   check.names = F )
+
+  formula <- as.formula( paste0("Surv(time, status) ~ `",
+                                paste0(covariates, sep='', collapse = '` + `'),
+                                '`',
+                                sep='', collapse = ""
+  )
+  )
+
+
+  if(scale){df = scale(df, center = TRUE, scale = TRUE)}
+  df = data.frame(df, stringsAsFactors = FALSE, check.names = F)
+
+  res <- coxph( formula , data = df )
 
   res <- data.frame(
     exp( cbind(coef(res), confint(res) )  ) ,

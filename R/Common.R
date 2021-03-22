@@ -34,16 +34,20 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 #' @param main.title main title
 #' @param alpha
 #' @param return.percentage If TRUE, reture PCA percentage instead of PCA lot
+#' @param label
+#' @param plot3D
+#' @param show.sample.name
+#' @param point.size Default 2
 #' @param pre.filter
-#' @param lable Must be a vector or NULL
 #'
 #' @return
 #' @export
 #'
 #' @examples plotPCA(df, group, "aaas")
-plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Class",
+plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Groups",
                     main.title = "", alpha=1, return.percentage = FALSE,
-                    pre.filter = 0.01, label = NULL, plot3D = FALSE){
+                    pre.filter = 0.01, label = NULL, plot3D = FALSE,
+                    show.sample.name = FALSE, point.size = 2){
 
   df <- df[, colMeans(df) > pre.filter]
 
@@ -72,13 +76,26 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
             x = ~PC1, y = ~PC2, z = ~PC3, color = ~Class,  # c('#BF382A', '#0C4B8E')
             colors = loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha) )
 
+  }else if(show.sample.name){
+    library("factoextra")
+    label=
+    p <- fviz_pca_ind(df_pca, label="all", habillage=group, pointsize = point.size,
+                      addEllipses=ellipse, ellipse.level=0.95,
+                      ) +
+         scale_color_manual(name = legend.title,
+                            values =loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha),
+                            labels = levels(factor(group)))  +
+      labs(title = main.title)  +
+      theme_minimal()
+
+
   }else{
       library(ggplot2)
       library(ggpubr)
 
       p <- ggscatter(df_pcs, x="PC1", y="PC2", color="Class",
                      palette = loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha),
-                     ellipse = ellipse,
+                     ellipse = ellipse, size = point.size,
                      label = label) +
               xlab(percentage[1]) +
               ylab(percentage[2])
@@ -95,6 +112,10 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
 
 
 }
+
+
+
+
 
 #' Count each event type and draw pie chart
 #'
@@ -287,7 +308,7 @@ plotSilhouette <- function(df, group, color = "aaas", class = "Class", label=FAL
 
   fviz_silhouette(sil, label = label) +
     labs(fill = class,  labels = unique(group) ) +
-    scale_fill_manual( values=loonR::get.palette.color(color, length(unique(group)), alpha = alpha )  ) +
+    scale_fill_manual(labels= unique(group), values=loonR::get.palette.color(color, length(unique(group)), alpha = alpha )  ) +
     scale_color_manual(values=loonR::get.palette.color(color, length(unique(group)), alpha = alpha )  ) +
     theme(panel.background = element_blank(), axis.line = element_line(colour = "black"))
 
@@ -530,3 +551,35 @@ plotUpset <- function(lt, mode = "intersect"){
 convertDfToNumeric <- function(df){
   data.frame(sapply(df, function(x) as.numeric(as.character(x))))
 }
+
+
+#' Scale a data.frame by column or row
+#'
+#' @param df
+#' @param byRow Default FALSE
+#' @param byColumn Default TRUE, by column
+#' @param center Default TRUE. Mean = 0
+#' @param scale  Default TRUE. 0-1 scale
+#'
+#' @return
+#' @export
+#'
+#' @examples
+scaleDF <- function( df, byRow=FALSE, byColumn=TRUE, center = TRUE, scale = TRUE){
+  if(byRow & byColumn){
+    stop("Etheir by row or by column, can't both")
+  }
+  if(byRow){
+    df = t(df)
+    df = scale(df, center = center, scale = scale)
+
+  }else if(byColumn){
+    df = scale(df, center = center, scale = scale)
+  }
+  df = data.frame(df, check.names = FALSE)
+
+}
+
+
+
+

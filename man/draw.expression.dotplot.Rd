@@ -10,7 +10,8 @@ draw.expression.dotplot(
   group,
   nrow = 4,
   stat.method = "wilcox.test",
-  show.stat.p = TRUE
+  show.stat.p = TRUE,
+  rotate.x = 0
 )
 }
 \arguments{
@@ -19,6 +20,8 @@ draw.expression.dotplot(
 \item{nrow}{# of row to plot expression}
 
 \item{stat.method}{wilcox.test or t.test}
+
+\item{rotate.x}{Default 0. numeric value specifying the rotation angle. 90 for vertical x-axis text.}
 }
 \value{
 

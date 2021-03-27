@@ -557,7 +557,7 @@ convertDfToNumeric <- function(df){
 #'
 #' @param df
 #' @param byRow Default FALSE
-#' @param byColumn Default TRUE, by column
+#' @param byColumn Default FALSE, by column
 #' @param center Default TRUE. Mean = 0
 #' @param scale  Default TRUE. 0-1 scale
 #'
@@ -565,19 +565,24 @@ convertDfToNumeric <- function(df){
 #' @export
 #'
 #' @examples
-scaleDF <- function( df, byRow=FALSE, byColumn=TRUE, center = TRUE, scale = TRUE){
+#' Default by column
+scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRUE){
   if(byRow & byColumn){
     stop("Etheir by row or by column, can't both")
+  }
+  if(!byRow & !byColumn){
+    warning("Set default by column")
+    byColumn = TRUE
   }
   if(byRow){
     df = t(df)
     df = scale(df, center = center, scale = scale)
-
+    df = t(df)
   }else if(byColumn){
     df = scale(df, center = center, scale = scale)
   }
   df = data.frame(df, check.names = FALSE)
-
+  df
 }
 
 

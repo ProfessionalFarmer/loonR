@@ -4,12 +4,14 @@
 \alias{loo.cv}
 \title{Leave one out cross validation}
 \usage{
-loo.cv(df, label, seed = 999)
+loo.cv(df, label, seed = 999, scale = TRUE)
 }
 \arguments{
 \item{df}{Row is sample, column is gene/minRA/variat}
 
 \item{seed}{Default 999}
+
+\item{scale}{TRUE}
 }
 \value{
 

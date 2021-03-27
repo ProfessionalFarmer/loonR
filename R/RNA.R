@@ -456,12 +456,14 @@ load.rsem.matrix <- function(dirpath, isoform = FALSE, subdirs = TRUE){
 #' @param group
 #' @param nrow # of row to plot expression
 #' @param stat.method wilcox.test or t.test
+#' @param show.stat.p
+#' @param rotate.x Default 0. numeric value specifying the rotation angle. 90 for vertical x-axis text.
 #'
 #' @return
 #' @export
 #'
 #' @examples loonR::draw.expression.dotplot(candidate.combined.df, group )
-draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.test", show.stat.p = TRUE){
+draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.test", show.stat.p = TRUE, rotate.x = 0){
   library(ggpubr)
   # expression in all samples
   candidate.plots.all.samples <- lapply(row.names(df), function(name){
@@ -470,12 +472,13 @@ draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.t
     tmp.df <- data.frame(Group = group, Expression = exp, stringsAsFactors = FALSE)
 
     p <- ggdotplot(tmp.df, y="Expression", x= "Group", add = "boxplot", title = name,
-                   color = "Group", palette = loonR::get.palette.color("aaas",2,0.7), xlab = "", show.legend = FALSE, legend = '',
-                   short.panel.labs = FALSE, ylim = c(floor(min(tmp.df$Expression)), ceiling(max(tmp.df$Expression))+0.5) )
+                   color = "Group", palette = loonR::get.palette.color("aaas", length(unique(group)), 0.7), xlab = "", show.legend = FALSE, legend = '',
+                   short.panel.labs = FALSE, ylim = c(floor(min(tmp.df$Expression)), ceiling(max(tmp.df$Expression))+0.5) ) +
+        rotate_x_text(angle = rotate.x)
 
     if(show.stat.p){
       p = p + stat_compare_means(
-            aes(label = paste0("p = ", ..p.format..), method = eval(stat.method),comparisons = list(c("Normal","Tumor")  ),
+            aes(label = paste0("p = ", ..p.format..), method = eval(stat.method), comparisons = list(unique(group) ),
             label.y= (max(Expression)+1) ) )
     }
 

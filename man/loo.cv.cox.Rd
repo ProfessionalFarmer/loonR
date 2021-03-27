@@ -4,7 +4,7 @@
 \alias{loo.cv.cox}
 \title{Leave one out cross validation for cox regression}
 \usage{
-loo.cv.cox(df, status, time, seed = 999, label = NA)
+loo.cv.cox(df, status, time, seed = 999, label = NA, scale = TRUE)
 }
 \arguments{
 \item{df}{Row is sample, column is gene/minRA/variat}
@@ -12,6 +12,8 @@ loo.cv.cox(df, status, time, seed = 999, label = NA)
 \item{seed}{Default 999}
 
 \item{label}{Default NA. Recommend to provide such information}
+
+\item{scale}{TRUE}
 }
 \value{
 

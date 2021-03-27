@@ -4,12 +4,12 @@
 \alias{scaleDF}
 \title{Scale a data.frame by column or row}
 \usage{
-scaleDF(df, byRow = FALSE, byColumn = TRUE, center = TRUE, scale = TRUE)
+scaleDF(df, byRow = FALSE, byColumn = FALSE, center = TRUE, scale = TRUE)
 }
 \arguments{
 \item{byRow}{Default FALSE}
 
-\item{byColumn}{Default TRUE, by column}
+\item{byColumn}{Default FALSE, by column}
 
 \item{center}{Default TRUE. Mean = 0}
 
@@ -20,4 +20,7 @@ scaleDF(df, byRow = FALSE, byColumn = TRUE, center = TRUE, scale = TRUE)
 }
 \description{
 Scale a data.frame by column or row
+}
+\examples{
+Default by column
 }

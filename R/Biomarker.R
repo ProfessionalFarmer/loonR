@@ -55,12 +55,13 @@ getOneRoundCVRes <- function(df, label, k, seed = 1, times = 1){
 #' @param label True label
 #' @param k Folds
 #' @param n Repeat times
+#' @param scale TRUE
 #'
 #' @return
 #' @export
 #'
 #' @examples
-cross.validation <- function(df = '', label = '', k = 5, n = 100){
+cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE){
 
   # df = up.mirs.exp
   # label = mir.sample.group
@@ -70,6 +71,10 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100){
   if(df == '' | label == ''){
     stop("provide a datafram or lables")
   }
+
+  if(scale){df = scale(df, center = TRUE, scale = TRUE)}
+  df = data.frame(df,check.names = F)
+
 
   library(doParallel)
   library(foreach)
@@ -139,9 +144,15 @@ build.coxregression.model <- function(d.frame, status, time, seed=666, scale = T
   library("survival")
   library("survminer")
 
-  covariates <- colnames(d.frame)
+  if(scale){
+    df = scale(d.frame, center = TRUE, scale = TRUE)
+    df = data.frame(df, stringsAsFactors = FALSE, check.names = F)
+  }
 
-  df <- data.frame(d.frame,
+
+  covariates <- colnames(df)
+
+  df <- data.frame(df,
                    Time=time,
                    Status =status,
                    check.names = F )
@@ -153,9 +164,6 @@ build.coxregression.model <- function(d.frame, status, time, seed=666, scale = T
                                  )
                )
 
-
-  if(scale){df = scale(df, center = TRUE, scale = TRUE)}
-  df = data.frame(df, stringsAsFactors = FALSE, check.names = F)
 
   set.seed(seed)
 
@@ -231,12 +239,15 @@ confusion_matrix <- function(groups, risk.pro, cancer="Cancer", best.cutoff = NA
 #' @param df Row is sample, column is gene/minRA/variat
 #' @param label
 #' @param seed Default 999
+#' @param scale TRUE
 #'
 #' @return
 #' @export
 #'
 #' @examples
-loo.cv <- function(df, label, seed=999){
+loo.cv <- function(df, label, seed=999, scale=TRUE){
+
+  if(scale){df = scale(df, center = TRUE, scale = TRUE)}
 
   lg.df = data.frame(Label = label, df,
                      check.names = FALSE,
@@ -275,13 +286,15 @@ loo.cv <- function(df, label, seed=999){
 #' @param status
 #' @param time
 #' @param label Default NA. Recommend to provide such information
+#' @param scale TRUE
 #'
 #' @return
 #' @export
 #'
 #' @examples
-loo.cv.cox <- function(df, status, time,  seed=999, label=NA){
+loo.cv.cox <- function(df, status, time,  seed=999, label=NA, scale =TRUE){
 
+  if(scale){df = scale(df, center = TRUE, scale = TRUE)}
 
   library("survival")
   library("survminer")
@@ -612,9 +625,14 @@ multivariate_cox <- function(d.frame, status, time, scale=TRUE){
   library("survival")
   library("survminer")
 
-  covariates <- colnames(d.frame)
+  if(scale){
+    df = scale(d.frame, center = TRUE, scale = TRUE)
+    df = data.frame(df, stringsAsFactors = FALSE, check.names = F)
+  }
 
-  df <- data.frame(d.frame,
+  covariates <- colnames(df)
+
+  df <- data.frame(df,
                    Time=time,
                    Status =status,
                    check.names = F )
@@ -626,9 +644,6 @@ multivariate_cox <- function(d.frame, status, time, scale=TRUE){
   )
   )
 
-
-  if(scale){df = scale(df, center = TRUE, scale = TRUE)}
-  df = data.frame(df, stringsAsFactors = FALSE, check.names = F)
 
   res <- coxph( formula , data = df )
 

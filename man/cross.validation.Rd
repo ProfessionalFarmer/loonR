@@ -4,7 +4,7 @@
 \alias{cross.validation}
 \title{Title}
 \usage{
-cross.validation(df = "", label = "", k = 5, n = 100)
+cross.validation(df = "", label = "", k = 5, n = 100, scale = TRUE)
 }
 \arguments{
 \item{df}{data.frame. Row is sample, col is gene}
@@ -14,6 +14,8 @@ cross.validation(df = "", label = "", k = 5, n = 100)
 \item{k}{Folds}
 
 \item{n}{Repeat times}
+
+\item{scale}{TRUE}
 }
 \value{
 

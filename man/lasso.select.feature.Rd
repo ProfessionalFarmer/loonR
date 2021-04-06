@@ -11,7 +11,8 @@ lasso.select.feature(
   seed = 666,
   family = "binomial",
   type.measure = "auc",
-  s = NA
+  s = NA,
+  scale = TRUE
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ lasso.select.feature(
 \item{type.measure}{class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.}
 
 \item{s}{Defalut is lambda.min. User can specify}
+
+\item{scale}{Default TRUE}
 }
 \value{
 

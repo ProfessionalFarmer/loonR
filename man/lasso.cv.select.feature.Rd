@@ -12,7 +12,8 @@ lasso.cv.select.feature(
   n = 100,
   family = "binomial",
   type.measure = "class",
-  cores = 50
+  cores = 50,
+  scale = TRUE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ lasso.cv.select.feature(
 \item{type.measure}{class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.}
 
 \item{cores}{50}
+
+\item{scale}{Default TRUE}
 }
 \value{
 

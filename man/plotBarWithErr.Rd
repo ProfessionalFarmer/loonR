@@ -13,7 +13,8 @@ plotBarWithErr(
   color = "aaas",
   comparisons = "",
   method = "wilcox.test",
-  label.y = NULL
+  label.y = NULL,
+  rotate.x = 0
 )
 }
 \arguments{
@@ -25,7 +26,7 @@ plotBarWithErr(
 
 \item{method}{wilcox.test or t.test}
 
-\item{label.y}{}
+\item{rotate.x}{Default 0. numeric value specifying the rotation angle. 90 for vertical x-axis text.}
 }
 \value{
 

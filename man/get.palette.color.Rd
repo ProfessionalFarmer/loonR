@@ -31,4 +31,5 @@ RColorBrewer, ggsci, hue or grey/gray color palettes
 }
 \examples{
 get.palette.color("nrc", n = 2, alpha = 0.7)
+scales::show_col(colorBlindGrey8)
 }

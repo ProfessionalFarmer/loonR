@@ -150,7 +150,7 @@ build.coxregression.model <- function(d.frame, status, time, seed=666, scale = T
   }
 
 
-  covariates <- colnames(df)
+  covariates <- colnames(data.matrix)
 
   df <- data.frame(df,
                    Time=time,
@@ -294,7 +294,10 @@ loo.cv <- function(df, label, seed=999, scale=TRUE){
 #' @examples
 loo.cv.cox <- function(df, status, time,  seed=999, label=NA, scale =TRUE){
 
-  if(scale){df = scale(df, center = TRUE, scale = TRUE)}
+  if(scale){
+    df = scale(df, center = TRUE, scale = TRUE)
+    df = data.frame(df, check.names = T, stringsAsFactors = F)
+  }
 
   library("survival")
   library("survminer")
@@ -630,7 +633,7 @@ multivariate_cox <- function(d.frame, status, time, scale=TRUE){
     df = data.frame(df, stringsAsFactors = FALSE, check.names = F)
   }
 
-  covariates <- colnames(df)
+  covariates <- colnames(data.matrix)
 
   df <- data.frame(df,
                    Time=time,
@@ -1344,15 +1347,24 @@ lasso_best_lamda <- function(d.matrix, group, family = "binomial", type.measure 
 #' @param family Default binomial
 #' @param type.measure class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.
 #' @param s Defalut is lambda.min. User can specify
+#' @param scale Default TRUE
 #'
 #' @return
 #' @export
 #'
 #' @examples
 lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
-                                    family = "binomial", type.measure = "auc" , s = NA){
+                                family = "binomial", type.measure = "auc" ,
+                                s = NA, scale=TRUE){
   library(foreach)
   library(dplyr)
+  library(glmnet)
+
+
+  if(scale){
+    data.matrix = scale(data.matrix, center = TRUE, scale = TRUE)
+    #data.matrix = data.frame(data.matrix, check.names = T, stringsAsFactors = F)
+  }
 
 
   set.seed(seed)
@@ -1375,7 +1387,7 @@ lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
     suppressMessages(roc <- pROC::roc(label, x)  )
     roc$auc
   })
-
+  row.names(feature.coef) <- feature.coef$name
   feature.coef
 
 
@@ -1392,17 +1404,24 @@ lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
 #' @param n 100
 #' @param cores 50
 #' @param type.measure class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.
+#' @param scale Default TRUE
 #'
 #' @return
 #' @export
 #'
 #' @examples
 lasso.cv.select.feature <- function(data.matrix, label, folds = 5, seed = 666, n = 100,
-                                 family = "binomial", type.measure = "class" , cores = 50){
+                                 family = "binomial", type.measure = "class" ,
+                                 cores = 50, scale=TRUE){
   library(foreach)
   library(dplyr)
   library(parallel, doParallel)
   library(glmnet)
+
+  if(scale){
+    data.matrix = scale(data.matrix, center = TRUE, scale = TRUE)
+    data.matrix = data.frame(data.matrix, check.names = T, stringsAsFactors = F)
+  }
 
   set.seed(seed)
   require(caret)

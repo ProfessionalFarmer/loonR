@@ -224,17 +224,20 @@ show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = 
 #' @param comparisons list( c("N", "T") )
 #' @param method wilcox.test or t.test
 #' @param label.y
+#' @param rotate.x Default 0. numeric value specifying the rotation angle. 90 for vertical x-axis text.
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plotBarWithErr <- function(values, group, title = "", xlab = "X label", ylab = "Mean", color = "aaas", comparisons = '', method = "wilcox.test", label.y = NULL){
+plotBarWithErr <- function(values, group, title = "", xlab = "X label", ylab = "Mean", color = "aaas", comparisons = '', method = "wilcox.test", label.y = NULL, rotate.x = 0){
   library(ggpubr)
   tmp.df <- data.frame(Value = values, Group = as.factor(group), stringsAsFactors = FALSE, check.names = F)
   colnames(tmp.df) <- c(ylab, xlab)
 
-  p <- ggbarplot(tmp.df, x = xlab, y = ylab, add = "mean_se", fill = xlab, palette = color, title = title )
+  p <- ggbarplot(tmp.df, x = xlab, y = ylab, add = "mean_se", fill = xlab, palette = color, title = title ) +
+     rotate_x_text(angle = rotate.x)
+
   if(comparisons != ''){# label = "p.signif"
     p <- p + stat_compare_means( method = method, comparisons =comparisons, label.y = label.y )
   }

@@ -58,6 +58,7 @@ get.ggsci.color <- function(palette="nrc", n = 7, alpha=1){
 #' @export
 #'
 #' @examples get.palette.color("nrc", n = 2, alpha = 0.7)
+#' scales::show_col(colorBlindGrey8)
 get.palette.color <- function(palette="nrc", n = 7, alpha=1){
 
 

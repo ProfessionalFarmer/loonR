@@ -145,14 +145,14 @@ build.coxregression.model <- function(d.frame, status, time, seed=666, scale = T
   library("survminer")
 
   if(scale){
-    df = scale(d.frame, center = TRUE, scale = TRUE)
-    df = data.frame(df, stringsAsFactors = FALSE, check.names = F)
+    d.frame = scale(d.frame, center = TRUE, scale = TRUE)
+    d.frame = data.frame(d.frame, stringsAsFactors = FALSE, check.names = F)
   }
 
 
-  covariates <- colnames(data.matrix)
+  covariates <- colnames(d.frame)
 
-  df <- data.frame(df,
+  df <- data.frame(d.frame,
                    Time=time,
                    Status =status,
                    check.names = F )
@@ -475,7 +475,7 @@ univariate_or <- function(d.frame, label, scale=TRUE){
 
   library(foreach)
 
-  if(scale){df = scale(d.frame, center = TRUE, scale = TRUE)}
+  if(scale){d.frame = scale(d.frame, center = TRUE, scale = TRUE)}
 
   all.res <- foreach(i=1:ncol(d.frame), .combine = rbind) %do%{
     #   for(i in 1:ncol(d.frame) ){
@@ -522,7 +522,7 @@ univariate_cox <- function(d.frame, status, time, scale=TRUE){
   library("survival")
   library("survminer")
 
-  if(scale){df = scale(d.frame, center = TRUE, scale = TRUE)}
+  if(scale){d.frame = scale(d.frame, center = TRUE, scale = TRUE)}
 
 
   all.res <- foreach(i=1:ncol(d.frame), .combine = rbind) %do%{
@@ -574,7 +574,7 @@ univariate_cox <- function(d.frame, status, time, scale=TRUE){
 #' @examples
 univariate_cox_sthda <- function(d.frame, status, time, scale=TRUE){
 
-  if(scale){df = scale(d.frame, center = TRUE, scale = TRUE)}
+  if(scale){d.frame = scale(d.frame, center = TRUE, scale = TRUE)}
 
 
   # Clone frome http://www.sthda.com/english/wiki/cox-proportional-hazards-model
@@ -629,13 +629,13 @@ multivariate_cox <- function(d.frame, status, time, scale=TRUE){
   library("survminer")
 
   if(scale){
-    df = scale(d.frame, center = TRUE, scale = TRUE)
-    df = data.frame(df, stringsAsFactors = FALSE, check.names = F)
+    d.frame = scale(d.frame, center = TRUE, scale = TRUE)
+    d.frame = data.frame(d.frame, stringsAsFactors = FALSE, check.names = F)
   }
 
-  covariates <- colnames(data.matrix)
+  covariates <- colnames(d.frame)
 
-  df <- data.frame(df,
+  df <- data.frame(d.frame,
                    Time=time,
                    Status =status,
                    check.names = F )
@@ -1278,12 +1278,20 @@ plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette
 #' @param type.measure class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.
 #' @param nfolds Default 5
 #' @param nreps Default 1000
+#' @param scale Default TRUE
 #'
 #' @return
 #' @export
 #'
 #' @examples
-lasso_best_lamda <- function(d.matrix, group, family = "binomial", type.measure = "auc", nfolds = 5, nreps = 1000 ){
+lasso_best_lamda <- function(d.matrix, group, family = "binomial", type.measure = "auc", nfolds = 5, nreps = 1000, scale=TRUE ){
+
+  if(scale){
+    data.matrix = scale(data.matrix, center = TRUE, scale = TRUE)
+    #data.matrix = data.frame(data.matrix, check.names = T, stringsAsFactors = F)
+  }
+
+
 
   library(glmnet)
   X = as.matrix(d.matrix)
@@ -1378,6 +1386,7 @@ lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
     s = cvfit$lambda.min
   }
 
+  plot(cvfit)
 
   feature.coef = coef(cvfit, s = s)
   feature.coef = data.frame(name = feature.coef@Dimnames[[1]][feature.coef@i + 1], coefficient = feature.coef@x)

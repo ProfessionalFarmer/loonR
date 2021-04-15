@@ -4,10 +4,12 @@
 \alias{load.salmon.matrix}
 \title{Read Salmon output}
 \usage{
-load.salmon.matrix(dirPath)
+load.salmon.matrix(dirPath, isoform = TRUE)
 }
 \arguments{
 \item{dirPath}{Simple set the directory which contains Salmon output folder}
+
+\item{isoform}{specify data type. isoforma specific or not.}
 }
 \value{
 A tximport oject

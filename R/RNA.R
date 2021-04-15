@@ -368,6 +368,7 @@ MA_plot <- function(M, A, p, m.cutoff=0, a.cutoff=0, p.cutoff=0.05,
 #' Read Salmon output
 #'
 #' @param dirPath Simple set the directory which contains Salmon output folder
+#' @param isoform specify data type. isoforma specific or not.
 #'
 #' @return A tximport oject
 #' @export
@@ -375,20 +376,24 @@ MA_plot <- function(M, A, p, m.cutoff=0, a.cutoff=0, p.cutoff=0.05,
 #' @examples
 #' Directory tree: dir/sample_quant/quant.sf
 #'
-load.salmon.matrix <- function(dirPath){
+load.salmon.matrix <- function(dirPath, isoform = TRUE){
 
   library(tximport)
-  sample.salmon.pathes <- list.files(path = dirpath, full.names = TRUE)
-  sample.salmon.pathes <- list.files(path = dirpath, full.names = TRUE, pattern = "isoforms.results")
-
+  sample.salmon.pathes <- list.files(path = dirPath, full.names = TRUE, pattern = "quant")
   sample.names <- basename(sample.salmon.pathes)
-  sample.names <- unlist(lapply( strsplit(base.name,"_"), function(x) {x[1]} ))
+  sample.names <- unlist(lapply( strsplit(sample.names,"_qua"), function(x) {x[1]} ))
+
+  if(isoform){
+    sample.salmon.pathes <- list.files(path = sample.salmon.pathes, full.names = TRUE, pattern = "quant.sf")
+  }else{
+    sample.salmon.pathes <- list.files(path = sample.salmon.pathes, full.names = TRUE, pattern = "quant.genes.sf")
+  }
 
   cat("No. of samples:",length(sample.names),"\n")
 
   names(sample.salmon.pathes) <- sample.names
 
-  tpm <- tximport(sample.salmon.pathes, type = "salmon", txIn = TRUE, txOut = TRUE)
+  tpm <- tximport(sample.salmon.pathes, type = "salmon", txIn = isoform, txOut = isoform)
 
   tpm
 

@@ -11,7 +11,7 @@ getGeneRelatedTranscripts.Gff(
 )
 }
 \arguments{
-\item{gff.Path}{Annotation file path}
+\item{gff.Path}{Annotation file path or gff GRanges object}
 
 \item{gene.vector}{Target genes}
 

@@ -307,8 +307,11 @@ plotSilhouette <- function(df, group, color = "aaas", class = "Class", label=FAL
   set.seed(123)
 
   sil <- silhouette( as.numeric(as.character(factor(group, levels = unique(group), labels = 1:length(unique(group)))   )  ),
-                     dist(t(df), method = "euclidean")  )
+                     dist(t(df), method = "euclidean"), return.score=FALSE  )
 
+  if(return.score){
+    return(data.frame(sil[,1:3]))
+  }
   fviz_silhouette(sil, label = label) +
     labs(fill = class,  labels = unique(group) ) +
     scale_fill_manual(labels= unique(group), values=loonR::get.palette.color(color, length(unique(group)), alpha = alpha )  ) +

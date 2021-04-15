@@ -12,7 +12,8 @@ lasso_best_lamda(
   family = "binomial",
   type.measure = "auc",
   nfolds = 5,
-  nreps = 1000
+  nreps = 1000,
+  scale = TRUE
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ lasso_best_lamda(
 \item{nfolds}{Default 5}
 
 \item{nreps}{Default 1000}
+
+\item{scale}{Default TRUE}
 }
 \value{
 

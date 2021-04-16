@@ -128,7 +128,7 @@ suppa.get.final.table <- function(sample.names = "", psi = "", dpsi = "", event.
   # suppa performs log10 transformation. I recover the real average TPM and convert to log2 transformation
   # this is different from suppa tutorial
   final_table$mean_TPM <- 10^final_table$mean_TPM
-  final_table$logRNAc <-log2(final_table$mean_TPM)
+  final_table$logRNAc <- log2(final_table$mean_TPM)
 
   final_table$sig <- "not sig"
   final_table[final_table$p_value < pval.cutoff &

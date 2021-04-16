@@ -257,13 +257,14 @@ unique_gene_expression <- function(expression.df, f = "max"){
 #' @param restrict.vector  A TURE/FALSE factor. Only show TRUE point in the vector.
 #' @param label Point names which you want to show in plot. If you don't want to show, set NA
 #' @param title
+#' @param col.pal Default: c("blue", "gray", "red"). A vector with 3 elements. For significantly down, not significant, significantly up
 #'
 #' @return
 #' @export
 #'
 #' @examples loonR::volcano_plot( tissue.exp.df.res$logFC, tissue.exp.df.res$adj.P.Val, lg2fc = 0.5, p = 0.05, label = label, restrict.vector = (tissue.exp.df.res$AUC > 0.7 & tissue.exp.df.res$AveExpr > 10)  )
 volcano_plot <- function(x, y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)",
-                         lg2fc = 1, p = 0.05, restrict.vector=NA, label = NA, title = ''){
+                         lg2fc = 1, p = 0.05, restrict.vector=NA, label = NA, title = '', col.pal=c("blue", "gray", "red") ){
   # add text
   # https://biocorecrg.github.io/CRG_RIntroduction/volcano-plots.html
 
@@ -280,13 +281,13 @@ volcano_plot <- function(x, y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)
 
   palette = c()
   if(sum(df$Significant=="Down")!=0){
-    palette = c("blue")
+    palette = col.pal[1]
   }
   if(sum(df$Significant=="No")!=0){
-    palette = c(palette, "gray")
+    palette = c(palette, col.pal[2])
   }
   if(sum(df$Significant=="Up")!=0){
-    palette = c(palette, "red")
+    palette = c(palette, col.pal[3])
   }
 
 

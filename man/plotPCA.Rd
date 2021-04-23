@@ -10,7 +10,7 @@ plotPCA(
   group,
   palette = "npg",
   ellipse = FALSE,
-  legend.title = "Groups",
+  legend.title = "Group",
   main.title = "",
   alpha = 1,
   return.percentage = FALSE,

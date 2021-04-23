@@ -78,15 +78,16 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
 
   }else if(show.sample.name){
     library("factoextra")
-    label=
+    label="all"
     p <- fviz_pca_ind(df_pca, label="all", habillage=group, pointsize = point.size,
-                      addEllipses=ellipse, ellipse.level=0.95,
+                      addEllipses=ellipse, ellipse.level=0.95, legend.title = legend.title
                       ) +
          scale_color_manual(name = legend.title,
                             values =loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha),
                             labels = levels(factor(group)))  +
       labs(title = main.title)  +
-      theme_minimal()
+      theme_minimal() +
+      cowplot::theme_cowplot(font_family = "Arial")
 
 
   }else{
@@ -590,8 +591,6 @@ scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRU
   df = data.frame(df, check.names = FALSE)
   df
 }
-
-
 
 
 

@@ -402,7 +402,7 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2){  #  x="be
   set.seed(100)
   roc.obj <- pROC::roc(labels, pred, ci=TRUE, plot=FALSE)
   auc <- pROC::ci(roc.obj,boot.n=2000)[c(2, 1, 3)]
-  auc <- round(auc,2)
+  auc <- round(auc, digit)
   auc <- sprintf(string.format, auc[1], auc[2], auc[3])
 
   # get performance
@@ -1366,135 +1366,6 @@ lasso_best_lamda <- function(d.matrix, group, family = "binomial", type.measure 
   res
 }
 
-
-#' Feature selection by lasso
-#'
-#' @param data.matrix Row is sample
-#' @param label
-#' @param folds
-#' @param seed
-#' @param family Default binomial
-#' @param type.measure class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.
-#' @param s Defalut is lambda.min. User can specify
-#' @param scale Default TRUE
-#'
-#' @return
-#' @export
-#'
-#' @examples
-lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
-                                family = "binomial", type.measure = "auc" ,
-                                s = NULL, scale=TRUE){
-  library(foreach)
-  library(dplyr)
-  library(glmnet)
-
-
-  if(scale){
-    data.matrix = scale(data.matrix, center = TRUE, scale = TRUE)
-    #data.matrix = data.frame(data.matrix, check.names = T, stringsAsFactors = F)
-  }
-
-
-  set.seed(seed)
-  require(caret)
-  cvfit = cv.glmnet(as.matrix(data.matrix), label, nfolds = folds,
-                      family = family, type.measure = type.measure)
-
-  if (is.null(s)) {
-    s = cvfit$lambda.min
-  }else{
-    s = s
-  }
-
-  plot(cvfit)
-
-  feature.coef = coef(cvfit, s = s)
-  feature.coef = data.frame(name = feature.coef@Dimnames[[1]][feature.coef@i + 1], coefficient = feature.coef@x)
-
-  feature.coef = feature.coef[-c(1), ] # remove Intercept
-  feature.coef$auc = apply(data.matrix[,feature.coef$name], 2,function(x){
-    suppressMessages(roc <- pROC::roc(label, x)  )
-    roc$auc
-  })
-  row.names(feature.coef) <- feature.coef$name
-  feature.coef
-
-
-}
-
-
-#' Perform multiple round lasso to select stable feature
-#'
-#' @param data.matrix Row is sample
-#' @param label
-#' @param folds
-#' @param seed
-#' @param family Default binomial
-#' @param n 100
-#' @param cores 50
-#' @param type.measure class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.
-#' @param scale Default TRUE
-#'
-#' @return
-#' @export
-#'
-#' @examples
-lasso.cv.select.feature <- function(data.matrix, label, folds = 5, seed = 666, n = 100,
-                                 family = "binomial", type.measure = "class" ,
-                                 cores = 50, scale=TRUE){
-  library(foreach)
-  library(dplyr)
-  library(parallel, doParallel)
-  library(glmnet)
-
-  if(scale){
-    data.matrix = scale(data.matrix, center = TRUE, scale = TRUE)
-    data.matrix = data.frame(data.matrix, check.names = F, stringsAsFactors = F)
-  }
-
-  set.seed(seed)
-  require(caret)
-  doParallel::registerDoParallel(cores=cores)
-  parallel::mcaffinity(c(1:cores)) # limit cores to use
-
-  res.raw <- foreach::foreach(i=1:n, .combine = rbind, .packages = c("dplyr")) %dopar% {
-
-    set.seed(seed+i)
-    flds <- createFolds(label, k = folds, list = FALSE, returnTrain = FALSE)
-    ind = !(flds == 1)
-
-    cvfit = cv.glmnet(as.matrix(data.matrix[ind,]), label[ind], nfolds = folds-1, # cross validatin fold - 1
-                      family = family, type.measure = type.measure)
-
-
-    feature.coef = coef(cvfit, s=cvfit$lambda.min)
-    feature.coef = data.frame(name = feature.coef@Dimnames[[1]][feature.coef@i + 1], coefficient = feature.coef@x)
-
-    feature.coef = feature.coef[-c(1), ] # remove Intercept
-    feature.coef$auc = apply(data.frame( data.matrix[ind,feature.coef$name]) , 2,function(x){
-      suppressMessages(roc <- pROC::roc(label[ind], x)  )
-      roc$auc
-    })
-
-    feature.coef
-  }
-
-  # identify candidates
-  candidate.occurence <- data.frame( unlist( table(res.raw$name) ), stringsAsFactors = FALSE )
-  colnames(candidate.occurence) <- c("Name","Freq")
-
-  candidate.auc <- aggregate(res.raw%>%select(coefficient, auc), by = list(res.raw$name), FUN = mean)
-  names(candidate.auc) <- c("Name", "Coefficient", "AUC")
-
-  candidate.raw.res <- full_join(candidate.occurence, candidate.auc, by="Name")
-  candidate.raw.res$Freq <- round(candidate.raw.res$Freq/n, 2)
-
-  res = list(Raw = res.raw, Summarized = candidate.raw.res)
-  res
-
-
-}
 
 
 #' Perform multiple rounds differential analysis to select stable feature

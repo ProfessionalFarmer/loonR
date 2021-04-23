@@ -44,7 +44,7 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 #' @export
 #'
 #' @examples plotPCA(df, group, "aaas")
-plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Groups",
+plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Group",
                     main.title = "", alpha=1, return.percentage = FALSE,
                     pre.filter = 0.01, label = NULL, plot3D = FALSE,
                     show.sample.name = FALSE, point.size = 2){
@@ -555,7 +555,7 @@ plotUpset <- function(lt, mode = "intersect"){
 #' @examples
 #' convertDfToNumeric(df)
 convertDfToNumeric <- function(df){
-  data.frame(sapply(df, function(x) as.numeric(as.character(x))))
+  data.frame(sapply(df, function(x) as.numeric(as.character(x))), check.names = FALSE)
 }
 
 
@@ -590,6 +590,14 @@ scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRU
   df = data.frame(df, check.names = FALSE)
   df
 }
+
+
+
+
+
+
+
+
 
 
 

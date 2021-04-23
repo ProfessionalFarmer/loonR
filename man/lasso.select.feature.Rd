@@ -11,7 +11,7 @@ lasso.select.feature(
   seed = 666,
   family = "binomial",
   type.measure = "auc",
-  s = NA,
+  s = NULL,
   scale = TRUE
 )
 }

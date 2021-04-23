@@ -4,12 +4,20 @@
 \alias{build.logistic.model}
 \title{Title}
 \usage{
-build.logistic.model(df, group, seed = 666, scale = TRUE)
+build.logistic.model(
+  df,
+  group,
+  seed = 666,
+  scale = TRUE,
+  direction = "backward"
+)
 }
 \arguments{
 \item{df}{Column is gene/miRNA, Row is sample}
 
 \item{group}{Two levels. Second unique variable is defined as experiment group}
+
+\item{direction}{backward  c("both", "backward", "forward")}
 }
 \value{
 

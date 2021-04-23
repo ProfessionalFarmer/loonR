@@ -14,7 +14,8 @@ MA_plot(
   mlab = "Log2 Fold Change",
   alab = "Average Expression",
   restrict.vector = NA,
-  label = NA
+  label = NA,
+  col.pal = c("blue", "gray", "red")
 )
 }
 \arguments{
@@ -37,6 +38,8 @@ MA_plot(
 \item{restrict.vector}{A TURE/FALSE factor. Only show TRUE point in the vector.}
 
 \item{label}{Point names which you want to show in plot. If you don't want to show, set NA}
+
+\item{col.pal}{Default: c("blue", "gray", "red"). A vector with 3 elements. For significantly down, not significant, significantly up}
 }
 \value{
 

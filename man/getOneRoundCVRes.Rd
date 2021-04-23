@@ -4,7 +4,7 @@
 \alias{getOneRoundCVRes}
 \title{Title}
 \usage{
-getOneRoundCVRes(df, label, k, seed = 1, times = 1)
+getOneRoundCVRes(df, label, k, seed = 1, times = 1, type = "response")
 }
 \arguments{
 \item{df}{data.frame. Row is sample, col is gene}
@@ -14,6 +14,8 @@ getOneRoundCVRes(df, label, k, seed = 1, times = 1)
 \item{k}{Folds}
 
 \item{times}{Default: 1. the number of pieces was use to predict. E.g. times = 5, will run 5 times, each time use a different piece to predict.}
+
+\item{type}{"response" or "link"}
 }
 \value{
 

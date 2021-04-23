@@ -4,7 +4,14 @@
 \alias{cross.validation}
 \title{Title}
 \usage{
-cross.validation(df = "", label = "", k = 5, n = 100, scale = TRUE)
+cross.validation(
+  df = "",
+  label = "",
+  k = 5,
+  n = 100,
+  scale = TRUE,
+  type = "response"
+)
 }
 \arguments{
 \item{df}{data.frame. Row is sample, col is gene}
@@ -16,10 +23,17 @@ cross.validation(df = "", label = "", k = 5, n = 100, scale = TRUE)
 \item{n}{Repeat times}
 
 \item{scale}{TRUE}
+
+\item{type}{"response" or "link"}
 }
 \value{
 
 }
 \description{
 Title
+}
+\examples{
+cv.res <- loonR::cross.validation(miR.df[, cf.candidates],
+            group == "Cancer",
+            k = 10, n = 100)
 }

@@ -69,7 +69,7 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
 
 #' Calculate p value by t.test manually
 #'
-#' @param df
+#' @param df Row is gene, column is sample
 #' @param group
 #' @param cal.AUC
 #' @param exclude.zore
@@ -148,6 +148,7 @@ ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, 
 
   }
   res = data.frame(res, stringsAsFactors = F, check.names = F)
+  res$P <- as.numeric(res$P)
   res$`BH-Adjusted P` <- p.adjust(res$P, method = "BH")
   res$Difference <- as.numeric(res$Difference)
 
@@ -264,7 +265,8 @@ unique_gene_expression <- function(expression.df, f = "max"){
 #'
 #' @examples loonR::volcano_plot( tissue.exp.df.res$logFC, tissue.exp.df.res$adj.P.Val, lg2fc = 0.5, p = 0.05, label = label, restrict.vector = (tissue.exp.df.res$AUC > 0.7 & tissue.exp.df.res$AveExpr > 10)  )
 volcano_plot <- function(x, y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)",
-                         lg2fc = 1, p = 0.05, restrict.vector=NA, label = NA, title = '', col.pal=c("blue", "gray", "red") ){
+                         lg2fc = 1, p = 0.05, restrict.vector=NA, label = NA,
+                         title = '', col.pal=c("blue", "gray", "red") ){
   # add text
   # https://biocorecrg.github.io/CRG_RIntroduction/volcano-plots.html
 
@@ -309,7 +311,8 @@ volcano_plot <- function(x, y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)
   ) +
     geom_vline(xintercept=c(-lg2fc, lg2fc), col="gray") +
     # rremove("legend") +
-    geom_hline(yintercept=-log10(p), col="gray")
+    geom_hline(yintercept=-log10(p), col="gray") +
+    cowplot::theme_cowplot(font_family = "Arial")
 
 }
 
@@ -327,13 +330,15 @@ volcano_plot <- function(x, y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)
 #' @param alab Default 'Average Expression'
 #' @param restrict.vector  A TURE/FALSE factor. Only show TRUE point in the vector.
 #' @param label Point names which you want to show in plot. If you don't want to show, set NA
+#' @param col.pal Default: c("blue", "gray", "red"). A vector with 3 elements. For significantly down, not significant, significantly up
 #'
 #' @return
 #' @export
 #'
 #' @examples MA_plot(tissue.exp.df.res$logFC, tissue.exp.df.res$AveExpr, tissue.exp.df.res$adj.P.Val)
 MA_plot <- function(M, A, p, m.cutoff=0, a.cutoff=0, p.cutoff=0.05,
-                    mlab="Log2 Fold Change", alab="Average Expression", restrict.vector=NA, label = NA){
+                    mlab="Log2 Fold Change", alab="Average Expression",
+                    restrict.vector=NA, label = NA, col.pal=c("blue", "gray", "red") ){
 
   df = data.frame(M=M, A=A, P = p, label = label, stringsAsFactors = FALSE)
 
@@ -357,9 +362,9 @@ MA_plot <- function(M, A, p, m.cutoff=0, a.cutoff=0, p.cutoff=0.05,
   ggscatter(df,
             x="A", y="M",
             xlab = alab, ylab = mlab,
-            color = "Significant", palette = c("blue", "gray",  "red"),
+            color = "Significant", palette = col.pal,
             legend = "right", label = "label", font.label = c(12, "plain", "black"), repel = TRUE
-  )
+  ) + cowplot::theme_cowplot(font_family = "Arial")
 
 
 

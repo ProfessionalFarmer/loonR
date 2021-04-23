@@ -15,6 +15,8 @@ ttest_differential(
 )
 }
 \arguments{
+\item{df}{Row is gene, column is sample}
+
 \item{alternative}{c("two.sided", "less", "greater")}
 }
 \value{

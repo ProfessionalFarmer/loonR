@@ -115,12 +115,13 @@ suppa.get.final.table <- function(sample.names = "", psi = "", dpsi = "", event.
   #
   # final_table <- final_table[!is.nan(final_table$dPSI),]
   # correct p value, do not use
-  final_table$cpval <- p.adjust(final_table$p_value, method = "bonferroni")
+  final_table$cpval <- p.adjust(final_table$p_value, method = "BH")
 
   final_table$log10pval <- -log10(final_table$p_value)
 
   # inf -> 4
   if( sum(is.infinite(final_table$log10pval)) > 0 ){
+    final_table[is.infinite(final_table$log10pval),]$p_value <- 0.0001
     final_table[is.infinite(final_table$log10pval),]$log10pval <- 4
   }
 
@@ -128,11 +129,11 @@ suppa.get.final.table <- function(sample.names = "", psi = "", dpsi = "", event.
   # suppa performs log10 transformation. I recover the real average TPM and convert to log2 transformation
   # this is different from suppa tutorial
   final_table$mean_TPM <- 10^final_table$mean_TPM
-  final_table$logRNAc <- log2(final_table$mean_TPM)
+  final_table$logRNAc <- log2(final_table$mean_TPM+1) # avoid minus expression
 
   final_table$sig <- "not sig"
   final_table[final_table$p_value < pval.cutoff &
-                final_table$mean_TPM > tpm.cutoff &
+                final_table$logRNAc > tpm.cutoff &
                 ( final_table$dPSI  > dpsi.cutoff | final_table$dPSI < -dpsi.cutoff ) ,]$sig <- "sig"
 
 

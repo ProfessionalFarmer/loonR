@@ -5,11 +5,12 @@
 #' @param label TRUE/FALSE vector
 #' @param k Folds
 #' @param times Default: 1. the number of pieces was use to predict. E.g. times = 5, will run 5 times, each time use a different piece to predict.
+#' @param type "response" or "link"
 #'
 #' @return
 #'
 #' @examples
-getOneRoundCVRes <- function(df, label, k, seed = 1, times = 1){
+getOneRoundCVRes <- function(df, label, k, seed = 1, times = 1, type = "response"){
 
   set.seed(666+seed)
   require(caret)
@@ -32,7 +33,7 @@ getOneRoundCVRes <- function(df, label, k, seed = 1, times = 1){
     # The type="response" option tells R to output probabilities of the form P(Y = 1|X), as opposed to other information such as the logit.
     suppressWarnings( glm.fit <- glm(label ~ ., data = lg.df, family = binomial(logit)) )
 
-    pre.res <- predict(glm.fit, df[piece.ind, ])
+    pre.res <- predict(glm.fit, df[piece.ind, ], type = type)
 
     data.frame(Name  = names(pre.res),
                Logit = pre.res,
@@ -56,12 +57,16 @@ getOneRoundCVRes <- function(df, label, k, seed = 1, times = 1){
 #' @param k Folds
 #' @param n Repeat times
 #' @param scale TRUE
+#' @param type "response" or "link"
 #'
 #' @return
 #' @export
 #'
 #' @examples
-cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE){
+#' cv.res <- loonR::cross.validation(miR.df[, cf.candidates],
+#'             group == "Cancer",
+#'             k = 10, n = 100)
+cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE, type = "response"){
 
   # df = up.mirs.exp
   # label = mir.sample.group
@@ -86,7 +91,7 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE){
   cv.res <- foreach::foreach(i= 1:n, .combine = rbind, .packages="foreach", .export=c("getOneRoundCVRes")) %do% {
   #res <- foreach::foreach(i= 1:n, .combine = rbind) %do% {
 
-    getOneRoundCVRes(df, label, k, seed=i)
+    getOneRoundCVRes(df, label, k, seed=i, type = type)
 
   }
 
@@ -102,12 +107,15 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE){
 #'
 #' @param df Column is gene/miRNA, Row is sample
 #' @param group Two levels. Second unique variable is defined as experiment group
+#' @param seed
+#' @param scale
+#' @param direction backward  c("both", "backward", "forward")
 #'
 #' @return
 #' @export
 #'
 #' @examples
-build.logistic.model <- function(df, group, seed = 666, scale=TRUE){
+build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = "backward"){
 
   cat("Pls note: Second unique variable is defined as experiment group\n")
 
@@ -124,7 +132,13 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE){
   # The type="response" option tells R to output probabilities of the form P(Y = 1|X), as opposed to other information such as the logit.
   suppressWarnings( glm.fit <- glm(label ~ ., data = lg.df, family = binomial(logit)) )
 
-  glm.fit
+  elimination = step(glm.fit, direction = direction, trace = 0)
+
+
+  list(model=glm.fit,
+       StepwiseModel=elimination,
+       eliminationCandidates=stringr::str_remove_all(names(unclass(coef(elimination))[-c(1)]),'`')
+       )
 
 }
 
@@ -334,12 +348,14 @@ loo.cv.cox <- function(df, status, time,  seed=999, label=NA, scale =TRUE){
 #'
 #' @param pred Predicted score
 #' @param labels True label
+#' @param best.cutoff
+#' @param digit 2 for 0.01, 3 for 0.001
 #'
 #' @return
 #' @export
 #'
 #' @examples get_performance(risk.probability, label)
-get_performance <- function(pred, labels, best.cutoff =NA){  #  x="best", input = "threshold"
+get_performance <- function(pred, labels, best.cutoff =NA, digit = 2){  #  x="best", input = "threshold"
 
   library(pROC)
   library(caret)
@@ -352,6 +368,9 @@ get_performance <- function(pred, labels, best.cutoff =NA){  #  x="best", input 
   # input="threshold"
 
   input="threshold"
+
+  string.format <- paste0("%.",digit,"f (%.",digit,"f-%.",digit,"f)")
+
 
   if( anyNA(best.cutoff) ){
 
@@ -373,7 +392,7 @@ get_performance <- function(pred, labels, best.cutoff =NA){  #  x="best", input 
 
   or <- vcd::oddsratio(results.tl,log=FALSE)
   or.ci <- confint(vcd::oddsratio(results.tl,log=FALSE), level = 0.95)
-  or <- sprintf("%.2f (%.2f-%.2f)",exp(or$coefficients),or.ci[1],or.ci[2]) # Odds ratio
+  or <- sprintf(string.format, exp(or$coefficients),or.ci[1],or.ci[2]) # Odds ratio
 
   # count sample
   t.c <- sum(labels==TRUE)
@@ -384,7 +403,7 @@ get_performance <- function(pred, labels, best.cutoff =NA){  #  x="best", input 
   roc.obj <- pROC::roc(labels, pred, ci=TRUE, plot=FALSE)
   auc <- pROC::ci(roc.obj,boot.n=2000)[c(2, 1, 3)]
   auc <- round(auc,2)
-  auc <- sprintf("%s (%.2f-%.2f)", auc[1], auc[2], auc[3])
+  auc <- sprintf(string.format, auc[1], auc[2], auc[3])
 
   # get performance
   set.seed(100)
@@ -402,11 +421,11 @@ get_performance <- function(pred, labels, best.cutoff =NA){  #  x="best", input 
     n.c,
     t.c,
     auc[1], # AUC
-    sprintf("%.2f (%.2f-%.2f)", others$accuracy[1,c("50%")],  others$accuracy[1,c("2.5%")],  others$accuracy[1,c("97.5%")]), # accuracy
-    sprintf("%.2f (%.2f-%.2f)", others$precision[1,c("50%")], others$precision[1,c("2.5%")], others$precision[1,c("97.5%")]),# precision
-    sprintf("%.2f (%.2f-%.2f)", others$recall[1,c("50%")],    others$recall[1,c("2.5%")],    others$recall[1,c("97.5%")]),#recall
-    sprintf("%.2f (%.2f-%.2f)", others$specificity[1,c("50%")],others$specificity[1,c("2.5%")],others$specificity[1,c("97.5%")]),#specificity
-    sprintf("%.2f (%.2f-%.2f)", others$npv[1,c("50%")],others$npv[1,c("2.5%")],others$npv[1,c("97.5%")]),#npv
+    sprintf(string.format, others$accuracy[1,c("50%")],  others$accuracy[1,c("2.5%")],  others$accuracy[1,c("97.5%")]), # accuracy
+    sprintf(string.format, others$precision[1,c("50%")], others$precision[1,c("2.5%")], others$precision[1,c("97.5%")]),# precision
+    sprintf(string.format, others$recall[1,c("50%")],    others$recall[1,c("2.5%")],    others$recall[1,c("97.5%")]),#recall
+    sprintf(string.format, others$specificity[1,c("50%")],others$specificity[1,c("2.5%")],others$specificity[1,c("97.5%")]),#specificity
+    sprintf(string.format, others$npv[1,c("50%")],others$npv[1,c("2.5%")],others$npv[1,c("97.5%")]),#npv
     or  # Odds ratio
   )
   names(res) <- c("Ncount", "Tcount", "AUC (CI)",  "Accuracy", "Precision", "Recall", "Specificity", "NPV","Odds Ratio")
@@ -448,6 +467,8 @@ multivariate_or <- function(d.frame, label, scale=TRUE){
     Estimate = as.vector(summary(res)$coefficients[,1] ),
     Pr = as.vector(summary(res)$coefficients[,4] )
   )
+
+  row.names(res) <- stringr::str_remove_all(row.names(res), "`")
 
   res <- data.frame(Vairate=row.names(res), round(res,3) )
   res[,2:ncol(res)] <- data.frame(lapply(res[,2:ncol(res)],as.numeric))
@@ -1363,7 +1384,7 @@ lasso_best_lamda <- function(d.matrix, group, family = "binomial", type.measure 
 #' @examples
 lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
                                 family = "binomial", type.measure = "auc" ,
-                                s = NA, scale=TRUE){
+                                s = NULL, scale=TRUE){
   library(foreach)
   library(dplyr)
   library(glmnet)
@@ -1381,9 +1402,9 @@ lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
                       family = family, type.measure = type.measure)
 
   if (is.null(s)) {
-    s = lambda.min
-  }else{
     s = cvfit$lambda.min
+  }else{
+    s = s
   }
 
   plot(cvfit)
@@ -1429,7 +1450,7 @@ lasso.cv.select.feature <- function(data.matrix, label, folds = 5, seed = 666, n
 
   if(scale){
     data.matrix = scale(data.matrix, center = TRUE, scale = TRUE)
-    data.matrix = data.frame(data.matrix, check.names = T, stringsAsFactors = F)
+    data.matrix = data.frame(data.matrix, check.names = F, stringsAsFactors = F)
   }
 
   set.seed(seed)
@@ -1601,5 +1622,40 @@ get.AUC <- function(pred, label){
   auc(roc_obj)
 
 }
+
+
+
+#' Split sample by group
+#'
+#' @param sample Vector
+#' @param group Vector
+#' @param seed Default 666
+#' @param fraction Default 0.5
+#'
+#' @return list(Train=train.design, Validation=validation.design)
+#' @export
+#'
+#' @examples
+splitSampleByGroup <- function(sample=NA, group=NA, seed = 666, fraction = 0.5){
+
+  if(is.na(sample) | is.na(group)){
+    stop("Sample or group should not be NA")
+  }else{
+    df = data.frame(Sample= sample, Group = group)
+  }
+
+
+
+  set.seed(seed)
+
+  train.design <- df %>% group_by(Group) %>% sample_frac(fraction)
+  validation.design <- anti_join(df, train.design, by = 'Sample')
+
+  list(Train=train.design,
+       Validation=validation.design)
+
+}
+
+
 
 

@@ -2,8 +2,7 @@
 % Please edit documentation in R/FeatureSelection.R
 \name{feature.selection.RFE}
 \alias{feature.selection.RFE}
-\title{Recursive feature elimnation
-Recursive feature elimnation (rfe) offers a rigorous way to determine the important variables before you even feed them into a ML algo.}
+\title{Recursive feature elimnation}
 \usage{
 feature.selection.RFE(
   feature.df,
@@ -42,8 +41,10 @@ feature.selection.RFE(
 }
 \description{
 Recursive feature elimnation
-Recursive feature elimnation (rfe) offers a rigorous way to determine the important variables before you even feed them into a ML algo.
 }
 \examples{
 loonR::feature.selection.RFE(miR.df, group, functions="lrFuncs")
+
+Recursive feature elimnation (rfe) offers a rigorous way to determine the important variables before you even feed them into a ML algo.
+
 }

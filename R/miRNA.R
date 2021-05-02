@@ -15,7 +15,7 @@ normalize_miRNACount_toCPM <- function(count.df, group, method = "TMM", log = TR
 
   dge <- DGEList(count.df, group = group)
   dge <- calcNormFactors(dge, method = method)
-  #dge <- estimateCommonDisp(dge, verbose=TRUE)
+  dge <- estimateCommonDisp(dge, verbose=TRUE)
   cpm <- cpm(dge, log = log, prior.count = prior.count)
   cpm
 }

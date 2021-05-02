@@ -701,13 +701,14 @@ multivariate_cox <- function(d.frame, status, time, scale=TRUE){
 #' @param show_column_names Default False
 #' @param cluster_rows
 #' @param z.score.cutoff Default 2
+#' @param cluster_columns
 #'
 #' @return A heatmap plot by complex heatmap
 #' @export
 #'
 #' @examples heatmap.with.lgfold.riskpro(data.tmp[candi,],label, logfd,  risk.pro)
 heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, scale=TRUE, group.name="Cancer", bar.name = "Log2FC", ylim = c(0, 1),
-                                        show.lgfold = TRUE, show.risk.pro = TRUE, height = 5, show_column_names = FALSE, cluster_rows = FALSE, z.score.cutoff = 2 ){
+                                        show.lgfold = TRUE, show.risk.pro = TRUE, height = 5, show_column_names = FALSE, cluster_rows = FALSE, cluster_columns = FALSE, z.score.cutoff = 2 ){
 
   if (anyNA(lgfold)){
     show.lgfold = FALSE
@@ -774,7 +775,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
   if(show.lgfold){
 
     Heatmap(heatmap.df, col = c("#0c3e74","#77a8cd","white","#d86652","#7e0821"),
-            name = " ", cluster_rows = cluster_rows, cluster_columns = FALSE,
+            name = " ", cluster_rows = cluster_rows, cluster_columns = cluster_columns,
             show_row_names = TRUE, show_column_names = show_column_names, height = unit(height, "cm"),
             top_annotation = ha,
             right_annotation = row_ha  )
@@ -782,7 +783,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
   }else{
 
     Heatmap(heatmap.df, col = c("#0c3e74","#77a8cd","white","#d86652","#7e0821"),
-            name = " ", cluster_rows = cluster_rows, cluster_columns = FALSE,
+            name = " ", cluster_rows = cluster_rows, cluster_columns = cluster_columns,
             show_row_names = TRUE, show_column_names = show_column_names, height = unit(height, "cm"),
             top_annotation = ha  )
 

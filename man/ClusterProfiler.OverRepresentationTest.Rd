@@ -7,6 +7,7 @@
 ClusterProfiler.OverRepresentationTest(
   gene,
   minGSSize = 10,
+  qvalue = 0.05,
   GO = TRUE,
   KEGG = TRUE,
   MSigDb = TRUE,
@@ -18,6 +19,8 @@ ClusterProfiler.OverRepresentationTest(
 
 \item{minGSSize}{10}
 
+\item{qvalue}{0.05}
+
 \item{GO}{TRUE}
 
 \item{KEGG}{TRUE}
@@ -25,8 +28,6 @@ ClusterProfiler.OverRepresentationTest(
 \item{MSigDb}{TRUE}
 
 \item{Hallmark}{TRUE}
-
-\item{qvalue}{0.05}
 }
 \value{
 

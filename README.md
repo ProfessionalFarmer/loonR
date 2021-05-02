@@ -4,7 +4,7 @@ The 'loon' is taken from the word 'Kowloon'. Loon stands for dragon in chinese.
 
 ## About this package
 
-Organized R function will reduce repeat work.
+Organized R function will reduce repeated work.
 
 Don't reinvent the wheel, just standing on the shoulders of giants.
 

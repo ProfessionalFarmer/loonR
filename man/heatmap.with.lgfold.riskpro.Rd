@@ -18,6 +18,7 @@ heatmap.with.lgfold.riskpro(
   height = 5,
   show_column_names = FALSE,
   cluster_rows = FALSE,
+  cluster_columns = FALSE,
   z.score.cutoff = 2
 )
 }
@@ -37,6 +38,8 @@ heatmap.with.lgfold.riskpro(
 \item{show.lgfold}{= TRUE。 Whether to show right panel.}
 
 \item{show_column_names}{Default False}
+
+\item{cluster_columns}{}
 
 \item{z.score.cutoff}{Default 2}
 }

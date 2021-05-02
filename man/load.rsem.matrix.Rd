@@ -2,7 +2,7 @@
 % Please edit documentation in R/RNA.R
 \name{load.rsem.matrix}
 \alias{load.rsem.matrix}
-\title{Title}
+\title{Load quantification result from RSEM by tximport}
 \usage{
 load.rsem.matrix(dirpath, isoform = FALSE, subdirs = TRUE)
 }
@@ -17,7 +17,7 @@ load.rsem.matrix(dirpath, isoform = FALSE, subdirs = TRUE)
 
 }
 \description{
-Title
+Load quantification result from RSEM by tximport
 }
 \examples{
 Directory tree subdirs = TRUE: dir/sample/prefix.genes.results or

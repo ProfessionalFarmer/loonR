@@ -29,6 +29,7 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
     # http://master.bioconductor.org/packages/release/workflows/vignettes/rnaseqGene/inst/doc/rnaseqGene.html#exploratory-analysis-and-visualization
     keep <- rowSums(df) > pre.filter
     df <- df[keep,]
+    df <- log2(df+1)
   }
 
   group <- factor( group, levels = unique(as.character(group)), labels = c("Control","Experiment") )
@@ -172,6 +173,10 @@ ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, 
 DESeq2_differential <- function(rawcount, group, pre.filter = 0, return.normalized.df = FALSE, cal.AUC = TRUE){
 
   group = factor( group, levels = unique(as.character(group)), labels = c("Control","Experiment") )
+  rnames <- row.names(rawcount)
+  rawcount <- loonR::convertDfToNumeric(rawcount)
+  row.names(rawcount) <- rnames
+  rm(rnames)
 
   # https://lashlock.github.io/compbio/R_presentation.html
   if(pre.filter!=0){
@@ -181,20 +186,25 @@ DESeq2_differential <- function(rawcount, group, pre.filter = 0, return.normaliz
     rawcount <- rawcount[keep,]
   }
 
+
+
   library(DESeq2)
   # some values in assay are not integers
   countData =  as.data.frame(sapply(rawcount, as.integer),row.names = row.names(rawcount) )
-  # Must add first column
-  countData = data.frame(Gene=row.names(countData),countData)
+
+  ## Must add first column if tidy=TRUE
+  #countData = data.frame(Gene=row.names(countData),countData)
 
 
   # Construct DESEQDataSet Object
   dds <- DESeqDataSetFromMatrix(
     countData=countData,
-    colData=data.frame(row.names = colnames(rawcount),
-                       Sample = colnames(rawcount),
-                       Group = group),
-    design=~Group, tidy = TRUE)
+    colData=data.frame(
+      row.names = colnames(rawcount),
+      Sample = colnames(rawcount),
+      Group = group),
+      design=~Group
+    )
 
   # estimation of size factors（estimateSizeFactors) --> estimation of dispersion（estimateDispersons) --> Negative Binomial GLM fitting and Wald statistics（nbinomWaldTest）
   dds <- DESeq(dds)
@@ -219,6 +229,8 @@ DESeq2_differential <- function(rawcount, group, pre.filter = 0, return.normaliz
 
     res$AUC = AUC[row.names(res)]
   }
+  res$REF <- row.names(res)
+
   res
 }
 
@@ -399,7 +411,12 @@ load.salmon.matrix <- function(dirPath, isoform = TRUE){
 
   names(sample.salmon.pathes) <- sample.names
 
-  tpm <- tximport(sample.salmon.pathes, type = "salmon", txIn = isoform, txOut = isoform)
+  if(isoform){
+    tpm <- tximport(sample.salmon.pathes, type = "salmon", txIn = isoform, txOut = isoform)
+  }else{
+    tpm <- tximport(sample.salmon.pathes, type = "salmon", txIn = isoform, txOut = isoform, geneIdCol=1)
+  }
+
 
   tpm
 
@@ -407,7 +424,7 @@ load.salmon.matrix <- function(dirPath, isoform = TRUE){
 
 
 
-#' Title
+#' Load quantification result from RSEM by tximport
 #'
 #' @param dirpath Simple set the directory which contains RSEM output folder
 #' @param isoform specify data type. isoforma specific or not.
@@ -450,6 +467,29 @@ load.rsem.matrix <- function(dirpath, isoform = FALSE, subdirs = TRUE){
   names(sample.rsem.pathes) <- sample.names
 
   expr <- tximport(sample.rsem.pathes, type = "rsem", txIn = isoform, txOut = isoform)
+
+  # add isoform percent 20210502
+  if(isoform){
+    library(dplyr)
+
+    iso.list <- lapply(names(sample.rsem.pathes), function(sample){
+        sample.iso.df <- read.table(sample.rsem.pathes[sample], header = T, sep = "\t")
+        iso.pct <- sample.iso.df %>% select(transcript_id, gene_id, IsoPct)
+        colnames(iso.pct) <- c("transcript", "gene", sample)
+        iso.pct
+    })
+    names(iso.list) <- names(sample.rsem.pathes)
+    iso.pct.res <- iso.list %>% Reduce(function(dtf1,dtf2) full_join(dtf1,dtf2,by=c("transcript", "gene") ), .)
+    row.names(iso.pct.res) <- iso.pct.res$transcript
+
+    # corrsponded with tximport
+    iso.pct.res <- iso.pct.res[ row.names(expr$abundance), ]
+
+    expr$iso.gene.map = iso.pct.res[,c(1,2)]
+
+    expr$IsoPct <- iso.pct.res[,-c(1,2)]
+  }
+
 
   expr
 
@@ -512,6 +552,9 @@ draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.t
 #'
 #' @examples
 log2dfQantileNormalization <- function(df){
-  limma::normalizeBetweenArrays(df, method = "quantile")
+  res <- limma::normalizeBetweenArrays(df, method = "quantile")
+  res <- as.data.frame(res)
+  res
+
 }
 

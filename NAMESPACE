@@ -3,6 +3,7 @@
 export(AllEqual)
 export(ClusterProfiler.GSEA)
 export(ClusterProfiler.OverRepresentationTest)
+export(ClusterProfiler.OverRepresentationTest.Compare)
 export(DESeq2_differential)
 export(MA_plot)
 export(SNF_Similairity_Hist)

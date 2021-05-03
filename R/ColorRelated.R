@@ -46,6 +46,7 @@ get.ggsci.color <- function(palette="nrc", n = 7, alpha=1){
 #' @param alpha default 1
 #' @param n number of colors, default n = 7
 #' @param install Default FALSE. TURE if Install related package
+#' @param show.color Default FALSE
 #'
 #' @return
 #' @export
@@ -76,7 +77,7 @@ get.ggsci.color <- function(palette="nrc", n = 7, alpha=1){
 #' ggthemes color: https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/
 #'
 #'
-get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE){
+get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE, show.color=FALSE){
 
   if(install){
     # wesanderson
@@ -99,7 +100,9 @@ get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE){
     # The palette with grey: color blind
     `cbPalette` = c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"),
     # The palette with black: color blind
-    `cbbPalette` = c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7")
+    `cbbPalette` = c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"),
+    # selected from public
+    `sp1` = c("#00AFBB", "#E7B800", "#0392cf", "#7570B3", "#FC4E07", "#BB3099", "#ADC252", "#be9b7b", "#75A3BA", "#bbbbbb"  )
   )
 
 
@@ -122,10 +125,16 @@ get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE){
      colors = ggpubr::get_palette(palette = palette, k = n)
   }
 
-  # set alpha
-  scales::alpha(colors, alpha)
-  # scales::show_col(colorBlindGrey8)
 
+
+  # set alpha
+  col.pal <- scales::alpha(colors, alpha)
+  # scales::show_col(colorBlindGrey8)
+  if(show.color){
+    scales::show_col(col.pal)
+  }else{
+    col.pal
+  }
 
 }
 

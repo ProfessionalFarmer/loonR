@@ -219,7 +219,7 @@ DESeq2_differential <- function(rawcount, group, pre.filter = 0, return.normaliz
   # result
   res <- results(dds, pAdjustMethod = "BH")
   # sort by p-value
-  res <- as.data.frame(res[order(res$padj),])
+  res <- as.data.frame(res[order(res$pvalue),])
 
   if(cal.AUC){
     AUC <- apply(normalized.count, 1,function(x){

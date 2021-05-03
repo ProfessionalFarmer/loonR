@@ -10,13 +10,19 @@ plot_waterfall(
   xlab = "Risk probability",
   palette = "jco",
   title = "",
-  yticks.labl = c(0, 0.25, 0.5, 0.75, 1)
+  yticks.labl = c(0, 0.25, 0.5, 0.75, 1),
+  sample = NA,
+  rotate.x = 90
 )
 }
 \arguments{
 \item{xlab}{Risk probability}
 
 \item{yticks.labl}{seq(0,1,by = 0.25) c(0,0.25,0.5,0.75,1)}
+
+\item{sample}{If you want to show sample label, provide a vector}
+
+\item{rotate.x}{Default 90. Rotate x axis text.}
 }
 \value{
 

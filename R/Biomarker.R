@@ -702,13 +702,15 @@ multivariate_cox <- function(d.frame, status, time, scale=TRUE){
 #' @param cluster_rows
 #' @param z.score.cutoff Default 2
 #' @param cluster_columns
+#' @param specified.color Default c("#0c3e74","#77a8cd","white","#d86652","#7e0821")
 #'
 #' @return A heatmap plot by complex heatmap
 #' @export
 #'
 #' @examples heatmap.with.lgfold.riskpro(data.tmp[candi,],label, logfd,  risk.pro)
 heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, scale=TRUE, group.name="Cancer", bar.name = "Log2FC", ylim = c(0, 1),
-                                        show.lgfold = TRUE, show.risk.pro = TRUE, height = 5, show_column_names = FALSE, cluster_rows = FALSE, cluster_columns = FALSE, z.score.cutoff = 2 ){
+                                        show.lgfold = TRUE, show.risk.pro = TRUE, height = 5, show_column_names = FALSE, cluster_rows = FALSE,
+                                        cluster_columns = FALSE, z.score.cutoff = 2, specified.color = c("#0c3e74","#77a8cd","white","#d86652","#7e0821") ){
 
   if (anyNA(lgfold)){
     show.lgfold = FALSE
@@ -774,7 +776,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
   #
   if(show.lgfold){
 
-    Heatmap(heatmap.df, col = c("#0c3e74","#77a8cd","white","#d86652","#7e0821"),
+    Heatmap(heatmap.df, col = specified.color,
             name = " ", cluster_rows = cluster_rows, cluster_columns = cluster_columns,
             show_row_names = TRUE, show_column_names = show_column_names, height = unit(height, "cm"),
             top_annotation = ha,
@@ -782,7 +784,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
 
   }else{
 
-    Heatmap(heatmap.df, col = c("#0c3e74","#77a8cd","white","#d86652","#7e0821"),
+    Heatmap(heatmap.df, col = specified.color,
             name = " ", cluster_rows = cluster_rows, cluster_columns = cluster_columns,
             show_row_names = TRUE, show_column_names = show_column_names, height = unit(height, "cm"),
             top_annotation = ha  )
@@ -1262,25 +1264,37 @@ logit2prob <- function(logit){
 #' @param palette
 #' @param title
 #' @param yticks.labl seq(0,1,by = 0.25) c(0,0.25,0.5,0.75,1)
+#' @param sample If you want to show sample label, provide a vector
+#' @param rotate.x Default 90. Rotate x axis text.
 #'
 #' @return
 #' @export
 #'
 #' @examples loonR::plot_waterfall(average.riskscore$Mean, average.riskscore$Label, xlab = "Risk probability")
-plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette = "jco", title = "", yticks.labl = c(0,0.25,0.5,0.75,1)){
+plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette = "jco", title = "", yticks.labl = c(0,0.25,0.5,0.75,1), sample = NA, rotate.x = 90){
 
     library(ggpubr)
     risk.score = risk.score
     idx = order(risk.score)
     risk.score <- risk.score[idx]
     label = label[idx]
+    if(anyNA(sample)){
+      tmp.df <- data.frame(Risk=risk.score, Class = label, ID=1:length(risk.score) )
+    }else{
+      sample = sample[idx]
+      tmp.df <- data.frame(Risk=risk.score, Class = label, ID=sample )
+    }
 
-
-    tmp.df <- data.frame(Risk=risk.score, Class = label, ID=1:length(risk.score) )
     colnames(tmp.df)[1] <- xlab
-
-    p <- ggbarplot(tmp.df, x = "ID", y = xlab, xlab = "", color = "Class", fill = "Class", palette = palette, legend = "right", title = title) +
-      rremove("x.axis") + rremove("x.text") + rremove("x.ticks")
+    p <- ggbarplot(tmp.df, x = "ID", y = xlab, xlab = "",
+                   color = "Class", fill = "Class",
+                   palette = palette, legend = "right", title = title) +
+      rremove("x.axis") + rremove("x.ticks")
+    if(anyNA(sample)){
+      p <- p + rremove("x.text")
+    }else{
+      p <- p + rotate_x_text(rotate.x)
+    }
 
     if(!anyNA(yticks.labl)){
       p <- p + scale_y_continuous(labels = yticks.labl)

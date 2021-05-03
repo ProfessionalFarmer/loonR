@@ -76,28 +76,16 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
             x = ~PC1, y = ~PC2, z = ~PC3, color = ~Class,  # c('#BF382A', '#0C4B8E')
             colors = loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha) )
 
-  }else if(show.sample.name){
-    library("factoextra")
-    label="all"
-    p <- fviz_pca_ind(df_pca, label="all", habillage=group, pointsize = point.size,
-                      addEllipses=ellipse, ellipse.level=0.95, legend.title = legend.title
-                      ) +
-         scale_color_manual(name = legend.title,
-                            values =loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha),
-                            labels = levels(factor(group)))  +
-      labs(title = main.title)  +
-      theme_minimal() +
-      cowplot::theme_cowplot(font_family = "Arial")
-
-
   }else{
       library(ggplot2)
       library(ggpubr)
-
+      if(show.sample.name){
+        label = row.names(df_pcs)
+      }
       p <- ggscatter(df_pcs, x="PC1", y="PC2", color="Class",
                      palette = loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha),
                      ellipse = ellipse, size = point.size,
-                     label = label) +
+                     label = label, repel = show.sample.name) +
               xlab(percentage[1]) +
               ylab(percentage[2])
 
@@ -390,7 +378,7 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
 #' @export
 #'
 #' @examples loonR::drawScatter(sample.info$before_reads, sample.info$mirdeep2_mapped)
-drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA, color = "jco", title = "", margin = TRUE, xlim = NA, ylim = NA){
+drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA, color = "jco", title = "", margin = TRUE, xlim = NA, ylim = NA, show.sample.name = FALSE){
 
   # http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/78-perfect-scatter-plots-with-correlation-and-marginal-histograms/
 
@@ -418,8 +406,15 @@ drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA, colo
   #   theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
   #         panel.background = element_blank(), axis.line = element_line(colour = "black"))
 
+
+  if(show.sample.name){
+    label = row.names(df_pcs)
+  }
+
   # Main plot
-  pmain <- ggpubr::ggscatter(df, x="x", y="y", color = "Type", palette = color, xlim=xlim, xlab = xlab, ylab = ylab)
+  pmain <- ggpubr::ggscatter(df, x="x", y="y", color = "Type",
+                             label = label, repel = show.sample.name,
+                             palette = color, xlim=xlim, xlab = xlab, ylab = ylab)
 
 
   if (!margin){
@@ -593,7 +588,48 @@ scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRU
 }
 
 
+#' Draw Celventland dot plot
+#'
+#' @param name Names
+#' @param value values
+#' @param group group
+#' @param palette Default aaas, if group not set, use #00AFBB
+#' @param dot.size Default 2
+#' @param ylab
+#' @param legend.title Default "Group"
+#' @param title Default ""
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plotClevelandDot <- function(name, value, group=NA, palette = "aaas", dot.size = 2, ylab = NULL, legend.title = "Group", title = ""){
 
+# http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/
+  library(ggpubr)
+  dfm <- data.frame(Name = name,
+                    Value = value,
+                    Group = group,
+                    stringsAsFactors = FALSE
+                    )
+
+
+  p <- ggdotchart(dfm, x = "Name", y = "Value",
+             color = ifelse(anyNA(group), NA, "Group"),                                # Color by groups
+             # c("#00AFBB", "#E7B800", "#FC4E07")
+             palette = ifelse(anyNA(group)&palette=="aaas","#00AFBB", palette) , # Custom color palette
+             sorting = "descending",                       # Sort value in descending order
+             rotate = TRUE,                                # Rotate vertically
+             dot.size = dot.size,                          # Large dot size
+             y.text.col = TRUE,                            # Color y text by groups
+             ylab = ylab,
+             ggtheme = theme_pubr()                        # ggplot2 theme
+  )+  theme_cleveland()                                      # Add dashed grids
+  p <- ggpar(p, legend.title = legend.title, main = title)
+
+
+
+}
 
 
 

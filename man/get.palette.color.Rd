@@ -4,7 +4,13 @@
 \alias{get.palette.color}
 \title{Use ggpubr function to get all kinds of color palette}
 \usage{
-get.palette.color(palette = "npg", n = 7, alpha = 1, install = FALSE)
+get.palette.color(
+  palette = "npg",
+  n = 7,
+  alpha = 1,
+  install = FALSE,
+  show.color = FALSE
+)
 }
 \arguments{
 \item{palette}{Default npg}
@@ -14,6 +20,8 @@ get.palette.color(palette = "npg", n = 7, alpha = 1, install = FALSE)
 \item{alpha}{default 1}
 
 \item{install}{Default FALSE. TURE if Install related package}
+
+\item{show.color}{Default FALSE}
 }
 \value{
 

@@ -14,7 +14,8 @@ drawScatter(
   title = "",
   margin = TRUE,
   xlim = NA,
-  ylim = NA
+  ylim = NA,
+  show.sample.name = FALSE
 )
 }
 \arguments{

@@ -15,7 +15,8 @@ drawScatter(
   margin = TRUE,
   xlim = NA,
   ylim = NA,
-  show.sample.name = FALSE
+  show.sample.name = FALSE,
+  label = NULL
 )
 }
 \arguments{
@@ -27,7 +28,9 @@ drawScatter(
 
 \item{margin}{Default TRUE, show margin plot}
 
-\item{ylim}{}
+\item{show.sample.name}{Default FALSE}
+
+\item{label}{Default NULL}
 }
 \value{
 ggplot2 object

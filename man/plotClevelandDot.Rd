@@ -12,7 +12,11 @@ plotClevelandDot(
   dot.size = 2,
   ylab = NULL,
   legend.title = "Group",
-  title = ""
+  title = "",
+  cleveland = TRUE,
+  lollipop = FALSE,
+  value.name = "Value",
+  sample.name = "Name"
 )
 }
 \arguments{
@@ -29,6 +33,10 @@ plotClevelandDot(
 \item{legend.title}{Default "Group"}
 
 \item{title}{Default ""}
+
+\item{value.name}{xlab, Default "Value"}
+
+\item{sample.name}{ylab, Default "Name"}
 }
 \value{
 

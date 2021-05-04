@@ -373,12 +373,15 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
 #' @param margin Default TRUE, show margin plot
 #' @param xlim
 #' @param ylim
+#' @param show.sample.name Default FALSE
+#' @param label Default NULL
 #'
 #' @return ggplot2 object
 #' @export
 #'
 #' @examples loonR::drawScatter(sample.info$before_reads, sample.info$mirdeep2_mapped)
-drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA, color = "jco", title = "", margin = TRUE, xlim = NA, ylim = NA, show.sample.name = FALSE){
+drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA, color = "jco", title = "",
+                        margin = TRUE, xlim = NA, ylim = NA, show.sample.name = FALSE, label = NULL ){
 
   # http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/78-perfect-scatter-plots-with-correlation-and-marginal-histograms/
 
@@ -598,12 +601,17 @@ scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRU
 #' @param ylab
 #' @param legend.title Default "Group"
 #' @param title Default ""
+#' @param cleveland
+#' @param lollipop
+#' @param value.name xlab, Default "Value"
+#' @param sample.name ylab, Default "Name"
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plotClevelandDot <- function(name, value, group=NA, palette = "aaas", dot.size = 2, ylab = NULL, legend.title = "Group", title = ""){
+plotClevelandDot <- function(name, value, group=NA, palette = "aaas", dot.size = 2, ylab = NULL, legend.title = "Group", title = "",
+                            cleveland = TRUE, lollipop = FALSE, value.name = "Value",  sample.name = "Name"){
 
 # http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/
   library(ggpubr)
@@ -612,25 +620,40 @@ plotClevelandDot <- function(name, value, group=NA, palette = "aaas", dot.size =
                     Group = group,
                     stringsAsFactors = FALSE
                     )
+  if(lollipop){
+    cleveland = FALSE
+  }
+  if(cleveland){
+    p <- ggdotchart(dfm, x = "Name", y = "Value",
+               color = ifelse(anyNA(group), "black", "Group"),                                # Color by groups
+               # c("#00AFBB", "#E7B800", "#FC4E07")
+               palette = ifelse(anyNA(group)&palette=="aaas","#00AFBB", palette) , # Custom color palette
+               sorting = "descending",                       # Sort value in descending order
+               rotate = TRUE,                                # Rotate vertically
+               dot.size = dot.size,                          # Large dot size
+               y.text.col = TRUE,                            # Color y text by groups
+               ylab = ylab,
+               ggtheme = theme_pubr()                        # ggplot2 theme
+    )  +  theme_cleveland()                                      # Add dashed grids
+  }else if(lollipop){
+    p <- ggdotchart(dfm, x = "Name", y = "Value",
+                    color = ifelse(anyNA(group), "black", "Group"),                                # Color by groups
+                    # c("#00AFBB", "#E7B800", "#FC4E07")
+                    palette = ifelse(anyNA(group)&palette=="aaas","#00AFBB", palette) , # Custom color palette
+                    sorting = "ascending",                        # Sort value in descending order
+                    add = "segments",                             # Add segments from y = 0 to dots
+                    ggtheme = theme_pubr()    # ggplot2 theme
+    )
 
 
-  p <- ggdotchart(dfm, x = "Name", y = "Value",
-             color = ifelse(anyNA(group), NA, "Group"),                                # Color by groups
-             # c("#00AFBB", "#E7B800", "#FC4E07")
-             palette = ifelse(anyNA(group)&palette=="aaas","#00AFBB", palette) , # Custom color palette
-             sorting = "descending",                       # Sort value in descending order
-             rotate = TRUE,                                # Rotate vertically
-             dot.size = dot.size,                          # Large dot size
-             y.text.col = TRUE,                            # Color y text by groups
-             ylab = ylab,
-             ggtheme = theme_pubr()                        # ggplot2 theme
-  )+  theme_cleveland()                                      # Add dashed grids
-  p <- ggpar(p, legend.title = legend.title, main = title)
+  }
 
+
+  p <- ggpar(p, legend.title = legend.title, main = title, ylab = value.name, xlab = sample.name)
+  p
 
 
 }
-
 
 
 

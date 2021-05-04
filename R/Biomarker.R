@@ -1288,10 +1288,9 @@ plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette
     colnames(tmp.df)[1] <- xlab
     p <- ggbarplot(tmp.df, x = "ID", y = xlab, xlab = "",
                    color = "Class", fill = "Class",
-                   palette = palette, legend = "right", title = title) +
-      rremove("x.axis") + rremove("x.ticks")
+                   palette = palette, legend = "right", title = title)
     if(anyNA(sample)){
-      p <- p + rremove("x.text")
+      p <- p + rremove("x.text") + rremove("x.axis") + rremove("x.ticks")
     }else{
       p <- p + rotate_x_text(rotate.x)
     }

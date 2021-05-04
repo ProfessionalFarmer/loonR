@@ -88,6 +88,49 @@ id_mapping <- function(IDS, key = "ENSEMBL", column = c("SYMBOL") ){
 
 }
 
+#' Retrieve full ID mapping table
+#'
+#' @return A full annotation table
+#' @export
+#'
+#' @examples get_full_mapping_table
+get_full_mapping_table <- function(){
 
+  # https://www.biostars.org/p/384296/
+  require('biomaRt')
+
+  mart <- useMart('ENSEMBL_MART_ENSEMBL')
+  mart <- useDataset('hsapiens_gene_ensembl', mart)
+
+  # Check that it is indeed GRCh38:
+  searchDatasets(mart = mart, pattern = 'hsapiens')
+
+  # Now generate the table:
+  transcriptLookup <- getBM(
+      mart = mart,
+      attributes = c(
+        'ensembl_transcript_id',
+        'ensembl_gene_id',
+        'transcript_mane_select',
+        'transcript_biotype'),
+      uniqueRows = TRUE)
+
+  geneLookup <- getBM(
+    mart = mart,
+    attributes = c(
+      'ensembl_transcript_id',
+      'ensembl_gene_id',
+      'hgnc_symbol',
+      'hgnc_id',
+      'external_gene_name',
+      "entrezgene_id",
+      'gene_biotype'),
+    uniqueRows = TRUE)
+
+  annotLookup <- dplyr::full_join(transcriptLookup, geneLookup, by = "ensembl_transcript_id")
+
+  annotLookup
+
+}
 
 

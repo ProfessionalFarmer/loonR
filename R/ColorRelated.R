@@ -102,7 +102,7 @@ get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE, show
     # The palette with black: color blind
     `cbbPalette` = c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"),
     # selected from public
-    `sp1` = c("#00AFBB", "#E7B800", "#0392cf", "#7570B3", "#FC4E07", "#BB3099", "#ADC252", "#be9b7b", "#75A3BA", "#bbbbbb"  )
+    `sp1` = c("#00AFBB", "#E7B800", "#0392cf", "#7570B3", "#FC4E07", "#BB3099", "#ADC252", "#be9b7b", "#75A3BA", "#bbbbbb", "#4F7175"  )
   )
 
 

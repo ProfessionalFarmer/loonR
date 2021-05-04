@@ -19,7 +19,8 @@ heatmap.with.lgfold.riskpro(
   show_column_names = FALSE,
   cluster_rows = FALSE,
   cluster_columns = FALSE,
-  z.score.cutoff = 2
+  z.score.cutoff = 2,
+  specified.color = c("#0c3e74", "#77a8cd", "white", "#d86652", "#7e0821")
 )
 }
 \arguments{
@@ -39,9 +40,9 @@ heatmap.with.lgfold.riskpro(
 
 \item{show_column_names}{Default False}
 
-\item{cluster_columns}{}
-
 \item{z.score.cutoff}{Default 2}
+
+\item{specified.color}{Default c("#0c3e74","#77a8cd","white","#d86652","#7e0821")}
 }
 \value{
 A heatmap plot by complex heatmap

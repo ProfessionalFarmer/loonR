@@ -75,22 +75,22 @@ getGeneRelatedTranscripts.Gff <- function(gff.Path, gene.vector, max.transcript.
 #' Retrieve protein sequence by biomaRt
 #'
 #' @param IDs
-#' @param type Default: ens_hs_transcript. Available: Possible filters are given by the listFilters function. biomaRt::listFilters(ensembl)
+#' @param type Default: ensembl_transcript_id, Available: ensembl_transcript_id, ensembl_transcript_id_version, refseq_mrna, Possible filters are given by the listFilters function. biomaRt::listFilters(mart)
 #'
 #' @return
 #' @export
 #'
 #' @examples
-getTranscriptProteinSequence <- function(IDs,  type="ens_hs_transcript"){
+getTranscriptProteinSequence <- function(IDs,  type="ensembl_transcript_id"){
 
   library("biomaRt")
   # listMarts()
-  ensembl <- useMart("ensembl",dataset="hsapiens_gene_ensembl")
-  # listFilters(ensembl)
+  mart <- useMart("ensembl",dataset="hsapiens_gene_ensembl", host = "asia.ensembl.org")
+  # listFilters(mart)
   getSequence(id = IDs,
               type = type, # refseq_mrna
               seqType = "peptide",
-              mart = ensembl)
+              mart = mart)
 
 
 }
@@ -126,7 +126,7 @@ loadGff <- function(gff.path){
 #' @examples
 writeGff <- function(x, gff.path){
   library(plyranges)
-  write_gff(x, file, index = FALSE)
+  write_gff(x, gff.path, index = FALSE)
 }
 
 
@@ -169,13 +169,14 @@ getTranscriptLength <- function(gff, returnTranscriptLength=FALSE, returnEndStar
 
     # 这个是在基因组上的长度，不是外显子的长度
     transcript.genomic.length <- merge(pos.min,pos.max,by="transcript_id")
-    transcript.genomic.length$length <- transcript.genomic.length$end - transcript.genomic.length$start
+    transcript.genomic.length$Length <- transcript.genomic.length$end - transcript.genomic.length$start
     result = transcript.genomic.length
   }else if(returnTranscriptLength){
     gff.tmp$Length = gff.tmp$end - gff.tmp$start
 
-    transcripted.length = aggregate(Length ~ transcript_id, data = gff.tmp, sum)
+    transcripted.length = gff.tmp %>% group_by(transcript_id) %>% summarise("exon_count"=n(), Length=sum(Length))
     result = transcripted.length
+
   }
   result
 

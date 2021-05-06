@@ -1,21 +1,22 @@
 Package: loonR
 Type: Package
 Title: Common function in bioinformatics analysis
-Version: 0.1.374
+Version: 0.1.376
 Author: Zhongxu
 Depends: 
   R (>= 3.0.2),
-  tximport,
   ggplot2,
   ggsci,
   ggpubr,
   cowplot,
   scales,
-  plyranges,
   pROC,
-  limma,
   dplyr,
   reshape2
+Remotes:
+    bioc::release/limma,
+    bioc::release/plyranges,
+    bioc::release/tximport
 Description: My first personal R package
 License: GPL
 Encoding: UTF-8
@@ -25,3 +26,7 @@ Imports:
  ggpubr,
  dplyr,
  reshape2
+ 
+ 
+ 
+ 

@@ -4,10 +4,10 @@
 \alias{getTranscriptProteinSequence}
 \title{Retrieve protein sequence by biomaRt}
 \usage{
-getTranscriptProteinSequence(IDs, type = "ens_hs_transcript")
+getTranscriptProteinSequence(IDs, type = "ensembl_transcript_id")
 }
 \arguments{
-\item{type}{Default: ens_hs_transcript. Available: Possible filters are given by the listFilters function. biomaRt::listFilters(ensembl)}
+\item{type}{Default: ensembl_transcript_id, Available: ensembl_transcript_id, ensembl_transcript_id_version, refseq_mrna, Possible filters are given by the listFilters function. biomaRt::listFilters(mart)}
 }
 \value{
 

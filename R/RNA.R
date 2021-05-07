@@ -193,7 +193,7 @@ DESeq2_differential <- function(rawcount, group, pre.filter = 0, return.normaliz
   countData =  as.data.frame(sapply(rawcount, as.integer),row.names = row.names(rawcount) )
 
   ## Must add first column if tidy=TRUE
-  #countData = data.frame(Gene=row.names(countData),countData)
+  countData = data.frame(Gene=row.names(countData),countData)
 
 
   # Construct DESEQDataSet Object
@@ -203,7 +203,8 @@ DESeq2_differential <- function(rawcount, group, pre.filter = 0, return.normaliz
       row.names = colnames(rawcount),
       Sample = colnames(rawcount),
       Group = group),
-      design=~Group
+    design=~Group,
+    tidy = TRUE
     )
 
   # estimation of size factors（estimateSizeFactors) --> estimation of dispersion（estimateDispersons) --> Negative Binomial GLM fitting and Wald statistics（nbinomWaldTest）
@@ -474,7 +475,7 @@ load.rsem.matrix <- function(dirpath, isoform = FALSE, subdirs = TRUE){
 
     iso.list <- lapply(names(sample.rsem.pathes), function(sample){
         sample.iso.df <- read.table(sample.rsem.pathes[sample], header = T, sep = "\t")
-        iso.pct <- sample.iso.df %>% select(transcript_id, gene_id, IsoPct)
+        iso.pct <- sample.iso.df %>% dplyr::select(transcript_id, gene_id, IsoPct)
         colnames(iso.pct) <- c("transcript", "gene", sample)
         iso.pct
     })
@@ -490,9 +491,24 @@ load.rsem.matrix <- function(dirpath, isoform = FALSE, subdirs = TRUE){
     expr$IsoPct <- iso.pct.res[,-c(1,2)]
   }
 
+  # stor FPKM
+  library(dplyr)
+
+  FPKM.list <- lapply(names(sample.rsem.pathes), function(sample){
+    sample.iso.df <- read.table(sample.rsem.pathes[sample], header = T, sep = "\t")
+    iso.pct <- sample.iso.df %>% dplyr::select(transcript_id, FPKM)
+    colnames(iso.pct) <- c("transcript", sample)
+    iso.pct
+  })
+  names(FPKM.list) <- names(sample.rsem.pathes)
+  FPKM.res <- FPKM.list %>% Reduce(function(dtf1,dtf2) full_join(dtf1,dtf2,by=c("transcript") ), .)
+  row.names(FPKM.res) <- FPKM.res$transcript
+  # corrsponded with tximport
+  FPKM.res <- FPKM.res[ row.names(expr$abundance), ]
+  expr$FPKM <- FPKM.res[,-c(1)]
+
 
   expr
-
 
 
 }

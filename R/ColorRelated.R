@@ -60,6 +60,7 @@ get.ggsci.color <- function(palette="nrc", n = 7, alpha=1){
 #'
 #' Rbrewer palettes e.g. "RdBu", "Blues", ...;
 #' Custom color palette e.g. c("blue", "red");
+#' https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html
 #'
 #' Scientific journal palettes from ggsci R package, e.g.: "npg", "aaas", "lancet", "jco", "ucscgb", "uchicago", "simpsons" and "rickandmorty".
 #'     https://github.com/nanxstats/ggsci
@@ -82,8 +83,8 @@ get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE, show
   if(install){
     # wesanderson
     install.packages("wesanderson")
-    # ggsci
-    BiocManager::install("ggsci")
+    # ggsci, RColorBrewer
+    BiocManager::install(c("ggsci","RColorBrewer") )
     # LaCroix Color Palettes for R
     devtools::install_github("johannesbjork/LaCroixColoR")
     # ggthemes
@@ -95,14 +96,16 @@ get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE, show
 
 
   my_palettes <- list(
-    # From Gfplot
+    # From Gfplot17
     `jama_classic` = c("#164870", "#10B4F3", "#FAA935", "#2D292A", "#87AAB9", "#CAC27E", "#818282"),
     # The palette with grey: color blind
     `cbPalette` = c("#999999", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"),
     # The palette with black: color blind
-    `cbbPalette` = c("#000000", "#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7"),
+    `cbbPalette` = c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#000000"),
+    # color blind by Okabe https://clauswilke.com/dataviz/color-pitfalls.html
+    `cbOkabe` = c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#000000"),
     # selected from public
-    `sp1` = c("#00AFBB", "#E7B800", "#0392cf", "#7570B3", "#FC4E07", "#BB3099", "#ADC252", "#be9b7b", "#75A3BA", "#bbbbbb", "#4F7175"  )
+    `sp1` = c("#00AFBB", "#E7B800", "#0392cf", "#7570B3", "#FC4E07", "#BB3099", "#ADC252", "#be9b7b", "#75A3BA", "#bbbbbb", "#4F7175", "#173F5F"  )
   )
 
 

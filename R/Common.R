@@ -511,6 +511,52 @@ plotVenn <- function(l.list, alpha = 0.5, palette = "aaas"){
 }
 
 
+
+
+
+
+#' Plot venn diagram by ggvenn
+#'
+#' @param l.list a list as input data
+#' @param alpha Default 0.5
+#' @param palette Default aaas
+#' @param show_elements Show set elements instead of count/percentage.
+#' @param show_percentage Show percentage for each set.
+#' @param text_size Default 4, Text size for intersect contents.
+#' @param set_name_size Default 6, Text color for set names.
+#'
+#' @return The ggplot object to print or save to file.
+#' @export
+#'
+#' @examples plotggVenn(l.list)
+plotggVenn <- function(l.list, alpha = 0.5, palette = "aaas", show_elements = FALSE, show_percentage = TRUE, text_size = 4, set_name_size = 6){
+
+  if(!require("ggvenn")){
+    devtools::install_github("yanlinlin82/ggvenn")
+  }
+  ggvenn(l.list, columns = names(l.list),
+         show_elements = show_elements,
+         show_percentage = show_percentage,
+         digits = 2,
+         fill_color = loonR::get.palette.color(palette = palette, n = length(l.list)),
+         fill_alpha = alpha,
+         stroke_color = "black",
+         stroke_alpha = alpha,
+         stroke_size = 0.5,
+         stroke_linetype = "solid",
+         set_name_color = "black",
+         set_name_size = 6,
+         text_color = "black",
+         text_size = text_size,
+         label_sep = ","
+         )
+
+
+}
+
+
+
+
 #' Upset plot
 #'
 #' @param lt
@@ -554,7 +600,7 @@ plotUpset <- function(lt, mode = "intersect"){
 #' @examples
 #' convertDfToNumeric(df)
 convertDfToNumeric <- function(df){
-  data.frame(sapply(df, function(x) as.numeric(as.character(x))), check.names = FALSE)
+  data.frame(sapply(data.frame(df, check.names = F), function(x) as.numeric(as.character(x))), check.names = FALSE)
 }
 
 

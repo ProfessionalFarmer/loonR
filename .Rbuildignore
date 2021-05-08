@@ -5,3 +5,4 @@
 ^pkgdown$
 ^loonR\.Rproj$
 ^LICENSE\.md$
+^\.travis\.yml$

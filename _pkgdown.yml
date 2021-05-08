@@ -1,0 +1,6 @@
+repo:
+  url:
+    source: https://github.com/ProfessionalFarmer/loonR
+    user: https://github.com/ProfessionalFarmer
+deploy:
+  install_metadata: true

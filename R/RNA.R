@@ -68,21 +68,25 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
 
 
 
-#' Calculate p value by t.test manually
+
+#' Calculate p value by MannWhitneyU (WilcoxonRankSum) Test manually
 #'
 #' @param df Row is gene, column is sample
 #' @param group
 #' @param cal.AUC
 #' @param exclude.zore
 #' @param alternative c("two.sided", "less", "greater")
+#' @param exclude.na
+#' @param cores
+#' @param paired Default FALSE
 #'
 #' @return
 #' @export
 #'
 #' @examples
+#' Nonparametric Tests of Group Differences
 #'
-#'
-ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, exclude.na = TRUE, alternative = "two.sided", cores = 40){
+MannWhitneyU_WilcoxonRankSumTest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, exclude.na = TRUE, alternative = "two.sided", cores = 40, paired=FALSE){
 
   cat("Pls note: Second unique variable is defined as experiment group\n")
 
@@ -121,7 +125,210 @@ ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, 
       p.val=NA
       t.statistic = NA
     } else{
-      t.res <- t.test(exp.val[f.group==g2], exp.val[f.group==g1], alternative = alternative)
+      t.res <- wilcox.test(exp.val[f.group==g2], exp.val[f.group==g1], alternative = alternative, paired=paired)
+      p.val = t.res$p.value
+      t.statistic = round(t.res$statistic, 3)
+    }
+
+
+
+    mean.diff = round( mean(exp.val[f.group==g2]) - mean(exp.val[f.group==g1]) , 3)
+    mean = mean(exp.val)
+
+
+    if(cal.AUC){
+      if(is.na(p.val)){
+        auc = NA
+      }else{
+        auc = round(loonR::get.AUC(exp.val, f.group),3)
+      }
+      f.res = c(ind, p.val, t.statistic, f.g1.no, f.g2.no, mean.diff, mean, auc)
+      names(f.res) = c("Name", "P", "W statistic", g1, g2, "Difference", "Average", "AUC")
+    }else{
+      f.res = c(ind, p.val, t.statistic, f.g1.no, f.g2.no, mean.diff, mean)
+      names(f.res) = c("Name", "P", "W statistic", g1, g2, "Difference", "Average")
+    }
+
+    f.res
+
+  }
+  res = data.frame(res, stringsAsFactors = F, check.names = F)
+  res$P <- as.numeric(res$P)
+  res$`BH-Adjusted P` <- p.adjust(res$P, method = "BH")
+  res$Difference <- as.numeric(res$Difference)
+
+  row.names(res) <- res$Name
+  res
+
+
+}
+
+
+
+#' Kruskal Wallis Test One Way Anova by Ranks or F test
+#'
+#' @param df Row is gene, column is sample
+#' @param group
+#' @param exclude.zore Default FALSE
+#' @param exclude.na Default TRUE
+#' @param cores Default 40
+#' @param parameter.test Default FALSE, so perform Nonparametric Tests: KruskalWallisTest
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' https://jbhender.github.io/Stats506/F18/GP/Group3.html
+#' Nonparametric Tests: KruskalWallisTest
+#' parametric Tests: aov  ANOVA F test
+#'
+oneway.anova <- function(df, group, exclude.zore = FALSE, exclude.na = TRUE, cores = 40, parameter.test=FALSE){
+
+    cat("Pls note: Second unique variable is defined as experiment group\n")
+
+    library(foreach)
+    library(parallel)
+    library(doParallel)
+
+    g1 = unique(group)[1]
+    g2 = unique(group)[2]
+
+    registerDoParallel(cores=cores)
+    res <- foreach::foreach(ind = rownames(df), .combine = rbind) %dopar% {
+
+      exp.val = df[ind, ]
+
+      f.group = group
+      f.exclude = rep(FALSE, length(exp.val))
+
+      # remove zore
+      if (exclude.zore){
+        f.exclude = exp.val ==0
+      }
+      # remove na
+      if (exclude.na){
+        f.exclude = f.exclude | is.na(exp.val)
+      }
+
+      # remove zore
+      f.group = f.group[!f.exclude]
+      exp.val = exp.val[!f.exclude]
+
+      test.df <- data.frame(Var=exp.val, Group=factor(f.group))
+
+      if(parameter.test){
+        # create parametric one-way ANOVA model
+        t.res = aov(Var~Group, data = test.df)
+        t.statistic = round(unlist(summary(t.res))[["F value1"]],3)
+        p.val = unlist(summary(t.res))[["Pr(>F)1"]]
+
+        f.res = c(ind, p.val, t.statistic )
+        names(f.res) = c("Name", "P", "F value")
+
+        #  the Tukey post hoc test
+        detailed.res <- TukeyHSD(t.res)$Group
+        diff <- unlist(detailed.res[,1])
+        diff.pval <- unlist(detailed.res[,4])
+
+        names(diff) <- paste("Diff", row.names(detailed.res))
+        names(diff.pval) <- paste("P", row.names(detailed.res))
+
+        f.res <- c(f.res, diff, diff.pval)
+
+      }else{
+        t.res <- kruskal.test(test.df$Var~test.df$Group)
+        p.val = t.res$p.value
+        t.statistic = round(t.res$statistic, 3)
+
+        f.res = c(ind, p.val, t.statistic)
+        names(f.res) = c("Name", "P", "Kruskal-Wallis chi-squared")
+
+
+        if(!require(pgirmess)){install.packages("pgirmess")}
+        #https://stats.stackexchange.com/questions/17342/is-there-a-nonparametric-equivalent-of-tukey-hsd
+        # Multiple comparison test between treatments or treatments versus control after Kruskal-Wallis test.
+        detailed.res <- pgirmess::kruskalmc(test.df$Var, test.df$Group)$dif.com
+        diff <- unlist(detailed.res[,1])
+        diff.pval <- unlist(detailed.res[,3])
+
+        names(diff) <- paste("Diff", row.names(detailed.res))
+        names(diff.pval) <- paste("P", row.names(detailed.res))
+
+        f.res <- c(f.res, diff, diff.pval)
+
+      }
+
+      f.res
+
+    }
+    res = data.frame(res, stringsAsFactors = F, check.names = F)
+    res$P <- as.numeric(res$P)
+    res$`BH-Adjusted P` <- p.adjust(res$P, method = "BH")
+
+    row.names(res) <- res$Name
+    res
+
+}
+
+
+
+#' Calculate p value by t.test manually
+#'
+#' @param df Row is gene, column is sample
+#' @param group
+#' @param cal.AUC
+#' @param exclude.zore
+#' @param alternative c("two.sided", "less", "greater")
+#' @param exclude.na
+#' @param cores
+#' @param paired Default FALSE
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' Parametric Tests of Group Differences
+#'
+ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, exclude.na = TRUE, alternative = "two.sided", cores = 40, paired=FALSE){
+
+  cat("Pls note: Second unique variable is defined as experiment group\n")
+
+  library(foreach)
+  library(parallel)
+  library(doParallel)
+
+  g1 = unique(group)[1]
+  g2 = unique(group)[2]
+
+  registerDoParallel(cores=cores)
+  res <- foreach::foreach(ind = rownames(df), .combine = rbind) %dopar% {
+
+    exp.val = df[ind, ]
+
+    f.group = group
+    f.exclude = rep(FALSE, length(exp.val))
+
+    # remove zore
+    if (exclude.zore){
+      f.exclude = exp.val ==0
+    }
+    # remove na
+    if (exclude.na){
+      f.exclude = f.exclude | is.na(exp.val)
+    }
+
+    # remove zore
+    f.group = f.group[!f.exclude]
+    exp.val = exp.val[!f.exclude]
+
+    f.g1.no = sum(f.group==g1)
+    f.g2.no = sum(f.group==g2)
+
+    if(loonR::AllEqual(exp.val) | loonR::AllEqual(exp.val[f.group==g2]) | loonR::AllEqual(exp.val[f.group==g1]) ){
+      p.val=NA
+      t.statistic = NA
+    } else{
+      t.res <- t.test(exp.val[f.group==g2], exp.val[f.group==g1], alternative = alternative, paired=paired)
       p.val = t.res$p.value
       t.statistic = round(t.res$statistic, 3)
     }

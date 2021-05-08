@@ -1,7 +1,7 @@
 Package: loonR
 Type: Package
 Title: Common function in bioinformatics analysis
-Version: 0.1.382
+Version: 0.1.397
 Author: Zhongxu
 Depends: 
   R (>= 3.0.2),

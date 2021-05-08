@@ -39,6 +39,7 @@ Allowed values include "grey" for grey color palettes;
 
 Rbrewer palettes e.g. "RdBu", "Blues", ...;
 Custom color palette e.g. c("blue", "red");
+https://www.r-graph-gallery.com/38-rcolorbrewers-palettes.html
 
 Scientific journal palettes from ggsci R package, e.g.: "npg", "aaas", "lancet", "jco", "ucscgb", "uchicago", "simpsons" and "rickandmorty".
     https://github.com/nanxstats/ggsci

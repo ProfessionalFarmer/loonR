@@ -1,6 +1,6 @@
 repo:
   url:
-    source: https://github.com/ProfessionalFarmer/loonR
+    source: https://github.com/ProfessionalFarmer/loonR/blob/master/
     user: https://github.com/ProfessionalFarmer
 deploy:
   install_metadata: true

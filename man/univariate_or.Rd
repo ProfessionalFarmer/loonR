@@ -16,7 +16,7 @@ univariate_or(d.frame, label, scale = TRUE)
 \item{scale}{}
 }
 \value{
-c(OR, 2.5% CI, 97.5% CI)
+c(OR, 2.5\% CI, 97.5\% CI)
 }
 \description{
 Variate logistic analysis

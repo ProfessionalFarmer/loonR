@@ -18,7 +18,7 @@ draw.expression.dotplot(
 \arguments{
 \item{df}{Row is gene, col is sample}
 
-\item{nrow}{# of row to plot expression}
+\item{nrow}{of row to plot expression}
 
 \item{stat.method}{wilcox.test or t.test}
 

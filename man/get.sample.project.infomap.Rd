@@ -13,7 +13,7 @@ See getGDCprojects()$project_id}
 }
 \value{
 A data.frame
- X1 proj samples
+X1 proj samples
 1	1	TCGA-ACC	TCGA-OR-A5JZ
 2	1	TCGA-ACC	TCGA-OR-A5JK
 }

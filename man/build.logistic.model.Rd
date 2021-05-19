@@ -2,7 +2,7 @@
 % Please edit documentation in R/Biomarker.R
 \name{build.logistic.model}
 \alias{build.logistic.model}
-\title{Title}
+\title{Build a logistic model}
 \usage{
 build.logistic.model(
   df,
@@ -20,8 +20,11 @@ build.logistic.model(
 \item{direction}{backward  c("both", "backward", "forward")}
 }
 \value{
-
+A list. list(model=glm.fit,
+StepwiseModel=elimination,
+eliminationCandidates=stringr::str_remove_all(names(unclass(coef(elimination))\link{-c(1)}),'`')
+)
 }
 \description{
-Title
+Build a logistic model
 }

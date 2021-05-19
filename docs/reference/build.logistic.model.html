@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title — build.logistic.model • loonR</title>
+<title>Build a logistic model — build.logistic.model • loonR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Title — build.logistic.model" />
-<meta property="og:description" content="Title" />
+<meta property="og:title" content="Build a logistic model — build.logistic.model" />
+<meta property="og:description" content="Build a logistic model" />
 
 
 
@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.397</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.398</span>
       </span>
     </div>
 
@@ -106,13 +106,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title</h1>
+    <h1>Build a logistic model</h1>
     <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/Biomarker.R'><code>R/Biomarker.R</code></a></small>
     <div class="hidden name"><code>build.logistic.model.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Title</p>
+    <p>Build a logistic model</p>
     </div>
 
     <pre class="usage"><span class='fu'>build.logistic.model</span><span class='op'>(</span>
@@ -142,9 +142,10 @@
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
-
-
+    <p>A list. list(model=glm.fit,
+StepwiseModel=elimination,
+eliminationCandidates=stringr::str_remove_all(names(unclass(coef(elimination))-c(1)),'`')
+)</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -157,7 +158,7 @@
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Zhongxu ZHU.</p></p>
+  <p><p>Developed by Zhongxu.</p></p>
 </div>
 
 <div class="pkgdown">

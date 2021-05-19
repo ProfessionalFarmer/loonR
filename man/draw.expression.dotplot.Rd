@@ -12,7 +12,8 @@ draw.expression.dotplot(
   stat.method = "wilcox.test",
   show.stat.p = TRUE,
   rotate.x = 0,
-  ylab = "Expression"
+  ylab = "Expression",
+  ylim = NULL
 )
 }
 \arguments{
@@ -24,7 +25,7 @@ draw.expression.dotplot(
 
 \item{rotate.x}{Default 0. numeric value specifying the rotation angle. 90 for vertical x-axis text.}
 
-\item{ylab}{}
+\item{ylim}{Default NA. User can specify.}
 }
 \value{
 

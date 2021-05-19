@@ -1,9 +1,9 @@
 Package: loonR
 Title: Common function in bioinformatics analysis
-Version: 0.1.397
+Version: 0.1.410
 Authors@R: 
     person(given = "Zhongxu",
-           family = "ZHU",
+           family = " ",
            role = c("aut", "cre"),
            email = "sxzhuxu@gmail.com",
            comment = c(ORCID = "0000-0003-2197-5563"))

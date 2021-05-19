@@ -2,22 +2,41 @@
 % Please edit documentation in R/Common.R
 \name{plotVenn}
 \alias{plotVenn}
-\title{Plot venn diagram}
+\title{Plot venn diagram by ggvenn}
 \usage{
-plotVenn(l.list, alpha = 0.5, palette = "aaas")
+plotVenn(
+  l.list,
+  alpha = 0.5,
+  palette = "aaas",
+  show_elements = FALSE,
+  show_percentage = TRUE,
+  text_size = 4,
+  set_name_size = 6
+)
 }
 \arguments{
-\item{alpha}{0.5}
+\item{l.list}{a list as input data}
 
-\item{palette}{aaas}
+\item{alpha}{Default 0.5}
+
+\item{palette}{Default aaas}
+
+\item{show_elements}{Show set elements instead of count/percentage.}
+
+\item{show_percentage}{Show percentage for each set.}
+
+\item{text_size}{Default 4, Text size for intersect contents.}
+
+\item{set_name_size}{Default 6, Text color for set names.}
 }
 \value{
-
+The ggplot object to print or save to file.
 }
 \description{
-Plot venn diagram
+Plot venn diagram by ggvenn
 }
 \examples{
+plotVenn(l.list)
 l.list = list(`Up in early HCC` = early.up.genes,
 `Down in early HCC` = early.down.genes,
 `Up in advanced HCC` = advanced.up.genes,

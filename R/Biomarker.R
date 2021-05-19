@@ -103,7 +103,7 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE, ty
 }
 
 
-#' Title
+#' Build a logistic model
 #'
 #' @param df Column is gene/miRNA, Row is sample
 #' @param group Two levels. Second unique variable is defined as experiment group
@@ -111,7 +111,10 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE, ty
 #' @param scale
 #' @param direction backward  c("both", "backward", "forward")
 #'
-#' @return
+#' @return  A list. list(model=glm.fit,
+#'      StepwiseModel=elimination,
+#'      eliminationCandidates=stringr::str_remove_all(names(unclass(coef(elimination))[-c(1)]),'`')
+#' )
 #' @export
 #'
 #' @examples
@@ -248,6 +251,92 @@ confusion_matrix <- function(groups, risk.pro, cancer="Cancer", best.cutoff = NA
 }
 
 
+
+
+#' Confusion matrix visulization
+#'
+#' @param groups True label
+#' @param rs Predicted score
+#' @param best.cutoff If not set, use youden index instead
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' draw_confusion_matrix(label,risk.probability)
+draw_confusion_matrix <- function(groups, risk.pro, best.cutoff = NA) {
+
+  cat("Pls note: Second unique variable is defined as experiment group\n")
+
+  library(caret)
+  library(pROC)
+  if( anyNA(best.cutoff) ){
+
+    best.cutoff <- coords(roc(groups, risk.pro), "best", transpose = TRUE, input="threshold", best.method="youden")
+    if( inherits(best.cutoff, "matrix")  ){ # 当youden index有重复的时候，取第一个
+      best.cutoff <- best.cutoff[c("threshold"),c(1)]
+    }else{
+      best.cutoff <- best.cutoff[c("threshold")]
+    }
+
+  }
+
+  # remove NA. some risk score may have NA value
+  ind <- which(!is.na(risk.pro))
+
+
+  # https://stackoverflow.com/questions/23891140/r-how-to-visualize-confusion-matrix-using-the-caret-package/42940553
+  cm <- caret::confusionMatrix( factor(risk.pro[ind] > best.cutoff), factor(groups[ind]==unique(groups)[2]) , positive = "TRUE" )
+
+
+  layout(matrix(c(1,1,2)))
+  par(mar=c(2,2,2,2))
+  plot(c(100, 345), c(300, 450), type = "n", xlab="", ylab="", xaxt='n', yaxt='n')
+  title('CONFUSION MATRIX', cex.main=2)
+
+  # create the matrix
+  rect(150, 430, 240, 370, col='#3F97D0')
+  text(195, 435, unique(groups)[1], cex=1.2)
+  rect(250, 430, 340, 370, col='#F7AD50')
+  text(295, 435, unique(groups)[2], cex=1.2)
+  text(125, 370, 'Predicted', cex=1.3, srt=90, font=2)
+  text(245, 450, 'Actual', cex=1.3, font=2)
+  rect(150, 305, 240, 365, col='#F7AD50')
+  rect(250, 305, 340, 365, col='#3F97D0')
+  text(140, 400, unique(groups)[1], cex=1.2, srt=90)
+  text(140, 335, unique(groups)[2], cex=1.2, srt=90)
+
+  # add in the cm results
+  res <- as.numeric(cm$table)
+  text(195, 400, res[1], cex=1.6, font=2, col='white')
+  text(195, 335, res[2], cex=1.6, font=2, col='white')
+  text(295, 400, res[3], cex=1.6, font=2, col='white')
+  text(295, 335, res[4], cex=1.6, font=2, col='white')
+
+  # add in the specifics
+  plot(c(100, 0), c(100, 0), type = "n", xlab="", ylab="", main = "DETAILS", xaxt='n', yaxt='n')
+  text(10, 85, names(cm$byClass[1]), cex=1.2, font=2)
+  text(10, 70, round(as.numeric(cm$byClass[1]), 3), cex=1.2)
+  text(30, 85, names(cm$byClass[2]), cex=1.2, font=2)
+  text(30, 70, round(as.numeric(cm$byClass[2]), 3), cex=1.2)
+  text(50, 85, names(cm$byClass[5]), cex=1.2, font=2)
+  text(50, 70, round(as.numeric(cm$byClass[5]), 3), cex=1.2)
+  text(70, 85, names(cm$byClass[6]), cex=1.2, font=2)
+  text(70, 70, round(as.numeric(cm$byClass[6]), 3), cex=1.2)
+  text(90, 85, names(cm$byClass[7]), cex=1.2, font=2)
+  text(90, 70, round(as.numeric(cm$byClass[7]), 3), cex=1.2)
+
+  # add in the accuracy information
+  text(30, 35, names(cm$overall[1]), cex=1.5, font=2)
+  text(30, 20, round(as.numeric(cm$overall[1]), 3), cex=1.4)
+  text(70, 35, names(cm$overall[2]), cex=1.5, font=2)
+  text(70, 20, round(as.numeric(cm$overall[2]), 3), cex=1.4)
+
+}
+
+
+
+
 #' Leave one out cross validation
 #'
 #' @param df Row is sample, column is gene/minRA/variat
@@ -357,6 +446,9 @@ loo.cv.cox <- function(df, status, time,  seed=999, label=NA, scale =TRUE){
 #' @examples get_performance(risk.probability, label)
 get_performance <- function(pred, labels, best.cutoff =NA, digit = 2){  #  x="best", input = "threshold"
 
+  # 这个更简单
+  # reportROC::reportROC(gold = groups=="T", predictor = tmp.mir.exp, plot = F)
+
   library(pROC)
   library(caret)
 
@@ -442,6 +534,10 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2){  #  x="be
   df
 
 }
+
+
+
+
 
 #' Variate logistic analysis
 #' Row: sample, Column: gene expression
@@ -1303,6 +1399,66 @@ plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette
 }
 
 
+
+#' plot predictive probability distribution
+#'
+#' @param group
+#' @param pred Must within 0-1
+#'
+#' @return Contain multiple plots
+#' @export
+#'
+#' @examples
+#'
+multiplePlotPredictedPro <- function(group, pred, palette="aaas"){
+  # https://darrendahly.github.io/post/homr/
+  df <- data.frame(pred=pred, Class=group)
+
+  waterfall_plot = loonR::plot_waterfall(df$pred-0.5, df$Class)
+
+  df$ClassFactor = factor(group==unique(group)[2], levels = c(FALSE,TRUE))
+  df$ClassFactorNumric = as.numeric(df$ClassFactor)-1
+
+  require(ggpubr)
+
+  logistic_curve_fit <-
+  ggplot(df, aes(x = pred, y = as.numeric(factor(group==unique(group)[2], levels = c(FALSE,TRUE))) - 1)) +
+    geom_jitter(height = 0.1, size =1, alpha = 0.5) +
+    geom_smooth(method = "glm", se = FALSE,
+                method.args = list(family = "binomial")) +
+    theme_minimal() +
+    scale_y_continuous(breaks = c(0, 1), labels = unique(group)) +
+    ylab("") +
+    xlab("Predicted probability")
+
+  probability_distribution <-
+    gghistogram(df, x = "pred", fill = "Class", palette = "aaas", rug = T, bins = 10) +
+    ylab("Count") + xlab("Predicted probability")
+
+
+
+  probability_proportion_distribution <- ggplot(df, aes(x = pred, fill = Class)) +
+    geom_histogram(position = "fill", bins = 10) +
+    theme_pubr() +
+    xlab("Predicted probability") +
+    ylab("Proportion") + scale_fill_manual(values = loonR::get.palette.color(palette))
+
+
+  boxplot <- ggboxplot(df, x = "Class", y = "pred", fill = "Class", palette = palette, add = "jitter") +
+    ylab("Predicted probability") + xlab("")
+
+
+  res = list(waterfall_plot = waterfall_plot,
+             logistic_curve_fit = logistic_curve_fit,
+             probability_distribution = probability_distribution,
+             probability_proportion_distribution = probability_proportion_distribution,
+             boxplot = boxplot)
+  res
+}
+
+
+
+
 #' Get best lamda by perform multiple round lasso-sv
 #' https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html#log
 #' https://stackoverflow.com/questions/62170965/looping-cv-glmnet-and-get-the-best-coefficients
@@ -1510,7 +1666,7 @@ get.AUC <- function(pred, label){
 
 
 
-#' Split sample by group
+#' Split sample by group into traning and validation set
 #'
 #' @param sample Vector
 #' @param group Vector
@@ -1540,6 +1696,127 @@ splitSampleByGroup <- function(sample=NA, group=NA, seed = 666, fraction = 0.5){
        Validation=validation.design)
 
 }
+
+
+
+#' confidence interval
+#'
+#' @param vector
+#' @param interval
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' https://stackoverflow.com/questions/48612153/how-to-calculate-confidence-intervals-for-a-vector
+#'
+#' vector <- c(12, 17, 24, 35, 23, 34, 56)
+#' confidence_interval(vector, 0.90)
+confidence_interval <- function(vector, interval) {
+  # Standard deviation of sample
+  vec_sd <- sd(vector)
+  # Sample size
+  n <- length(vector)
+  # Mean of sample
+  vec_mean <- mean(vector)
+  # Error according to t distribution
+  error <- qt((interval + 1)/2, df = n - 1) * vec_sd / sqrt(n)
+  # Confidence interval as a vector
+  result <- c("lower" = vec_mean - error, "upper" = vec_mean + error)
+  return(result)
+}
+
+
+
+
+
+#' Calibration plot
+#'
+#' @param group Must be a TRUE/FALSE factor
+#' @param pred predicted probability
+#' @param smooth Default TRUE
+#' @param title
+#' @param show.oberved.ci
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data(BreastCancer)
+#' BreastCancer = BreastCancer[,-c(1)]
+#' BreastCancer = na.omit(BreastCancer)
+#' m <- glm(Class ~ ., data = BreastCancer, family = binomial)
+#' BreastCancer$pred <- predict(m, type = "response")
+#' riskCalibrationPlot(as.factor(BreastCancer$Class=="malignant", levels=c(FALSE, TRUE)),
+#'                    BreastCancer$pred)
+#'
+riskCalibrationPlot <- function(group, pred, smooth=TRUE, title = "Calibration plot", show.oberved.ci = FALSE){
+
+  if(!is.factor(group)){
+    warning("group Must be a TRUE/FALSE factor")
+    group = factor(group==unique(group)[2], levels = c(FALSE,TRUE))
+  }
+
+  require(gridExtra)
+  require(dplyr)
+  require(ggpubr)
+
+
+  df <- data.frame(pred=pred, Class=group)
+
+  #library(rms) fit must be from lrm or ols
+  #calibrate.m <- calibrate(m, group=Class, method=c("boot"), B=100 ) %>%
+
+  df.cal <- mutate(df, bin = ntile(pred, 10)) %>%
+    group_by(bin) %>%
+    mutate(n = n(),
+           bin_pred = mean(pred),
+           bin_prob = mean(as.numeric(Class)-1),
+           se = sqrt((bin_prob * (1 - bin_prob)) / n),
+           ul = bin_prob + 1.96 * se,
+           ll = bin_prob - 1.96 * se
+    ) %>%
+    ungroup( )
+
+
+  if(show.oberved.ci){
+    p1 = ggplot(df.cal, aes(x = bin_pred, y = bin_prob, ymin = ll, ymax = ul)) +
+      geom_pointrange(size = 0.5, color = "black") +
+      #scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2)) +
+      #scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2)) +
+      geom_abline() + # 45 degree line indicating perfect calibration
+      theme_pubr() + theme(panel.grid.minor = element_blank())
+  }else{
+   p1 = ggscatter(df.cal, x="bin_pred", y ="bin_prob") + geom_abline(intercept = 0, slope = 1)
+  }
+
+
+  if(smooth){
+    # loess fit through estimates
+    p1 = p1 + geom_smooth(aes(x = pred, y = as.numeric(Class) - 1),
+                          color = "red", se = FALSE, method = "loess")
+
+  }
+  p1 = p1 + xlab("Predicted risk") + ylab("Observed Proportion") +
+    ggtitle(title)
+  p1
+
+  # The distribution plot
+  p2 <- gghistogram(df.cal, x="pred") +
+    geom_histogram(fill = "black", bins = 20) +
+    xlab("Predicted probability distribution") +
+    ylab("")
+
+  plot_row <- cowplot::plot_grid(p1, p2, nrow = 2, ncol = 1, rel_heights = c(2,1))
+
+  plot_row
+
+}
+
+
+
+
+
 
 
 

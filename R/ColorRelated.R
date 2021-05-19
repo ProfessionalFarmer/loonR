@@ -80,6 +80,12 @@ get.ggsci.color <- function(palette="nrc", n = 7, alpha=1){
 #'
 get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE, show.color=FALSE){
 
+  # if length is greater than 2, we suppose it is color code
+  if(length(palette)>=2){
+    return(palette)
+  }
+
+
   if(install){
     # wesanderson
     install.packages("wesanderson")
@@ -128,8 +134,6 @@ get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE, show
      colors = ggpubr::get_palette(palette = palette, k = n)
   }
 
-
-
   # set alpha
   col.pal <- scales::alpha(colors, alpha)
   # scales::show_col(colorBlindGrey8)
@@ -142,6 +146,18 @@ get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE, show
 }
 
 
+#' Generate sequencial color
+#'
+#' @param length
+#' @param colors
+#'
+#' @return
+#' @export
+#'
+#' @examples
+generate.sequencial.color <- function(colors=c("#c1e7ff","#f3babc"), length=10){
+  colorRampPalette(colors)(length)
+}
 
 
 

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot venn diagram — plotVenn • loonR</title>
+<title>Plot venn diagram by ggvenn — plotVenn • loonR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Plot venn diagram — plotVenn" />
-<meta property="og:description" content="Plot venn diagram" />
+<meta property="og:title" content="Plot venn diagram by ggvenn — plotVenn" />
+<meta property="og:description" content="Plot venn diagram by ggvenn" />
 
 
 
@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.397</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.398</span>
       </span>
     </div>
 
@@ -108,50 +108,73 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot venn diagram</h1>
+    <h1>Plot venn diagram by ggvenn</h1>
     <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/Common.R'><code>R/Common.R</code></a></small>
     <div class="hidden name"><code>plotVenn.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plot venn diagram</p>
+    <p>Plot venn diagram by ggvenn</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotVenn</span><span class='op'>(</span><span class='va'>l.list</span>, alpha <span class='op'>=</span> <span class='fl'>0.5</span>, palette <span class='op'>=</span> <span class='st'>"aaas"</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>plotVenn</span><span class='op'>(</span>
+  <span class='va'>l.list</span>,
+  alpha <span class='op'>=</span> <span class='fl'>0.5</span>,
+  palette <span class='op'>=</span> <span class='st'>"aaas"</span>,
+  show_elements <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  show_percentage <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  text_size <span class='op'>=</span> <span class='fl'>4</span>,
+  set_name_size <span class='op'>=</span> <span class='fl'>6</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
+      <th>l.list</th>
+      <td><p>a list as input data</p></td>
+    </tr>
+    <tr>
       <th>alpha</th>
-      <td><p>0.5</p></td>
+      <td><p>Default 0.5</p></td>
     </tr>
     <tr>
       <th>palette</th>
-      <td><p>aaas</p></td>
+      <td><p>Default aaas</p></td>
+    </tr>
+    <tr>
+      <th>show_elements</th>
+      <td><p>Show set elements instead of count/percentage.</p></td>
+    </tr>
+    <tr>
+      <th>show_percentage</th>
+      <td><p>Show percentage for each set.</p></td>
+    </tr>
+    <tr>
+      <th>text_size</th>
+      <td><p>Default 4, Text size for intersect contents.</p></td>
+    </tr>
+    <tr>
+      <th>set_name_size</th>
+      <td><p>Default 6, Text color for set names.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
-
-
+    <p>The ggplot object to print or save to file.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='va'>l.list</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>`Up in early HCC` <span class='op'>=</span> <span class='va'>early.up.genes</span>,</span>
+    <pre class="examples"><span class='r-in'><span class='fu'>plotVenn</span><span class='op'>(</span><span class='va'>l.list</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: ggvenn</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in is.data.frame(data)</span> object 'l.list' not found</span>
+<span class='r-in'><span class='va'>l.list</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>`Up in early HCC` <span class='op'>=</span> <span class='va'>early.up.genes</span>,</span>
 <span class='r-in'>`Down in early HCC` <span class='op'>=</span> <span class='va'>early.down.genes</span>,</span>
 <span class='r-in'>`Up in advanced HCC` <span class='op'>=</span> <span class='va'>advanced.up.genes</span>,</span>
 <span class='r-in'>`Down in advanced HCC` <span class='op'>=</span> <span class='va'>advanced.down.genes</span><span class='op'>)</span></span>
 <span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in eval(expr, envir, enclos)</span> object 'early.up.genes' not found</span>
 <span class='r-in'><span class='fu'>plotVenn</span><span class='op'>(</span><span class='va'>l.list</span><span class='op'>)</span></span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: futile.logger</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Attaching package: ‘VennDiagram’</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following object is masked from ‘package:ggpubr’:</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span>     rotate</span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in venn.diagram(l.list, fill = loonR::get.palette.color(palette = palette,     n = length(l.list)), alpha = alpha, cex = 2, cat.fontfamily = "arial",     lty = 2, filename = NULL)</span> object 'l.list' not found</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in is.data.frame(data)</span> object 'l.list' not found</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
@@ -164,7 +187,7 @@
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Zhongxu ZHU.</p></p>
+  <p><p>Developed by Zhongxu.</p></p>
 </div>
 
 <div class="pkgdown">

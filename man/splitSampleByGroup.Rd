@@ -2,7 +2,7 @@
 % Please edit documentation in R/Biomarker.R
 \name{splitSampleByGroup}
 \alias{splitSampleByGroup}
-\title{Split sample by group}
+\title{Split sample by group into traning and validation set}
 \usage{
 splitSampleByGroup(sample = NA, group = NA, seed = 666, fraction = 0.5)
 }
@@ -19,5 +19,5 @@ splitSampleByGroup(sample = NA, group = NA, seed = 666, fraction = 0.5)
 list(Train=train.design, Validation=validation.design)
 }
 \description{
-Split sample by group
+Split sample by group into traning and validation set
 }

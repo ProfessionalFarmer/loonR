@@ -36,6 +36,8 @@ feature.selection.boruta <- function(feature.df, group, seed=111, scale=TRUE, wi
   # Perform Boruta search
   set.seed(seed)
   boruta_output <- Boruta(Class ~ ., data=trainData, doTrace=0)
+  ## Do a tentative rough fix
+  #boruta_output <- TentativeRoughFix(boruta_output)
   colnames(boruta_output$ImpHistory) <- stringr::str_remove_all(colnames(boruta_output$ImpHistory), "\`")
 
   boruta_signif <- getSelectedAttributes(boruta_output, withTentative = withTentative)
@@ -307,7 +309,7 @@ feature.selection.RFE <- function(feature.df, group, functions = "lrFuncs",
 
   # Perform
   set.seed(seed)
-  # #构建rfe函数的控制参数(使用随机森林函数和10重交叉验证抽样方法，并抽取5组样本)
+  # #构建rfe函数的控制参数
   ctrl <- rfeControl(functions = get(functions),
                      method = method,
                      number = number,

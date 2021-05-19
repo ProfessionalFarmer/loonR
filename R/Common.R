@@ -491,15 +491,16 @@ AllEqual <- structure(function(
 #' @param palette aaas
 #'
 #' @return
-#' @export
 #'
 #' @examples
+#' This function is no longer used and exported
+#'
 #' l.list = list(`Up in early HCC` = early.up.genes,
 #' `Down in early HCC` = early.down.genes,
 #' `Up in advanced HCC` = advanced.up.genes,
 #' `Down in advanced HCC` = advanced.down.genes)
 #' plotVenn(l.list)
-plotVenn <- function(l.list, alpha = 0.5, palette = "aaas"){
+plotVennLegacy <- function(l.list, alpha = 0.5, palette = "aaas"){
   library(VennDiagram)
   temp <- venn.diagram(l.list,
   fill = loonR::get.palette.color(palette = palette, n = length(l.list)),
@@ -528,8 +529,13 @@ plotVenn <- function(l.list, alpha = 0.5, palette = "aaas"){
 #' @return The ggplot object to print or save to file.
 #' @export
 #'
-#' @examples plotggVenn(l.list)
-plotggVenn <- function(l.list, alpha = 0.5, palette = "aaas", show_elements = FALSE, show_percentage = TRUE, text_size = 4, set_name_size = 6){
+#' @examples plotVenn(l.list)
+#' l.list = list(`Up in early HCC` = early.up.genes,
+#' `Down in early HCC` = early.down.genes,
+#' `Up in advanced HCC` = advanced.up.genes,
+#' `Down in advanced HCC` = advanced.down.genes)
+#' plotVenn(l.list)
+plotVenn <- function(l.list, alpha = 0.5, palette = "aaas", show_elements = FALSE, show_percentage = TRUE, text_size = 4, set_name_size = 6){
 
   if(!require("ggvenn")){
     devtools::install_github("yanlinlin82/ggvenn")
@@ -600,7 +606,13 @@ plotUpset <- function(lt, mode = "intersect"){
 #' @examples
 #' convertDfToNumeric(df)
 convertDfToNumeric <- function(df){
-  data.frame(sapply(data.frame(df, check.names = F), function(x) as.numeric(as.character(x))), check.names = FALSE)
+  row.n <- row.names(df)
+  col.n <- colnames(df)
+  res <- data.frame(sapply(data.frame(df, check.names = F), function(x) as.numeric(as.character(x))), check.names = FALSE)
+  rownames(res) <- row.n
+  colnames(res) <- col.n
+  res
+
 }
 
 

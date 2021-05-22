@@ -1410,7 +1410,7 @@ plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette
 #'
 #' @examples
 #'
-multiplePlotPredictedPro <- function(group, pred, palette="aaas"){
+multiplePlotPredictedPro <- function(group, pred, palette="aaas", bins = 10){
   # https://darrendahly.github.io/post/homr/
   df <- data.frame(pred=pred, Class=group)
 
@@ -1432,13 +1432,13 @@ multiplePlotPredictedPro <- function(group, pred, palette="aaas"){
     xlab("Predicted probability")
 
   probability_distribution <-
-    gghistogram(df, x = "pred", fill = "Class", palette = "aaas", rug = T, bins = 10) +
+    gghistogram(df, x = "pred", fill = "Class", palette = "aaas", rug = T, bins = bins) +
     ylab("Count") + xlab("Predicted probability")
 
 
 
   probability_proportion_distribution <- ggplot(df, aes(x = pred, fill = Class)) +
-    geom_histogram(position = "fill", bins = 10) +
+    geom_histogram(position = "fill", bins = bins) +
     theme_pubr() +
     xlab("Predicted probability") +
     ylab("Proportion") + scale_fill_manual(values = loonR::get.palette.color(palette))
@@ -1737,37 +1737,46 @@ confidence_interval <- function(vector, interval) {
 #' @param smooth Default TRUE
 #' @param title
 #' @param show.oberved.ci
+#' @param bins Number of bins. Default 20
+#' @param color Default npg
+#' @param show.group whether to plot histogram by group
+#' @param ticks.unit 0.25 seq(0, 1, by = 0.25)
 #'
 #' @return
 #' @export
 #'
 #' @examples
-#' data(BreastCancer)
-#' BreastCancer = BreastCancer[,-c(1)]
-#' BreastCancer = na.omit(BreastCancer)
-#' m <- glm(Class ~ ., data = BreastCancer, family = binomial)
-#' BreastCancer$pred <- predict(m, type = "response")
-#' riskCalibrationPlot(as.factor(BreastCancer$Class=="malignant", levels=c(FALSE, TRUE)),
+# data(BreastCancer)
+# BreastCancer = BreastCancer[,-c(1)]
+# BreastCancer = na.omit(BreastCancer)
+# m <- glm(Class ~ ., data = BreastCancer, family = binomial)
+# BreastCancer$pred <- predict(m, type = "response")
+#' riskCalibrationPlot(factor(BreastCancer$Class=="malignant", levels=c(FALSE, TRUE)),
 #'                    BreastCancer$pred)
-#'
-riskCalibrationPlot <- function(group, pred, smooth=TRUE, title = "Calibration plot", show.oberved.ci = FALSE){
+riskCalibrationPlot <- function(group, pred, smooth=TRUE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25){
 
+  # Thanks reference: https://darrendahly.github.io/post/homr/
+
+  df <- data.frame(pred=pred, RawClass=group)
   if(!is.factor(group)){
     warning("group Must be a TRUE/FALSE factor")
     group = factor(group==unique(group)[2], levels = c(FALSE,TRUE))
   }
+  df$Class=group
+
 
   require(gridExtra)
   require(dplyr)
   require(ggpubr)
 
 
-  df <- data.frame(pred=pred, Class=group)
+
 
   #library(rms) fit must be from lrm or ols
   #calibrate.m <- calibrate(m, group=Class, method=c("boot"), B=100 ) %>%
 
-  df.cal <- mutate(df, bin = ntile(pred, 10)) %>%
+  df.cal.grouped <- mutate(df, bin = ntile(pred, bins)) %>%
+    arrange(pred) %>%
     group_by(bin) %>%
     mutate(n = n(),
            bin_pred = mean(pred),
@@ -1775,46 +1784,60 @@ riskCalibrationPlot <- function(group, pred, smooth=TRUE, title = "Calibration p
            se = sqrt((bin_prob * (1 - bin_prob)) / n),
            ul = bin_prob + 1.96 * se,
            ll = bin_prob - 1.96 * se
-    ) %>%
-    ungroup( )
+    ) %>% select(n, bin, bin_pred, bin_prob, se, ul ,ll) %>%
+    unique() %>% arrange(bin)
+    #ungroup()
 
 
   if(show.oberved.ci){
-    p1 = ggplot(df.cal, aes(x = bin_pred, y = bin_prob, ymin = ll, ymax = ul)) +
+    p1 = ggplot(df.cal.grouped, aes(x = bin_pred, y = bin_prob, ymin = ll, ymax = ul)) +
       geom_pointrange(size = 0.5, color = "black") +
-      #scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2)) +
-      #scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = 0.2)) +
+      scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = ticks.unit)) +
+      scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = ticks.unit)) +
       geom_abline() + # 45 degree line indicating perfect calibration
-      theme_pubr() + theme(panel.grid.minor = element_blank())
+      theme_pubr() + theme(panel.grid.minor = element_blank(), panel.grid.major = element_blank())
   }else{
-   p1 = ggscatter(df.cal, x="bin_pred", y ="bin_prob") + geom_abline(intercept = 0, slope = 1)
+   p1 = ggscatter(df.cal.grouped, x="bin_pred", y ="bin_prob" ) +
+     geom_abline(intercept = 0, slope = 1)
+   p1 = ggpar(p1, xlim = c(0,1), ylim = c(0,1), xticks.by =  ticks.unit)
   }
 
 
   if(smooth){
     # loess fit through estimates
-    p1 = p1 + geom_smooth(aes(x = pred, y = as.numeric(Class) - 1),
+    p1 = p1 + geom_smooth(aes(x = bin_pred, y = bin_prob ),
                           color = "red", se = FALSE, method = "loess")
 
   }
-  p1 = p1 + xlab("Predicted risk") + ylab("Observed Proportion") +
-    ggtitle(title)
-  p1
+
+  p1 = p1 + xlab("") + ylab("Observed proportion") + ggtitle(title)
+
 
   # The distribution plot
-  p2 <- gghistogram(df.cal, x="pred") +
-    geom_histogram(fill = "black", bins = 20) +
-    xlab("Predicted probability distribution") +
-    ylab("")
+  if(show.group){
+    p2 <- gghistogram(df, x="pred", fill = "RawClass", bins = bins, rug = TRUE,
+                      palette = color, position = "stack") +
+      xlab("Predicted probability") + ylab("Count")
+  }else{
+    p2 <- gghistogram(df, x="pred", fill = "black", bins = bins, rug = TRUE,
+                      palette = "black", color="black") +
+      xlab("Predicted probability") +  ylab("Count")
+  }
+  p2 <- ggpar(p2, legend = "none", xlim = c(0,1), xticks.by = ticks.unit)
+
 
   plot_row <- cowplot::plot_grid(p1, p2, nrow = 2, ncol = 1, rel_heights = c(2,1))
 
+  print(ResourceSelection::hoslem.test(as.numeric(df$Class)-1, df$pred, g = 10))
+
+  #### rms plot
+  # this function can also plot calbiration curve
+  library(rms)
+  val.prob(df$pred, as.numeric(df$Class) )
+  ####
+
   plot_row
-
 }
-
-
-
 
 
 

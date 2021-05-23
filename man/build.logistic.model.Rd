@@ -9,7 +9,8 @@ build.logistic.model(
   group,
   seed = 666,
   scale = TRUE,
-  direction = "backward"
+  direction = "backward",
+  rms = FALSE
 )
 }
 \arguments{
@@ -18,6 +19,8 @@ build.logistic.model(
 \item{group}{Two levels. Second unique variable is defined as experiment group}
 
 \item{direction}{backward  c("both", "backward", "forward")}
+
+\item{rms}{If TRUE, use rms instead of glm to build the model}
 }
 \value{
 A list. list(model=glm.fit,

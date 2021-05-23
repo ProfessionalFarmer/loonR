@@ -9,7 +9,12 @@ riskCalibrationPlot(
   pred,
   smooth = TRUE,
   title = "Calibration plot",
-  show.oberved.ci = FALSE
+  show.oberved.ci = FALSE,
+  bins = 10,
+  color = "npg",
+  show.group = FALSE,
+  ticks.unit = 0.25,
+  full.range = TRUE
 )
 }
 \arguments{
@@ -19,7 +24,15 @@ riskCalibrationPlot(
 
 \item{smooth}{Default TRUE}
 
-\item{show.oberved.ci}{}
+\item{bins}{Number of bins. Default 20}
+
+\item{color}{Default npg}
+
+\item{show.group}{whether to plot histogram by group}
+
+\item{ticks.unit}{0.25 seq(0, 1, by = 0.25)}
+
+\item{full.range}{Default TRUE. loess smoothing between 0-1 or first bin to last bin}
 }
 \value{
 
@@ -28,12 +41,6 @@ riskCalibrationPlot(
 Calibration plot
 }
 \examples{
-data(BreastCancer)
-BreastCancer = BreastCancer[,-c(1)]
-BreastCancer = na.omit(BreastCancer)
-m <- glm(Class ~ ., data = BreastCancer, family = binomial)
-BreastCancer$pred <- predict(m, type = "response")
-riskCalibrationPlot(as.factor(BreastCancer$Class=="malignant", levels=c(FALSE, TRUE)),
+riskCalibrationPlot(factor(BreastCancer$Class=="malignant", levels=c(FALSE, TRUE)),
                    BreastCancer$pred)
-
 }

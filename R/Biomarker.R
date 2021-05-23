@@ -110,6 +110,7 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE, ty
 #' @param seed
 #' @param scale
 #' @param direction backward  c("both", "backward", "forward")
+#' @param rms If TRUE, use rms instead of glm to build the model
 #'
 #' @return  A list. list(model=glm.fit,
 #'      StepwiseModel=elimination,
@@ -118,7 +119,7 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE, ty
 #' @export
 #'
 #' @examples
-build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = "backward"){
+build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = "backward", rms = FALSE){
 
   cat("Pls note: Second unique variable is defined as experiment group\n")
 
@@ -132,8 +133,15 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = 
   )
 
   set.seed(seed)
-  # The type="response" option tells R to output probabilities of the form P(Y = 1|X), as opposed to other information such as the logit.
-  suppressWarnings( glm.fit <- glm(label ~ ., data = lg.df, family = binomial(logit)) )
+  if(!rms){
+    # The type="response" option tells R to output probabilities of the form P(Y = 1|X), as opposed to other information such as the logit.
+    suppressWarnings( glm.fit <- glm(label ~ ., data = lg.df, family = binomial(logit)) )
+  }else{
+    glm.fit <- lrm(abel ~ .,lg.df)
+  }
+
+
+
 
   elimination = step(glm.fit, direction = direction, trace = 0)
 
@@ -1685,8 +1693,6 @@ splitSampleByGroup <- function(sample=NA, group=NA, seed = 666, fraction = 0.5){
     df = data.frame(Sample= sample, Group = group)
   }
 
-
-
   set.seed(seed)
 
   train.design <- df %>% group_by(Group) %>% sample_frac(fraction)
@@ -1694,6 +1700,39 @@ splitSampleByGroup <- function(sample=NA, group=NA, seed = 666, fraction = 0.5){
 
   list(Train=train.design,
        Validation=validation.design)
+
+}
+
+
+
+#' split data frame by group
+#'
+#' @param data.frame row is sample
+#' @param group
+#' @param seed 666
+#' @param fraction 0.5
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data(LIRI)
+#' res <- splitDataByGroup(data.frame = LIRI, group = LIRI$status)
+#'
+splitDataByGroup <- function(data.frame=NULL, group=NULL, seed = 666, fraction = 0.5){
+  if(is.null(data.frame) | is.null(group)){
+    stop("data.frame or group should not be NA")
+  }
+  train_idx = caret::createDataPartition(y = group,p = fraction,list = FALSE)
+
+  train.df <- data.frame[train_idx,]
+  train.group <- group[train_idx]
+
+  validation.df <- data.frame[-train_idx,]
+  validation.group <- group[-train_idx]
+
+  list(Train.df=train.df, Validation.df=validation.df,
+       Train.group=train.group, Validation.group=validation.group)
 
 }
 
@@ -1741,6 +1780,7 @@ confidence_interval <- function(vector, interval) {
 #' @param color Default npg
 #' @param show.group whether to plot histogram by group
 #' @param ticks.unit 0.25 seq(0, 1, by = 0.25)
+#' @param full.range Default TRUE. loess smoothing between 0-1 or first bin to last bin
 #'
 #' @return
 #' @export
@@ -1753,7 +1793,7 @@ confidence_interval <- function(vector, interval) {
 # BreastCancer$pred <- predict(m, type = "response")
 #' riskCalibrationPlot(factor(BreastCancer$Class=="malignant", levels=c(FALSE, TRUE)),
 #'                    BreastCancer$pred)
-riskCalibrationPlot <- function(group, pred, smooth=TRUE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25){
+riskCalibrationPlot <- function(group, pred, smooth=TRUE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE){
 
   # Thanks reference: https://darrendahly.github.io/post/homr/
 
@@ -1769,14 +1809,11 @@ riskCalibrationPlot <- function(group, pred, smooth=TRUE, title = "Calibration p
   require(dplyr)
   require(ggpubr)
 
-
-
-
   #library(rms) fit must be from lrm or ols
   #calibrate.m <- calibrate(m, group=Class, method=c("boot"), B=100 ) %>%
 
-  df.cal.grouped <- mutate(df, bin = ntile(pred, bins)) %>%
-    arrange(pred) %>%
+  df.cal.grouped <- arrange(df, pred) %>%
+    mutate(bin = ntile(pred, bins)) %>%
     group_by(bin) %>%
     mutate(n = n(),
            bin_pred = mean(pred),
@@ -1784,33 +1821,40 @@ riskCalibrationPlot <- function(group, pred, smooth=TRUE, title = "Calibration p
            se = sqrt((bin_prob * (1 - bin_prob)) / n),
            ul = bin_prob + 1.96 * se,
            ll = bin_prob - 1.96 * se
-    ) %>% select(n, bin, bin_pred, bin_prob, se, ul ,ll) %>%
-    unique() %>% arrange(bin)
+    ) # %>% select(n, bin, bin_pred, bin_prob, se, ul ,ll) %>% unique() %>% arrange(bin)
     #ungroup()
 
+  # 不在用，这里显示的CI是根据标准差计算得到
+  # if(show.oberved.ci){
+  #   p1 = ggplot(df.cal.grouped, aes(x = bin_pred, y = bin_prob, ymin = ll, ymax = ul)) +
+  #     geom_pointrange(size = 0.5, color = "black") +
+  #     scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = ticks.unit)) +
+  #     scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = ticks.unit)) +
+  #     geom_abline() + # 45 degree line indicating perfect calibration
+  #     theme_pubr() + theme(panel.grid.minor = element_blank(), panel.grid.major = element_blank())
+  # }else{
+  #  p1 = ggscatter(df.cal.grouped, x="bin_pred", y ="bin_prob" ) +
+  #    geom_abline(intercept = 0, slope = 1)
+  # }
 
-  if(show.oberved.ci){
-    p1 = ggplot(df.cal.grouped, aes(x = bin_pred, y = bin_prob, ymin = ll, ymax = ul)) +
-      geom_pointrange(size = 0.5, color = "black") +
-      scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = ticks.unit)) +
-      scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = ticks.unit)) +
-      geom_abline() + # 45 degree line indicating perfect calibration
-      theme_pubr() + theme(panel.grid.minor = element_blank(), panel.grid.major = element_blank())
-  }else{
-   p1 = ggscatter(df.cal.grouped, x="bin_pred", y ="bin_prob" ) +
-     geom_abline(intercept = 0, slope = 1)
-   p1 = ggpar(p1, xlim = c(0,1), ylim = c(0,1), xticks.by =  ticks.unit)
-  }
 
 
   if(smooth){
-    # loess fit through estimates
-    p1 = p1 + geom_smooth(aes(x = bin_pred, y = bin_prob ),
-                          color = "red", se = FALSE, method = "loess")
+    # loess fit through estimates，并且显示标准差
+    if(full.range){
+      # This plot the full range 0-1
+      p1 = p1 + geom_smooth( aes(x = pred, y = as.numeric(Class)-1 ), level = 0.95,
+                             color = "red", se = show.oberved.ci, method = "loess")
+    }else{
+      #this only plot between bins: the first bin_pred to the last bin_pred
+      p1 = p1 + geom_smooth(aes(x = bin_pred, y = bin_prob ), level = 0.95,
+                            color = "red", se = show.oberved.ci, method = "loess")
+    }
 
   }
 
-  p1 = p1 + xlab("") + ylab("Observed proportion") + ggtitle(title)
+  p1 = ggpar(p1, xlim = c(0,1), ylim = c(0,1), xticks.by =  ticks.unit,
+             xlab = "", ylab="Observed proportion", title = title)
 
 
   # The distribution plot
@@ -1840,6 +1884,96 @@ riskCalibrationPlot <- function(group, pred, smooth=TRUE, title = "Calibration p
 }
 
 
+
+
+
+#' Decision curve analysis
+#'
+#' @param data.frame.list row is sample. List should inlcude names
+#' @param label
+#' @param rms Default FALSE
+#' @param validation.df shold include all variable in data.frame.list
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data(LIRI)
+#'
+#' d1 <- LIRI[,c(3)]
+#' d2 <- LIRI[,c(3,4)]
+#' d3 <- LIRI[,c(3,4,5)]
+#' data.frame.list = list(d1=d1,d2=d2,d3=d3)
+#' decisionCurveAnalysis(data.frame.list, label=LIRI$status)
+decisionCurveAnalysis <- function(data.frame.list=NULL, label = NULL, rms=FALSE, validation.df = NULL, palette="aaas"){
+
+  if(!require(ggDCA)){
+    install.packages('ggDCA')
+  }
+
+  if(is.null(data.frame.list) | is.null(label) ){
+     stop("data.frame.list or label should not be null")
+  }
+
+
+  new.df.list = sapply(data.frame.list, function(x){
+    d = data.frame(x, label=label)
+    #colnames(d) = c(colnames(x),"label")
+  })
+
+
+  n.df <- length(new.df.list)
+  if(rms){
+    if(n.df==1){
+      m1 <- rms::lrm(label~., new.df.list[[1]])
+    }else if(n.df==2){
+      m1 <- rms::lrm(label~., new.df.list[[1]])
+      m2 <- rms::lrm(label~., new.df.list[[2]])
+    }else if(n.df==3){
+      m1 <- rms::lrm(label~., new.df.list[[1]])
+      m2 <- rms::lrm(label~., new.df.list[[2]])
+      m3 <- rms::lrm(label~., new.df.list[[3]])
+    }else if(n.df==4){
+      m1 <- rms::lrm(label~., new.df.list[[1]])
+      m2 <- rms::lrm(label~., new.df.list[[2]])
+      m3 <- rms::lrm(label~., new.df.list[[3]])
+      m4 <- rms::lrm(label~., new.df.list[[4]])
+    }
+  }else{
+    if(n.df==1){
+      m1 <- glm(label ~ ., data = new.df.list[[1]], family = binomial(logit))
+    }else if(n.df==2){
+      m1 <- glm(label ~ ., data = new.df.list[[1]], family = binomial(logit))
+      m2 <- glm(label ~ ., data = new.df.list[[2]], family = binomial(logit))
+    }else if(n.df==3){
+      m1 <- glm(label ~ ., data = new.df.list[[1]], family = binomial(logit))
+      m2 <- glm(label ~ ., data = new.df.list[[2]], family = binomial(logit))
+      m3 <- glm(label ~ ., data = new.df.list[[3]], family = binomial(logit))
+    }else if(n.df==4){
+      m1 <- glm(label ~ ., data = new.df.list[[1]], family = binomial(logit))
+      m2 <- glm(label ~ ., data = new.df.list[[2]], family = binomial(logit))
+      m3 <- glm(label ~ ., data = new.df.list[[3]], family = binomial(logit))
+      m4 <- glm(label ~ ., data = new.df.list[[4]], family = binomial(logit))
+    }
+  }
+
+  if(n.df==1){
+    dca_res <- dca(m1,m2, model.names=names(new.df.list), new.data=validation.df)
+  }else if(n.df==2){
+    dca_res <- dca(m1,m2, model.names=names(new.df.list), new.data=validation.df)
+  }else if(n.df==3){
+    dca_res <- dca(m1,m2,m3, model.names=names(new.df.list), new.data=validation.df)
+  }else if(n.df==4){
+    dca_res <- dca(m1,m2,m3,m4, model.names=names(new.df.list), new.data=validation.df)
+  }
+
+  ggplot(dca_res,
+         linetype=F, #线型
+         lwd = 1.2,
+         color = c(loonR::get.ggsci.color(palette,n=length(new.df.list)),'black', 'gray')
+         )
+
+}
 
 
 

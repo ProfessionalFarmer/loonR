@@ -4,7 +4,7 @@
 \alias{multiplePlotPredictedPro}
 \title{plot predictive probability distribution}
 \usage{
-multiplePlotPredictedPro(group, pred, palette = "aaas")
+multiplePlotPredictedPro(group, pred, palette = "aaas", bins = 10)
 }
 \arguments{
 \item{pred}{Must within 0-1}

@@ -2,7 +2,7 @@
 % Please edit documentation in R/miRNA.R
 \name{normalize_miRNACount_toCPM}
 \alias{normalize_miRNACount_toCPM}
-\title{Title}
+\title{Normalize miRNA counts to CPM}
 \usage{
 normalize_miRNACount_toCPM(
   count.df,
@@ -21,5 +21,5 @@ normalize_miRNACount_toCPM(
 
 }
 \description{
-Title
+Normalize miRNA counts to CPM
 }

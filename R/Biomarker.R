@@ -1325,8 +1325,13 @@ download.geo.dataset <- function(geo.accession.id, platform, destdir = tempdir()
   LogC <- (qx[5] > 100) ||
     (qx[6]-qx[1] > 50 && qx[2] > 0) ||
     (qx[2] > 0 && qx[2] < 1 && qx[4] > 1 && qx[4] < 2)
-  if (LogC) { exp.df[which(exp.df <= 0)] <- NaN
-  exp.df <- log2(exp.df) }
+  if (LogC) {
+    exp.df[which(exp.df <= 0)] <- NaN
+    exp.df <- log2(exp.df)
+    print("Perform log2 transformation")
+  }else{
+    print("Note: here not perform log2 transformation")
+  }
   rm(qx, LogC)
 
   result <- list(expression = exp.df,

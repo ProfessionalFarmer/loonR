@@ -4,10 +4,12 @@
 \alias{read_mirdeep2_result}
 \title{Load miRDeep2 expression matrix}
 \usage{
-read_mirdeep2_result(file.path)
+read_mirdeep2_result(file.path, add.names2df = TRUE)
 }
 \arguments{
 \item{file.path}{mirdeep2 expression. Should be merged before}
+
+\item{add.names2df}{Default TRUE. If add miRNA and precusor names in the first two columns}
 }
 \value{
 

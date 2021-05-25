@@ -46,6 +46,9 @@
     <loc>/reference/build.logistic.model.html</loc>
   </url>
   <url>
+    <loc>/reference/confidence_interval.html</loc>
+  </url>
+  <url>
     <loc>/reference/confusion_matrix.html</loc>
   </url>
   <url>
@@ -53,6 +56,9 @@
   </url>
   <url>
     <loc>/reference/cross.validation.html</loc>
+  </url>
+  <url>
+    <loc>/reference/decisionCurveAnalysis.html</loc>
   </url>
   <url>
     <loc>/reference/download.geo.dataset.html</loc>
@@ -92,6 +98,9 @@
   </url>
   <url>
     <loc>/reference/fpkm2tpm.html</loc>
+  </url>
+  <url>
+    <loc>/reference/generate.sequencial.color.html</loc>
   </url>
   <url>
     <loc>/reference/get.AUC.html</loc>
@@ -190,6 +199,9 @@
     <loc>/reference/multi_roc_with_ci.html</loc>
   </url>
   <url>
+    <loc>/reference/multiplePlotPredictedPro.html</loc>
+  </url>
+  <url>
     <loc>/reference/multivariate_cox.html</loc>
   </url>
   <url>
@@ -247,6 +259,9 @@
     <loc>/reference/remove.verylong.isoform.gff.html</loc>
   </url>
   <url>
+    <loc>/reference/riskCalibrationPlot.html</loc>
+  </url>
+  <url>
     <loc>/reference/roc_with_ci.html</loc>
   </url>
   <url>
@@ -257,6 +272,9 @@
   </url>
   <url>
     <loc>/reference/show_hcluster.html</loc>
+  </url>
+  <url>
+    <loc>/reference/splitDataByGroup.html</loc>
   </url>
   <url>
     <loc>/reference/splitSampleByGroup.html</loc>

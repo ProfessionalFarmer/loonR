@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.398</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.428</span>
       </span>
     </div>
 
@@ -120,7 +120,8 @@
   <span class='va'>group</span>,
   seed <span class='op'>=</span> <span class='fl'>666</span>,
   scale <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  direction <span class='op'>=</span> <span class='st'>"backward"</span>
+  direction <span class='op'>=</span> <span class='st'>"backward"</span>,
+  rms <span class='op'>=</span> <span class='cn'>FALSE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -137,6 +138,10 @@
     <tr>
       <th>direction</th>
       <td><p>backward  c("both", "backward", "forward")</p></td>
+    </tr>
+    <tr>
+      <th>rms</th>
+      <td><p>If TRUE, use rms instead of glm to build the model</p></td>
     </tr>
     </table>
 

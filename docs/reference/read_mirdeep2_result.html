@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.398</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.428</span>
       </span>
     </div>
 
@@ -115,7 +115,7 @@
     <p>Load miRDeep2 expression matrix</p>
     </div>
 
-    <pre class="usage"><span class='fu'>read_mirdeep2_result</span><span class='op'>(</span><span class='va'>file.path</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>read_mirdeep2_result</span><span class='op'>(</span><span class='va'>file.path</span>, add.names2df <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -123,6 +123,10 @@
     <tr>
       <th>file.path</th>
       <td><p>mirdeep2 expression. Should be merged before</p></td>
+    </tr>
+    <tr>
+      <th>add.names2df</th>
+      <td><p>Default TRUE. If add miRNA and precusor names in the first two columns</p></td>
     </tr>
     </table>
 

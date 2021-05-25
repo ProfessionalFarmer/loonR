@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Convert logti to probability — logit2prob • loonR</title>
+<title>Decision curve analysis — decisionCurveAnalysis • loonR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Convert logti to probability — logit2prob" />
-<meta property="og:description" content="Convert logti to probability" />
+<meta property="og:title" content="Decision curve analysis — decisionCurveAnalysis" />
+<meta property="og:description" content="Decision curve analysis" />
 
 
 
@@ -57,6 +57,8 @@
 <![endif]-->
 
 
+
+<!-- dependencies from examples -->
 
 
   
@@ -106,23 +108,37 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Convert logti to probability</h1>
+    <h1>Decision curve analysis</h1>
     <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/Biomarker.R'><code>R/Biomarker.R</code></a></small>
-    <div class="hidden name"><code>logit2prob.Rd</code></div>
+    <div class="hidden name"><code>decisionCurveAnalysis.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Convert logti to probability</p>
+    <p>Decision curve analysis</p>
     </div>
 
-    <pre class="usage"><span class='fu'>logit2prob</span><span class='op'>(</span><span class='va'>logit</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>decisionCurveAnalysis</span><span class='op'>(</span>
+  data.frame.list <span class='op'>=</span> <span class='cn'>NULL</span>,
+  label <span class='op'>=</span> <span class='cn'>NULL</span>,
+  rms <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  validation.df <span class='op'>=</span> <span class='cn'>NULL</span>,
+  palette <span class='op'>=</span> <span class='st'>"aaas"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>logit</th>
-      <td></td>
+      <th>data.frame.list</th>
+      <td><p>row is sample. List should inlcude names</p></td>
+    </tr>
+    <tr>
+      <th>rms</th>
+      <td><p>Default FALSE</p></td>
+    </tr>
+    <tr>
+      <th>validation.df</th>
+      <td><p>shold include all variable in data.frame.list</p></td>
     </tr>
     </table>
 
@@ -132,6 +148,21 @@
 
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>d1</span> <span class='op'>&lt;-</span> <span class='va'>LIRI</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>]</span></span>
+<span class='r-in'><span class='va'>d2</span> <span class='op'>&lt;-</span> <span class='va'>LIRI</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>4</span><span class='op'>)</span><span class='op'>]</span></span>
+<span class='r-in'><span class='va'>d3</span> <span class='op'>&lt;-</span> <span class='va'>LIRI</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span><span class='op'>)</span><span class='op'>]</span></span>
+<span class='r-in'><span class='va'>data.frame.list</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>d1<span class='op'>=</span><span class='va'>d1</span>,d2<span class='op'>=</span><span class='va'>d2</span>,d3<span class='op'>=</span><span class='va'>d3</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>decisionCurveAnalysis</span><span class='op'>(</span><span class='va'>data.frame.list</span>, label<span class='op'>=</span><span class='va'>LIRI</span><span class='op'>$</span><span class='va'>status</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: ggDCA</span>
+<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>there is no package called ‘ggDCA’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Installing package into ‘/tmp/Rtmp12auvy/temp_libpath246665c10ae5b’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> (as ‘lib’ is unspecified)</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> also installing the dependencies ‘TH.data’, ‘tmcn’, ‘polspline’, ‘multcomp’, ‘do’, ‘set’, ‘rms’, ‘base.rms’</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in dca(m1, m2, m3, model.names = names(new.df.list), new.data = validation.df)</span> could not find function "dca"</span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

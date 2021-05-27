@@ -182,6 +182,53 @@ getTranscriptLength <- function(gff, returnTranscriptLength=FALSE, returnEndStar
 
 }
 
+#' Obtain sequence length from fasta file
+#'
+#' @param fa.file
+#' @param cores Default 20. Speed up
+#'
+#' @return A data.frame object
+#' @export
+#'
+#' @examples
+#' getFastaSummary(fa.path)
+getFastaSummary <- function(fa.file, cores=20){
+ if(!require(seqinr)){
+   install.packages(seqinr)
+ }
+ fa <- seqinr::read.fasta(fa.file)
+
+ n.seq <- length(fa)
+
+ library(foreach)
+ cl <- parallel::makeCluster(cores) #not to overload your computer
+ doParallel::registerDoParallel(cl)
+
+
+ res <- foreach(sequence=fa, .combine = rbind) %dopar% {
+    name = seqinr::getName(sequence)
+    description = seqinr::getAnnot(sequence)
+    length = seqinr::getLength(sequence)
+    gc = seqinr::GC(sequence)
+    composition <- seqinr::count(sequence, wordsize = 1)
+    seq = seqinr::c2s(sequence)
+
+    c(name, description, length, gc, composition, seq)
+ }
+
+
+ #stop cluster
+ parallel::stopCluster(cl)
+
+ colnames(res) <- c("Name", "Annotation", "Length", "GC", "A", "C", "G", "T", "Sequence")
+ res <- data.frame(res, stringsAsFactors = F)
+ res$Length <- as.numeric(res$Length)
+
+ res
+}
+
+
+
 
 
 

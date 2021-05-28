@@ -372,12 +372,14 @@ ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, 
 #' @param group factor, first control then experiment
 #' @param return.normalized.df
 #' @param pre.filter if filter low expression gene
+#' @param prop.expressed.sample Default 0.7. Proportion of samples have a count greater than pre.filter
+#' @param cal.AUC
 #'
 #' @return
 #' @export
 #'
 #' @examples
-DESeq2_differential <- function(rawcount, group, pre.filter = 0, return.normalized.df = FALSE, cal.AUC = TRUE){
+DESeq2_differential <- function(rawcount, group, prop.expressed.sample = 0.7, pre.filter = 0, return.normalized.df = FALSE, cal.AUC = TRUE){
 
   group = factor( group, levels = unique(as.character(group)), labels = c("Control","Experiment") )
   rnames <- row.names(rawcount)
@@ -386,12 +388,12 @@ DESeq2_differential <- function(rawcount, group, pre.filter = 0, return.normaliz
   rm(rnames)
 
   # https://lashlock.github.io/compbio/R_presentation.html
-  if(pre.filter!=0){
-    # Pre-filtering the dataset
-    # http://master.bioconductor.org/packages/release/workflows/vignettes/rnaseqGene/inst/doc/rnaseqGene.html#exploratory-analysis-and-visualization
-    keep <- rowSums(rawcount) > pre.filter
-    rawcount <- rawcount[keep,]
-  }
+
+  # Pre-filtering the dataset
+  # http://master.bioconductor.org/packages/release/workflows/vignettes/rnaseqGene/inst/doc/rnaseqGene.html#exploratory-analysis-and-visualization
+  keep <- ( rowSums(rawcount > pre.filter) / ncol(rawcount) ) > prop.expressed.sample
+  rawcount <- rawcount[keep,]
+
 
 
 

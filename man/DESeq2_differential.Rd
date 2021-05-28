@@ -7,6 +7,7 @@
 DESeq2_differential(
   rawcount,
   group,
+  prop.expressed.sample = 0.7,
   pre.filter = 0,
   return.normalized.df = FALSE,
   cal.AUC = TRUE
@@ -17,7 +18,11 @@ DESeq2_differential(
 
 \item{group}{factor, first control then experiment}
 
+\item{prop.expressed.sample}{Default 0.7. Proportion of samples have a count greater than pre.filter}
+
 \item{pre.filter}{if filter low expression gene}
+
+\item{cal.AUC}{}
 }
 \value{
 

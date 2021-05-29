@@ -10,6 +10,7 @@ limma_differential(
   rawcount = FALSE,
   voom = FALSE,
   pre.filter = 0,
+  prop.expressed.sample = 0.5,
   cal.AUC = TRUE
 )
 }
@@ -23,6 +24,8 @@ limma_differential(
 \item{voom}{true or false. If library size changed too much.}
 
 \item{pre.filter}{Cutoff for mean log2(TPM)}
+
+\item{prop.expressed.sample}{Default 0.5. Proportion of samples have a count greater than pre.filter}
 
 \item{cal.AUC}{If to calculate AUC}
 }

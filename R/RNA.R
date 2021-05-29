@@ -6,15 +6,22 @@
 #' @param voom true or false. If library size changed too much.
 #' @param pre.filter Cutoff for mean log2(TPM)
 #' @param cal.AUC If to calculate AUC
+#' @param prop.expressed.sample Default 0.5. Proportion of samples have a count greater than pre.filter
 #'
 #' @return
 #' @export
 #'
 #' @examples loonR::limma_differential(tpm.table, group)
-limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.filter = 0, cal.AUC = TRUE){
+limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.filter = 0, prop.expressed.sample = 0.5, cal.AUC = TRUE){
 
   library(limma)
   library(edgeR)
+
+  # https://lashlock.github.io/compbio/R_presentation.html
+  # Pre-filtering the dataset
+  # http://master.bioconductor.org/packages/release/workflows/vignettes/rnaseqGene/inst/doc/rnaseqGene.html#exploratory-analysis-and-visualization
+  keep <- ( rowSums(df > pre.filter) / ncol(df) ) >= prop.expressed.sample
+  df <- df[keep,]
 
   if (rawcount){
     dge <- DGEList(counts = df)
@@ -23,14 +30,6 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
     df <- logCPM
   }
 
-  # https://lashlock.github.io/compbio/R_presentation.html
-  if(pre.filter!=0){
-    # Pre-filtering the dataset
-    # http://master.bioconductor.org/packages/release/workflows/vignettes/rnaseqGene/inst/doc/rnaseqGene.html#exploratory-analysis-and-visualization
-    keep <- rowSums(df) > pre.filter
-    df <- df[keep,]
-    df <- log2(df+1)
-  }
 
   group <- factor( group, levels = unique(as.character(group)), labels = c("Control","Experiment") )
 
@@ -46,7 +45,7 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
   if(cal.AUC){
       AUC <- apply(df, 1,function(x){
         suppressMessages(roc <- pROC::roc(group, x)  )
-        roc$auc
+        ifelse(roc$auc > 0.5, roc$auc, 1-roc$auc)
       })
   }
 
@@ -55,7 +54,7 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
   fit <- limma::contrasts.fit(fit, contrast.matrix)
   fit <- limma::eBayes(fit, trend=TRUE)
 
-  tempOutput = limma::topTable(fit,  n=Inf, adjust.method="BH",) # coef
+  tempOutput = limma::topTable(fit,  n=Inf, adjust.method="BH", coef = "Experiment") # coef
   DEG_voom = na.omit(tempOutput)
   # 关联基因
   DEG_voom$REF = row.names(DEG_voom)
@@ -372,14 +371,14 @@ ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, 
 #' @param group factor, first control then experiment
 #' @param return.normalized.df
 #' @param pre.filter if filter low expression gene
-#' @param prop.expressed.sample Default 0.7. Proportion of samples have a count greater than pre.filter
+#' @param prop.expressed.sample Default 0.5. Proportion of samples have a count greater than pre.filter
 #' @param cal.AUC
 #'
 #' @return
 #' @export
 #'
 #' @examples
-DESeq2_differential <- function(rawcount, group, prop.expressed.sample = 0.7, pre.filter = 0, return.normalized.df = FALSE, cal.AUC = TRUE){
+DESeq2_differential <- function(rawcount, group, prop.expressed.sample = 0.5, pre.filter = 0, return.normalized.df = FALSE, cal.AUC = TRUE){
 
   group = factor( group, levels = unique(as.character(group)), labels = c("Control","Experiment") )
   rnames <- row.names(rawcount)
@@ -391,10 +390,8 @@ DESeq2_differential <- function(rawcount, group, prop.expressed.sample = 0.7, pr
 
   # Pre-filtering the dataset
   # http://master.bioconductor.org/packages/release/workflows/vignettes/rnaseqGene/inst/doc/rnaseqGene.html#exploratory-analysis-and-visualization
-  keep <- ( rowSums(rawcount > pre.filter) / ncol(rawcount) ) > prop.expressed.sample
+  keep <- ( rowSums(rawcount > pre.filter)/ncol(rawcount) ) >= prop.expressed.sample
   rawcount <- rawcount[keep,]
-
-
 
 
   library(DESeq2)
@@ -434,7 +431,7 @@ DESeq2_differential <- function(rawcount, group, prop.expressed.sample = 0.7, pr
   if(cal.AUC){
     AUC <- apply(normalized.count, 1,function(x){
       suppressMessages(roc <- pROC::roc(group, x)  )
-      roc$auc
+      ifelse(roc$auc > 0.5, roc$auc, 1-roc$auc)
     })
 
     res$AUC = AUC[row.names(res)]
@@ -778,8 +775,7 @@ draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.t
 }
 
 
-
-#' Title
+#' Quantile normalization for log2 data frame
 #'
 #' @param df
 #'
@@ -787,10 +783,58 @@ draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.t
 #' @export
 #'
 #' @examples
-log2dfQantileNormalization <- function(df){
+log2dfQuantileNormalization <- function(df){
   res <- limma::normalizeBetweenArrays(df, method = "quantile")
   res <- as.data.frame(res)
   res
 
 }
+
+
+#' Filter genes by kinks of criteria
+#'
+#' @param df
+#' @param expression.cutoff
+#' @param proportion.expressed.samples
+#' @param mean.expression
+#'
+#' @return
+#' @export
+#'
+#' @examples
+filterGenes <- function(df, expression.cutoff = 0, proportion.expressed.samples=0.7, mean.expression=0){
+
+  keep1 = rowMeans(df) > mean.expression
+  keep2 = (rowSums(df > expression.cutoff) / ncol(df) ) > proportion.expressed.samples
+  df[keep1&keep2,]
+
+}
+
+
+#' If perform log2 transformation
+#'
+#' @param df
+#'
+#' @return Boolean variable: TRUE or FALSE
+#' @export
+#'
+#' @examples
+iflog2 <- function(df){
+  df <- loonR::convertDfToNumeric(df)
+  # if log2 transform.    VALUE	Normalized log2 data represent microRNA expression levels
+  qx <- as.numeric(quantile(df, c(0., 0.25, 0.5, 0.75, 0.99, 1.0), na.rm=T))
+  LogC <- (qx[5] > 100) ||
+    (qx[6]-qx[1] > 50 && qx[2] > 0) ||
+    (qx[2] > 0 && qx[2] < 1 && qx[4] > 1 && qx[4] < 2)
+  if (LogC) {
+    print("Should perform log2 transformation")
+  }else{
+    print("Note: should not perform log2 transformation")
+  }
+  LogC
+}
+
+
+
+
 

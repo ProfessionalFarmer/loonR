@@ -42,7 +42,7 @@ heatmap.with.lgfold.riskpro(
 
 \item{z.score.cutoff}{Default 2}
 
-\item{specified.color}{Default c("#0c3e74","#77a8cd","white","#d86652","#7e0821")}
+\item{specified.color}{Default c("#0c3e74","#77a8cd","white","#d86652","#7e0821") or colorRampPalette(c("navy", "white", "firebrick3"))(50)}
 }
 \value{
 A heatmap plot by complex heatmap

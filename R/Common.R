@@ -13,7 +13,9 @@
 #' @examples export2ppt(ggplot2.obj)
 #'
 export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
-  library(export)
+  if(!require(export)){
+    devtools::install_github("tomwenseleers/export")
+  }
   graph2ppt(obj, file=file, append=append)
 }
 

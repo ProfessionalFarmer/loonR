@@ -110,7 +110,7 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE, ty
 #' @param seed
 #' @param scale
 #' @param direction backward  c("both", "backward", "forward")
-#' @param rms If TRUE, use rms instead of glm to build the model
+#' @param rms If TRUE, use rms instead of glm to build the model. Useful for validation and calibration function in rms package.
 #'
 #' @return  A list. list(model=glm.fit,
 #'      StepwiseModel=elimination,
@@ -136,20 +136,23 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = 
   if(!rms){
     # The type="response" option tells R to output probabilities of the form P(Y = 1|X), as opposed to other information such as the logit.
     suppressWarnings( glm.fit <- glm(label ~ ., data = lg.df, family = binomial(logit)) )
+    elimination = step(glm.fit, direction = direction, trace = 0)
+    list(model=glm.fit,
+         StepwiseModel=elimination,
+         eliminationCandidates=stringr::str_remove_all(names(unclass(coef(elimination))[-c(1)]),'`')
+    )
   }else{
-    glm.fit <- lrm(abel ~ .,lg.df)
+    glm.fit <- rms::lrm(label ~ .,lg.df, x = TRUE, y = TRUE)
+    list(model=glm.fit)
   }
 
 
 
 
-  elimination = step(glm.fit, direction = direction, trace = 0)
 
 
-  list(model=glm.fit,
-       StepwiseModel=elimination,
-       eliminationCandidates=stringr::str_remove_all(names(unclass(coef(elimination))[-c(1)]),'`')
-       )
+
+
 
 }
 
@@ -194,6 +197,47 @@ build.coxregression.model <- function(d.frame, status, time, seed=666, scale = T
 
   cox.fit <- coxph( formula, data = df )
   cox.fit
+
+}
+
+
+#' Build a random forests model
+#'
+#' @param df Row is sample
+#' @param group
+#' @param seed
+#' @param scale Default TRUE
+#'
+#' @return
+#' @export
+#'
+#' @examples
+build.randomforest.model <- function(df, group, seed = 666, scale=TRUE){
+
+  cat("Pls note: Second unique variable is defined as experiment group\n")
+
+  if(scale){df = scale(df, center = TRUE, scale = TRUE)}
+
+  lg.df <- data.frame(
+    label = factor(group == unique(group)[2],
+                   levels = c(FALSE, TRUE), labels = c(0, 1)
+    ),
+    df, check.names = FALSE
+  )
+
+  set.seed(seed)
+
+  rf.fit <- randomForest::randomForest(lg.df[,-c(1)], lg.df$label, importance=TRUE, proximity=TRUE)
+
+  colnames(rf.fit$votes) = paste0("class",colnames(rf.fit$votes))
+
+  list(model=rf.fit,
+       predicted.label=rf.fit$predicted,
+       importance=rf.fit$importance,
+       confusion=rf.fit$confusion,
+       votes=data.frame(rf.fit$votes, check.names = FALSE)
+  )
+
 
 }
 
@@ -806,7 +850,7 @@ multivariate_cox <- function(d.frame, status, time, scale=TRUE){
 #' @param cluster_rows
 #' @param z.score.cutoff Default 2
 #' @param cluster_columns
-#' @param specified.color Default c("#0c3e74","#77a8cd","white","#d86652","#7e0821")
+#' @param specified.color Default c("#0c3e74","#77a8cd","white","#d86652","#7e0821") or colorRampPalette(c("navy", "white", "firebrick3"))(50)
 #'
 #' @return A heatmap plot by complex heatmap
 #' @export
@@ -1774,11 +1818,19 @@ confidence_interval <- function(vector, interval) {
 
 
 
+
+
+riskCalibrationPlot<-function(x, ...) {
+  # Generics function
+  UseMethod('riskCalibrationPlot')
+}
+
+
 #' Calibration plot
 #'
 #' @param group Must be a TRUE/FALSE factor
 #' @param pred predicted probability
-#' @param smooth Default TRUE
+#' @param rms.method If TRUE, use rms::val.prob function instead
 #' @param title
 #' @param show.oberved.ci
 #' @param bins Number of bins. Default 20
@@ -1791,14 +1843,21 @@ confidence_interval <- function(vector, interval) {
 #' @export
 #'
 #' @examples
-# data(BreastCancer)
-# BreastCancer = BreastCancer[,-c(1)]
-# BreastCancer = na.omit(BreastCancer)
-# m <- glm(Class ~ ., data = BreastCancer, family = binomial)
-# BreastCancer$pred <- predict(m, type = "response")
+#' data(BreastCancer)
+#' BreastCancer = BreastCancer[,-c(1)]
+#' BreastCancer = na.omit(BreastCancer)
+#' m <- glm(Class ~ ., data = BreastCancer, family = binomial)
+#' BreastCancer$pred <- predict(m, type = "response")
 #' riskCalibrationPlot(factor(BreastCancer$Class=="malignant", levels=c(FALSE, TRUE)),
 #'                    BreastCancer$pred)
-riskCalibrationPlot <- function(group, pred, smooth=TRUE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE){
+#'
+#' data(LIRI)
+#'
+#' d1 <- LIRI[,-c(1,5)]
+#' m <- glm(status ~ ., data = d1, family = binomial(logit))
+#' d1$pred <- predict(m, type = "response")
+#' riskCalibrationPlot(factor(LIRI$status), d1$pred)
+riskCalibrationPlot.default <- function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE){
 
   # Thanks reference: https://darrendahly.github.io/post/homr/
 
@@ -1810,12 +1869,18 @@ riskCalibrationPlot <- function(group, pred, smooth=TRUE, title = "Calibration p
   df$Class=group
 
 
+  if(rms.method){
+    print(rms::val.prob(df$pred, as.numeric(df$Class)))
+    return()
+  }
+
+
+
   require(gridExtra)
   require(dplyr)
   require(ggpubr)
 
-  #library(rms) fit must be from lrm or ols
-  #calibrate.m <- calibrate(m, group=Class, method=c("boot"), B=100 ) %>%
+
 
   df.cal.grouped <- arrange(df, pred) %>%
     mutate(bin = ntile(pred, bins)) %>%
@@ -1843,20 +1908,19 @@ riskCalibrationPlot <- function(group, pred, smooth=TRUE, title = "Calibration p
   # }
 
 
-
-  if(smooth){
-    # loess fit through estimates，并且显示标准差
-    if(full.range){
-      # This plot the full range 0-1
-      p1 = p1 + geom_smooth( aes(x = pred, y = as.numeric(Class)-1 ), level = 0.95,
-                             color = "red", se = show.oberved.ci, method = "loess")
-    }else{
-      #this only plot between bins: the first bin_pred to the last bin_pred
-      p1 = p1 + geom_smooth(aes(x = bin_pred, y = bin_prob ), level = 0.95,
-                            color = "red", se = show.oberved.ci, method = "loess")
-    }
-
+  p1 = ggscatter(df.cal.grouped, x="bin_pred", y ="bin_prob" ) +
+        geom_abline(intercept = 0, slope = 1)
+  # loess fit through estimates，并且显示标准差
+  if(full.range){
+     # This plot the full range 0-1
+    p1 = p1 + geom_smooth( aes(x = pred, y = as.numeric(Class)-1 ), level = 0.95,
+                           color = "red", se = show.oberved.ci, method = "loess")
+  }else{
+    #this only plot between bins: the first bin_pred to the last bin_pred
+    p1 = p1 + geom_smooth(aes(x = bin_pred, y = bin_prob ), level = 0.95,
+                          color = "red", se = show.oberved.ci, method = "loess")
   }
+
 
   p1 = ggpar(p1, xlim = c(0,1), ylim = c(0,1), xticks.by =  ticks.unit,
              xlab = "", ylab="Observed proportion", title = title)
@@ -1888,6 +1952,30 @@ riskCalibrationPlot <- function(group, pred, smooth=TRUE, title = "Calibration p
   plot_row
 }
 
+
+
+
+#' Calibration plot by rms.calibrate
+#'
+#' @param rms.model A model built by rms package
+#' @param cox If is a cox model
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' #' data(LIRI)
+#' m=loonR::build.logistic.model(LIRI[,c(3,4)],LIRI$status, rms = T)
+#' m=m$model
+#' riskCalibrationPlot(m)
+riskCalibrationPlot.lrm <- function(rms.model, cox=FALSE){
+  plot( rms::calibrate(rms.model,
+                       method=c("boot"),
+                       B=100,
+                       smoother="lowess" ),
+        xlab = "Predicted probability"
+        )
+}
 
 
 
@@ -1980,6 +2068,79 @@ decisionCurveAnalysis <- function(data.frame.list=NULL, label = NULL, rms=FALSE,
 
 }
 
+
+
+
+#' Resampling Validation of a Fitted Model's Indexes of Fit
+#'
+#' @param rms.model
+#' @param B Bootstrap times
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data(LIRI)
+#' m=loonR::build.logistic.model(LIRI[,c(3,4)],LIRI$status, rms = T)
+#' m=m$model
+#' rms::validate(m)
+rms_validate <- function(rms.model, B = 100){
+
+   # https://blog.csdn.net/fjsd155/article/details/84669331
+   v = rms::validate(rms.model, dxy=TRUE, B = B, method="boot", fastbw = FALSE)
+
+   # Get the Dxy
+   Dxy = v[rownames(v)=="Dxy", colnames(v)=="index.corrected"]
+   orig_Dxy = v[rownames(v)=="Dxy", colnames(v)=="index.orig"]
+
+   # The c-statistic according to Dxy=2(c-0.5)
+   bias_corrected_c_index  <- abs(Dxy)/2+0.5
+   orig_c_index <- abs(orig_Dxy)/2+0.5
+
+   list(
+     validate.res = v,
+     original.Dxy=orig_Dxy,
+     corrected.Dxy=Dxy,
+     original.C_index=orig_c_index,
+     corrected.C_index=bias_corrected_c_index
+        )
+
+
+}
+
+
+
+
+#' Draw C index across times
+#'
+#' @param list.cox.model
+#' @param df include time and status column names
+#' @param palette aaas
+#' @param main Default ""
+#'
+#' @return
+#' @export
+#'
+#' @examples
+time_serials_Cindex <- function(list.cox.model, df, palette="aaas", main=""){
+
+  #pec包的cindex()可计算多个模型在多个时间点的C指数
+  pk<- cindex(list.cox.model,
+              formula=Surv(time,status==0)~1,
+              data=df#, eval.times=seq(3,83,1)
+              )
+  #绘制时间C-index
+  plot(pk,
+       col=loonR::get.palette.color(palette, n=length(list.cox.model)),#曲线颜色
+       xlab="Month",#xy名字
+       ylab="C-index",
+       #ylim = c(0.4,1),#xy轴范围
+       #xlim = c(3,83),
+       legend.x=1,     #图例位置
+       legend.y=0.6,
+       legend.cex=1,    #图例字号
+  );title(main = main)
+}
 
 
 

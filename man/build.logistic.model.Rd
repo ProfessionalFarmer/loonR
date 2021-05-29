@@ -20,7 +20,7 @@ build.logistic.model(
 
 \item{direction}{backward  c("both", "backward", "forward")}
 
-\item{rms}{If TRUE, use rms instead of glm to build the model}
+\item{rms}{If TRUE, use rms instead of glm to build the model. Useful for validation and calibration function in rms package.}
 }
 \value{
 A list. list(model=glm.fit,

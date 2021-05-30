@@ -884,7 +884,11 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
     risk.pro <- c(
       risk.pro[label==levels(label)[1] ][order(risk.pro[label==levels(label)[1] ] ) ],
       risk.pro[label==levels(label)[2] ][order(risk.pro[label==levels(label)[2] ] ) ]  )
-    }
+  }else{
+    # 根据分组排序
+    heatmap.df <- heatmap.df[,c(which(label==levels(label)[1]), which(label==levels(label)[2]))]
+    label <- label[c(which(label==levels(label)[1]), which(label==levels(label)[2]))]
+  }
 
 
   # heatmap和barplot一起画
@@ -895,6 +899,8 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
   label = factor(label)
   Tumor = loonR::get.palette.color("jama_classic", n = 2)
   names(Tumor) = levels(label)
+
+
 
   # rename annotation names
   annotation <- data.frame(Tmp = label[ c(which(label==levels(label)[1]),
@@ -1379,6 +1385,7 @@ download.geo.dataset <- function(geo.accession.id, platform, destdir = tempdir()
   rm(qx, LogC)
 
   result <- list(expression = exp.df,
+                 rawExpression = exprs(gset),
                  phenotype  = phenotype,
                  probe.annotation = gpl.annotation)
 

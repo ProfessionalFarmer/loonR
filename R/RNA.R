@@ -50,11 +50,11 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
   }
 
   fit <- limma::lmFit(df, design)  # limma 因为TPM不需要normalize，所以不用voom函数。v应该是log2转换之后的
-  contrast.matrix <- limma::makeContrasts(Experiment-Control,levels = design)  # Low high的顺序决定谁比谁
+  contrast.matrix <- limma::makeContrasts(Experiment-Control, levels = design)  # Low high的顺序决定谁比谁
   fit <- limma::contrasts.fit(fit, contrast.matrix)
   fit <- limma::eBayes(fit, trend=TRUE)
 
-  tempOutput = limma::topTable(fit,  n=Inf, adjust.method="BH") # coef
+  tempOutput = limma::topTable(fit,  n=Inf, adjust.method="BH", coef = "Experiment-Control") # coef
   DEG_voom = na.omit(tempOutput)
   # 关联基因
   DEG_voom$REF = row.names(DEG_voom)
@@ -594,6 +594,7 @@ MA_plot <- function(M, A, p, m.cutoff=0, a.cutoff=0, p.cutoff=0.05,
 #'
 #' @param dirPath Simple set the directory which contains Salmon output folder
 #' @param isoform specify data type. isoforma specific or not.
+#' @param countsFromAbundance countsFromAbundance = c("no", "scaledTPM", "lengthScaledTPM", "dtuScaledTPM"),
 #'
 #' @return A tximport oject
 #' @export
@@ -601,7 +602,10 @@ MA_plot <- function(M, A, p, m.cutoff=0, a.cutoff=0, p.cutoff=0.05,
 #' @examples
 #' Directory tree: dir/sample_quant/quant.sf
 #'
-load.salmon.matrix <- function(dirPath, isoform = TRUE){
+load.salmon.matrix <- function(dirPath, isoform = TRUE, countsFromAbundance = "no"){
+
+  warning("Pls not isoform paramter: ", isoform)
+
 
   library(tximport)
   sample.salmon.pathes <- list.files(path = dirPath, full.names = TRUE, pattern = "quant")
@@ -619,9 +623,9 @@ load.salmon.matrix <- function(dirPath, isoform = TRUE){
   names(sample.salmon.pathes) <- sample.names
 
   if(isoform){
-    tpm <- tximport(sample.salmon.pathes, type = "salmon", txIn = isoform, txOut = isoform)
+    tpm <- tximport(sample.salmon.pathes, type = "salmon", txIn = isoform, txOut = isoform, countsFromAbundance = countsFromAbundance)
   }else{
-    tpm <- tximport(sample.salmon.pathes, type = "salmon", txIn = isoform, txOut = isoform, geneIdCol=1)
+    tpm <- tximport(sample.salmon.pathes, type = "salmon", txIn = isoform, txOut = isoform, geneIdCol=1, countsFromAbundance = countsFromAbundance)
   }
 
 
@@ -647,6 +651,8 @@ load.salmon.matrix <- function(dirPath, isoform = TRUE){
 #' Directory tree subdirs = FALSE: dir/sample.prefix.isoforms.results
 #'
 load.rsem.matrix <- function(dirpath, isoform = FALSE, subdirs = TRUE){
+
+  warning("Pls not isoform paramter: ", isoform)
 
   library(tximport)
 
@@ -748,7 +754,7 @@ draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.t
 
     # when is null, use max
     if(is.null(ylim)){
-      ylim = c(floor(min(tmp.df$Expression)), ceiling(max(tmp.df$Expression))+0.5)
+      ylim = c(floor(min(tmp.df$Expression)), ceiling(max(tmp.df$Expression))+1)
     }
 
     p <- ggdotplot(tmp.df, y="Expression", x= "Group", add = "boxplot", title = name,
@@ -758,15 +764,14 @@ draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.t
 
 
 
-
-
-
     if(show.stat.p){
       p = p + stat_compare_means(
-            aes(label = paste0("p = ", ..p.format..), method = eval(stat.method), comparisons = list(unique(group) ),
-            label.y= (max(Expression)+1) ) )
+        aes(label = paste0("p = ", ..p.format..)),
+        method = eval(stat.method),
+        comparisons = list(unique(group) ),
+        label.y= (max(ylim)-2) )
     }
-
+    print((max(ylim)-1))
     p
 
   })
@@ -860,6 +865,7 @@ iflog2 <- function(df){
 microarray_limma_differential <- function(exp, group, check.log2=TRUE, normalizeBetweenArrays=TRUE){
 
   print(Sys.time())
+  # -------- # -------- # -------- # -------- # -------- #
   # Version info: R 3.2.3, Biobase 2.30.0, GEOquery 2.40.0, limma 3.26.8
   ###
   #   Differential expression analysis with limma
@@ -920,10 +926,10 @@ microarray_limma_differential <- function(exp, group, check.log2=TRUE, normalize
 
   # compute statistics and table of top significant genes
   fit2 <- eBayes(fit2, 0.01)
-  tT <- topTable(fit2, adjust="BH", sort.by="p", number=Inf)
+  tT <- topTable(fit2, adjust="BH", sort.by="p", number=Inf, coef = cts )
   tT$REF = row.names(tT)
 
-
+  # -------- # -------- # -------- # -------- # -------- #
   # Visualize and quality control test results.
   # Build histogram of P-values for all genes. Normal test
   # assumption is that most genes are not differentially expressed.
@@ -982,10 +988,12 @@ microarray_limma_differential <- function(exp, group, check.log2=TRUE, normalize
   # mean-variance trend, helps to see if precision weights are needed
   plotSA(fit2, main="Mean variance trend")
 
+  print(Sys.time())
+
   list(expr.df = gset,
        diff.res = tT)
 
-  print(Sys.time())
+
 }
 
 

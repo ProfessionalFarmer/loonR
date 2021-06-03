@@ -137,26 +137,26 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = 
     # The type="response" option tells R to output probabilities of the form P(Y = 1|X), as opposed to other information such as the logit.
     suppressWarnings( glm.fit <- glm(label ~ ., data = lg.df, family = binomial(logit)) )
     elimination = step(glm.fit, direction = direction, trace = 0)
-    list(model=glm.fit,
+    res <- list(model=glm.fit,
          StepwiseModel=elimination,
          eliminationCandidates=stringr::str_remove_all(names(unclass(coef(elimination))[-c(1)]),'`')
     )
   }else{
     glm.fit <- rms::lrm(label ~ .,lg.df, x = TRUE, y = TRUE)
-    list(model=glm.fit)
+    res <- list(model=glm.fit)
   }
 
+  lg.df$risk.score <- predict(glm.fit, lg.df)
+  p <- loonR::roc_with_ci(lg.df$label, lg.df$risk.score, ci = FALSE)
 
+  res$data = lg.df
+  res$ROC = p
 
-
-
-
-
-
+  res
 
 }
 
-#' Title
+#' Build co regression model
 #'
 #' @param d.frame Data.frame --- Row: sample, Column: gene expression
 #' @param status
@@ -240,6 +240,11 @@ build.randomforest.model <- function(df, group, seed = 666, scale=TRUE){
 
 
 }
+# todo elastic regression
+# https://www.pluralsight.com/guides/linear-lasso-and-ridge-regression-with-r
+
+
+
 
 
 #' Get confusion matrix
@@ -1539,10 +1544,10 @@ multiplePlotPredictedPro <- function(group, pred, palette="aaas", bins = 10){
 #' @export
 #'
 #' @examples
-lasso_best_lamda <- function(d.matrix, group, family = "binomial", type.measure = "auc", nfolds = 5, nreps = 1000, scale=TRUE ){
+lasso_best_lamda <- function(d.matrix, group, family = "binomial", type.measure = "auc", nfolds = 5, nreps = 100, scale=TRUE, seed = 66 ){
 
   if(scale){
-    data.matrix = scale(data.matrix, center = TRUE, scale = TRUE)
+    d.matrix = scale(d.matrix, center = TRUE, scale = TRUE)
     #data.matrix = data.frame(data.matrix, check.names = T, stringsAsFactors = F)
   }
 
@@ -1552,9 +1557,12 @@ lasso_best_lamda <- function(d.matrix, group, family = "binomial", type.measure 
   X = as.matrix(d.matrix)
   Y = group
 
+
+
   library(foreach)
   library(parallel)
-  registerDoParallel(cores=10)
+
+  doParallel::registerDoParallel(cores=10)
   parallel::mcaffinity(c(1:10))
 
 
@@ -1592,10 +1600,16 @@ lasso_best_lamda <- function(d.matrix, group, family = "binomial", type.measure 
   feature.coef = coef(fit, s=lambda.min)
   feature.coef = data.frame(name = feature.coef@Dimnames[[1]][feature.coef@i + 1], coefficient = feature.coef@x)
 
+  library(dplyr)
+  PredictedValue = predict(fit,d.matrix)[,1]
+  d.matrix = data.frame(d.matrix, check.names = F)
+  d.matrix$PredictedValue = PredictedValue
+
 
   res = list(lambda.min = lambda.min, lambda_1se = lambda_1se, res = res,
              summarized_res = summarized_res, plot = p,
-             fit = fit, feature.coef = feature.coef
+             fit = fit, feature.coef = feature.coef,
+             data = d.matrix
              )
   res
 }

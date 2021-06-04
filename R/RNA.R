@@ -343,6 +343,7 @@ ttest_differential <- function(df, group, cal.AUC = TRUE, exclude.zore = FALSE, 
         auc = NA
       }else{
         auc = round(loonR::get.AUC(exp.val, f.group),3)
+        if(auc<0.5){auc = 1 - auc}
       }
       f.res = c(ind, p.val, t.statistic, f.g1.no, f.g2.no, mean.diff, mean, auc)
       names(f.res) = c("Name", "P", "t statistic", g1, g2, "Difference", "Average", "AUC")
@@ -754,7 +755,9 @@ draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.t
 
     # when is null, use max
     if(is.null(ylim)){
-      ylim = c(floor(min(tmp.df$Expression)), ceiling(max(tmp.df$Expression))+1)
+      ylim = c(floor(min(tmp.df$Expression)), ceiling(max(tmp.df$Expression))+2.5)
+    }else{
+      ylim = c(ylim[1],ylim[2]+2.5)
     }
 
     p <- ggdotplot(tmp.df, y="Expression", x= "Group", add = "boxplot", title = name,
@@ -771,7 +774,7 @@ draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.t
         comparisons = list(unique(group) ),
         label.y= (max(ylim)-2) )
     }
-    print((max(ylim)-1))
+    print(list(unique(group) ))
     p
 
   })

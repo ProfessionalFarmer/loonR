@@ -54,7 +54,7 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
   fit <- limma::contrasts.fit(fit, contrast.matrix)
   fit <- limma::eBayes(fit, trend=TRUE)
 
-  tempOutput = limma::topTable(fit,  n=Inf, adjust.method="BH", coef = "Experiment-Control") # coef
+  tempOutput = limma::topTable(fit,  n=Inf, adjust.method="BH", coef = "Experiment - Control") # coef
   DEG_voom = na.omit(tempOutput)
   # 关联基因
   DEG_voom$REF = row.names(DEG_voom)

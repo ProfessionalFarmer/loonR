@@ -377,13 +377,16 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
 #' @param ylim
 #' @param show.sample.name Default FALSE
 #' @param label Default NULL
+#' @param cor.coef TRUE/FALSE to show coefficient
 #'
 #' @return ggplot2 object
 #' @export
 #'
 #' @examples loonR::drawScatter(sample.info$before_reads, sample.info$mirdeep2_mapped)
-drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA, color = "jco", title = "",
-                        margin = TRUE, xlim = NA, ylim = NA, show.sample.name = FALSE, label = NULL ){
+drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA,
+                        color = "jco", title = "",
+                        margin = TRUE, xlim = NULL, ylim = NULL,
+                        show.sample.name = FALSE, label = NULL, cor.coef = F ){
 
   # http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/78-perfect-scatter-plots-with-correlation-and-marginal-histograms/
 
@@ -418,8 +421,14 @@ drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA, colo
 
   # Main plot
   pmain <- ggpubr::ggscatter(df, x="x", y="y", color = "Type",
-                             label = label, repel = show.sample.name,
-                             palette = color, xlim=xlim, xlab = xlab, ylab = ylab)
+                    label = label, repel = show.sample.name,
+                    palette = color, xlim=xlim, xlab = xlab, ylab = ylab,
+                    title = title,
+                    cor.coef = cor.coef,
+                    cor.coeff.args = list(method = "pearson",
+                                          label.x.npc = "left",
+                                          label.y.npc = "top")
+            )
 
 
   if (!margin){

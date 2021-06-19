@@ -4,12 +4,14 @@
 \alias{load.salmon.matrix}
 \title{Read Salmon output}
 \usage{
-load.salmon.matrix(dirPath, isoform = TRUE)
+load.salmon.matrix(dirPath, isoform = TRUE, countsFromAbundance = "no")
 }
 \arguments{
 \item{dirPath}{Simple set the directory which contains Salmon output folder}
 
 \item{isoform}{specify data type. isoforma specific or not.}
+
+\item{countsFromAbundance}{countsFromAbundance = c("no", "scaledTPM", "lengthScaledTPM", "dtuScaledTPM"),}
 }
 \value{
 A tximport oject

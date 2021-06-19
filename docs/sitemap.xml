@@ -46,6 +46,9 @@
     <loc>/reference/build.logistic.model.html</loc>
   </url>
   <url>
+    <loc>/reference/build.randomforest.model.html</loc>
+  </url>
+  <url>
     <loc>/reference/confidence_interval.html</loc>
   </url>
   <url>
@@ -97,6 +100,9 @@
     <loc>/reference/feature.selection.boruta.html</loc>
   </url>
   <url>
+    <loc>/reference/filterGenes.html</loc>
+  </url>
+  <url>
     <loc>/reference/fpkm2tpm.html</loc>
   </url>
   <url>
@@ -119,6 +125,9 @@
   </url>
   <url>
     <loc>/reference/get.sample.project.infomap.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getFastaSummary.html</loc>
   </url>
   <url>
     <loc>/reference/getGeneRelatedTranscripts.Gff.html</loc>
@@ -154,6 +163,9 @@
     <loc>/reference/id_mapping.html</loc>
   </url>
   <url>
+    <loc>/reference/iflog2.html</loc>
+  </url>
+  <url>
     <loc>/reference/index.html</loc>
   </url>
   <url>
@@ -187,6 +199,9 @@
     <loc>/reference/log2dfQantileNormalization.html</loc>
   </url>
   <url>
+    <loc>/reference/log2dfQuantileNormalization.html</loc>
+  </url>
+  <url>
     <loc>/reference/logit2prob.html</loc>
   </url>
   <url>
@@ -194,6 +209,9 @@
   </url>
   <url>
     <loc>/reference/loo.cv.html</loc>
+  </url>
+  <url>
+    <loc>/reference/microarray_limma_differential.html</loc>
   </url>
   <url>
     <loc>/reference/multi_roc_with_ci.html</loc>
@@ -259,7 +277,16 @@
     <loc>/reference/remove.verylong.isoform.gff.html</loc>
   </url>
   <url>
+    <loc>/reference/riskCalibrationPlot.default.html</loc>
+  </url>
+  <url>
     <loc>/reference/riskCalibrationPlot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/riskCalibrationPlot.lrm.html</loc>
+  </url>
+  <url>
+    <loc>/reference/rms_validate.html</loc>
   </url>
   <url>
     <loc>/reference/roc_with_ci.html</loc>
@@ -293,6 +320,9 @@
   </url>
   <url>
     <loc>/reference/tcgabiolinks.get.junction.coverage.html</loc>
+  </url>
+  <url>
+    <loc>/reference/time_serials_Cindex.html</loc>
   </url>
   <url>
     <loc>/reference/ttest_differential.html</loc>

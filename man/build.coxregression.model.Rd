@@ -2,7 +2,7 @@
 % Please edit documentation in R/Biomarker.R
 \name{build.coxregression.model}
 \alias{build.coxregression.model}
-\title{Title}
+\title{Build co regression model}
 \usage{
 build.coxregression.model(d.frame, status, time, seed = 666, scale = TRUE)
 }
@@ -17,5 +17,5 @@ build.coxregression.model(d.frame, status, time, seed = 666, scale = TRUE)
 
 }
 \description{
-Title
+Build co regression model
 }

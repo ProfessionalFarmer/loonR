@@ -13,10 +13,11 @@ drawScatter(
   color = "jco",
   title = "",
   margin = TRUE,
-  xlim = NA,
-  ylim = NA,
+  xlim = NULL,
+  ylim = NULL,
   show.sample.name = FALSE,
-  label = NULL
+  label = NULL,
+  cor.coef = F
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ drawScatter(
 \item{show.sample.name}{Default FALSE}
 
 \item{label}{Default NULL}
+
+\item{cor.coef}{TRUE/FALSE to show coefficient}
 }
 \value{
 ggplot2 object

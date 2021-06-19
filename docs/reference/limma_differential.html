@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.428</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.448</span>
       </span>
     </div>
 
@@ -123,6 +123,7 @@
   rawcount <span class='op'>=</span> <span class='cn'>FALSE</span>,
   voom <span class='op'>=</span> <span class='cn'>FALSE</span>,
   pre.filter <span class='op'>=</span> <span class='fl'>0</span>,
+  prop.expressed.sample <span class='op'>=</span> <span class='fl'>0.5</span>,
   cal.AUC <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
@@ -150,6 +151,10 @@
       <td><p>Cutoff for mean log2(TPM)</p></td>
     </tr>
     <tr>
+      <th>prop.expressed.sample</th>
+      <td><p>Default 0.5. Proportion of samples have a count greater than pre.filter</p></td>
+    </tr>
+    <tr>
       <th>cal.AUC</th>
       <td><p>If to calculate AUC</p></td>
     </tr>
@@ -163,7 +168,7 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='r-in'><span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>limma_differential</span><span class='op'>(</span><span class='va'>tpm.table</span>, <span class='va'>group</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in factor(group, levels = unique(as.character(group)), labels = c("Control",     "Experiment"))</span> object 'group' not found</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in is.data.frame(x)</span> object 'tpm.table' not found</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

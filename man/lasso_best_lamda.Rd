@@ -12,8 +12,9 @@ lasso_best_lamda(
   family = "binomial",
   type.measure = "auc",
   nfolds = 5,
-  nreps = 1000,
-  scale = TRUE
+  nreps = 100,
+  scale = TRUE,
+  seed = 66
 )
 }
 \arguments{

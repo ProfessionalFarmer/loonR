@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.428</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.448</span>
       </span>
     </div>
 
@@ -118,6 +118,7 @@
     <pre class="usage"><span class='fu'>DESeq2_differential</span><span class='op'>(</span>
   <span class='va'>rawcount</span>,
   <span class='va'>group</span>,
+  prop.expressed.sample <span class='op'>=</span> <span class='fl'>0.5</span>,
   pre.filter <span class='op'>=</span> <span class='fl'>0</span>,
   return.normalized.df <span class='op'>=</span> <span class='cn'>FALSE</span>,
   cal.AUC <span class='op'>=</span> <span class='cn'>TRUE</span>
@@ -135,8 +136,16 @@
       <td><p>factor, first control then experiment</p></td>
     </tr>
     <tr>
+      <th>prop.expressed.sample</th>
+      <td><p>Default 0.5. Proportion of samples have a count greater than pre.filter</p></td>
+    </tr>
+    <tr>
       <th>pre.filter</th>
       <td><p>if filter low expression gene</p></td>
+    </tr>
+    <tr>
+      <th>cal.AUC</th>
+      <td></td>
     </tr>
     </table>
 

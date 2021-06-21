@@ -92,7 +92,7 @@ SNF_Similairity_Hist <- function(affinityL=NULL, evidence.type=NULL, group = NUL
       support.evidence.vector <- names(value)[value.rank[1]]
 
       for(ind in 2:length(value.rank)){
-        if ( 1.1 *  value[ value.rank[ind] ] > value[ value.rank[1] ] ){
+        if ( value[ value.rank[ind] ] > 0.9 * value[ value.rank[1] ] ){
           support.evidence.vector <- c(support.evidence.vector, names(value)[value.rank[ind]] )
         } else{
           break

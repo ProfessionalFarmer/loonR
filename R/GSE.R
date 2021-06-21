@@ -501,3 +501,171 @@ ClusterProfiler.GSEA.ORA.customGS.Compare <- function(gene, customGS=NULL, minGS
   res
 }
 
+
+#' Perform GSEA across multiple groups (1 vs other)
+#'
+#' @param rna.df.log
+#' @param group
+#' @param prefix Default "Group"
+#' @param customGS User customed gene set. qusage::read.gmt. Should be converted to ENTREZID
+#' @param exp.gene.type RNA expression ID. keytypes(org.Hs.eg.db)
+#' @param cutoff.log10 Default 4. Minimux or maximum log10 value. Useful when meet inf or draw heatmap
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' This function will perform GSEA analysis. Default geneset: GOBP, C2, C5, KEGG, HALLMARK
+#'
+compare.GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=NULL, exp.gene.type="ENSEMBL", cutoff.log10 = 4){
+  library(HTSanalyzeR2)
+  library(org.Hs.eg.db)
+
+  if(is.null(customGS)){
+     ## generate gene set collection
+     GO_BP <- GOGeneSets(species="Hs", ontologies=c("BP"))
+     PW_KEGG <- KeggGeneSets(species="Hs")
+     MSig_C2 <- MSigDBGeneSets(collection = "C2", species = "Hs")
+     MSig_C5 <- MSigDBGeneSets(collection = "C5", species = "Hs")
+     MSig_H <- MSigDBGeneSets(collection = "H", species = "Hs")
+     ## combine all needed gene set collections into a named list for further analysis
+     ListGSC <- list(GO_BP=GO_BP, PW_KEGG=PW_KEGG, MSig_C2=MSig_C2, MSig_C5=MSig_C5, MSig_H=MSig_H)
+
+     # paramter
+     nPermutations = 500
+     minGeneSetSize = 10
+   }else{
+     # library(qusage)
+     # CustomGS <- read.gmt("/data/home2/Zhongxu/work/baidu2/raw/geneset.gmt")
+     # # convert gene symbol to id
+     # CustomGS <- lapply(CustomGS,function(x) {
+     #      tmp <- mapIds(org.Hs.eg.db, keys = x,
+     #               keytype = "SYMBOL", column = "ENTREZID")
+     #      return(tmp[!is.na(tmp)])
+     #   }
+     # )
+     ListGSC <- list(customGS=customGS)
+
+     # parameter
+     nPermutations = 1000
+     minGeneSetSize = 5
+   }
+
+
+  function.analysis.res <- lapply(unique(group), function(x){
+
+   print(paste("Now, ", prefix, x))
+
+   ###### lapply start
+    # differential analysis
+   true.ind = which(group==x)
+   false.ind = which(group!=x)
+   limma.df = rna.df.log[ , c(false.ind, true.ind)]
+   limma.diff <- loonR::limma_differential(limma.df, rep(c(FALSE,TRUE),c(length(false.ind), length(true.ind))) )
+
+   ## prepare input for analysis
+   phenotype <- limma.diff$logFC
+   # https://bioinformatics-core-shared-training.github.io/cruk-summer-school-2018/RNASeq2018/html/06_Gene_set_testing.nb.html   -log10(res$logFC) * sign(res$logFC)
+   #phenotype <- -log10(limma.diff$adj.P.Val) * sign(limma.diff$logFC)
+   names(phenotype) <- row.names(limma.diff)
+
+
+   phenotype <- sort(phenotype, decreasing = TRUE)
+
+   ## initiate a *GSCA* object
+   gsca <- GSCA(listOfGeneSetCollections=ListGSC, geneList=phenotype)
+
+   ## preprocess
+   gsca1 <- preprocess(gsca, species="Hs", initialIDs = exp.gene.type, # keytypes(org.Hs.eg.db)  # ENSEMBL   SYMBOL
+                       keepMultipleMappings=TRUE, duplicateRemoverMethod="max",
+                       orderAbsValue = FALSE)
+
+
+   ## analysis
+   if (requireNamespace("doParallel", quietly=TRUE)) {
+     doParallel::registerDoParallel(cores=100)
+   }
+
+   set.seed(111)
+   ## support parallel calculation using multiple cores
+   gsca2 <- analyze(gsca1,
+                    para=list(pValueCutoff = 1, pAdjustMethod = "BH",
+                              nPermutations = nPermutations, minGeneSetSize = minGeneSetSize,
+                              exponent = 1),
+                    doGSOA = FALSE)  # Here we do gsoa
+
+   ## append gene sets terms
+   if(is.null(customGS)){
+     gsca3 <- appendGSTerms(gsca2, msigdbGSCs=c("MSig_C2","MSig_H","MSig_C5"), goGSCs=c("GO_BP"), keggGSCs=c("PW_KEGG"))
+   }else{
+     gsca3 <- appendGSTerms(gsca2)
+   }
+   gsca3
+   #### lapply end
+   }
+  )
+  names(function.analysis.res) <- paste0(prefix,unique(group))
+  result = list(rawResult = function.analysis.res)
+
+
+
+  # combine gse result
+  gse.result = lapply(names(function.analysis.res), function(tmp.group.name){
+
+        tmp.gse.result = function.analysis.res[[tmp.group.name]]@result$GSEA.results
+
+        # append group name and gene set name
+        tmp.gse.result.after.append.information = lapply(names(tmp.gse.result), function(tmp.gs.name) {
+            y = tmp.gse.result[[tmp.gs.name]]
+            y$GroupName <- replicate(nrow(y), tmp.group.name) # x is group name
+            y$GSType = tmp.gs.name
+            y$GS.ID= row.names(y)
+            # when customGS used, Gene.Set.Term is null, so set it.
+            if(!is.null(customGS)){y$Gene.Set.Term = row.names(y)}
+            return(y)
+          })
+       names(tmp.gse.result.after.append.information) <- names(tmp.gse.result)
+
+       # combined together
+       tmp.res <- do.call("rbind", tmp.gse.result.after.append.information)
+       rm(tmp.gse.result.after.append.information)
+
+       tmp.res
+  })
+  # GSEA result by group
+  names(gse.result) = names(function.analysis.res)
+  result$gseResultByGroup = gse.result
+
+
+  # merge all groups' result into a signle data.frame
+  gse.res.single.table <- do.call(rbind, gse.result)
+  result$gseResultSingleTable = gse.res.single.table
+
+
+  # prepare heatmap
+  gse.res.single.table$Adjusted.Pvalue <- -log10(gse.res.single.table$Adjusted.Pvalue)
+  gse.res.single.table[ which(is.infinite(gse.res.single.table$Adjusted.Pvalue) ),  ]$Adjusted.Pvalue <- cutoff.log10  # Minimum 5
+  gse.res.single.table$Adjusted.Pvalue[ gse.res.single.table$Adjusted.Pvalue >= cutoff.log10 ] = cutoff.log10
+
+  # add direction information
+  gse.res.single.table$Adjusted.Pvalue <- gse.res.single.table$Adjusted.Pvalue * sign(gse.res.single.table$Observed.score)
+
+  # subset data frame
+  gse.res.single.table <- gse.res.single.table[,c("Gene.Set.Term","Adjusted.Pvalue","GroupName")]
+
+  # cast data frame
+  gse.res.single.table <- reshape::cast(gse.res.single.table,Gene.Set.Term~GroupName, value = "Adjusted.Pvalue", fun.aggregate = mean)
+  row.names(gse.res.single.table) <- gse.res.single.table$Gene.Set.Term
+  gse.res.single.table <- as.data.frame(gse.res.single.table[,-c(1)])
+  result$heatmap.df = gse.res.single.table
+
+  result
+
+}
+
+
+
+
+
+
+

@@ -1000,3 +1000,49 @@ microarray_limma_differential <- function(exp, group, check.log2=TRUE, normalize
 }
 
 
+
+#' Perform differential analysis (1 vs others)
+#'
+#' @param rna.df.log
+#' @param group
+#' @param prefix Default "Group"
+#'
+#' @return
+#' @export
+#'
+#' @examples
+compare.differential.analysis <- function(rna.df.log, group, prefix="Group"){
+
+  function.analysis.res <- lapply(unique(group), function(x){
+
+    print(paste("Now, ", prefix, x))
+
+    ###### lapply start
+    # differential analysis
+    true.ind = which(group==x)
+    false.ind = which(group!=x)
+    limma.df = rna.df.log[ , c(false.ind, true.ind)]
+    limma.diff <- loonR::limma_differential(limma.df, rep(c(FALSE,TRUE),c(length(false.ind), length(true.ind))) )
+
+    limma.diff
+  }
+  )
+  names(function.analysis.res) <- paste0(prefix,unique(group))
+  result = list(diffResult = function.analysis.res)
+
+  phenotype.res <- lapply(function.analysis.res, function(limma.diff){
+
+    ## prepare input for analysis
+    phenotype <- limma.diff$logFC
+    # https://bioinformatics-core-shared-training.github.io/cruk-summer-school-2018/RNASeq2018/html/06_Gene_set_testing.nb.html   -log10(res$logFC) * sign(res$logFC)
+    #phenotype <- -log10(limma.diff$adj.P.Val) * sign(limma.diff$logFC)
+    names(phenotype) <- row.names(limma.diff)
+    phenotype <- sort(phenotype, decreasing = TRUE)
+    phenotype
+  })
+
+  result$phenotype = phenotype.res
+  result
+
+}
+

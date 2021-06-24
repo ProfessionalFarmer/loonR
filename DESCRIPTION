@@ -7,7 +7,7 @@ Authors@R:
            role = c("aut", "cre"),
            email = "sxzhuxu@gmail.com",
            comment = c(ORCID = "0000-0003-2197-5563"))
-Description: What the package does (one paragraph).
+Description: Functions could save times for repeated works
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -22,7 +22,8 @@ Depends:
   scales,
   pROC,
   dplyr,
-  reshape2
+  reshape2,
+  BiocManager
 Remotes:
     bioc::release/limma,
     bioc::release/plyranges,

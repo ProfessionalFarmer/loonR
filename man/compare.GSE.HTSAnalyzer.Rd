@@ -2,7 +2,7 @@
 % Please edit documentation in R/GSE.R
 \name{compare.GSE.HTSAnalyzer}
 \alias{compare.GSE.HTSAnalyzer}
-\title{Perform GSEA across multiple groups. Compare 1 vs other}
+\title{Perform GSEA across multiple groups (1 vs other)}
 \usage{
 compare.GSE.HTSAnalyzer(
   rna.df.log,
@@ -26,7 +26,7 @@ compare.GSE.HTSAnalyzer(
 
 }
 \description{
-Perform GSEA across multiple groups. Compare 1 vs other
+Perform GSEA across multiple groups (1 vs other)
 }
 \examples{
 This function will perform GSEA analysis. Default geneset: GOBP, C2, C5, KEGG, HALLMARK

@@ -8,6 +8,7 @@ ClusterProfiler.GSEA.Compare(
   gene,
   minGSSize = 10,
   qvalue = 0.05,
+  gene.key = "ENSEMBL",
   GO = FALSE,
   KEGG = FALSE,
   MSigDb = TRUE,
@@ -15,11 +16,13 @@ ClusterProfiler.GSEA.Compare(
 )
 }
 \arguments{
-\item{gene}{A list including multiple group. Must vector names are gene symbol and vector value are log fold chage}
+\item{gene}{A list including multiple group. Vector names are gene.key and vector value are log fold chage}
 
 \item{minGSSize}{10}
 
 \item{qvalue}{0.05}
+
+\item{gene.key}{key types of input phenotype. Default ENSEMBL, can by keytypes(org.Hs.eg.db)}
 
 \item{GO}{TRUE}
 

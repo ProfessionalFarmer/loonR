@@ -285,7 +285,7 @@ plotJitterBoxplot <- function(values, group, title = "", xlab = "X label", ylab 
 #' @export
 #'
 #' @examples
-plotSilhouette <- function(df, group, color = "aaas", class = "Class", label=FALSE, alpha = 0.8){
+plotSilhouette <- function(df, group, color = "aaas", class = "Class", label=FALSE, alpha = 0.8, return.score = FALSE){
 
   if (is.null(group)) {
     message("No 'group' value defined")
@@ -298,7 +298,7 @@ plotSilhouette <- function(df, group, color = "aaas", class = "Class", label=FAL
   set.seed(123)
 
   sil <- silhouette( as.numeric(as.character(factor(group, levels = unique(group), labels = 1:length(unique(group)))   )  ),
-                     dist(t(df), method = "euclidean"), return.score=FALSE  )
+                     dist(t(df), method = "euclidean"), return.score=return.score  )
 
   if(return.score){
     return(data.frame(sil[,1:3]))
@@ -726,6 +726,143 @@ plotClevelandDot <- function(name, value, group=NA, palette = "aaas", dot.size =
 
 
 
+#' Determine the best cluster numbers
+#'
+#' @param df Row is sample and column is variable
+#' @param distance This must be one of: "euclidean", "maximum", "manhattan", "canberra", "binary", "minkowski" or "NULL".
+#' @param dissimilarity dissimilarity matrix to be used. By default, diss=NULL, but if it is replaced by a dissimilarity matrix, distance should be "NULL".
+#' @param min.nc 2 minimal number of clusters
+#' @param max.nc 8 maximal number of clusters, between 2 and (number of objects - 1), greater or equal to min.nc.
+#' @param method kmeans. the cluster analysis method to be used. This should be one of: "ward.D", "ward.D2", "single", "complete", "average", "mcquitty", "median", "centroid", "kmeans".
+#'
+#' @return
+#' @export
+#'
+#' @examples
+determineClusterNumber <- function(df, distance = "euclidean", method = "kmeans", dissimilarity = NULL, min.nc = 2, max.nc = 8){
 
+  # reference
+  # https://towardsdatascience.com/10-tips-for-choosing-the-optimal-number-of-clusters-277e93d72d92
+  # https://www.cnblogs.com/think90/p/7133753.html
+
+  if(!require("factoextra")){
+    BiocManager::install("factoextra")
+  }
+  if(!require("NbClust")){
+    BiocManager::install("NbClust")
+  }
+
+  set.seed(1234)
+
+  if(!is.null(dissimilarity)){
+    distance = NULL
+  }
+  result = list()
+
+  # nbclust
+  # index: the index to be calculated. This should be one of : "kl", "ch", "hartigan", "ccc", "scott",
+  # "marriot", "trcovw", "tracew", "friedman", "rubin", "cindex", "db", "silhouette", "duda", "pseudot2",
+  # "beale", "ratkowsky", "ball", "ptbiserial", "gap", "frey", "mcclain", "gamma", "gplus", "tau", "dunn",
+  # "hubert", "sdindex", "dindex", "sdbw", "all" (all indices except GAP, Gamma, Gplus and Tau),
+  # "alllong" (all indices with Gap, Gamma, Gplus and Tau included).
+
+  nb_clust <- NbClust::NbClust(df,
+                               diss = NULL,
+                               distance = distance,
+                               min.nc = min.nc,
+                               max.nc = max.nc,
+                               method = method,
+                               index = "alllong",
+                               alphaBeale = 0.1)
+  barplot(table(nb_clust$Best.nc[1,]),xlab = "聚类数",ylab = "支持指标数")
+  result$nb_clust = nb_clust
+
+
+  #### mclust
+  # https://www.cnblogs.com/think90/p/7133753.html
+  if(!require("mclust")){BiocManager::install("mclust")}
+
+  m_clust <- mclust::Mclust(as.matrix(df), G=min.nc:max.nc) #聚类数目从1一直试到20
+  result$m_clust = m_clust
+  plot(m_clust, "BIC")
+
+
+  # Weighted Sum of squares
+  #fviz_nbclust(dataset, kmeans, method = "wss") + geom_vline(xintercept = 3, linetype = 2)
+  #km.res <- kmeans(dataset,3)
+  #fviz_cluster(km.res, data = dataset)
+  wssplot <- function(data, nc=15, seed=1234){
+    wss <- (nrow(data)-1)*sum(apply(data,2,var))
+    for (i in 2:nc){
+      set.seed(seed)
+      wss[i] <- sum(kmeans(data, centers=i)$withinss)
+    }
+    plot(1:nc, wss, type="b", xlab="Number of Clusters",
+         ylab="Within groups sum of squares")
+  }
+  wssplot(df)
+
+  # PAM(Partitioning Around Medoids) 围绕中心点的分割算法
+  if(!require("fpc")){BiocManager::install("fpc")}
+
+  pamk.best <- pamk(df)
+  pamk.best$nc
+
+  library(cluster)
+  clusplot(pam(df, pamk.best$nc))
+  result$pamk = pamk.best
+
+
+  # 轮廓系数Average silhouette method
+  require(cluster)
+  library(factoextra)
+  fviz_nbclust(dataset, kmeans, method = "silhouette")
+
+
+  # Gap Statistic
+  library(cluster)
+  set.seed(123)
+  gap_clust <- clusGap(df, kmeans, 10, B = 50, verbose = interactive())
+
+  result$gap_clust = gap_clust
+
+  library(factoextra)
+  fviz_gap_stat(gap_clust)
+
+
+  #层次聚类
+  h_dist <- dist(as.matrix(df))
+  h_clust<-hclust(h_dist)
+  plot(h_clust, hang = -1, labels = FALSE)
+  rect.hclust(h_clust)
+
+
+
+  result
+}
+
+
+#' Gap statistics
+#'
+#' @param df Row is sample, column is variable
+#' @param dist a character string indicating which correlation coefficient (or covariance) is to be computed. One of "pearson" (default), "kendall", or "spearman"
+#' @param method Default "Average". The agglomeration method to be used. This should be (an unambiguous abbreviation of) one of "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)
+#'
+#' @return
+#' @export
+#'
+#' @examples
+gapStat <- function(df, dist="spearman", method="average"){
+
+  fun<-function(df, k) {
+    y<-hclust(as.dist(1-cor(df, method="spearman")), method="average");
+    clus<-cutree(y, k=k);
+    return(list(cluster=clus))
+  }
+
+  gaps_default <- clusGap(t(sdat), FUNcluster=fun, K.max=8, B=50)
+  factoextra::fviz_gap_stat(gap_clust)
+
+}
 
 

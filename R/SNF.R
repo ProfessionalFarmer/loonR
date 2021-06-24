@@ -147,16 +147,16 @@ SNF_Similairity_Hist <- function(affinityL=NULL, evidence.type=NULL, group = NUL
   res
 }
 
-#' Title
+#' Calculate tanimoto distance
 #'
-#' @param x
-#' @param similarity
+#' @param x matrix
+#' @param similarity Default F. If true return similarity, else return distance
 #'
 #' @return
 #' @export
 #'
 #' @examples
-tanimoto <- function(x, similarity=F) {
+tanimoto_distance <- function(x, similarity=F) {
   res<-sapply(x, function(x1){
     sapply(x, function(x2) {i=length(which(x1 & x2)) / length(which(x1 | x2)); ifelse(is.na(i), 0, i)})
   })
@@ -171,8 +171,11 @@ tanimoto <- function(x, similarity=F) {
 #' @param alpha Default 0.5. hyperparameter, usually (0.3~0.8)   Variance for local model
 #' @param K Default 20. Number of neighbors, must be greater than 1. usually (10~30)  20
 #' @param Iterations T.Default 20. Number of Iterations, usually (10~50)
-#' @param dist.method Euclidean, Pearson, Spearman, mutualInfo, Manhattan, KLD, Chi-squared
+#' @param dist.method Default Euclidean. pearson, spearman, kendall
 #' @param survival Must a data frame. colnames OS.time, OS.event, RFS.time, RFS.event. Rownames must be sample name. Two columns or four columns.
+#' @param max.cluster
+#' @param std.normalize Default TRUE
+#' @param cnv.index Default 0. If CNV data index is specified, Euclidean will be used to calculate distance
 #'
 #' @return
 #' @export
@@ -180,7 +183,7 @@ tanimoto <- function(x, similarity=F) {
 #' @examples run_SNF( list( t(mRNA.snf.df), t(methylation.snf.df), t(cnv.snf.df) ),  alpha = 0.5, K = 20, Iterations = 20    )
 #' https://cran.r-project.org/web/packages/SNFtool/SNFtool.pdf
 #' Distance reference: https://www.rdocumentation.org/packages/bioDist/versions/1.44.0
-run_SNF <- function(dataL = NULL, alpha = 0.5, K = 20, Iterations = 20, dist.method ="Euclidean", survival=NA, max.cluster = 5, std.normalize = TRUE){
+run_SNF <- function(dataL = NULL, alpha = 0.5, K = 20, Iterations = 20, dist.method ="Euclidean", survival=NA, max.cluster = 5, std.normalize = TRUE, cnv.index = 0){
 
   library(SNFtool)
   library(bioDist)
@@ -212,23 +215,17 @@ run_SNF <- function(dataL = NULL, alpha = 0.5, K = 20, Iterations = 20, dist.met
     dataL.dist = lapply(dataL.normalized, function(x) (SNFtool::dist2(x, x)^(1/2)))   # Euclidean Distance
   }else if(dist.method == "Chi-squared"){
     dataL.dist = lapply(dataL.normalized, function(x) (SNFtool::chiDist2(x, x)^(1/2)))   # Chi-squared
-  }else if(dist.method == "Pearson"){
-    dataL.dist = lapply(dataL.normalized, function(x) bioDist::cor.dist(x) )   # Pearson correlational distance
-  }else if(dist.method == "Spearman"){
-    dataL.dist = lapply(dataL.normalized, function(x) bioDist::spearman.dist(x) ) # Spearman correlational distance
-  }else if(dist.method == "mutualInfo"){
-    dataL.dist = lapply(dataL.normalized, function(x) bioDist::mutualInfo(x) ) # mutualInfo correlational distance
-  }else if(dist.method == "Kendall"){
-    dataL.dist = lapply(dataL.normalized, function(x) bioDist::tau.dist(x) ) # Kendall's tau correlational distance
-  }else if(dist.method == "Manhattan"){
-    dataL.dist = lapply(dataL.normalized, function(x) bioDist::man(x) ) # Manhattan distance
-  }else if(dist.method == "KLD"){
-    dataL.dist = lapply(dataL.normalized, function(x) bioDist::KLdist.matriX(x) ) # Discrete version of Kullback-Leibler Distance (KLD)
-  }else if(dist.method %in% c("tanimoto","jaccard","euclidean","hamming","cont tanimoto", "MCA_coord","gower","chi.squared","cosine") ){
-    dataL.dist = lapply(dataL.normalized, function(x) IntClustd::KLdist.matriX(x,distmeasure=dist.method,normalize=FALSE) )
+  }else if(dist.method %in% c("pearson", "kendall", "spearman") ){
+    dataL.dist = lapply(dataL.normalized, function(x) (1-cor(t(x), method = dist.method) )   )
   }else{
-    stop("Distance: Euclidean, Pearson, Spearman, mutualInfo, Manhattan, KLD")
+    stop("Distance: Euclidean, pearson, spearman, kendall")
   }
+
+  # If CNV data index is specified, Euclidean will be used to calculate distance
+  if(cnv.index!=0){
+    dataL.dist[[cnv.index]] = 1-cor(t(dataL.normalized[[cnv.index]]), method = dist.method)
+  }
+
 
 
   # Construct the similarity graphs

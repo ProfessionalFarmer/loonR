@@ -12,7 +12,8 @@ run_SNF(
   dist.method = "Euclidean",
   survival = NA,
   max.cluster = 5,
-  std.normalize = TRUE
+  std.normalize = TRUE,
+  cnv.index = 0
 )
 }
 \arguments{
@@ -24,9 +25,13 @@ run_SNF(
 
 \item{Iterations}{T.Default 20. Number of Iterations, usually (10~50)}
 
-\item{dist.method}{Euclidean, Pearson, Spearman, mutualInfo, Manhattan, KLD, Chi-squared}
+\item{dist.method}{Default Euclidean. pearson, spearman, kendall}
 
 \item{survival}{Must a data frame. colnames OS.time, OS.event, RFS.time, RFS.event. Rownames must be sample name. Two columns or four columns.}
+
+\item{std.normalize}{Default TRUE}
+
+\item{cnv.index}{Default 0. If CNV data index is specified, Euclidean will be used to calculate distance}
 }
 \value{
 

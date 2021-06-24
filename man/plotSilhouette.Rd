@@ -10,7 +10,8 @@ plotSilhouette(
   color = "aaas",
   class = "Class",
   label = FALSE,
-  alpha = 0.8
+  alpha = 0.8,
+  return.score = FALSE
 )
 }
 \arguments{

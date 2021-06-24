@@ -274,25 +274,26 @@ ClusterProfiler.OverRepresentationTest.Compare <- function(gene, minGSSize = 10,
 
 #' Perform GSE analysis across multiple group by cluster profiler
 #'
-#' @param gene A list including multiple group. Must vector names are gene symbol and vector value are log fold chage
+#' @param gene A list including multiple group. Vector names are gene.key and vector value are log fold chage
 #' @param minGSSize 10
 #' @param qvalue 0.05
 #' @param GO TRUE
 #' @param KEGG TRUE
 #' @param MSigDb TRUE
 #' @param Hallmark TRUE
+#' @param gene.key key types of input phenotype. Default ENSEMBL, can by keytypes(org.Hs.eg.db)
 #'
 #' @return
 #' @export
 #'
 #' @examples
-ClusterProfiler.GSEA.Compare <- function(gene, minGSSize = 10, qvalue = 0.05,
+ClusterProfiler.GSEA.Compare <- function(gene, minGSSize = 10, qvalue = 0.05, gene.key="ENSEMBL",
                                         GO=FALSE, KEGG =FALSE, MSigDb=TRUE, Hallmark = TRUE){
   library(dplyr)
   gene.entrez.list <- lapply(gene, function(group.gene){
     # covert symbol to entrezid
     names(group.gene) %<>% loonR::id_mapping(
-                      key="SYMBOL",
+                      key=gene.key,
                       column="ENTREZID") %>% pull(ENTREZID)
     # sort
     group.gene <- sort(group.gene, decreasing = TRUE)
@@ -401,7 +402,7 @@ ClusterProfiler.GSEA.Compare <- function(gene, minGSSize = 10, qvalue = 0.05,
 #' @export
 #'
 #' @examples
-clusterProfilter.GSEA.ORA.customGS <- function(g, CustomGS = NULL, gse=FALSE, ova=FALSE, minGSSize = 10, qvalue = 0.05){
+ClusterProfiler.GSEA.ORA.customGS <- function(g, CustomGS = NULL, gse=FALSE, ova=FALSE, minGSSize = 10, qvalue = 0.05){
 
   if(is.null(customGS)){
     stop("pls set gset")
@@ -662,7 +663,6 @@ compare.GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=
   result
 
 }
-
 
 
 

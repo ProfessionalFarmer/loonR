@@ -2,7 +2,7 @@
 % Please edit documentation in R/Methylation.R
 \name{getPromoterRegions}
 \alias{getPromoterRegions}
-\title{Get promoters by GenomicFeatures package}
+\title{Get promoters by GenomicFeatures package. Region needed}
 \usage{
 getPromoterRegions(
   upstream = 2000,
@@ -28,5 +28,5 @@ getPromoterRegions(
 
 }
 \description{
-Get promoters by GenomicFeatures package
+Get promoters by GenomicFeatures package. Region needed
 }

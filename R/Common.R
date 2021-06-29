@@ -866,7 +866,133 @@ gapStat <- function(df, dist="spearman", method="average"){
 }
 
 
-splitGroupByCutoff <- function(){
+
+#' Title
+#'
+#' @param group
+#' @param values
+#' @param quantile.cutoff 0-1. percent value for quantile function
+#' @param cut.point Default NULL. Not include the minimum and maximum value
+#' @param cut.label length should be the length(quantile.cutoff), or length(cut.point) plus 1
+#' @param specific.group If specified, only split within these group
+#' @param group.prefix ""
+#' @param fun e.g. mean, median
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' set.seed(111)
+#' value = runif(100, min=0, max=100)
+#' set.seed(111)
+#' group = sample(c(1,2,3),100, replace = TRUE)
+#' table(group)
+#'
+#' res <- splitGroupByCutoff(group, value, fun="mean", cut.label = c("L","H"), group.prefix = "G", specific.group = c(1,2))
+#' table(res$New.Label)
+splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.cutoff = NULL,
+                               cut.point = NULL, cut.label = NULL, specific.group = NULL, group.prefix = NULL){
+
+  if(is.null(values)){
+    stop("Please input a vector including values")
+  }
+  if(is.null(cut.label)){
+    stop("Please input labels after spliting")
+  }
+
+  data.df <- data.frame(Group = group, Value = values, Label = "",
+                        check.names = F, stringsAsFactors = F)
+
+  if(is.null(cut.point) & is.null(fun) & is.null(quantile.cutoff)){
+    stop("Cut point or fun or quantile cutoff should be set and only set one")
+  }
+
+  if(length(cut.label)!=2 & !is.null(fun) ){  stop("Error, cut.label should be two elements")  }
+  if(length(cut.label)!=(length(quantile.cutoff)+1)& !is.null(quantile.cutoff)){        stop("Error, according to quantile.cutoff, cut.label should be", length(quantile.cutoff)+1,"elements")      }
+  if(length(cut.label)!=(length(cut.point)+1) & !is.null(cut.point)){ stop("Error, according to cut.point, cut.label should be", length(cut.point)+1,"elements")  }
+
+
+  ######### if not specify group
+  if(is.null(specific.group)){
+
+    global.cut = 0
+
+    ###### if set a function, e.g. mean median
+    if(!is.null(fun)){
+
+      global.cut = get(fun)(data.df$Value)
+
+    ###### if set a quantile cutoff
+    }else if(!is.null(quantile.cutoff)){
+
+      global.cut = quantile(data.df$Value, prob=c(quantile.cutoff))
+
+    ###### if set cut point
+    }else if(!is.null(cut.point)){
+
+      global.cut = cut.point
+
+    }
+
+    data.df$Label <- cut(data.df$Value,
+                         c(min(data.df$Value)-0.1, global.cut, max(data.df$Value)),
+                         labels = cut.label )
+
+
+  ######### if specify group
+  }else{
+
+    if(length(unique(intersect(data.df$Group, specific.group)))!=length(specific.group)){
+       stop("Please specify the specific.group corresponded to group")
+    }
+
+    for(g in specific.group){
+
+      g.index = data.df$Group == g
+      local.cut = 0
+
+      g.value = data.df$Value[g.index]
+
+      ###### if set a function, e.g. mean median
+      if(!is.null(fun)){
+
+        local.cut = get(fun)(g.value)
+
+        ###### if set a quantile cutoff
+      }else if(!is.null(quantile.cutoff)){
+
+        local.cut = quantile(g.value, prob=c(quantile.cutoff))
+
+        ###### if set cut point
+      }else if(!is.null(cut.point)){
+
+        local.cut = cut.point
+
+      }
+
+      g.label <- cut(g.value,
+                    c(min(g.value)-0.1, local.cut, max(g.value)),
+                    labels = cut.label )
+
+      data.df$Label[g.index] = as.character(g.label)
+
+    }
+
+    data.df$Label <- as.character(data.df$Label)
+
+  }
+
+
+  if(!is.null(group.prefix)){
+    data.df$Group = paste(group.prefix, data.df$Group, sep="")
+  }
+
+
+  data.df$Label[data.df$Label!=""] = paste("-", data.df$Label[data.df$Label!=""], sep="")
+
+  data.df$New.Label = paste(data.df$Group, data.df$Label, sep="")
+
+  data.df
 
 }
 

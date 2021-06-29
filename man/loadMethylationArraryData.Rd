@@ -2,7 +2,7 @@
 % Please edit documentation in R/Methylation.R
 \name{loadMethylationArraryData}
 \alias{loadMethylationArraryData}
-\title{Title}
+\title{Load methylation arrary from directory}
 \usage{
 loadMethylationArraryData(dir, arraytype = "EPIC")
 }
@@ -13,7 +13,7 @@ loadMethylationArraryData(dir, arraytype = "EPIC")
 
 }
 \description{
-Title
+Load methylation arrary from directory
 }
 \examples{
 Reference: https://bioconductor.org/packages/release/bioc/vignettes/ChAMP/inst/doc/ChAMP.html

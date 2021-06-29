@@ -2,7 +2,7 @@
 % Please edit documentation in R/SNF.R
 \name{run_SNF}
 \alias{run_SNF}
-\title{Title Similarity network fusion}
+\title{Run similarity network fusion}
 \usage{
 run_SNF(
   dataL = NULL,
@@ -37,7 +37,7 @@ run_SNF(
 
 }
 \description{
-Title Similarity network fusion
+Run similarity network fusion
 }
 \examples{
 run_SNF( list( t(mRNA.snf.df), t(methylation.snf.df), t(cnv.snf.df) ),  alpha = 0.5, K = 20, Iterations = 20    )

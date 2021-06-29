@@ -9,20 +9,21 @@
 #' @param KEGG TRUE
 #' @param MSigDb TRUE
 #' @param Hallmark TRUE
+#' @param exp.gene.type RNA expression ID ENSEMBL. keytypes(org.Hs.eg.db)
 #'
 #' @return
 #' @export
 #'
 #' @examples
 ClusterProfiler.OverRepresentationTest <-  function(gene, minGSSize = 10, qvalue = 0.05,
-                                                    GO=TRUE, KEGG =TRUE, MSigDb=TRUE, Hallmark = TRUE){
+                                                    GO=TRUE, KEGG =TRUE, MSigDb=TRUE, Hallmark = TRUE, exp.gene.type="ENSEMBL"){
 
   library(clusterProfiler)
   library(org.Hs.eg.db)
   result = list()
 
   if(GO){
-    ego <- enrichGO(gene          = loonR::id_mapping(gene, key="SYMBOL", column="ENTREZID") %>% filter(!is.na(ENTREZID)) %>% pull(ENTREZID) %>% unique(),
+    ego <- enrichGO(gene          = loonR::id_mapping(gene, key=exp.gene.type, column="ENTREZID") %>% filter(!is.na(ENTREZID)) %>% pull(ENTREZID) %>% unique(),
                     OrgDb         = org.Hs.eg.db,
                     ont           = "BP",
                     pAdjustMethod = "BH",
@@ -34,7 +35,7 @@ ClusterProfiler.OverRepresentationTest <-  function(gene, minGSSize = 10, qvalue
   }
 
   if(KEGG){
-    kk <- enrichKEGG(gene         = loonR::id_mapping(gene, key="SYMBOL", column="ENTREZID") %>% filter(!is.na(ENTREZID)) %>% pull(ENTREZID) %>% unique(),
+    kk <- enrichKEGG(gene         = loonR::id_mapping(gene, key=exp.gene.type, column="ENTREZID") %>% filter(!is.na(ENTREZID)) %>% pull(ENTREZID) %>% unique(),
                      organism     = 'hsa',
                      pAdjustMethod = "BH",
                      pvalueCutoff  = 0.05,
@@ -50,7 +51,7 @@ ClusterProfiler.OverRepresentationTest <-  function(gene, minGSSize = 10, qvalue
     #H <- read.gmt("/data/home2/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/clusterProfiler/extdata/h.all.v7.4.symbols.gmt")
 
     c2c5 <- rbind(c2,c5)
-    kk <- enricher(gene,
+    kk <- enricher(loonR::id_mapping(gene, key=exp.gene.type, column="SYMBOL") %>% filter(!is.na(SYMBOL)) %>% pull(SYMBOL) %>% unique(),
              TERM2GENE = c2c5,
              minGSSize = minGSSize,
              pAdjustMethod = "BH",
@@ -62,7 +63,7 @@ ClusterProfiler.OverRepresentationTest <-  function(gene, minGSSize = 10, qvalue
   if(Hallmark){
     H <- read.gmt("/data/home2/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/clusterProfiler/extdata/h.all.v7.4.symbols.gmt")
 
-    kk <- enricher(gene,
+    kk <- enricher(loonR::id_mapping(gene, key=exp.gene.type, column="SYMBOL") %>% filter(!is.na(SYMBOL)) %>% pull(SYMBOL) %>% unique(),
                    TERM2GENE = H,
                    minGSSize = minGSSize,
                    pAdjustMethod = "BH",
@@ -76,6 +77,8 @@ ClusterProfiler.OverRepresentationTest <-  function(gene, minGSSize = 10, qvalue
   result
 }
 
+
+
 #' Perform GSEA analysis by cluster profiler
 #'
 #' @param phenotype log2FC
@@ -86,14 +89,14 @@ ClusterProfiler.OverRepresentationTest <-  function(gene, minGSSize = 10, qvalue
 #' @param KEGG TRUE
 #' @param MSigDb TRUE
 #' @param Hallmark TRUE
-
+#' @param exp.gene.type RNA expression ID ENSEMBL. keytypes(org.Hs.eg.db)
 #'
 #' @return
 #' @export
 #'
 #' @examples
 ClusterProfiler.GSEA <- function(phenotype, geneNames, minGSSize = 10, qvalue = 0.05,
-                                 GO=TRUE, KEGG =TRUE, MSigDb=TRUE, Hallmark = TRUE) {
+                                 GO=TRUE, KEGG =TRUE, MSigDb=TRUE, Hallmark = TRUE, exp.gene.type = "ENSEMBL") {
 
   library(clusterProfiler)
   library(org.Hs.eg.db)
@@ -105,13 +108,16 @@ ClusterProfiler.GSEA <- function(phenotype, geneNames, minGSSize = 10, qvalue = 
   names(geneList) <- geneNames
   geneList4MsigDB <- geneList
 
-  id.map <- loonR::id_mapping(geneNames, key="SYMBOL", column="ENTREZID")
+  id.map <- loonR::id_mapping(geneNames, key=exp.gene.type, column=c("ENTREZID", "SYMBOL") )
 
-  geneList <- geneList[names(geneList) %in% id.map$SYMBOL]
-  names(geneList) <- id.map$ENTREZID[match(names(geneList), id.map$SYMBOL) ]
-
+  geneList <- geneList[names(geneList) %in% as.character(unlist(id.map[,exp.gene.type])) ]
+  names(geneList) <- id.map$ENTREZID[match(names(geneList), as.character(unlist(id.map[,exp.gene.type]))) ]
   geneList <- sort(geneList, decreasing = TRUE)
-  geneList4MsigDB <- sort(geneList4MsigDB, decreasing = TRUE)
+
+
+  # geneList4MsigDB <- geneList4MsigDB[names(geneList4MsigDB) %in% as.character(unlist(id.map[,exp.gene.type])) ]
+  # names(geneList4MsigDB) <- id.map$SYMBOL[match(names(geneList4MsigDB), as.character(unlist(id.map[,exp.gene.type]))) ]
+  # geneList4MsigDB <- sort(geneList4MsigDB, decreasing = TRUE)
 
 
   if(GO){
@@ -148,7 +154,7 @@ ClusterProfiler.GSEA <- function(phenotype, geneNames, minGSSize = 10, qvalue = 
     #H <- read.gmt("/data/home2/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/clusterProfiler/extdata/h.all.v7.4.symbols.gmt")
 
     c2c5 <- rbind(c2,c5)
-    kk <- GSEA(geneList     = geneList4MsigDB,
+    kk <- GSEA(geneList     = geneList,
                TERM2GENE = c2c5,
                minGSSize = minGSSize,
                pAdjustMethod = "BH",
@@ -161,7 +167,7 @@ ClusterProfiler.GSEA <- function(phenotype, geneNames, minGSSize = 10, qvalue = 
   if(Hallmark){
     H <- read.gmt("/data/home2/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/clusterProfiler/extdata/h.all.v7.4.entrez.gmt")
 
-    kk <- GSEA(geneList     = geneList4MsigDB,
+    kk <- GSEA(geneList     = geneList,
                TERM2GENE = H,
                minGSSize = minGSSize,
                pAdjustMethod = "BH",
@@ -188,16 +194,17 @@ ClusterProfiler.GSEA <- function(phenotype, geneNames, minGSSize = 10, qvalue = 
 #' @param KEGG TRUE
 #' @param MSigDb TRUE
 #' @param Hallmark TRUE
+#' @param exp.gene.type RNA expression ID ENSEMBL. keytypes(org.Hs.eg.db)
 #'
 #' @return
 #' @export
 #'
 #' @examples
 ClusterProfiler.OverRepresentationTest.Compare <- function(gene, minGSSize = 10, qvalue = 0.05,
-                                                           GO=FALSE, KEGG =FALSE, MSigDb=TRUE, Hallmark = TRUE){
+                                                           GO=FALSE, KEGG =FALSE, MSigDb=TRUE, Hallmark = TRUE, exp.gene.type = "ENSEMBL"){
 
   gene.entrez.list <- lapply(gene, function(group.gene){
-    loonR::id_mapping(group.gene, key="SYMBOL", column="ENTREZID") %>% filter(!is.na(ENTREZID)) %>% pull(ENTREZID) %>% unique()
+    loonR::id_mapping(group.gene, key=exp.gene.type, column="ENTREZID") %>% filter(!is.na(ENTREZID)) %>% pull(ENTREZID) %>% unique()
   })
 
 
@@ -232,12 +239,12 @@ ClusterProfiler.OverRepresentationTest.Compare <- function(gene, minGSSize = 10,
 
   if(MSigDb){
 
-    c5 <- read.gmt("/data/home2/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/clusterProfiler/extdata/c5.all.v7.3.symbols.gmt")
-    c2 <- read.gmt("/data/home2/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/clusterProfiler/extdata/c2.all.v7.3.symbols.gmt")
+    c5 <- read.gmt("/data/home2/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/clusterProfiler/extdata/c5.all.v7.3.entrez.gmt")
+    c2 <- read.gmt("/data/home2/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/clusterProfiler/extdata/c2.all.v7.3.entrez.gmt")
     #H <- read.gmt("/data/home2/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/clusterProfiler/extdata/h.all.v7.4.symbols.gmt")
 
     c2c5 <- rbind(c2,c5)
-    kk <- compareCluster(gene,
+    kk <- compareCluster(gene.entrez.list,
                           fun="enricher",
                           TERM2GENE = c2c5,
                           minGSSize = minGSSize,
@@ -250,7 +257,7 @@ ClusterProfiler.OverRepresentationTest.Compare <- function(gene, minGSSize = 10,
   if(Hallmark){
     H <- read.gmt("/data/home2/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/clusterProfiler/extdata/h.all.v7.4.symbols.gmt")
 
-    kk <- compareCluster(gene,
+    kk <- compareCluster(gene.entrez.list,
                          fun="enricher",
                          TERM2GENE = H,
                          minGSSize = minGSSize,
@@ -281,19 +288,19 @@ ClusterProfiler.OverRepresentationTest.Compare <- function(gene, minGSSize = 10,
 #' @param KEGG TRUE
 #' @param MSigDb TRUE
 #' @param Hallmark TRUE
-#' @param gene.key key types of input phenotype. Default ENSEMBL, can by keytypes(org.Hs.eg.db)
+#' @param exp.gene.type key types of input phenotype. Default ENSEMBL, can by keytypes(org.Hs.eg.db)
 #'
 #' @return
 #' @export
 #'
 #' @examples
-ClusterProfiler.GSEA.Compare <- function(gene, minGSSize = 10, qvalue = 0.05, gene.key="ENSEMBL",
+ClusterProfiler.GSEA.Compare <- function(gene, minGSSize = 10, qvalue = 0.05, exp.gene.type="ENSEMBL",
                                         GO=FALSE, KEGG =FALSE, MSigDb=TRUE, Hallmark = TRUE){
   library(dplyr)
   gene.entrez.list <- lapply(gene, function(group.gene){
     # covert symbol to entrezid
     names(group.gene) %<>% loonR::id_mapping(
-                      key=gene.key,
+                      key=exp.gene.type,
                       column="ENTREZID") %>% pull(ENTREZID)
     # sort
     group.gene <- sort(group.gene, decreasing = TRUE)
@@ -509,7 +516,7 @@ ClusterProfiler.GSEA.ORA.customGS.Compare <- function(gene, customGS=NULL, minGS
 #' @param group
 #' @param prefix Default "Group"
 #' @param customGS User customed gene set. qusage::read.gmt. Should be converted to ENTREZID
-#' @param exp.gene.type RNA expression ID. keytypes(org.Hs.eg.db)
+#' @param exp.gene.type RNA expression ID ENSEMBL. keytypes(org.Hs.eg.db)
 #' @param cutoff.log10 Default 4. Minimux or maximum log10 value. Useful when meet inf or draw heatmap
 #'
 #' @return
@@ -562,7 +569,8 @@ compare.GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=
    true.ind = which(group==x)
    false.ind = which(group!=x)
    limma.df = rna.df.log[ , c(false.ind, true.ind)]
-   limma.diff <- loonR::limma_differential(limma.df, rep(c(FALSE,TRUE),c(length(false.ind), length(true.ind))) )
+   limma.diff <- loonR::limma_differential(limma.df, rep(c(FALSE,TRUE),
+                                                         c(length(false.ind), length(true.ind))) )
 
    ## prepare input for analysis
    phenotype <- limma.diff$logFC

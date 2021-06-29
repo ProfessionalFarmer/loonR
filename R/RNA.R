@@ -707,19 +707,20 @@ load.rsem.matrix <- function(dirpath, isoform = FALSE, subdirs = TRUE){
   # stor FPKM
   library(dplyr)
 
-  FPKM.list <- lapply(names(sample.rsem.pathes), function(sample){
-    sample.iso.df <- read.table(sample.rsem.pathes[sample], header = T, sep = "\t")
-    iso.pct <- sample.iso.df %>% dplyr::select(transcript_id, FPKM)
-    colnames(iso.pct) <- c("transcript", sample)
-    iso.pct
-  })
-  names(FPKM.list) <- names(sample.rsem.pathes)
-  FPKM.res <- FPKM.list %>% Reduce(function(dtf1,dtf2) full_join(dtf1,dtf2,by=c("transcript") ), .)
-  row.names(FPKM.res) <- FPKM.res$transcript
-  # corrsponded with tximport
-  FPKM.res <- FPKM.res[ row.names(expr$abundance), ]
-  expr$FPKM <- FPKM.res[,-c(1)]
-
+  if(isoform){
+    FPKM.list <- lapply(names(sample.rsem.pathes), function(sample){
+      sample.iso.df <- read.table(sample.rsem.pathes[sample], header = T, sep = "\t")
+      iso.pct <- sample.iso.df %>% dplyr::select(transcript_id, FPKM)
+      colnames(iso.pct) <- c("transcript", sample)
+      iso.pct
+    })
+    names(FPKM.list) <- names(sample.rsem.pathes)
+    FPKM.res <- FPKM.list %>% Reduce(function(dtf1,dtf2) full_join(dtf1,dtf2,by=c("transcript") ), .)
+    row.names(FPKM.res) <- FPKM.res$transcript
+    # corrsponded with tximport
+    FPKM.res <- FPKM.res[ row.names(expr$abundance), ]
+    expr$FPKM <- FPKM.res[,-c(1)]
+  }
 
   expr
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/SNF.R
 \name{SNF_Similairity_Hist}
 \alias{SNF_Similairity_Hist}
-\title{Title}
+\title{Similairity count}
 \usage{
 SNF_Similairity_Hist(affinityL = NULL, evidence.type = NULL, group = NULL)
 }
@@ -17,7 +17,7 @@ SNF_Similairity_Hist(affinityL = NULL, evidence.type = NULL, group = NULL)
 
 }
 \description{
-Title
+Similairity count
 }
 \examples{
 loonR::SNF_Similairity_Hist(tmp$AffinityL,evidence.type = c("RNA","Methylation", "CNV"), group = snf.group)

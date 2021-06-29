@@ -18,7 +18,7 @@ compare.GSE.HTSAnalyzer(
 
 \item{customGS}{User customed gene set. qusage::read.gmt. Should be converted to ENTREZID}
 
-\item{exp.gene.type}{RNA expression ID. keytypes(org.Hs.eg.db)}
+\item{exp.gene.type}{RNA expression ID ENSEMBL. keytypes(org.Hs.eg.db)}
 
 \item{cutoff.log10}{Default 4. Minimux or maximum log10 value. Useful when meet inf or draw heatmap}
 }

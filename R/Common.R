@@ -866,3 +866,11 @@ gapStat <- function(df, dist="spearman", method="average"){
 }
 
 
+splitGroupByCutoff <- function(){
+
+}
+
+
+
+
+

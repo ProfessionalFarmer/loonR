@@ -1,7 +1,7 @@
 
 
 
-#' Get promoters by GenomicFeatures package
+#' Get promoters by GenomicFeatures package. Region needed
 #'
 #' @param upstream Default 2000
 #' @param downstream  Default 500
@@ -15,7 +15,13 @@
 #' @examples
 getPromoterRegions <- function(upstream=2000, downstream=500, ann = "Ensembl", ref.genome = "hg38", ens.release = 99, addChr = TRUE ){
 
-  library("GenomicFeatures")
+  if(!require("GenomicFeatures")){
+    BiocManager::install("GenomicFeatures")
+  }
+  if(!require("RMariaDB")){
+    BiocManager::install("RMariaDB")
+  }
+
 
   if (ann == "Ensembl"){
     # https://www.ensembl.org/info/data/mysql.html
@@ -40,7 +46,13 @@ getPromoterRegions <- function(upstream=2000, downstream=500, ann = "Ensembl", r
 
 }
 
-#' Title
+
+
+
+
+
+
+#' Load methylation arrary from directory
 #'
 #' @param dir
 #' @param arraytype EPIC or 450K

@@ -12,7 +12,8 @@ ClusterProfiler.GSEA(
   GO = TRUE,
   KEGG = TRUE,
   MSigDb = TRUE,
-  Hallmark = TRUE
+  Hallmark = TRUE,
+  exp.gene.type = "ENSEMBL"
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ ClusterProfiler.GSEA(
 \item{MSigDb}{TRUE}
 
 \item{Hallmark}{TRUE}
+
+\item{exp.gene.type}{RNA expression ID ENSEMBL. keytypes(org.Hs.eg.db)}
 }
 \value{
 

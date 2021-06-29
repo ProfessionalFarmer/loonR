@@ -8,7 +8,7 @@ ClusterProfiler.GSEA.Compare(
   gene,
   minGSSize = 10,
   qvalue = 0.05,
-  gene.key = "ENSEMBL",
+  exp.gene.type = "ENSEMBL",
   GO = FALSE,
   KEGG = FALSE,
   MSigDb = TRUE,
@@ -22,7 +22,7 @@ ClusterProfiler.GSEA.Compare(
 
 \item{qvalue}{0.05}
 
-\item{gene.key}{key types of input phenotype. Default ENSEMBL, can by keytypes(org.Hs.eg.db)}
+\item{exp.gene.type}{key types of input phenotype. Default ENSEMBL, can by keytypes(org.Hs.eg.db)}
 
 \item{GO}{TRUE}
 

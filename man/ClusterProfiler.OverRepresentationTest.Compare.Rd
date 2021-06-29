@@ -11,7 +11,8 @@ ClusterProfiler.OverRepresentationTest.Compare(
   GO = FALSE,
   KEGG = FALSE,
   MSigDb = TRUE,
-  Hallmark = TRUE
+  Hallmark = TRUE,
+  exp.gene.type = "ENSEMBL"
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ ClusterProfiler.OverRepresentationTest.Compare(
 \item{MSigDb}{TRUE}
 
 \item{Hallmark}{TRUE}
+
+\item{exp.gene.type}{RNA expression ID ENSEMBL. keytypes(org.Hs.eg.db)}
 }
 \value{
 

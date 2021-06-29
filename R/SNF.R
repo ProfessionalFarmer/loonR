@@ -1,6 +1,6 @@
 
 
-#' Title
+#' Similairity count
 #'
 #' @param affinityL List including different affinity matrix
 #' @param evidence.type Corresponded to affinity list
@@ -165,7 +165,7 @@ tanimoto_distance <- function(x, similarity=F) {
 }
 
 
-#' Title Similarity network fusion
+#' Run similarity network fusion
 #'
 #' @param dataL list( t(mRNA.snf.df), t(methylation.snf.df), t(cnv.snf.df) )
 #' @param alpha Default 0.5. hyperparameter, usually (0.3~0.8)   Variance for local model
@@ -223,13 +223,13 @@ run_SNF <- function(dataL = NULL, alpha = 0.5, K = 20, Iterations = 20, dist.met
 
   # If CNV data index is specified, Euclidean will be used to calculate distance
   if(cnv.index!=0){
-    dataL.dist[[cnv.index]] = 1-cor(t(dataL.normalized[[cnv.index]]), method = dist.method)
+    dataL.dist[[cnv.index]] = SNFtool::dist2(dataL.normalized[[cnv.index]], dataL.normalized[[cnv.index]])^(1/2)
   }
 
 
 
   # Construct the similarity graphs
-  affinityL = lapply(dataL.dist, function(x) affinityMatrix(as.matrix(x), K, alpha))
+  affinityL = lapply(dataL.dist, function(x) affinityMatrix(as.matrix(x), K, alpha) )
   W = SNF(affinityL, K, T)
 
   ## an example of how to use concordanceNetworkNMI

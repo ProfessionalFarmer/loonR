@@ -1007,12 +1007,13 @@ microarray_limma_differential <- function(exp, group, check.log2=TRUE, normalize
 #' @param rna.df.log
 #' @param group
 #' @param prefix Default "Group"
+#' @param cal.auc If calculate AUC value
 #'
 #' @return
 #' @export
 #'
 #' @examples
-compare.differential.analysis <- function(rna.df.log, group, prefix="Group"){
+compare.differential.analysis <- function(rna.df.log, group, prefix="Group", cal.auc=FALSE){
 
   function.analysis.res <- lapply(unique(group), function(x){
 
@@ -1023,7 +1024,7 @@ compare.differential.analysis <- function(rna.df.log, group, prefix="Group"){
     true.ind = which(group==x)
     false.ind = which(group!=x)
     limma.df = rna.df.log[ , c(false.ind, true.ind)]
-    limma.diff <- loonR::limma_differential(limma.df, rep(c(FALSE,TRUE),c(length(false.ind), length(true.ind))) )
+    limma.diff <- loonR::limma_differential(limma.df, rep(c(FALSE,TRUE),c(length(false.ind), length(true.ind))), cal.AUC = cal.auc )
 
     limma.diff
   }

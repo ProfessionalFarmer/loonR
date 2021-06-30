@@ -15,7 +15,10 @@ survivaly_analysis(
   conf.int = FALSE,
   legend.position = "none",
   linetype = 1,
-  calculate.pval = FALSE
+  calculate.pval = FALSE,
+  only.consider.group = NULL,
+  not.consider.group = NULL,
+  risk.table = TRUE
 )
 }
 \arguments{
@@ -26,8 +29,6 @@ survivaly_analysis(
 \item{Group}{Required}
 
 \item{group.prefix}{Default ""}
-
-\item{ylab}{}
 
 \item{title}{Default "Suvival analysis"}
 
@@ -40,6 +41,12 @@ survivaly_analysis(
 \item{linetype}{line types. Allowed values includes i) "strata" for changing linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a character vector c("solid", "dashed").}
 
 \item{calculate.pval}{If TRUE, just reture p value data.frame.}
+
+\item{only.consider.group}{Groups to consider}
+
+\item{not.consider.group}{Groups to exclude}
+
+\item{risk.table}{Default TRUE. Show the strata Table}
 }
 \value{
 

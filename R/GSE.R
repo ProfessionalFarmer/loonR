@@ -517,7 +517,8 @@ ClusterProfiler.GSEA.ORA.customGS.Compare <- function(gene, customGS=NULL, minGS
 #' @param prefix Default "Group"
 #' @param customGS User customed gene set. qusage::read.gmt. Should be converted to ENTREZID
 #' @param exp.gene.type RNA expression ID ENSEMBL. keytypes(org.Hs.eg.db)
-#' @param cutoff.log10 Default 4. Minimux or maximum log10 value. Useful when meet inf or draw heatmap
+#' @param cutoff.log10 Default 3. Minimux or maximum log10 value. Useful when meet inf or draw heatmap
+#' @param cal.auc If calcuate AUC value
 #'
 #' @return
 #' @export
@@ -525,7 +526,7 @@ ClusterProfiler.GSEA.ORA.customGS.Compare <- function(gene, customGS=NULL, minGS
 #' @examples
 #' This function will perform GSEA analysis. Default geneset: GOBP, C2, C5, KEGG, HALLMARK
 #'
-compare.GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=NULL, exp.gene.type="ENSEMBL", cutoff.log10 = 4){
+compare.GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=NULL, exp.gene.type="ENSEMBL", cutoff.log10 = 3, cal.auc = FALSE){
   library(HTSanalyzeR2)
   library(org.Hs.eg.db)
 
@@ -570,7 +571,8 @@ compare.GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=
    false.ind = which(group!=x)
    limma.df = rna.df.log[ , c(false.ind, true.ind)]
    limma.diff <- loonR::limma_differential(limma.df, rep(c(FALSE,TRUE),
-                                                         c(length(false.ind), length(true.ind))) )
+                                                         c(length(false.ind), length(true.ind))),
+                                           cal.AUC = cal.auc)
 
    ## prepare input for analysis
    phenotype <- limma.diff$logFC

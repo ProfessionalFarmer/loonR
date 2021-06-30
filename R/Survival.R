@@ -13,6 +13,9 @@
 #' @param legend.position one of c("top", "bottom", "left", "right", "none"). Default is "none".
 #' @param linetype line types. Allowed values includes i) "strata" for changing linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a character vector c("solid", "dashed").
 #' @param calculate.pval If TRUE, just reture p value data.frame.
+#' @param only.consider.group Groups to consider
+#' @param not.consider.group Groups to exclude
+#' @param risk.table Default TRUE. Show the strata Table
 #'
 #' @return
 #' @export
@@ -20,19 +23,30 @@
 #' @examples
 survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.prefix = NA, ylab = "Time",
                                title = "Suvival analysis", palette = "lancet", conf.int = FALSE, legend.position="none",
-                               linetype = 1, calculate.pval = FALSE){
+                               linetype = 1, calculate.pval = FALSE, only.consider.group = NULL, not.consider.group = NULL, risk.table = TRUE){
 
   if(!require(survminer) | !require(survival)){BiocManager::install(c("survminer","survival"))}
+  library(magrittr)
 
   if(is.null(Event) | is.null(Time) | is.null(Group)){
     stop("Please set Event and Time")
   }
 
-  surv.analysis.df <- data.frame(Event=Event, Time=Time, stringsAsFactors = F)
+  surv.analysis.df <- data.frame(Event=Event, Time=Time, Group = Group, stringsAsFactors = F)
 
   surv.analysis.df$Event <- as.numeric(surv.analysis.df$Event)
-  surv.analysis.df$Group <- Group
   surv.analysis.df$Time <- as.numeric(surv.analysis.df$Time)
+
+  if(!is.null(only.consider.group)){
+    surv.analysis.df %<>% filter(Group %in% c(only.consider.group))
+    if(length(surv.analysis.df$Group) < 2){stop("Please make sure two or more groups will be analyzed")}
+  }
+  if(!is.null(not.consider.group)){
+    surv.analysis.df %<>% filter(!Group %in% c(not.consider.group))
+    if(length(surv.analysis.df$Group) < 2){stop("Please make sure two or more groups will be analyzed")}
+  }
+
+
 
   if(!is.na(group.prefix)){
     surv.analysis.df$Group = paste(group.prefix, surv.analysis.df$Group, sep="")
@@ -47,7 +61,7 @@ survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.pr
   }
 
   p = ggsurvplot(surv.fit,
-             risk.table = TRUE, ylab = ylab,
+             risk.table = risk.table, ylab = ylab,
              risk.table.y.text.col = TRUE,
              risk.table.height = 0.4,
              pval = TRUE, conf.int = conf.int, risk.table.y.text = TRUE,

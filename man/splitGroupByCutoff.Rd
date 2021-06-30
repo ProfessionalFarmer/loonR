@@ -9,6 +9,7 @@ splitGroupByCutoff(
   values = NULL,
   fun = NULL,
   quantile.cutoff = NULL,
+  sample.names = NA,
   cut.point = NULL,
   cut.label = NULL,
   specific.group = NULL,
@@ -19,6 +20,8 @@ splitGroupByCutoff(
 \item{fun}{e.g. mean, median}
 
 \item{quantile.cutoff}{0-1. percent value for quantile function}
+
+\item{sample.names}{Default NA}
 
 \item{cut.point}{Default NULL. Not include the minimum and maximum value}
 

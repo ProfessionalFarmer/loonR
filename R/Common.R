@@ -877,6 +877,7 @@ gapStat <- function(df, dist="spearman", method="average"){
 #' @param specific.group If specified, only split within these group
 #' @param group.prefix ""
 #' @param fun e.g. mean, median
+#' @param sample.names Default NA
 #'
 #' @return
 #' @export
@@ -890,7 +891,7 @@ gapStat <- function(df, dist="spearman", method="average"){
 #'
 #' res <- splitGroupByCutoff(group, value, fun="mean", cut.label = c("L","H"), group.prefix = "G", specific.group = c(1,2))
 #' table(res$New.Label)
-splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.cutoff = NULL,
+splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.cutoff = NULL, sample.names = NA,
                                cut.point = NULL, cut.label = NULL, specific.group = NULL, group.prefix = NULL){
 
   if(is.null(values)){
@@ -902,6 +903,10 @@ splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.c
 
   data.df <- data.frame(Group = group, Value = values, Label = "",
                         check.names = F, stringsAsFactors = F)
+
+  if(!is.na(sample.names)){
+    row.names(data.df) <- sample.names
+  }
 
   if(is.null(cut.point) & is.null(fun) & is.null(quantile.cutoff)){
     stop("Cut point or fun or quantile cutoff should be set and only set one")

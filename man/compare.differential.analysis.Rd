@@ -4,10 +4,17 @@
 \alias{compare.differential.analysis}
 \title{Perform differential analysis (1 vs others)}
 \usage{
-compare.differential.analysis(rna.df.log, group, prefix = "Group")
+compare.differential.analysis(
+  rna.df.log,
+  group,
+  prefix = "Group",
+  cal.auc = FALSE
+)
 }
 \arguments{
 \item{prefix}{Default "Group"}
+
+\item{cal.auc}{If calculate AUC value}
 }
 \value{
 

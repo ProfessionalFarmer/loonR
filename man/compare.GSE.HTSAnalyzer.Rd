@@ -10,7 +10,8 @@ compare.GSE.HTSAnalyzer(
   prefix = "Group",
   customGS = NULL,
   exp.gene.type = "ENSEMBL",
-  cutoff.log10 = 4
+  cutoff.log10 = 3,
+  cal.auc = FALSE
 )
 }
 \arguments{
@@ -20,7 +21,9 @@ compare.GSE.HTSAnalyzer(
 
 \item{exp.gene.type}{RNA expression ID ENSEMBL. keytypes(org.Hs.eg.db)}
 
-\item{cutoff.log10}{Default 4. Minimux or maximum log10 value. Useful when meet inf or draw heatmap}
+\item{cutoff.log10}{Default 3. Minimux or maximum log10 value. Useful when meet inf or draw heatmap}
+
+\item{cal.auc}{If calcuate AUC value}
 }
 \value{
 

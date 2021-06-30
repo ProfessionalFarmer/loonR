@@ -313,19 +313,20 @@ plotSilhouette <- function(df, group, color = "aaas", class = "Class", label=FAL
 
 
 
-#' Title
+#' Perform hypergeometric test
 #'
 #' @param row.group
 #' @param col.group
 #' @param row.prefix
 #' @param col.prefix
 #' @param lower.tail Default FALSE
+#' @param title
 #'
 #' @return
 #' @export
 #'
 #' @examples
-hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "", lower.tail = FALSE){
+hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "", lower.tail = FALSE, title = ""){
 
   # https://www.omicsclass.com/article/324
   # 1-phyper(抽取样本中属于“特定类别”的数量-1,总样本中“特定类别”的数量, 总样本数-总样本中“特定类别”的数量, 从总样本中随机抽取的数量,)
@@ -352,7 +353,7 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
                       color = c (rep("#FFFFFF", 26), colorRampPalette(c("#FFFFFF", "#0269A4" ))(70) ),
                       breaks=unique(c(seq(0,5, length=100-1  ))),
                       display_numbers = format(tmpgeo, trim = TRUE, digits = 3, scientific = 3),
-                      main = ""
+                      main = title
    )
    # reture formated value
    format(tmpgeo, trim = TRUE, digits = 3, scientific = 3)

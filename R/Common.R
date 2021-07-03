@@ -313,55 +313,6 @@ plotSilhouette <- function(df, group, color = "aaas", class = "Class", label=FAL
 
 
 
-#' Perform hypergeometric test
-#'
-#' @param row.group
-#' @param col.group
-#' @param row.prefix
-#' @param col.prefix
-#' @param lower.tail Default FALSE
-#' @param title
-#'
-#' @return
-#' @export
-#'
-#' @examples
-hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "", lower.tail = FALSE, title = ""){
-
-  # https://www.omicsclass.com/article/324
-  # 1-phyper(抽取样本中属于“特定类别”的数量-1,总样本中“特定类别”的数量, 总样本数-总样本中“特定类别”的数量, 从总样本中随机抽取的数量,)
-
-    # 超几何检验，与原来的分组比较
-    geomatrix  = unclass(table(row.group, col.group))
-    # perform geometrix,把p值放在相同矩阵的数据框中
-    tmpgeo = matrix(nrow=length(row.names(geomatrix)),ncol=length(colnames(geomatrix)))
-    colnames(tmpgeo) = paste(col.prefix, colnames(geomatrix),sep="" )
-    rownames(tmpgeo) = paste(row.prefix, rownames(geomatrix),sep="" )
-    for(i in 1:length(row.names(tmpgeo))  ){ # row
-      for(j in 1:length(colnames(tmpgeo))){  # column
-        # 白球的个数，白球的总个数，黑球的总个数，抽的球（不是黑球，是球）个数
-        p = phyper(geomatrix[i,j]-1, sum(geomatrix[i,]), sum(geomatrix)-sum(geomatrix[i,]), sum(geomatrix[,j]), lower.tail = lower.tail   )
-        tmpgeo[i,j] = p
-      }
-    }
-   tmpgeo = as.data.frame(tmpgeo)
-
-   tmpgeo.log = -log10(tmpgeo)
-   pheatmap::pheatmap(tmpgeo.log,
-                      cluster_rows = F,
-                      cluster_cols = F,
-                      color = c (rep("#FFFFFF", 26), colorRampPalette(c("#FFFFFF", "#0269A4" ))(70) ),
-                      breaks=unique(c(seq(0,5, length=100-1  ))),
-                      display_numbers = format(tmpgeo, trim = TRUE, digits = 3, scientific = 3),
-                      main = title
-   )
-   # reture formated value
-   format(tmpgeo, trim = TRUE, digits = 3, scientific = 3)
-
-
-}
-
-
 
 
 #' Draw scatter plot

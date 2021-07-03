@@ -21,7 +21,7 @@
 #' @export
 #'
 #' @examples
-survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.prefix = NA, ylab = "Time",
+survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.prefix = NA, ylab = "Survival probability",
                                title = "Suvival analysis", palette = "lancet", conf.int = FALSE, legend.position="none",
                                linetype = 1, calculate.pval = FALSE, only.consider.group = NULL, not.consider.group = NULL, risk.table = TRUE){
 

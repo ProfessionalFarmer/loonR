@@ -16,19 +16,11 @@ heatmap.annotation(
 )
 }
 \arguments{
-\item{group}{}
-
 \item{annotation.df}{Column is variable, row is sample}
 
 \item{annotation.color}{A list object, the name should be corresponded to df column names}
 
 \item{sort.group}{Order the group}
-
-\item{title}{}
-
-\item{group.color}{}
-
-\item{group.prefix}{}
 
 \item{column_split}{Default TRUE}
 }
@@ -44,13 +36,15 @@ group = sample(c(1,2),10,replace = T)
 annotation.df = data.frame(Gender = sample(c("Male","Female"),10,replace = T),
                            Age = runif(10, min=50, max=80),
                            stringsAsFactors = FALSE)
-Gender.col = loonR::get.palette.color("aaas",2)
-names(Gender.col) = unique(annotation.df$Gender) # or Gender.col = c("Male"="blue", "Female"="red")
-col_fun = colorRamp2(c(50, 100), c("blue", "red")) # continuous variable
+#Gender.col = loonR::get.palette.color("aaas",2)
+#names(Gender.col) = unique(annotation.df$Gender)
+Gender.col = c("Male"="blue", "Female"="red")
+
+col_fun = circlize::colorRamp2(c(50, 100), c("blue", "red")) # continuous variable
 
 annotation.color = list(Gender=Gender.col, Age=col_fun)
 
-heatmap.annotation(group = group, annotation.df = annotation.df, 
+heatmap.annotation(group = group, annotation.df = annotation.df,
                    annotation.color = annotation.color, sort.group = T)
 
 }

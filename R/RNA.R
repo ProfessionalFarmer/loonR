@@ -770,9 +770,7 @@ draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.t
 
     if(show.stat.p){
       p = p + stat_compare_means(
-        aes(label = paste0("p = ", ..p.format..)),
-        method = eval(stat.method),
-        comparisons = list(unique(group) ),
+        method = stat.method, paired = FALSE,
         label.y= (max(ylim)-2) )
     }
     print(list(unique(group) ))

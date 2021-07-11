@@ -20,7 +20,7 @@ hyperGeoTest(
 \item{log10.lowest}{Default 3. Minimux or maximum log10 value. Useful when meet inf or draw heatmap}
 }
 \value{
-
+list(pval.df.log, pval.df, plot)
 }
 \description{
 Perform hypergeometric test

@@ -19,6 +19,15 @@
     <loc>/reference/AllEqual.html</loc>
   </url>
   <url>
+    <loc>/reference/ClusterProfiler.GSEA.Compare.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ClusterProfiler.GSEA.ORA.customGS.Compare.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ClusterProfiler.GSEA.ORA.customGS.html</loc>
+  </url>
+  <url>
     <loc>/reference/ClusterProfiler.GSEA.html</loc>
   </url>
   <url>
@@ -49,6 +58,12 @@
     <loc>/reference/build.randomforest.model.html</loc>
   </url>
   <url>
+    <loc>/reference/compare.GSE.HTSAnalyzer.html</loc>
+  </url>
+  <url>
+    <loc>/reference/compare.differential.analysis.html</loc>
+  </url>
+  <url>
     <loc>/reference/confidence_interval.html</loc>
   </url>
   <url>
@@ -62,6 +77,9 @@
   </url>
   <url>
     <loc>/reference/decisionCurveAnalysis.html</loc>
+  </url>
+  <url>
+    <loc>/reference/determineClusterNumber.html</loc>
   </url>
   <url>
     <loc>/reference/download.geo.dataset.html</loc>
@@ -104,6 +122,9 @@
   </url>
   <url>
     <loc>/reference/fpkm2tpm.html</loc>
+  </url>
+  <url>
+    <loc>/reference/gapStat.html</loc>
   </url>
   <url>
     <loc>/reference/generate.sequencial.color.html</loc>
@@ -149,6 +170,9 @@
   </url>
   <url>
     <loc>/reference/get_performance.html</loc>
+  </url>
+  <url>
+    <loc>/reference/heatmap.annotation.html</loc>
   </url>
   <url>
     <loc>/reference/heatmap.with.lgfold.riskpro.html</loc>
@@ -304,6 +328,9 @@
     <loc>/reference/splitDataByGroup.html</loc>
   </url>
   <url>
+    <loc>/reference/splitGroupByCutoff.html</loc>
+  </url>
+  <url>
     <loc>/reference/splitSampleByGroup.html</loc>
   </url>
   <url>
@@ -313,7 +340,13 @@
     <loc>/reference/suppa.get.final.table.html</loc>
   </url>
   <url>
+    <loc>/reference/survivaly_analysis.html</loc>
+  </url>
+  <url>
     <loc>/reference/tanimoto.html</loc>
+  </url>
+  <url>
+    <loc>/reference/tanimoto_distance.html</loc>
   </url>
   <url>
     <loc>/reference/tcgabiolinks.get.RNA.expression.log2tpm.html</loc>

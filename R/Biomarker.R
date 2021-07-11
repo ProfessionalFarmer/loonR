@@ -2049,3 +2049,103 @@ time_serials_Cindex <- function(list.cox.model, df, palette="aaas", main=""){
 
 
 
+#' Forest plot
+#'
+#' @param tabletext data.frame. Column names will be used as header.
+#' @param estimate.data Estimate, upper CI, lower CI. Corresponded with tabletext
+#' @param appendHeader If provide a vector, top header will be added
+#' @param specify.summary Specify the row index. Row will be bold character.
+#' @param clipping Range to cut. Will use arrow at two cutting points
+#' @param graph.pos Column index, or "left" or "right". Column index to put in right section
+#' @param xlab xlab
+#' @param xlog If in log-format. If TRUE, vectical line in 0, otherwise a vectical line at 0
+#' @param xticks Default c(0.1, 0.5, 1, 2, 3, 4)
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data(LIRI)
+#' or.res <- loonR::univariate_or(LIRI[,c(1,3,4)],LIRI$status)
+#'
+#' estimate.data = or.res[,c(2,3,4)]
+#' text.data = data.frame(Variate = or.res$Variate, OR = or.res$OR)
+#'
+#' loonR::plot.forest(text.data, estimate.data, graph.pos = 2, specify.summary = 1)
+#'
+plot.forest <- function(tabletext, estimate.data, appendHeader = NULL, specify.summary = NULL,
+                        clipping = c(0.1, 4), graph.pos = "right", xlab = "", xlog = TRUE, xticks = c( 0.1, 0.5, seq(1,4,1) ) ){
+
+  if(!require(forestplot)){
+    BiocManager::install("forestplot")
+  }
+
+  summary.label = c(TRUE, rep(FALSE,nrow(tabletext)))
+  tabletext = rbind( colnames(tabletext), tabletext)
+  estimate.data <- rbind(NA, estimate.data)
+  hline = c(1,2,nrow(tabletext)+1)
+
+
+  if(!is.null(specify.summary)){
+    summary.label[(specify.summary+1)] = TRUE
+  }
+
+
+  if(!is.null(appendHeader)){
+    summary.label = c(TRUE, summary.label)
+    tabletext = rbind( appendHeader, tabletext)
+    estimate.data <- rbind(NA, estimate.data)
+    hline[2] = 3
+  }
+
+  hrzl_lines_width = 1:ncol(text.data)
+  if(graph.pos=="left"){
+    hrzl_lines_width = hrzl_lines_width + 1
+  }else if( graph.pos!="left" & graph.pos!="right" ){
+    # add plot index to the last column
+    hrzl_lines_width = c( hrzl_lines_width, ncol(text.data) + 1 )
+    # remove plot ined
+    hrzl_lines_width= hrzl_lines_width[ hrzl_lines_width != (graph.pos) ]
+
+  }
+
+
+  hrzl_lines = list(
+    gpar(lty = 1, col = "black", lwd = 1.5),
+    gpar(lty = 1, col = "black", columns = hrzl_lines_width, lwd = 1.5 ),
+    gpar(lty = 1, col = "black", columns = hrzl_lines_width, lwd = 1.5 )
+  )
+
+  names(hrzl_lines) = hline
+
+  forestplot(tabletext, estimate.data,
+             hrzl_lines = hrzl_lines,
+             new_page = TRUE, vertices = TRUE,
+             is.summary = summary.label,
+             graph.pos = graph.pos,
+             clip = clipping,
+             xlog = TRUE, boxsize = 0.15,
+             xticks = xticks,
+             col = fpColors(box       = "black",
+                            line      = "black",
+                            summary   = "black",
+                            hrz_lines = "black"),
+             xlab = xlab
+             )
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

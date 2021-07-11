@@ -80,12 +80,6 @@ get.ggsci.color <- function(palette="nrc", n = 7, alpha=1){
 #'
 get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE, show.color=FALSE){
 
-  # if length is greater than 2, we suppose it is color code
-  if(length(palette)>=2){
-    return(palette)
-  }
-
-
   if(install){
     # wesanderson
     install.packages("wesanderson")
@@ -114,8 +108,10 @@ get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE, show
     `sp1` = c("#00AFBB", "#E7B800", "#0392cf", "#7570B3", "#FC4E07", "#BB3099", "#ADC252", "#be9b7b", "#75A3BA", "#bbbbbb", "#4F7175", "#173F5F"  )
   )
 
-
-  if(palette %in% names(my_palettes) ){
+  # if length is greater than 2, we suppose it is color code
+  if(length(palette)>=2){
+    colors = head(palette, n)
+  }else if(palette %in% names(my_palettes) ){
     colors = head(my_palettes[[c(palette)]],n)
 
   }else if (palette %in% c(names(wesanderson::wes_palettes)) ) {

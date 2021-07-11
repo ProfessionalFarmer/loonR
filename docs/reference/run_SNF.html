@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title Similarity network fusion — run_SNF • loonR</title>
+<title>Run similarity network fusion — run_SNF • loonR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Title Similarity network fusion — run_SNF" />
-<meta property="og:description" content="Title Similarity network fusion" />
+<meta property="og:title" content="Run similarity network fusion — run_SNF" />
+<meta property="og:description" content="Run similarity network fusion" />
 
 
 
@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.448</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.468</span>
       </span>
     </div>
 
@@ -106,13 +106,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title Similarity network fusion</h1>
+    <h1>Run similarity network fusion</h1>
     <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/SNF.R'><code>R/SNF.R</code></a></small>
     <div class="hidden name"><code>run_SNF.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Title Similarity network fusion</p>
+    <p>Run similarity network fusion</p>
     </div>
 
     <pre class="usage"><span class='fu'>run_SNF</span><span class='op'>(</span>
@@ -123,7 +123,8 @@
   dist.method <span class='op'>=</span> <span class='st'>"Euclidean"</span>,
   survival <span class='op'>=</span> <span class='cn'>NA</span>,
   max.cluster <span class='op'>=</span> <span class='fl'>5</span>,
-  std.normalize <span class='op'>=</span> <span class='cn'>TRUE</span>
+  std.normalize <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  cnv.index <span class='op'>=</span> <span class='fl'>0</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -147,11 +148,19 @@
     </tr>
     <tr>
       <th>dist.method</th>
-      <td><p>Euclidean, Pearson, Spearman, mutualInfo, Manhattan, KLD, Chi-squared</p></td>
+      <td><p>Default Euclidean. pearson, spearman, kendall</p></td>
     </tr>
     <tr>
       <th>survival</th>
       <td><p>Must a data frame. colnames OS.time, OS.event, RFS.time, RFS.event. Rownames must be sample name. Two columns or four columns.</p></td>
+    </tr>
+    <tr>
+      <th>std.normalize</th>
+      <td><p>Default TRUE</p></td>
+    </tr>
+    <tr>
+      <th>cnv.index</th>
+      <td><p>Default 0. If CNV data index is specified, Euclidean will be used to calculate distance</p></td>
     </tr>
     </table>
 

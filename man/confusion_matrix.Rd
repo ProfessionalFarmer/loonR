@@ -22,6 +22,7 @@ A data.frame object
 Get confusion matrix
 }
 \examples{
-confusion_matrix(label,risk.probability,cancer = "ESCC")
-
+label = c(1,1,1,1,1,2,2,2,2,2)
+risk.probability = runif(10, min=0, max=100)
+confusion_matrix(label, risk.probability, cancer = "ESCC")
 }

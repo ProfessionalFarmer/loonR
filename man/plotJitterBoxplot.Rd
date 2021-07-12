@@ -8,7 +8,7 @@ plotJitterBoxplot(
   values,
   group,
   title = "",
-  xlab = "X label",
+  xlab = "Group",
   ylab = "Value",
   color = "aaas",
   comparisons = "",

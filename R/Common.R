@@ -252,7 +252,7 @@ plotBarWithErr <- function(values, group, title = "", xlab = "X label", ylab = "
 #' @export
 #'
 #' @examples
-plotJitterBoxplot <- function(values, group, title = "", xlab = "X label", ylab = "Value", color = "aaas", comparisons = '', method = "wilcox.test", label.y = NULL, add = "jitter"){
+plotJitterBoxplot <- function(values, group, title = "", xlab = "Group", ylab = "Value", color = "aaas", comparisons = '', method = "wilcox.test", label.y = NULL, add = "jitter"){
   library(ggpubr)
   tmp.df <- data.frame(Value = values, Group = as.factor(group), stringsAsFactors = FALSE, check.names = F)
   colnames(tmp.df) <- c(ylab, xlab)
@@ -952,6 +952,66 @@ splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.c
   data.df
 
 }
+
+
+
+#' Join a table list
+#'
+#' @param list.df List of data.frame
+#' @param sfx If not specified, use list element names instead
+#' @param by 	A character vector of variables to join by.
+#' @param full If TRUE, use full_join
+#' @param inner If TRUE, use inner_join
+#' @param left  If TRUE, use left_join
+#' @param right If TRUE, use right_join
+#'
+#' @return
+#' @export
+#'
+#' @examples
+reduce_join_list <- function(list.df, sfx=NULL, by = NULL, full = FALSE, inner = FALSE, left = FALSE, right = FALSE){
+
+
+  if(full){
+    f = dplyr::full_join
+  }else if(inner){
+    f = dplyr::inner_join
+  }else if(left){
+    f = dplyr::left_join
+  }else if(right){
+    f = dplyr::right_join
+  }else{
+    warning("Pls specify join type: full, left, right or inner join?
+            Default will use full_join")
+    f = dplyr::full_join
+  }
+
+
+
+  if(is.null(sfx)){
+    sfx <- names(list.df)
+  }
+
+  if(is.null(by)){
+    stop("Pls specify by option")
+  }
+
+  res <- list.df[[1]]
+  for(i in head(seq_along(list.df), -1)) {
+
+    res <- eval(f)(
+              res, list.df[[i+1]],
+              all = TRUE,
+              suffixes = c(sfx[i],sfx[i+1]),
+              by = by
+           )
+  }
+
+  res
+
+}
+
+
 
 
 

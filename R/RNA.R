@@ -741,12 +741,13 @@ load.rsem.matrix <- function(dirpath, isoform = FALSE, subdirs = TRUE){
 #' @param rotate.x Default 0. numeric value specifying the rotation angle. 90 for vertical x-axis text.
 #' @param ylab
 #' @param ylim Default NA. User can specify.
+#' @param alternative c("two.sided", "less", "greater")
 #'
 #' @return
 #' @export
 #'
 #' @examples loonR::draw.expression.dotplot(candidate.combined.df, group )
-draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.test", show.stat.p = TRUE, rotate.x = 0, ylab="Expression", ylim = NULL ){
+draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.test", show.stat.p = TRUE, rotate.x = 0, ylab="Expression", ylim = NULL, alternative = "two.sided" ){
   library(ggpubr)
   # expression in all samples
   candidate.plots.all.samples <- lapply(row.names(df), function(name){
@@ -771,6 +772,7 @@ draw.expression.dotplot <- function(df, group, nrow = 4, stat.method = "wilcox.t
     if(show.stat.p){
       p = p + stat_compare_means(
         method = stat.method, paired = FALSE,
+        method.args = list(alternative = alternative),
         label.y= (max(ylim)-2) )
     }
     print(list(unique(group) ))

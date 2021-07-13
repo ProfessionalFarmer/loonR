@@ -13,7 +13,8 @@ draw.expression.dotplot(
   show.stat.p = TRUE,
   rotate.x = 0,
   ylab = "Expression",
-  ylim = NULL
+  ylim = NULL,
+  alternative = "two.sided"
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ draw.expression.dotplot(
 \item{rotate.x}{Default 0. numeric value specifying the rotation angle. 90 for vertical x-axis text.}
 
 \item{ylim}{Default NA. User can specify.}
+
+\item{alternative}{c("two.sided", "less", "greater")}
 }
 \value{
 

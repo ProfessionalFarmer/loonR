@@ -1000,11 +1000,11 @@ reduce_join_list <- function(list.df, sfx=NULL, by = NULL, full = FALSE, inner =
   for(i in head(seq_along(list.df), -1)) {
 
     res <- eval(f)(
-              res, list.df[[i+1]],
-              all = TRUE,
-              suffixes = c(sfx[i],sfx[i+1]),
-              by = by
-           )
+      res, list.df[[i+1]],
+      all = TRUE,
+      suffix = c(paste0('.',sfx[i]), paste0('.',sfx[i+1])),
+      by = by
+    )
   }
 
   res
@@ -1015,5 +1015,39 @@ reduce_join_list <- function(list.df, sfx=NULL, by = NULL, full = FALSE, inner =
 
 
 
+#' Get current directory path
+#'
+#' @return
+#' @export
+#'
+#' @examples
+thisPath <- function() {
+  # from 生信开发者 wechat
+  cmdArgs <- commandArgs(trailingOnly = FALSE)
+  if (length(grep("^-f$", cmdArgs)) > 0) {    # R console option
+    normalizePath(dirname(cmdArgs[grep("^-f", cmdArgs) + 1]))[1]
+  } else if (length(grep("^--file=", cmdArgs)) > 0) {    # Rscript/R console option
+    scriptPath <- normalizePath(dirname(sub("^--file=", "", cmdArgs[grep("^--file=", cmdArgs)])))[1]
+  } else if (Sys.getenv("RSTUDIO") == "1") {    # RStudio
+    dirname(rstudioapi::getSourceEditorContext()$path)
+  } else if (is.null(attr(stub, "srcref")) == FALSE) {    # 'source'd via R console
+    dirname(normalizePath(attr(attr(stub, "srcref"), "srcfile")$filename))
+  } else {    stop("Cannot find file path")
+  }
+}
+
+#' Get current running program name
+#'
+#' @param arguments
+#'
+#' @return
+#' @export
+#'
+#' @examples
+getProgramName <- function(arguments){
+  # from 生信开发者 wechat
+  args <- commandArgs(trailingOnly = FALSE)
+  sub("--file=", "", args[grep("--file=", args)])
+}
 
 

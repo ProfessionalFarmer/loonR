@@ -63,7 +63,7 @@ survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.pr
   p = ggsurvplot(surv.fit,
              risk.table = risk.table, ylab = ylab,
              risk.table.y.text.col = TRUE,
-             risk.table.height = 0.4,
+             risk.table.height = 0.4, legend.title = "",
              pval = TRUE, conf.int = conf.int, risk.table.y.text = TRUE,
              tables.y.text = FALSE, legend = "none",
              palette = palette)

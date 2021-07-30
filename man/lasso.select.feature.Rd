@@ -18,7 +18,7 @@ lasso.select.feature(
 \arguments{
 \item{data.matrix}{Row is sample}
 
-\item{family}{Default binomial}
+\item{family}{Default binomial. Should be one of “gaussian”, “binomial”, “poisson”, “multinomial”, “cox”, “mgaussian”}
 
 \item{type.measure}{class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.}
 

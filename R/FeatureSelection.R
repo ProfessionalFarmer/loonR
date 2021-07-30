@@ -129,7 +129,7 @@ feature.selection.4givenMLAlgorithm <- function(feature.df, group, seed=111, sca
 #' @param label
 #' @param folds
 #' @param seed
-#' @param family Default binomial
+#' @param family Default binomial. Should be one of “gaussian”, “binomial”, “poisson”, “multinomial”, “cox”, “mgaussian”
 #' @param type.measure class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.
 #' @param s Defalut is lambda.min. User can specify
 #' @param scale Default TRUE
@@ -141,6 +141,7 @@ feature.selection.4givenMLAlgorithm <- function(feature.df, group, seed=111, sca
 lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
                                  family = "binomial", type.measure = "auc" ,
                                  s = NULL, scale=TRUE){
+
   library(foreach)
   library(dplyr)
   library(glmnet)
@@ -170,7 +171,7 @@ lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
   feature.coef = data.frame(name = feature.coef@Dimnames[[1]][feature.coef@i + 1], coefficient = feature.coef@x)
 
   feature.coef = feature.coef[-c(1), ] # remove Intercept
-  feature.coef$auc = apply(data.matrix[,feature.coef$name], 2,function(x){
+  feature.coef$auc = apply(data.matrix[,feature.coef$name], 2, function(x){
     suppressMessages(roc <- pROC::roc(label, x)  )
     roc$auc
   })

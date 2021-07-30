@@ -67,6 +67,7 @@ res
 get.miRNAExpression <- function(tcga.project=NULL, rawCount=FALSE, CPM=FALSE, log2=FALSE){
 
   if(is.null(tcga.project)){
+    warning(?RTCGA.miRNASeq::miRNASeq)
     stop("Please specify a TCGA project. See ?RTCGA.miRNASeq::miRNASeq")
   }
   if(!rawCount & !CPM){
@@ -106,7 +107,13 @@ get.miRNAExpression <- function(tcga.project=NULL, rawCount=FALSE, CPM=FALSE, lo
 
   # Clinical
   ##-##-###-###-##-###-##-###-###-##-###-##-###-###-##-###-##-###-###-##-###
+  # https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/sample-type-codes
   group_list <- ifelse(substr(patient_ids,14,15)=='01','Tumor','Normal')
+
+  library(dplyr)
+  if(any( ! substr(patient_ids,14,15) %in% c(01,11)  )){
+    stop("It seems some samples are not primary tumor or normal samples")
+  }
 
 
   meta <- get( paste0(tcga.project,".clinical") )

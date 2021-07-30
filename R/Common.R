@@ -1051,3 +1051,19 @@ getProgramName <- function(arguments){
 }
 
 
+#' Generic is.nan function
+#'
+#' @param x
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' # This function can be applied to data.frame
+#' # Just use is.nan(data.frame)
+is.nan.data.frame <- function(x) {
+  do.call(cbind, lapply(x, is.nan))
+}
+
+
+

@@ -275,6 +275,15 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
   # reture formated value
   res <- list()
   res$pval.df.log <- tmpgeo.log
+
+  tmpgeo <- loonR::convertDfToNumeric(tmpgeo)
+  res$pval.df.notFormated <- tmpgeo
+
+  tmpgeo <- apply(tmpgeo, 2, function(x) {
+    scales::scientific(x, digits = 3)
+  })
+
+
   res$pval.df <- format(tmpgeo, trim = TRUE, digits = 3, scientific = 3)
   res$table <- geomatrix
 

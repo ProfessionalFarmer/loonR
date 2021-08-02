@@ -1,5 +1,3 @@
-
-
 #' Export figure to PPT
 #' https://github.com/tomwenseleers/export
 #'
@@ -75,25 +73,25 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
   if(plot3D){
     library(plotly)
     p = plot_ly(df_pcs,
-            x = ~PC1, y = ~PC2, z = ~PC3, color = ~Class,  # c('#BF382A', '#0C4B8E')
-            colors = loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha) )
+                x = ~PC1, y = ~PC2, z = ~PC3, color = ~Class,  # c('#BF382A', '#0C4B8E')
+                colors = loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha) )
 
   }else{
-      library(ggplot2)
-      library(ggpubr)
-      if(show.sample.name){
-        label = row.names(df_pcs)
-      }
-      p <- ggscatter(df_pcs, x="PC1", y="PC2", color="Class",
-                     palette = loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha),
-                     ellipse = ellipse, size = point.size,
-                     label = label, repel = show.sample.name) +
-              xlab(percentage[1]) +
-              ylab(percentage[2])
+    library(ggplot2)
+    library(ggpubr)
+    if(show.sample.name){
+      label = row.names(df_pcs)
+    }
+    p <- ggscatter(df_pcs, x="PC1", y="PC2", color="Class",
+                   palette = loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha),
+                   ellipse = ellipse, size = point.size,
+                   label = label, repel = show.sample.name) +
+      xlab(percentage[1]) +
+      ylab(percentage[2])
 
-      p <- ggpar(p, legend = "right", legend.title = legend.title, main = main.title)
+    p <- ggpar(p, legend = "right", legend.title = legend.title, main = main.title)
 
-      p <- p + cowplot::theme_cowplot(font_family = "Arial")
+    p <- p + cowplot::theme_cowplot(font_family = "Arial")
   }
   if(return.percentage){
     df_pcs
@@ -165,8 +163,8 @@ plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", borde
                            stringsAsFactors = F)
 
   p <- ggpie(tmp.pie.df, "Prop", fill = "Type", label = "Label",
-        color = border, palette = myPalette, title = title, legend = "right" , legend.title = "",
-        font.family = "Arial")
+             color = border, palette = myPalette, title = title, legend = "right" , legend.title = "",
+             font.family = "Arial")
 
   p
 }
@@ -194,10 +192,10 @@ show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = 
   sample.dist <- dist(t(df), method = dist.method )
   sample.dist_hc <- hclust(d = sample.dist, method =hclust.method )
   p <- fviz_dend(sample.dist_hc, cex = 0.6,
-            label_cols = factor(group[sample.dist_hc$order],
-                                labels = loonR::get.palette.color(color.pla, length(unique(group)),0.7)
-                                ),
-            main = main
+                 label_cols = factor(group[sample.dist_hc$order],
+                                     labels = loonR::get.palette.color(color.pla, length(unique(group)),0.7)
+                 ),
+                 main = main
   )
   p
 
@@ -227,7 +225,7 @@ plotBarWithErr <- function(values, group, title = "", xlab = "X label", ylab = "
   colnames(tmp.df) <- c(ylab, xlab)
 
   p <- ggbarplot(tmp.df, x = xlab, y = ylab, add = "mean_se", fill = xlab, palette = color, title = title ) +
-     rotate_x_text(angle = rotate.x)
+    rotate_x_text(angle = rotate.x)
 
   if(comparisons != ''){# label = "p.signif"
     p <- p + stat_compare_means( method = method, comparisons =comparisons, label.y = label.y )
@@ -373,14 +371,14 @@ drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA,
 
   # Main plot
   pmain <- ggpubr::ggscatter(df, x="x", y="y", color = "Type",
-                    label = label, repel = show.sample.name,
-                    palette = color, xlim=xlim, xlab = xlab, ylab = ylab,
-                    title = title,
-                    cor.coef = cor.coef,
-                    cor.coeff.args = list(method = "pearson",
-                                          label.x.npc = "left",
-                                          label.y.npc = "top")
-            )
+                             label = label, repel = show.sample.name,
+                             palette = color, xlim=xlim, xlab = xlab, ylab = ylab,
+                             title = title,
+                             cor.coef = cor.coef,
+                             cor.coeff.args = list(method = "pearson",
+                                                   label.x.npc = "left",
+                                                   label.y.npc = "top")
+  )
 
 
   if (!margin){
@@ -466,10 +464,10 @@ AllEqual <- structure(function(
 plotVennLegacy <- function(l.list, alpha = 0.5, palette = "aaas"){
   library(VennDiagram)
   temp <- venn.diagram(l.list,
-  fill = loonR::get.palette.color(palette = palette, n = length(l.list)),
-  alpha = alpha,
-  cex = 2, cat.fontfamily="arial",
-  lty =2,  filename = NULL)
+                       fill = loonR::get.palette.color(palette = palette, n = length(l.list)),
+                       alpha = alpha,
+                       cex = 2, cat.fontfamily="arial",
+                       lty =2,  filename = NULL)
   grid.newpage()
   grid.draw(temp)
 }
@@ -518,7 +516,7 @@ plotVenn <- function(l.list, alpha = 0.5, palette = "aaas", show_elements = FALS
          text_color = "black",
          text_size = text_size,
          label_sep = ","
-         )
+  )
 
 
 }
@@ -546,16 +544,16 @@ plotUpset <- function(lt, mode = "intersect"){
 
 
   ComplexHeatmap::UpSet(m,
-    comb_order = order(cs,decreasing = T),
-    left_annotation  = rowAnnotation(
-      'Size' = anno_barplot(ss,
-           axis_param = list(direction = "reverse"),
-           border = FALSE,
-           gp = gpar(fill = "black"),
-           width = unit(2, "cm")
-    )),
-    right_annotation = NULL
-    )
+                        comb_order = order(cs,decreasing = T),
+                        left_annotation  = rowAnnotation(
+                          'Size' = anno_barplot(ss,
+                                                axis_param = list(direction = "reverse"),
+                                                border = FALSE,
+                                                gp = gpar(fill = "black"),
+                                                width = unit(2, "cm")
+                          )),
+                        right_annotation = NULL
+  )
 
 }
 
@@ -632,29 +630,29 @@ scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRU
 #'
 #' @examples
 plotClevelandDot <- function(name, value, group=NA, palette = "aaas", dot.size = 2, ylab = NULL, legend.title = "Group", title = "",
-                            cleveland = TRUE, lollipop = FALSE, value.name = "Value",  sample.name = "Name"){
+                             cleveland = TRUE, lollipop = FALSE, value.name = "Value",  sample.name = "Name"){
 
-# http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/
+  # http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/
   library(ggpubr)
   dfm <- data.frame(Name = name,
                     Value = value,
                     Group = group,
                     stringsAsFactors = FALSE
-                    )
+  )
   if(lollipop){
     cleveland = FALSE
   }
   if(cleveland){
     p <- ggdotchart(dfm, x = "Name", y = "Value",
-               color = ifelse(anyNA(group), "black", "Group"),                                # Color by groups
-               # c("#00AFBB", "#E7B800", "#FC4E07")
-               palette = ifelse(anyNA(group)&palette=="aaas","#00AFBB", palette) , # Custom color palette
-               sorting = "descending",                       # Sort value in descending order
-               rotate = TRUE,                                # Rotate vertically
-               dot.size = dot.size,                          # Large dot size
-               y.text.col = TRUE,                            # Color y text by groups
-               ylab = ylab,
-               ggtheme = theme_pubr()                        # ggplot2 theme
+                    color = ifelse(anyNA(group), "black", "Group"),                                # Color by groups
+                    # c("#00AFBB", "#E7B800", "#FC4E07")
+                    palette = ifelse(anyNA(group)&palette=="aaas","#00AFBB", palette) , # Custom color palette
+                    sorting = "descending",                       # Sort value in descending order
+                    rotate = TRUE,                                # Rotate vertically
+                    dot.size = dot.size,                          # Large dot size
+                    y.text.col = TRUE,                            # Color y text by groups
+                    ylab = ylab,
+                    ggtheme = theme_pubr()                        # ggplot2 theme
     )  +  theme_cleveland()                                      # Add dashed grids
   }else if(lollipop){
     p <- ggdotchart(dfm, x = "Name", y = "Value",
@@ -879,12 +877,12 @@ splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.c
 
       global.cut = get(fun)(data.df$Value)
 
-    ###### if set a quantile cutoff
+      ###### if set a quantile cutoff
     }else if(!is.null(quantile.cutoff)){
 
       global.cut = quantile(data.df$Value, prob=c(quantile.cutoff))
 
-    ###### if set cut point
+      ###### if set cut point
     }else if(!is.null(cut.point)){
 
       global.cut = cut.point
@@ -896,11 +894,11 @@ splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.c
                          labels = cut.label )
 
 
-  ######### if specify group
+    ######### if specify group
   }else{
 
     if(length(unique(intersect(data.df$Group, specific.group)))!=length(specific.group)){
-       stop("Please specify the specific.group corresponded to group")
+      stop("Please specify the specific.group corresponded to group")
     }
 
     for(g in specific.group){
@@ -928,8 +926,8 @@ splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.c
       }
 
       g.label <- cut(g.value,
-                    c(min(g.value)-0.1, local.cut, max(g.value)),
-                    labels = cut.label )
+                     c(min(g.value)-0.1, local.cut, max(g.value)),
+                     labels = cut.label )
 
       data.df$Label[g.index] = as.character(g.label)
 

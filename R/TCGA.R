@@ -17,7 +17,7 @@ get.sample.project.infomap <- function(project=NA){
   library(TCGAbiolinks)
 
   # If not specify project, load default
-  if (project==NA){
+  if (is.na(project)){
     project <- grep("TCGA", sort(getGDCprojects()$project_id),
                     value = TRUE)
   }

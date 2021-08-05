@@ -14,7 +14,8 @@ plotJitterBoxplot(
   comparisons = "",
   method = "wilcox.test",
   label.y = NULL,
-  add = "jitter"
+  add = "jitter",
+  alternative = "both"
 )
 }
 \arguments{

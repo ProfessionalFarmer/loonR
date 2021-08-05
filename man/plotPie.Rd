@@ -11,7 +11,8 @@ plotPie(
   alpha = 1,
   title = "",
   border = "white",
-  label = FALSE
+  label = FALSE,
+  show.total.inTitle = FALSE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ plotPie(
 \item{border}{Border color}
 
 \item{label}{Whether to show labels}
+
+\item{show.total.inTitle}{If to show the total number in title}
 }
 \value{
 

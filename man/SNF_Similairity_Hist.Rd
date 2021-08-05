@@ -4,7 +4,12 @@
 \alias{SNF_Similairity_Hist}
 \title{Similairity count}
 \usage{
-SNF_Similairity_Hist(affinityL = NULL, evidence.type = NULL, group = NULL)
+SNF_Similairity_Hist(
+  affinityL = NULL,
+  evidence.type = NULL,
+  group = NULL,
+  group.prefix = "Group"
+)
 }
 \arguments{
 \item{affinityL}{List including different affinity matrix}
@@ -12,6 +17,8 @@ SNF_Similairity_Hist(affinityL = NULL, evidence.type = NULL, group = NULL)
 \item{evidence.type}{Corresponded to affinity list}
 
 \item{group}{SNF subtyping result}
+
+\item{group.prefix}{Default Group. User can specify}
 }
 \value{
 

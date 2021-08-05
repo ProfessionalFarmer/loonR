@@ -115,6 +115,7 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
 #' @param title Pie title
 #' @param border Border color
 #' @param label Whether to show labels
+#' @param show.total.inTitle If to show the total number in title
 #'
 #' @return
 #' @export
@@ -123,14 +124,14 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
 #' plotPie(ioe.events.df$Type, title = "# of events")
 #' or plotPie(ioe.events.df, col = 2, title = "# of events")
 #'
-plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", border="white" , label = FALSE){
+plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", border="white" , label = FALSE, show.total.inTitle = FALSE){
 
   if( inherits(data, "data.frame")  ){
     data <- unique(data)
     data <- as.vector(data[,colid]) # now data is a vector class
   }
   n.color <- length(unique(data))
-  if(n.color >= 9 & color != "Most" ){
+  if(n.color >= 9 & color != "Most" & length(color) <9 ){
     stop("Please check, too many colors (More than 9)")
   }
 
@@ -149,7 +150,12 @@ plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", borde
   if (title == ""){
     title <- paste(" Total ", sum(Prop), sep = "" )
   }else{
-    title <- paste(title, " (Total ", sum(Prop),")",sep = "" )
+    if(show.total.inTitle){
+      title <- paste(title, " (Total ", sum(Prop),")",sep = "" )
+    }else{
+      title <- title
+    }
+
   }
 
   # draw
@@ -163,7 +169,8 @@ plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", borde
                            stringsAsFactors = F)
 
   p <- ggpie(tmp.pie.df, "Prop", fill = "Type", label = "Label",
-             color = border, palette = myPalette, title = title, legend = "right" , legend.title = "",
+             color = border, palette = unname(myPalette), title = title,
+             legend = "right" , legend.title = "",
              font.family = "Arial")
 
   p
@@ -250,7 +257,7 @@ plotBarWithErr <- function(values, group, title = "", xlab = "X label", ylab = "
 #' @export
 #'
 #' @examples
-plotJitterBoxplot <- function(values, group, title = "", xlab = "Group", ylab = "Value", color = "aaas", comparisons = '', method = "wilcox.test", label.y = NULL, add = "jitter"){
+plotJitterBoxplot <- function(values, group, title = "", xlab = "Group", ylab = "Value", color = "aaas", comparisons = '', method = "wilcox.test", label.y = NULL, add = "jitter", alternative = "both"){
   library(ggpubr)
   tmp.df <- data.frame(Value = values, Group = as.factor(group), stringsAsFactors = FALSE, check.names = F)
   colnames(tmp.df) <- c(ylab, xlab)
@@ -261,7 +268,10 @@ plotJitterBoxplot <- function(values, group, title = "", xlab = "Group", ylab = 
                  palette = color )
 
   if(comparisons != ''){# label = "p.signif"
-    p <- p + stat_compare_means(method = method, comparisons =comparisons, label.y = label.y )
+    p <- p + stat_compare_means(method = method,
+                                comparisons =comparisons,
+                                label.y = label.y,
+                                method.args = list(alternative = alternative))
   }
   p
 
@@ -1063,5 +1073,51 @@ is.nan.data.frame <- function(x) {
   do.call(cbind, lapply(x, is.nan))
 }
 
+#' Gnenerate combinations with specified size
+#'
+#' @param panel panel which will be used to make combinations
+#' @param size size of a single combination
+#' @param repeats Default FALSE, not allow repeats
+#' @param vector
+#' @param sep If return a vector, sep is needed
+#'
+#' @return
+#' @export
+#'
+#' @examples
+generateCombinations <- function(panel=NULL, size = 0, repeats=FALSE, vector=FALSE, sep ="-"){
+  if(length(size)>1){
+
+    res <- lapply(size, function(x){
+      combs = gtools::combinations(length(panel), x, panel, repeats=repeats)
+      if(vector==TURE){
+        if(x==1){
+          combs = unclass(unlist(combs[,1]))
+        }else{
+          combs = apply(combs, 1, function(x) paste0(sort(x), sep="", collapse = sep ))
+        }
+        combs
+      }
+    })
+    names(res) <- size
+
+  }else{
+    if(is.null(panel)){
+      stop("Please set a panel which you want to make a combination")
+    }
+    if(size == 0){
+      size = length(panel) - 1
+    }
+    if(size > length(panel)){
+      stop("Pls set size less than the length of panel")
+    }
+    res <- gtools::combinations(length(panel), size, panel, repeats=repeats)
+
+    if(vector==TRUE){
+      res <- apply(res, 1, function(x) paste0(sort(x), sep="", collapse = "-"))
+    }
+  }
+  res
+}
 
 

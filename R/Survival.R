@@ -22,7 +22,7 @@
 #'
 #' @examples
 survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.prefix = NA, ylab = "Survival probability",
-                               title = "Suvival analysis", palette = "lancet", conf.int = FALSE, legend.position="none",
+                               title = "", palette = "lancet", conf.int = FALSE, legend.position="none",
                                linetype = 1, calculate.pval = FALSE, only.consider.group = NULL, not.consider.group = NULL, risk.table = TRUE){
 
   if(!require(survminer) | !require(survival)){BiocManager::install(c("survminer","survival"))}
@@ -66,7 +66,7 @@ survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.pr
              risk.table.height = 0.4, legend.title = "",
              pval = TRUE, conf.int = conf.int, risk.table.y.text = TRUE,
              tables.y.text = FALSE, legend = "none",
-             palette = palette)
+             palette = palette, title = title)
   rm(surv.analysis.df, surv.fit)
 
   p

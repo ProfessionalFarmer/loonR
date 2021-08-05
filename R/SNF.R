@@ -5,13 +5,15 @@
 #' @param affinityL List including different affinity matrix
 #' @param evidence.type Corresponded to affinity list
 #' @param group SNF subtyping result
+#' @param group.prefix Default Group. User can specify
 #'
 #' @return
 #' @export
 #'
 #' @examples
 #' loonR::SNF_Similairity_Hist(tmp$AffinityL,evidence.type = c("RNA","Methylation", "CNV"), group = snf.group)
-SNF_Similairity_Hist <- function(affinityL=NULL, evidence.type=NULL, group = NULL){
+SNF_Similairity_Hist <- function(affinityL=NULL, evidence.type=NULL, group = NULL, group.prefix = "Group"){
+
   library(reshape2)
 
   affinityL.matrix <- affinityL
@@ -44,10 +46,12 @@ SNF_Similairity_Hist <- function(affinityL=NULL, evidence.type=NULL, group = NUL
     m <- m[,-c(1,2)]
     m
   })
+
   affinityL.matrix.melt <- lapply(evidence.type, function(x){
     colnames( affinityL.matrix.melt[[x]] ) <- c(x, "pair")
     affinityL.matrix.melt[[x]]
   })
+
   names( affinityL.matrix.melt ) <- evidence.type
 
 
@@ -74,6 +78,9 @@ SNF_Similairity_Hist <- function(affinityL=NULL, evidence.type=NULL, group = NUL
     single.group <- lapply(evidence.type, function(x){
       m = affinityL.matrix[[x]]
       m = m[smps,smps]
+
+      m[upper.tri(m, diag = TRUE)] <- NA
+
       m = melt(m)
       m = na.omit(m)
       m$pair <- paste(m[,c(1)],m[,c(2)],sep="-")
@@ -106,13 +113,33 @@ SNF_Similairity_Hist <- function(affinityL=NULL, evidence.type=NULL, group = NUL
     single.group$support.evidence = single.group.support.evidence
     single.group
   })
-  names( affinityL.evidence.support ) <- paste("Group",unique(group),sep=" ")
+  names( affinityL.evidence.support ) <- paste(group.prefix, unique(group),sep=" ")
+
+
+  # obtain all the evidence combinations
+  library(foreach)
+  combs.res <- foreach(c = 1:length(evidence.type), .combine = c)%do%{
+
+    combs <- gtools::combinations(length(evidence.type), c, evidence.type)
+
+    if(c==1){
+      combs = unclass(unlist(combs[,1]))
+    }else{
+      combs = apply(combs, 1, function(x) paste0(sort(x), sep="", collapse = "-"))
+    }
+
+    combs
+  }
+
+  pie.colors <- loonR::get.mostDistint.color.palette(n=length(combs.res))
+  names(pie.colors) <- combs.res
 
 
   # step 4 support evidence pie plot
   affinityL.evidence.support.pie <- lapply( names(affinityL.evidence.support), function(x){
     tmp.data <- affinityL.evidence.support[[x]]
-    p = loonR::plotPie(tmp.data$support.evidence, title = x, color="Most")
+    p = loonR::plotPie(tmp.data$support.evidence, title = x,
+                       color=pie.colors[sort(unique(tmp.data$support.evidence))]  )
     p
 
   } )

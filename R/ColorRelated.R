@@ -1,17 +1,18 @@
 #' Generate a most distinctive color palatte
 #'
 #' @param n Number of colors
+#' @param seed 123
 #'
 #' @return Color vector
 #' @export
 #'
 #' @examples
-get.mostDistint.color.palette <- function(n=20){
+get.mostDistint.color.palette <- function(n=20, seed=123){
   library(RColorBrewer)
   qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
   col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
 
-  set.seed(123)
+  set.seed(seed)
   col = sample(col_vector, n)
   return(col)
 }

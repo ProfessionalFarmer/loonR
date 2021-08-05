@@ -4,10 +4,12 @@
 \alias{get.mostDistint.color.palette}
 \title{Generate a most distinctive color palatte}
 \usage{
-get.mostDistint.color.palette(n = 20)
+get.mostDistint.color.palette(n = 20, seed = 123)
 }
 \arguments{
 \item{n}{Number of colors}
+
+\item{seed}{123}
 }
 \value{
 Color vector

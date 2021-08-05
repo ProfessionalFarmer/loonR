@@ -10,7 +10,7 @@ survivaly_analysis(
   Group = NULL,
   group.prefix = NA,
   ylab = "Survival probability",
-  title = "Suvival analysis",
+  title = "",
   palette = "lancet",
   conf.int = FALSE,
   legend.position = "none",

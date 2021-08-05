@@ -2140,7 +2140,49 @@ plot.forest <- function(tabletext, estimate.data, appendHeader = NULL, specify.s
 
 
 
+#' Try different mtry and select the best fitted model
+#'
+#' @param rf.df Row is sample
+#' @param group
+#' @param ntree Default 500
+#' @param seed Default 111
+#'
+#' @return
+#' @export
+#'
+#' @examples
+build.best.random.forest <- function(rf.df, group, ntree = 500, seed=111){
+  library(randomForest)
 
+  min  = 100
+  mtry = 0
+
+  for (i in 1:20){
+
+    set.seed(seed)
+    rf.classifier <- randomForest(x = rf.df,
+                                  y = as.factor(group),
+                                  mtry = i,
+                                  ntree = ntree)
+
+    err<-mean(rf.classifier$err.rate)
+    print(err)
+    if(err<min) {
+      min = err
+      mtry = i }
+  }
+
+  print(min)
+  print(mtry)
+
+  set.seed(seed)
+  rf.classifier <- randomForest(x = rf.df,
+                                y = as.factor(group),
+                                mtry = mtry,
+                                ntree = ntree)
+  rf.classifier
+
+}
 
 
 

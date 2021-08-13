@@ -64,7 +64,7 @@ res
 #' @export
 #'
 #' @examples
-get.miRNAExpression <- function(tcga.project=NULL, rawCount=FALSE, CPM=FALSE, log2=FALSE){
+get.TCGA.miRNAExpression <- function(tcga.project=NULL, rawCount=FALSE, CPM=FALSE, log2=FALSE){
 
   if(is.null(tcga.project)){
     warning(?RTCGA.miRNASeq::miRNASeq)
@@ -102,7 +102,10 @@ get.miRNAExpression <- function(tcga.project=NULL, rawCount=FALSE, CPM=FALSE, lo
   patient_ids -> rownames(expression.df)
 
   if(log2){
-    expression.df = t(log2(mirna+1))
+    expression.df = t(log2(expression.df+1))
+  }else{
+    expression.df = t( expression.df )
+
   }
 
   # Clinical

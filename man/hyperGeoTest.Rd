@@ -11,13 +11,16 @@ hyperGeoTest(
   col.prefix = "",
   lower.tail = FALSE,
   title = "",
-  log10.lowest = 5
+  log10.lowest = 5,
+  print.fig = TRUE
 )
 }
 \arguments{
 \item{lower.tail}{Default FALSE}
 
 \item{log10.lowest}{Default 3. Minimux or maximum log10 value. Useful when meet inf or draw heatmap}
+
+\item{print.fig}{Default print the figure}
 }
 \value{
 list(pval.df.log, pval.df, plot)

@@ -187,24 +187,49 @@ plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", borde
 #' @param hclust.method Default ward.D2. The agglomeration method to be used. This should be (an unambiguous abbreviation of) one of "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC).
 #' @param color.pla Default npg
 #' @param main Title
+#' @param cutree Number of clusters
 #'
 #' @return
 #' @export
 #'
-#' @examples loonR::show_hcluster(data.frame, group)
-show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = "ward.D2", color.pla = "npg", main = ""){
+#' @examples
+#' data(LIRI)
+#' loonR::show_hcluster(t(LIRI[,3:5]), LIRI$status)
+show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = "ward.D2", color.pla = "npg", main = "", cutree = 0){
 
+  # https://www.datacamp.com/community/tutorials/hierarchical-clustering-R#howto
+  # https://setscholars.net/wp-content/uploads/2019/06/How-to-visualise-Hierarchical-Clustering-agglomerative-in-R.html
   library(factoextra)
 
   sample.dist <- dist(t(df), method = dist.method )
   sample.dist_hc <- hclust(d = sample.dist, method =hclust.method )
-  p <- fviz_dend(sample.dist_hc, cex = 0.6,
-                 label_cols = factor(group[sample.dist_hc$order],
-                                     labels = loonR::get.palette.color(color.pla, length(unique(group)),0.7)
-                 ),
-                 main = main
-  )
-  p
+
+  if(cutree==0){
+    p <- fviz_dend(sample.dist_hc, cex = 0.6,
+                   label_cols = factor(group[sample.dist_hc$order],
+                                       labels = loonR::get.palette.color(color.pla, length(unique(group)),0.7)
+                   ),
+                   main = main
+    )
+    p
+  }else{
+    cluster.labels = stats::cutree(sample.dist_hc, k = cutree)
+
+    p <- fviz_dend(sample.dist_hc, cex = 0.6,
+                   label_cols = factor(group[sample.dist_hc$order],
+                                       labels = loonR::get.palette.color(color.pla, length(unique(group)),0.7)
+                   ),
+                   main = main,
+                   k = cutree, k_colors = loonR::get.palette.color(color.pla, cutree, 0.7),
+                   color_labels_by_k = TRUE, # color labels by groups
+                   rect = TRUE # Add rectangle around groups
+    )
+    p
+    res = list(Labels=cluster.labels, Plot=p)
+    res
+  }
+
+
 
 }
 

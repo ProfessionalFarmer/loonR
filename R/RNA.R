@@ -1048,3 +1048,79 @@ compare.differential.analysis <- function(rna.df.log, group, prefix="Group", cal
 
 }
 
+
+
+#' Get TCGA RNA expression (RPKM) data
+#'
+#' @param tcga.project See ?RTCGA.miRNASeq::miRNASeq. For example: COAD
+#' @param log2 If to perform log2 transformation
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' This function is similar to get.TCGA.miRNAExpression in Biomarker.R file.
+#' Data source is illumina hiseq Level 3 RSEM normalized expression data. Data from 2015-11-01 snapshot.
+#' The RNAseq gene expression level 3 data contains Reads per Kilobase per Million mapped reads (RPKM)
+#'
+#'
+get.TCGA.RNA.FPKM <- function(tcga.project=NULL, rawCount=FALSE, log2=FALSE){
+
+  if(is.null(tcga.project)){
+    warning(?RTCGA.miRNASeq::miRNASeq)
+    stop("Please specify a TCGA project. See ?RTCGA.miRNASeq::miRNASeq")
+  }
+
+
+
+
+  if (!require(RTCGA))BiocManager::install("RTCGA")
+  if (!require(RTCGA.rnaseq))BiocManager::install("RTCGA.rnaseq")
+  if (!require(RTCGA.clinical))BiocManager::install("RTCGA.clinical")
+
+  # Expression
+  ##-##-###-###-##-###-##-###-###-##-###-##-###-###-##-###-##-###-###-##-###
+  expression.df = get( paste0(tcga.project,".rnaseq") )
+
+  row.names(expression.df) = expression.df$bcr_patient_barcode
+  expression.df = expression.df[,-c(1)]
+
+  patient_ids <- rownames(expression.df)
+
+  # convert string to numeric
+  expression.df <- apply(as.matrix.noquote(expression.df),2,as.numeric)
+
+  patient_ids -> rownames(expression.df)
+
+  if(log2){
+    expression.df = t(log2(expression.df+1))
+  }else{
+    expression.df = t( expression.df )
+  }
+
+  # Clinical
+  ##-##-###-###-##-###-##-###-###-##-###-##-###-###-##-###-##-###-###-##-###
+  # https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/sample-type-codes
+  group_list <- ifelse(substr(patient_ids,14,15)=='01','Tumor','Normal')
+
+  library(dplyr)
+  if(any( ! substr(patient_ids,14,15) %in% c(01,11)  )){
+    stop("It seems some samples are not primary tumor or normal samples")
+  }
+
+
+  meta <- get( paste0(tcga.project,".clinical") )
+  meta$patient.bcr_patient_barcode <- stringr::str_to_upper( meta$patient.bcr_patient_barcode )
+
+  meta <- meta[match(substr(patient_ids,1,12),
+                     meta$patient.bcr_patient_barcode),]
+
+  row.names(meta) <- patient_ids
+  meta$Label = group_list
+
+  res = list(meta=meta,
+             expr=expression.df,
+             label=group_list)
+
+  res
+}

@@ -10,7 +10,8 @@ show_hcluster(
   dist.method = "euclidean",
   hclust.method = "ward.D2",
   color.pla = "npg",
-  main = ""
+  main = "",
+  cutree = 0
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ show_hcluster(
 \item{color.pla}{Default npg}
 
 \item{main}{Title}
+
+\item{cutree}{Number of clusters}
 }
 \value{
 
@@ -31,5 +34,6 @@ show_hcluster(
 Perform hclustering analysis
 }
 \examples{
-loonR::show_hcluster(data.frame, group)
+data(LIRI)
+loonR::show_hcluster(t(LIRI[,3:5]), LIRI$status)
 }

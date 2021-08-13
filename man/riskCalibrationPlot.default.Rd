@@ -2,9 +2,22 @@
 % Please edit documentation in R/Biomarker.R
 \name{riskCalibrationPlot.default}
 \alias{riskCalibrationPlot.default}
-\title{Calibration plot}
+\title{#' riskCalibrationPlot
+#'
+#' @param x
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+riskCalibrationPlot<-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, ...) {Generics function
+
+UseMethod('riskCalibrationPlot')
+}
+Calibration plot}
 \usage{
-\method{riskCalibrationPlot}{default}(
+riskCalibrationPlot.default(
   group,
   pred,
   rms.method = FALSE,
@@ -38,6 +51,19 @@
 
 }
 \description{
+#' riskCalibrationPlot
+#'
+#' @param x
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+riskCalibrationPlot<-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, ...) {Generics function
+
+UseMethod('riskCalibrationPlot')
+}
 Calibration plot
 }
 \examples{

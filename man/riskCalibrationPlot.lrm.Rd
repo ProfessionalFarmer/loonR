@@ -4,7 +4,7 @@
 \alias{riskCalibrationPlot.lrm}
 \title{Calibration plot by rms.calibrate}
 \usage{
-\method{riskCalibrationPlot}{lrm}(rms.model, cox = FALSE)
+riskCalibrationPlot.lrm(rms.model, cox = FALSE)
 }
 \arguments{
 \item{rms.model}{A model built by rms package}

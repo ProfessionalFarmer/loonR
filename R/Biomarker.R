@@ -1727,10 +1727,19 @@ confidence_interval <- function(vector, interval) {
 
 
 
-riskCalibrationPlot<-function(x, ...) {
-  # Generics function
-  UseMethod('riskCalibrationPlot')
-}
+#' #' riskCalibrationPlot
+#' #'
+#' #' @param x
+#' #' @param ...
+#' #'
+#' #' @return
+#' #' @export
+#' #'
+#' #' @examples
+#' riskCalibrationPlot<-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, ...) {
+#'   # Generics function
+#'   UseMethod('riskCalibrationPlot')
+#' }
 
 
 #' Calibration plot
@@ -2146,12 +2155,19 @@ plot.forest <- function(tabletext, estimate.data, appendHeader = NULL, specify.s
 #' @param group
 #' @param ntree Default 500
 #' @param seed Default 111
+#' @param scale If perform scale
 #'
 #' @return
 #' @export
 #'
 #' @examples
-build.best.random.forest <- function(rf.df, group, ntree = 500, seed=111){
+build.best.random.forest <- function(rf.df, group, ntree = 500, seed=111, scale = TRUE){
+
+  if(scale==TRUE){
+    rf.df = loonR::scaleDF(rf.df, byColumn = TRUE)
+  }
+
+
   library(randomForest)
 
   min  = 100

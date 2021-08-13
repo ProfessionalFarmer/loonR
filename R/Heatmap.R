@@ -234,6 +234,7 @@ heatmap.annotation <- function(group = NULL, annotation.df = NULL, annotation.co
 #' @param lower.tail Default FALSE
 #' @param title
 #' @param log10.lowest Default 3. Minimux or maximum log10 value. Useful when meet inf or draw heatmap
+#' @param print.fig Default print the figure
 #'
 #' @return list(pval.df.log, pval.df, plot)
 #' @export
@@ -243,7 +244,7 @@ heatmap.annotation <- function(group = NULL, annotation.df = NULL, annotation.co
 #' g2 = sample(c("1","2","3"),10, replace = T)
 #' loonR::hyperGeoTest(g1, g2, col.prefix = "E")
 #'
-hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "", lower.tail = FALSE, title = "", log10.lowest = 5){
+hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "", lower.tail = FALSE, title = "", log10.lowest = 5, print.fig = TRUE){
 
   # https://www.omicsclass.com/article/324
   # 1-phyper(抽取样本中属于“特定类别”的数量-1,总样本中“特定类别”的数量, 总样本数-总样本中“特定类别”的数量, 从总样本中随机抽取的数量,)
@@ -318,7 +319,10 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
                                      row_title = character(0)
 
   )
-  print(res$plot)
+
+  if(print.fig){
+    print(res$plot)
+  }
 
 
   # return res

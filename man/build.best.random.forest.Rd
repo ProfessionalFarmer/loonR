@@ -4,7 +4,7 @@
 \alias{build.best.random.forest}
 \title{Try different mtry and select the best fitted model}
 \usage{
-build.best.random.forest(rf.df, group, ntree = 500, seed = 111)
+build.best.random.forest(rf.df, group, ntree = 500, seed = 111, scale = TRUE)
 }
 \arguments{
 \item{rf.df}{Row is sample}
@@ -12,6 +12,8 @@ build.best.random.forest(rf.df, group, ntree = 500, seed = 111)
 \item{ntree}{Default 500}
 
 \item{seed}{Default 111}
+
+\item{scale}{If perform scale}
 }
 \value{
 

@@ -58,6 +58,9 @@
     <loc>/reference/build.logistic.model.html</loc>
   </url>
   <url>
+    <loc>/reference/build.psm.regression.model.html</loc>
+  </url>
+  <url>
     <loc>/reference/build.randomforest.model.html</loc>
   </url>
   <url>
@@ -275,6 +278,9 @@
   </url>
   <url>
     <loc>/reference/multivariate_or.html</loc>
+  </url>
+  <url>
+    <loc>/reference/nomogram.plot.html</loc>
   </url>
   <url>
     <loc>/reference/normalize_miRNACount_toCPM.html</loc>

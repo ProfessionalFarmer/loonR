@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Build co regression model — build.coxregression.model • loonR</title>
+<title>Build cox regression model — build.coxregression.model • loonR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Build co regression model — build.coxregression.model" />
-<meta property="og:description" content="Build co regression model" />
+<meta property="og:title" content="Build cox regression model — build.coxregression.model" />
+<meta property="og:description" content="Build cox regression model" />
 
 
 
@@ -57,6 +57,8 @@
 <![endif]-->
 
 
+
+<!-- dependencies from examples -->
 
 
   
@@ -81,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.502</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.515</span>
       </span>
     </div>
 
@@ -106,13 +108,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Build co regression model</h1>
+    <h1>Build cox regression model</h1>
     <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/Biomarker.R'><code>R/Biomarker.R</code></a></small>
     <div class="hidden name"><code>build.coxregression.model.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Build co regression model</p>
+    <p>Build cox regression model</p>
     </div>
 
     <pre class="usage"><span class='fu'>build.coxregression.model</span><span class='op'>(</span><span class='va'>d.frame</span>, <span class='va'>status</span>, <span class='va'>time</span>, seed <span class='op'>=</span> <span class='fl'>666</span>, scale <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></pre>
@@ -140,6 +142,13 @@
 
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='r-in'><span class='co'># psm (parametric survival model) uses a survival model based on functions and their parameters.</span></span>
+<span class='r-in'><span class='co'># cph (Cox Proportional Hazards Model and Extensions) is using the cox model (and the Anderson-Gill model) which is based on the hazard functions.</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>res</span> <span class='op'>=</span> <span class='fu'>build.coxregression.model</span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>[</span>,<span class='fl'>3</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>,<span class='va'>LIRI</span><span class='op'>$</span><span class='va'>status</span>, <span class='va'>LIRI</span><span class='op'>$</span><span class='va'>time</span><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

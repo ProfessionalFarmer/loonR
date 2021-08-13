@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.502</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.515</span>
       </span>
     </div>
 
@@ -142,10 +142,9 @@
     <pre class="examples"><span class='r-in'><span class='co'>#' data(LIRI)</span></span>
 <span class='r-in'><span class='va'>m</span><span class='op'>=</span><span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'><a href='build.logistic.model.html'>build.logistic.model</a></span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>4</span><span class='op'>)</span><span class='op'>]</span>,<span class='va'>LIRI</span><span class='op'>$</span><span class='va'>status</span>, rms <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Pls note: Second unique variable is defined as experiment group</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Setting levels: control = 0, case = 1</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Setting direction: controls &lt; cases</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: iterators</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in Design(data, formula = formula, specials = "strat")</span> dataset ddist not found for options(datadist=)</span>
 <span class='r-in'><span class='va'>m</span><span class='op'>=</span><span class='va'>m</span><span class='op'>$</span><span class='va'>model</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in eval(expr, envir, enclos)</span> object 'm' not found</span>
 <span class='r-in'><span class='fu'>riskCalibrationPlot</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span></span>
 <span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in riskCalibrationPlot(m)</span> could not find function "riskCalibrationPlot"</span>
 </pre>

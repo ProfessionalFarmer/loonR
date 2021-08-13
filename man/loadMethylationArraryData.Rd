@@ -17,5 +17,4 @@ Load methylation arrary from directory
 }
 \examples{
 Reference: https://bioconductor.org/packages/release/bioc/vignettes/ChAMP/inst/doc/ChAMP.html
-
 }

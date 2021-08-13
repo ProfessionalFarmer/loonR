@@ -8,13 +8,12 @@ multiplePlotPredictedPro(group, pred, palette = "aaas", bins = 10)
 }
 \arguments{
 \item{pred}{Must within 0-1}
+
+\item{bins}{}
 }
 \value{
 Contain multiple plots
 }
 \description{
 plot predictive probability distribution
-}
-\examples{
-
 }

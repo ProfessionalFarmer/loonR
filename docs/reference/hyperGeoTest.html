@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.477</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.502</span>
       </span>
     </div>
 
@@ -124,7 +124,8 @@
   col.prefix <span class='op'>=</span> <span class='st'>""</span>,
   lower.tail <span class='op'>=</span> <span class='cn'>FALSE</span>,
   title <span class='op'>=</span> <span class='st'>""</span>,
-  log10.lowest <span class='op'>=</span> <span class='fl'>5</span>
+  log10.lowest <span class='op'>=</span> <span class='fl'>5</span>,
+  print.fig <span class='op'>=</span> <span class='cn'>TRUE</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -137,6 +138,10 @@
     <tr>
       <th>log10.lowest</th>
       <td><p>Default 3. Minimux or maximum log10 value. Useful when meet inf or draw heatmap</p></td>
+    </tr>
+    <tr>
+      <th>print.fig</th>
+      <td><p>Default print the figure</p></td>
     </tr>
     </table>
 
@@ -156,11 +161,17 @@
 <span class='r-out co'><span class='r-pr'>#&gt;</span> G2 0.87506126 0.0000000 0.0000000</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> G3 0.01046543 0.3010300 0.3010300</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $pval.df.notFormated</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>           E1        E2        E3</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> G1 0.8333333 0.7083333 0.7083333</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> G2 0.1333333 1.0000000 1.0000000</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> G3 0.9761905 0.5000000 0.5000000</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> $pval.df</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>       E1    E2    E3</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> G1 0.833 0.708 0.708</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> G2 0.133 1.000 1.000</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> G3 0.976 0.500 0.500</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    E1         E2         E3        </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> G1 "8.33e-01" "7.08e-01" "7.08e-01"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> G2 "1.33e-01" "1.00e+00" "1.00e+00"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> G3 "9.76e-01" "5.00e-01" "5.00e-01"</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> $table</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>          col.group</span>
@@ -172,7 +183,6 @@
 <span class='r-out co'><span class='r-pr'>#&gt;</span> $plot</span>
 <span class='r-plt'><img src='hyperGeoTest-2.png' alt='' width='700' height='433' /></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-in'></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

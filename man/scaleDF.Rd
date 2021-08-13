@@ -4,7 +4,14 @@
 \alias{scaleDF}
 \title{Scale a data.frame by column or row}
 \usage{
-scaleDF(df, byRow = FALSE, byColumn = FALSE, center = TRUE, scale = TRUE)
+scaleDF(
+  df,
+  byRow = FALSE,
+  byColumn = FALSE,
+  center = TRUE,
+  scale = TRUE,
+  maxUnit = 4
+)
 }
 \arguments{
 \item{byRow}{Default FALSE}
@@ -14,6 +21,8 @@ scaleDF(df, byRow = FALSE, byColumn = FALSE, center = TRUE, scale = TRUE)
 \item{center}{Default TRUE. Mean = 0}
 
 \item{scale}{Default TRUE. 0-1 scale}
+
+\item{maxUnit}{Default 4}
 }
 \value{
 

@@ -42,5 +42,4 @@ data <- data.frame( variable = c("exonic","exonic","exonic","intronic","intronic
                     value = c(1,2,3,4,5,6)
 )
 draw.mutation.type.barplot(data)
-
 }

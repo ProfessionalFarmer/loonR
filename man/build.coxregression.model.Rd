@@ -2,7 +2,7 @@
 % Please edit documentation in R/Biomarker.R
 \name{build.coxregression.model}
 \alias{build.coxregression.model}
-\title{Build co regression model}
+\title{Build cox regression model}
 \usage{
 build.coxregression.model(d.frame, status, time, seed = 666, scale = TRUE)
 }
@@ -17,5 +17,12 @@ build.coxregression.model(d.frame, status, time, seed = 666, scale = TRUE)
 
 }
 \description{
-Build co regression model
+Build cox regression model
+}
+\examples{
+# psm (parametric survival model) uses a survival model based on functions and their parameters.
+# cph (Cox Proportional Hazards Model and Extensions) is using the cox model (and the Anderson-Gill model) which is based on the hazard functions.
+
+data(LIRI)
+res = build.coxregression.model(LIRI[,3:5],LIRI$status, LIRI$time)
 }

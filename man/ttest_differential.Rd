@@ -30,5 +30,4 @@ Calculate p value by t.test manually
 }
 \examples{
 Parametric Tests of Group Differences
-
 }

@@ -49,6 +49,9 @@
     <loc>/reference/SNF_Similairity_Hist.html</loc>
   </url>
   <url>
+    <loc>/reference/build.best.random.forest.html</loc>
+  </url>
+  <url>
     <loc>/reference/build.coxregression.model.html</loc>
   </url>
   <url>
@@ -109,6 +112,9 @@
     <loc>/reference/export2ppt.html</loc>
   </url>
   <url>
+    <loc>/reference/extractSignaturePercent.html</loc>
+  </url>
+  <url>
     <loc>/reference/feature.selection.4givenMLAlgorithm.html</loc>
   </url>
   <url>
@@ -121,6 +127,12 @@
     <loc>/reference/filterGenes.html</loc>
   </url>
   <url>
+    <loc>/reference/findSomaticSignature.html</loc>
+  </url>
+  <url>
+    <loc>/reference/forest_plot.html</loc>
+  </url>
+  <url>
     <loc>/reference/fpkm2tpm.html</loc>
   </url>
   <url>
@@ -130,7 +142,16 @@
     <loc>/reference/generate.sequencial.color.html</loc>
   </url>
   <url>
+    <loc>/reference/generateCombinations.html</loc>
+  </url>
+  <url>
     <loc>/reference/get.AUC.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get.TCGA.RNA.FPKM.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get.TCGA.miRNAExpression.html</loc>
   </url>
   <url>
     <loc>/reference/get.YoudenIndex.html</loc>
@@ -155,6 +176,9 @@
   </url>
   <url>
     <loc>/reference/getOneRoundCVRes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/getProgramName.html</loc>
   </url>
   <url>
     <loc>/reference/getPromoterRegions.html</loc>
@@ -191,6 +215,9 @@
   </url>
   <url>
     <loc>/reference/index.html</loc>
+  </url>
+  <url>
+    <loc>/reference/is.nan.data.frame.html</loc>
   </url>
   <url>
     <loc>/reference/lasso.cv.select.feature.html</loc>
@@ -298,6 +325,9 @@
     <loc>/reference/read_mirdeep2_result.html</loc>
   </url>
   <url>
+    <loc>/reference/reduce_join_list.html</loc>
+  </url>
+  <url>
     <loc>/reference/refSeq_Ensembl.html</loc>
   </url>
   <url>
@@ -356,6 +386,9 @@
   </url>
   <url>
     <loc>/reference/tcgabiolinks.get.junction.coverage.html</loc>
+  </url>
+  <url>
+    <loc>/reference/thisPath.html</loc>
   </url>
   <url>
     <loc>/reference/time_serials_Cindex.html</loc>

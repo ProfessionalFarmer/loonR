@@ -22,5 +22,4 @@ split data frame by group
 \examples{
 data(LIRI)
 res <- splitDataByGroup(data.frame = LIRI, group = LIRI$status)
-
 }

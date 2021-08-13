@@ -46,5 +46,4 @@ Recursive feature elimnation
 loonR::feature.selection.RFE(miR.df, group, functions="lrFuncs")
 
 Recursive feature elimnation (rfe) offers a rigorous way to determine the important variables before you even feed them into a ML algo.
-
 }

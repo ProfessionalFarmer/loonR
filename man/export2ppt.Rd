@@ -23,5 +23,4 @@ https://github.com/tomwenseleers/export
 }
 \examples{
 export2ppt(ggplot2.obj)
-
 }

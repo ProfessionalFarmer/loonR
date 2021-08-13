@@ -33,5 +33,4 @@ Perform GSEA across multiple groups (1 vs other)
 }
 \examples{
 This function will perform GSEA analysis. Default geneset: GOBP, C2, C5, KEGG, HALLMARK
-
 }

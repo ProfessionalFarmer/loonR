@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.477</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.502</span>
       </span>
     </div>
 
@@ -194,6 +194,12 @@
           <p><code><a href="SNF_Similairity_Hist.html">SNF_Similairity_Hist()</a></code> </p>
         </td>
         <td><p>Similairity count</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="build.best.random.forest.html">build.best.random.forest()</a></code> </p>
+        </td>
+        <td><p>Try different mtry and select the best fitted model</p></td>
       </tr><tr>
         
         <td>
@@ -319,6 +325,12 @@ https://github.com/tomwenseleers/export</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="extractSignaturePercent.html">extractSignaturePercent()</a></code> </p>
+        </td>
+        <td><p>Estimate signature percents</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="feature.selection.4givenMLAlgorithm.html">feature.selection.4givenMLAlgorithm()</a></code> </p>
         </td>
         <td><p>Variable Importance from a specific Machine Learning Algorithms</p></td>
@@ -343,6 +355,18 @@ https://github.com/tomwenseleers/export</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="findSomaticSignature.html">findSomaticSignature()</a></code> </p>
+        </td>
+        <td><p>Identify signature from sample data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="forest_plot.html">forest_plot()</a></code> </p>
+        </td>
+        <td><p>Forest plot</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="fpkm2tpm.html">fpkm2tpm()</a></code> </p>
         </td>
         <td><p>Convert FPKM data fram to TPM</p></td>
@@ -361,9 +385,27 @@ https://github.com/tomwenseleers/export</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="generateCombinations.html">generateCombinations()</a></code> </p>
+        </td>
+        <td><p>Gnenerate combinations with specified size</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="get.AUC.html">get.AUC()</a></code> </p>
         </td>
         <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get.TCGA.RNA.FPKM.html">get.TCGA.RNA.FPKM()</a></code> </p>
+        </td>
+        <td><p>Get TCGA RNA expression (RPKM) data</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="get.TCGA.miRNAExpression.html">get.TCGA.miRNAExpression()</a></code> </p>
+        </td>
+        <td><p>Get TCGA miRNA expression data</p></td>
       </tr><tr>
         
         <td>
@@ -412,6 +454,12 @@ https://github.com/tomwenseleers/export</p></td>
           <p><code><a href="getOneRoundCVRes.html">getOneRoundCVRes()</a></code> </p>
         </td>
         <td><p>Title</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="getProgramName.html">getProgramName()</a></code> </p>
+        </td>
+        <td><p>Get current running program name</p></td>
       </tr><tr>
         
         <td>
@@ -478,6 +526,12 @@ https://github.com/tomwenseleers/export</p></td>
           <p><code><a href="iflog2.html">iflog2()</a></code> </p>
         </td>
         <td><p>If perform log2 transformation</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="is.nan.data.frame.html">is.nan(<i>&lt;data.frame&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Generic is.nan function</p></td>
       </tr><tr>
         
         <td>
@@ -604,12 +658,6 @@ Row: sample, Column: gene expression</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="plot.forest.html">plot(<i>&lt;forest&gt;</i>)</a></code> </p>
-        </td>
-        <td><p>Forest plot</p></td>
-      </tr><tr>
-        
-        <td>
           <p><code><a href="plotBarWithErr.html">plotBarWithErr()</a></code> </p>
         </td>
         <td><p>Plot bar with mean and standard error</p></td>
@@ -683,6 +731,12 @@ Please note: scale will be performed autmaticly</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="reduce_join_list.html">reduce_join_list()</a></code> </p>
+        </td>
+        <td><p>Join a table list</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="refSeq_Ensembl.html">refSeq_Ensembl()</a></code> </p>
         </td>
         <td><p>Convert RefSeq ID to Ensembl ID by biomaRt</p></td>
@@ -695,13 +749,26 @@ Please note: scale will be performed autmaticly</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="riskCalibrationPlot.default.html">riskCalibrationPlot(<i>&lt;default&gt;</i>)</a></code> </p>
+          <p><code><a href="riskCalibrationPlot.default.html">riskCalibrationPlot.default()</a></code> </p>
         </td>
-        <td><p>Calibration plot</p></td>
+        <td><p>#' riskCalibrationPlot
+#'
+#' @param x
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+riskCalibrationPlot&lt;-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, ...) Generics function
+
+UseMethod('riskCalibrationPlot')
+
+Calibration plot</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="riskCalibrationPlot.lrm.html">riskCalibrationPlot(<i>&lt;lrm&gt;</i>)</a></code> </p>
+          <p><code><a href="riskCalibrationPlot.lrm.html">riskCalibrationPlot.lrm()</a></code> </p>
         </td>
         <td><p>Calibration plot by rms.calibrate</p></td>
       </tr><tr>
@@ -789,6 +856,12 @@ I modified the code from https://github.com/comprna/SUPPA/blob/master/scripts/Vo
           <p><code><a href="tcgabiolinks.get.junction.coverage.html">tcgabiolinks.get.junction.coverage()</a></code> </p>
         </td>
         <td><p>Download junction data by TCGAbiolinks. Pls note, V2 tag and Illumina HiSeq platform were selected</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="thisPath.html">thisPath()</a></code> </p>
+        </td>
+        <td><p>Get current directory path</p></td>
       </tr><tr>
         
         <td>

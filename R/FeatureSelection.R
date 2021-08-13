@@ -281,7 +281,6 @@ lasso.cv.select.feature <- function(data.matrix, label, folds = 5, seed = 666, n
 #' @examples loonR::feature.selection.RFE(miR.df, group, functions="lrFuncs")
 #'
 #' Recursive feature elimnation (rfe) offers a rigorous way to determine the important variables before you even feed them into a ML algo.
-#'
 feature.selection.RFE <- function(feature.df, group, functions = "lrFuncs",
         seed = 111, scale = TRUE, sizes = c(1:5),
         repeats = 5, number = 5, method = "cv", cores = 50){

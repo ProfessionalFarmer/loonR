@@ -44,5 +44,4 @@ suppa.get.final.table(sample.names = smp.names,
          psi  = "analysis/05suppa/diffSplice.events.psivec",
          event.tpm = "analysis/05suppa/diffSplice.events_avglogtpm.tab",
          dpsi.cutoff = dpsi.cutoff, pval.cutoff = pval.cutoff, tpm.cutoff = tpm.cutoff)
-
 }

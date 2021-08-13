@@ -9,7 +9,6 @@
 #' @export
 #'
 #' @examples export2ppt(ggplot2.obj)
-#'
 export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
   if(!require(export)){
     devtools::install_github("tomwenseleers/export")
@@ -123,7 +122,6 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
 #' @examples
 #' plotPie(ioe.events.df$Type, title = "# of events")
 #' or plotPie(ioe.events.df, col = 2, title = "# of events")
-#'
 plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", border="white" , label = FALSE, show.total.inTitle = FALSE){
 
   if( inherits(data, "data.frame")  ){
@@ -619,13 +617,14 @@ convertDfToNumeric <- function(df){
 #' @param byColumn Default FALSE, by column
 #' @param center Default TRUE. Mean = 0
 #' @param scale  Default TRUE. 0-1 scale
+#' @param maxUnit Default 4
 #'
 #' @return
 #' @export
 #'
 #' @examples
 #' Default by column
-scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRUE){
+scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRUE, maxUnit = 4){
   if(byRow & byColumn){
     stop("Etheir by row or by column, can't both")
   }
@@ -640,6 +639,8 @@ scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRU
   }else if(byColumn){
     df = scale(df, center = center, scale = scale)
   }
+  df[df > maxUnit ] = maxUnit
+  df[df < (-1*maxUnit) ] = -1 * maxUnit
   df = data.frame(df, check.names = FALSE)
   df
 }

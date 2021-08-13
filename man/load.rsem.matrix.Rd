@@ -24,5 +24,4 @@ Directory tree subdirs = TRUE: dir/sample/prefix.genes.results or
 Directory tree subdirs = TRUE: dir/sample/prefix.isoforms.results
 Directory tree subdirs = FALSE: dir/sample.prefix.genes.results or
 Directory tree subdirs = FALSE: dir/sample.prefix.isoforms.results
-
 }

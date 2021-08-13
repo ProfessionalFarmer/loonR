@@ -32,5 +32,4 @@ Perform hypergeometric test
 g1 = sample(c("G1","G2","G3"),10, replace = T)
 g2 = sample(c("1","2","3"),10, replace = T)
 loonR::hyperGeoTest(g1, g2, col.prefix = "E")
-
 }

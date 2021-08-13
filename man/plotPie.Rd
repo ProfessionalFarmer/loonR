@@ -41,5 +41,4 @@ Count each event type and draw pie chart
 \examples{
 plotPie(ioe.events.df$Type, title = "# of events")
 or plotPie(ioe.events.df, col = 2, title = "# of events")
-
 }

@@ -21,5 +21,4 @@ Read Salmon output
 }
 \examples{
 Directory tree: dir/sample_quant/quant.sf
-
 }

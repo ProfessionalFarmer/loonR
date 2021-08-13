@@ -46,5 +46,4 @@ annotation.color = list(Gender=Gender.col, Age=col_fun)
 
 heatmap.annotation(group = group, annotation.df = annotation.df,
                    annotation.color = annotation.color, sort.group = T)
-
 }

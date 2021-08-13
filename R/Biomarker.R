@@ -156,7 +156,7 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = 
 
 }
 
-#' Build co regression model
+#' Build cox regression model
 #'
 #' @param d.frame Data.frame --- Row: sample, Column: gene expression
 #' @param status
@@ -167,6 +167,11 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = 
 #' @export
 #'
 #' @examples
+#' # psm (parametric survival model) uses a survival model based on functions and their parameters.
+#' # cph (Cox Proportional Hazards Model and Extensions) is using the cox model (and the Anderson-Gill model) which is based on the hazard functions.
+#'
+#' data(LIRI)
+#' res = build.coxregression.model(LIRI[,3:5],LIRI$status, LIRI$time)
 build.coxregression.model <- function(d.frame, status, time, seed=666, scale = TRUE){
 
   library("survival")
@@ -196,7 +201,8 @@ build.coxregression.model <- function(d.frame, status, time, seed=666, scale = T
   set.seed(seed)
 
   cox.fit <- coxph( formula, data = df )
-  cox.fit
+  res = list(model=cox.fit, data = df)
+  res
 
 }
 
@@ -1359,12 +1365,13 @@ plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette
 #'
 #' @param group
 #' @param pred Must within 0-1
+#' @param palette
+#' @param bins
 #'
 #' @return Contain multiple plots
 #' @export
 #'
 #' @examples
-#'
 multiplePlotPredictedPro <- function(group, pred, palette="aaas", bins = 10){
   # https://darrendahly.github.io/post/homr/
   df <- data.frame(pred=pred, Class=group)
@@ -1674,7 +1681,6 @@ splitSampleByGroup <- function(sample=NA, group=NA, seed = 666, fraction = 0.5){
 #' @examples
 #' data(LIRI)
 #' res <- splitDataByGroup(data.frame = LIRI, group = LIRI$status)
-#'
 splitDataByGroup <- function(data.frame=NULL, group=NULL, seed = 666, fraction = 0.5){
   if(is.null(data.frame) | is.null(group)){
     stop("data.frame or group should not be NA")
@@ -2083,8 +2089,7 @@ time_serials_Cindex <- function(list.cox.model, df, palette="aaas", main=""){
 #' text.data = data.frame(Variate = or.res$Variate, OR = or.res$OR)
 #'
 #' plot.forest(text.data, estimate.data, graph.pos = 2, specify.summary = 1)
-#'
-plot.forest <- function(tabletext, estimate.data, appendHeader = NULL, specify.summary = NULL,
+forest_plot <- function(tabletext, estimate.data, appendHeader = NULL, specify.summary = NULL,
                         clipping = c(0.1, 4), graph.pos = "right", xlab = "", xlog = TRUE, xticks = c( 0.1, 0.5, seq(1,4,1) ) ){
 
   if(!require(forestplot)){
@@ -2202,6 +2207,112 @@ build.best.random.forest <- function(rf.df, group, ntree = 500, seed=111, scale 
 
 
 
+#' Build parametric survival model
+#'
+#' @param d.frame Data.frame --- Row: sample, Column: gene expression
+#' @param status
+#' @param time OS, DFS, RFS et al.....
+#' @param seed Default 666
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' # psm (parametric survival model) uses a survival model based on functions and their parameters.
+#' # cph (Cox Proportional Hazards Model and Extensions) is using the cox model (and the Anderson-Gill model) which is based on the hazard functions.
+#'
+#' data(LIRI)
+#' res = build.psm.regression.model(LIRI[,3:5],LIRI$status, LIRI$time)
+build.psm.regression.model <- function(d.frame, status, time, seed=666, scale = TRUE){
+
+  if(scale){
+    d.frame = scale(d.frame, center = TRUE, scale = TRUE)
+    d.frame = data.frame(d.frame, stringsAsFactors = FALSE, check.names = F)
+  }
+
+
+  covariates <- colnames(d.frame)
+
+  df <- data.frame(d.frame,
+                   Time=time,
+                   Status =status,
+                   check.names = F )
+
+  formula <- as.formula( paste0("Surv(time, status) ~ `",
+                                paste0(covariates, sep='', collapse = '` + `'),
+                                '`',
+                                sep='', collapse = ""
+  )
+  )
+
+
+  library(rms)
+  library(survival)
+  set.seed(seed)
+  # 建立参数性生存分析模型
+  sur_model <- psm(formula,
+                   data = df,
+                   dist = "weibull") # weibull分布
+
+  res = list(model = sur_model, data = df)
+  res
+}
+
+
+
+
+
+
+
+#' Nomogram plot by rms
+#'
+#' @param fit rms model
+#' @param data The data used to build the model
+#' @param fun.list an optional function to transform the linear predictors, and to plot on another axis. If more than one transformation is plotted, put them in a list, e.g. list(function(x) x/2, function(x) 2*x). Any function values equal to NA will be ignored.
+#' @param lp If fun.list is NA, lp will be TRUE. Set to FALSE to suppress creation of an axis for scoring X beta
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' # Logistic model
+#' data(LIRI)
+#' res = loonR::build.logistic.model(LIRI[,3:5], LIRI$status, rms = T, scale = F)
+#' f1 = loonR::logit2prob
+#' nomogram.plot(res$model, res$data, lp = T)
+#' nomogram.plot(res$model, res$data, f1, lp =F)
+#'
+#' # Survial model
+#' res = build.psm.regression.model(LIRI[,3:5],LIRI$status, LIRI$time, scale = F)
+#'
+#' surv <- Survival(res$model) # This would also work if f was from cph
+#' surv_100 <- function(x) surv(100, lp = x)
+#' surv_300 <- function(x) surv(300, lp = x)
+#'
+#' med <- Quantile(res$model)
+#' med_f <- function(x) med(lp=x)
+#'
+#' f.list=list(
+#'   `Median Survival Time`= med_f,
+#'   `Probability of 100-day Survival`=surv_100,
+#'   `Probability of 300-day Survival`=surv_300
+#' )
+#' nomogram.plot(res$model, res$data, fun.list = f.list, lp =F)
+nomogram.plot <- function(fit=NULL, data = NULL, fun.list = NA, lp =F){
+
+  if( is.null(fit) | is.null(data) ){
+    stop("Please set all the parameter correctly")
+  }
+  if(is.na(fun.list)){lp=T}
+
+  # 转化为datadist
+  ddist <- datadist(data)
+  options(datadist = "ddist")
+
+  nomo <- rms::nomogram(fit, fun = fun.list, lp = lp)
+  plot(nomo)
+
+}
 
 
 

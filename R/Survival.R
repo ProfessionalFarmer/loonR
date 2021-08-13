@@ -1,5 +1,3 @@
-
-
 #' Survival analysis
 #'
 #' @param Event Required 0,1

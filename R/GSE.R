@@ -525,7 +525,6 @@ ClusterProfiler.GSEA.ORA.customGS.Compare <- function(gene, customGS=NULL, minGS
 #'
 #' @examples
 #' This function will perform GSEA analysis. Default geneset: GOBP, C2, C5, KEGG, HALLMARK
-#'
 compare.GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=NULL, exp.gene.type="ENSEMBL", cutoff.log10 = 3, cal.auc = FALSE){
   library(HTSanalyzeR2)
   library(org.Hs.eg.db)

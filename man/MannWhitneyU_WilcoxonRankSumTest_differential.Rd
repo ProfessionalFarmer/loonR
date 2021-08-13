@@ -30,5 +30,4 @@ Calculate p value by MannWhitneyU (WilcoxonRankSum) Test manually
 }
 \examples{
 Nonparametric Tests of Group Differences
-
 }

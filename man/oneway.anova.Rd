@@ -34,5 +34,4 @@ Kruskal Wallis Test One Way Anova by Ranks or F test
 https://jbhender.github.io/Stats506/F18/GP/Group3.html
 Nonparametric Tests: KruskalWallisTest
 parametric Tests: aov  ANOVA F test
-
 }

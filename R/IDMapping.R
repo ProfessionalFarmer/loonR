@@ -67,14 +67,12 @@ ensembl_EntrezID <- function(ensembl.ids){
 #' @export
 #'
 #' @examples
-#'
 #' keytypes(org.Hs.eg.db)
 #'  [1] "ACCNUM"       "ALIAS"        "ENSEMBL"      "ENSEMBLPROT"  "ENSEMBLTRANS" "ENTREZID"
 #'  [7] "ENZYME"       "EVIDENCE"     "EVIDENCEALL"  "GENENAME"     "GO"           "GOALL"
 #'  [13] "IPI"          "MAP"          "OMIM"         "ONTOLOGY"     "ONTOLOGYALL"  "PATH"
 #'  [19] "PFAM"         "PMID"         "PROSITE"      "REFSEQ"       "SYMBOL"       "UCSCKG"
 #'  [25] "UNIGENE"      "UNIPROT"
-#'
 id_mapping <- function(IDS, key = "ENSEMBL", column = c("SYMBOL") ){
 
   library("org.Hs.eg.db")

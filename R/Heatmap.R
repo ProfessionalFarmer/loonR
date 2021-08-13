@@ -151,7 +151,6 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, 
 #'
 #' heatmap.annotation(group = group, annotation.df = annotation.df,
 #'                    annotation.color = annotation.color, sort.group = T)
-#'
 heatmap.annotation <- function(group = NULL, annotation.df = NULL, annotation.color = NULL, sort.group=TRUE, title = "",
                                group.color = "aaas", group.prefix ="", column_split = TRUE ){
 
@@ -243,7 +242,6 @@ heatmap.annotation <- function(group = NULL, annotation.df = NULL, annotation.co
 #' g1 = sample(c("G1","G2","G3"),10, replace = T)
 #' g2 = sample(c("1","2","3"),10, replace = T)
 #' loonR::hyperGeoTest(g1, g2, col.prefix = "E")
-#'
 hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "", lower.tail = FALSE, title = "", log10.lowest = 5, print.fig = TRUE){
 
   # https://www.omicsclass.com/article/324

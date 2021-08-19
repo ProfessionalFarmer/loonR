@@ -2,22 +2,9 @@
 % Please edit documentation in R/Biomarker.R
 \name{riskCalibrationPlot.default}
 \alias{riskCalibrationPlot.default}
-\title{#' riskCalibrationPlot
-#'
-#' @param x
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-riskCalibrationPlot<-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, ...) {Generics function
-
-UseMethod('riskCalibrationPlot')
-}
-Calibration plot}
+\title{Calibration plot}
 \usage{
-riskCalibrationPlot.default(
+\method{riskCalibrationPlot}{default}(
   group,
   pred,
   rms.method = FALSE,
@@ -51,19 +38,6 @@ riskCalibrationPlot.default(
 
 }
 \description{
-#' riskCalibrationPlot
-#'
-#' @param x
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-riskCalibrationPlot<-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, ...) {Generics function
-
-UseMethod('riskCalibrationPlot')
-}
 Calibration plot
 }
 \examples{
@@ -80,5 +54,5 @@ data(LIRI)
 d1 <- LIRI[,-c(1,5)]
 m <- glm(status ~ ., data = d1, family = binomial(logit))
 d1$pred <- predict(m, type = "response")
-riskCalibrationPlot(factor(LIRI$status), d1$pred)
+loonR::riskCalibrationPlot.default(factor(LIRI$status), d1$pred)
 }

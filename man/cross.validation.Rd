@@ -2,7 +2,7 @@
 % Please edit documentation in R/Biomarker.R
 \name{cross.validation}
 \alias{cross.validation}
-\title{Title}
+\title{k fold n times cross validation}
 \usage{
 cross.validation(
   df = "",
@@ -30,7 +30,7 @@ cross.validation(
 
 }
 \description{
-Title
+k fold n times cross validation
 }
 \examples{
 cv.res <- loonR::cross.validation(miR.df[, cf.candidates],

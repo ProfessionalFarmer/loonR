@@ -150,7 +150,7 @@ extractSignaturePercent <- function(chr=NULL, Start_Position = NULL, End_Positio
   colnames(sig.ref) = colnames(signatures.nature2013)
 
 
-  # todo calculate all the samples' signature
+#  # todo calculate all the samples' signature
 #
 #   sample_1 = whichSignatures(tumor.ref = sigs.input,
 #                              signatures.ref = sig.ref,

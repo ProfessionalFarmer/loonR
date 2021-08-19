@@ -50,7 +50,7 @@ getOneRoundCVRes <- function(df, label, k, seed = 1, times = 1, type = "response
 }
 
 
-#' Title
+#' k fold n times cross validation
 #'
 #' @param df data.frame. Row is sample, col is gene
 #' @param label True label
@@ -1311,6 +1311,19 @@ logit2prob <- function(logit){
   return(prob)
 }
 
+#' Convert Probability to Logit
+#'
+#' Defined simply as \code{log(x / (1 - x))}.
+#'
+#' @param x Numeric vector.
+#'
+#' @return Numeric vector.
+#'
+#' @export
+prob2logit <- function(x) {
+  out <- log(x / (1 - x))
+  return(out)
+}
 
 
 #' Waterfall plot
@@ -1733,19 +1746,19 @@ confidence_interval <- function(vector, interval) {
 
 
 
-#' #' riskCalibrationPlot
-#' #'
-#' #' @param x
-#' #' @param ...
-#' #'
-#' #' @return
-#' #' @export
-#' #'
-#' #' @examples
-#' riskCalibrationPlot<-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, ...) {
-#'   # Generics function
-#'   UseMethod('riskCalibrationPlot')
-#' }
+#' riskCalibrationPlot
+#'
+#' @param x
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+riskCalibrationPlot<-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, ...) {
+  # Generics function
+  UseMethod('riskCalibrationPlot')
+}
 
 
 #' Calibration plot
@@ -1778,10 +1791,11 @@ confidence_interval <- function(vector, interval) {
 #' d1 <- LIRI[,-c(1,5)]
 #' m <- glm(status ~ ., data = d1, family = binomial(logit))
 #' d1$pred <- predict(m, type = "response")
-#' riskCalibrationPlot(factor(LIRI$status), d1$pred)
+#' loonR::riskCalibrationPlot.default(factor(LIRI$status), d1$pred)
 riskCalibrationPlot.default <- function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE){
 
   # Thanks reference: https://darrendahly.github.io/post/homr/
+  # 公众号《绘制预测模型的校准曲线》用的riskRegression包（https://cran.r-project.org/web/packages/riskRegression/）也不错
 
   df <- data.frame(pred=pred, RawClass=group)
   if(!is.factor(group)){
@@ -1874,195 +1888,6 @@ riskCalibrationPlot.default <- function(group, pred, rms.method = FALSE, title =
   plot_row
 }
 
-
-
-
-#' Calibration plot by rms.calibrate
-#'
-#' @param rms.model A model built by rms package
-#' @param cox If is a cox model
-#'
-#' @return
-#' @export
-#'
-#' @examples
-#' #' data(LIRI)
-#' m=loonR::build.logistic.model(LIRI[,c(3,4)],LIRI$status, rms = T)
-#' m=m$model
-#' riskCalibrationPlot(m)
-riskCalibrationPlot.lrm <- function(rms.model, cox=FALSE){
-  plot( rms::calibrate(rms.model,
-                       method=c("boot"),
-                       B=100,
-                       smoother="lowess" ),
-        xlab = "Predicted probability"
-        )
-}
-
-
-
-
-#' Decision curve analysis
-#'
-#' @param data.frame.list row is sample. List should inlcude names
-#' @param label
-#' @param rms Default FALSE
-#' @param validation.df shold include all variable in data.frame.list
-#'
-#' @return
-#' @export
-#'
-#' @examples
-#' data(LIRI)
-#'
-#' d1 <- LIRI[,c(3)]
-#' d2 <- LIRI[,c(3,4)]
-#' d3 <- LIRI[,c(3,4,5)]
-#' data.frame.list = list(d1=d1,d2=d2,d3=d3)
-#' decisionCurveAnalysis(data.frame.list, label=LIRI$status)
-decisionCurveAnalysis <- function(data.frame.list=NULL, label = NULL, rms=FALSE, validation.df = NULL, palette="aaas"){
-
-  if(!require(ggDCA)){
-    install.packages('ggDCA')
-  }
-
-  if(is.null(data.frame.list) | is.null(label) ){
-     stop("data.frame.list or label should not be null")
-  }
-
-
-  new.df.list = sapply(data.frame.list, function(x){
-    d = data.frame(x, label=label)
-    #colnames(d) = c(colnames(x),"label")
-  })
-
-
-  n.df <- length(new.df.list)
-  if(rms){
-    if(n.df==1){
-      m1 <- rms::lrm(label~., new.df.list[[1]])
-    }else if(n.df==2){
-      m1 <- rms::lrm(label~., new.df.list[[1]])
-      m2 <- rms::lrm(label~., new.df.list[[2]])
-    }else if(n.df==3){
-      m1 <- rms::lrm(label~., new.df.list[[1]])
-      m2 <- rms::lrm(label~., new.df.list[[2]])
-      m3 <- rms::lrm(label~., new.df.list[[3]])
-    }else if(n.df==4){
-      m1 <- rms::lrm(label~., new.df.list[[1]])
-      m2 <- rms::lrm(label~., new.df.list[[2]])
-      m3 <- rms::lrm(label~., new.df.list[[3]])
-      m4 <- rms::lrm(label~., new.df.list[[4]])
-    }
-  }else{
-    if(n.df==1){
-      m1 <- glm(label ~ ., data = new.df.list[[1]], family = binomial(logit))
-    }else if(n.df==2){
-      m1 <- glm(label ~ ., data = new.df.list[[1]], family = binomial(logit))
-      m2 <- glm(label ~ ., data = new.df.list[[2]], family = binomial(logit))
-    }else if(n.df==3){
-      m1 <- glm(label ~ ., data = new.df.list[[1]], family = binomial(logit))
-      m2 <- glm(label ~ ., data = new.df.list[[2]], family = binomial(logit))
-      m3 <- glm(label ~ ., data = new.df.list[[3]], family = binomial(logit))
-    }else if(n.df==4){
-      m1 <- glm(label ~ ., data = new.df.list[[1]], family = binomial(logit))
-      m2 <- glm(label ~ ., data = new.df.list[[2]], family = binomial(logit))
-      m3 <- glm(label ~ ., data = new.df.list[[3]], family = binomial(logit))
-      m4 <- glm(label ~ ., data = new.df.list[[4]], family = binomial(logit))
-    }
-  }
-
-  if(n.df==1){
-    dca_res <- dca(m1,m2, model.names=names(new.df.list), new.data=validation.df)
-  }else if(n.df==2){
-    dca_res <- dca(m1,m2, model.names=names(new.df.list), new.data=validation.df)
-  }else if(n.df==3){
-    dca_res <- dca(m1,m2,m3, model.names=names(new.df.list), new.data=validation.df)
-  }else if(n.df==4){
-    dca_res <- dca(m1,m2,m3,m4, model.names=names(new.df.list), new.data=validation.df)
-  }
-
-  ggplot(dca_res,
-         linetype=F, #线型
-         lwd = 1.2,
-         color = c(loonR::get.ggsci.color(palette,n=length(new.df.list)),'black', 'gray')
-         )
-
-}
-
-
-
-
-#' Resampling Validation of a Fitted Model's Indexes of Fit
-#'
-#' @param rms.model
-#' @param B Bootstrap times
-#'
-#' @return
-#' @export
-#'
-#' @examples
-#' data(LIRI)
-#' m=loonR::build.logistic.model(LIRI[,c(3,4)],LIRI$status, rms = T)
-#' m=m$model
-#' rms::validate(m)
-rms_validate <- function(rms.model, B = 100){
-
-   # https://blog.csdn.net/fjsd155/article/details/84669331
-   v = rms::validate(rms.model, dxy=TRUE, B = B, method="boot", fastbw = FALSE)
-
-   # Get the Dxy
-   Dxy = v[rownames(v)=="Dxy", colnames(v)=="index.corrected"]
-   orig_Dxy = v[rownames(v)=="Dxy", colnames(v)=="index.orig"]
-
-   # The c-statistic according to Dxy=2(c-0.5)
-   bias_corrected_c_index  <- abs(Dxy)/2+0.5
-   orig_c_index <- abs(orig_Dxy)/2+0.5
-
-   list(
-     validate.res = v,
-     original.Dxy=orig_Dxy,
-     corrected.Dxy=Dxy,
-     original.C_index=orig_c_index,
-     corrected.C_index=bias_corrected_c_index
-        )
-
-
-}
-
-
-
-
-#' Draw C index across times
-#'
-#' @param list.cox.model
-#' @param df include time and status column names
-#' @param palette aaas
-#' @param main Default ""
-#'
-#' @return
-#' @export
-#'
-#' @examples
-time_serials_Cindex <- function(list.cox.model, df, palette="aaas", main=""){
-
-  #pec包的cindex()可计算多个模型在多个时间点的C指数
-  pk<- cindex(list.cox.model,
-              formula=Surv(time,status==0)~1,
-              data=df#, eval.times=seq(3,83,1)
-              )
-  #绘制时间C-index
-  plot(pk,
-       col=loonR::get.palette.color(palette, n=length(list.cox.model)),#曲线颜色
-       xlab="Month",#xy名字
-       ylab="C-index",
-       #ylim = c(0.4,1),#xy轴范围
-       #xlim = c(3,83),
-       legend.x=1,     #图例位置
-       legend.y=0.6,
-       legend.cex=1,    #图例字号
-  );title(main = main)
-}
 
 
 

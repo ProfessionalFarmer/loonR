@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.515</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.535</span>
       </span>
     </div>
 
@@ -109,7 +109,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Calibration plot by rms.calibrate</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/Biomarker.R'><code>R/Biomarker.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/DCA.R'><code>R/DCA.R</code></a></small>
     <div class="hidden name"><code>riskCalibrationPlot.lrm.Rd</code></div>
     </div>
 
@@ -117,7 +117,8 @@
     <p>Calibration plot by rms.calibrate</p>
     </div>
 
-    <pre class="usage"><span class='fu'>riskCalibrationPlot.lrm</span><span class='op'>(</span><span class='va'>rms.model</span>, cox <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='co'># S3 method for lrm</span>
+<span class='fu'><a href='riskCalibrationPlot.html'>riskCalibrationPlot</a></span><span class='op'>(</span><span class='va'>rms.model</span>, cox <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -145,8 +146,8 @@
 <span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in Design(data, formula = formula, specials = "strat")</span> dataset ddist not found for options(datadist=)</span>
 <span class='r-in'><span class='va'>m</span><span class='op'>=</span><span class='va'>m</span><span class='op'>$</span><span class='va'>model</span></span>
 <span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in eval(expr, envir, enclos)</span> object 'm' not found</span>
-<span class='r-in'><span class='fu'>riskCalibrationPlot</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in riskCalibrationPlot(m)</span> could not find function "riskCalibrationPlot"</span>
+<span class='r-in'><span class='fu'>riskCalibrationPlot.lrm</span><span class='op'>(</span><span class='va'>m</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in riskCalibrationPlot.lrm(m)</span> could not find function "riskCalibrationPlot.lrm"</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

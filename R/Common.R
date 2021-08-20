@@ -1147,3 +1147,46 @@ generateCombinations <- function(panel=NULL, size = 0, repeats=FALSE, vector=FAL
 }
 
 
+
+
+#' Generate label based on group
+#'
+#' @param label Number of elements in label vector should be the same with total group number
+#' @param ... one or more group vector
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' n.group = c("N1", "N2", "N3", "N4")
+#' t.group = c("T1", "T2")
+#' m.group = c("M1", "M2", "M1")
+#'
+#' labels <- genereateLabelsByGroup(c("N","T", "M"), n.group, t.group, m.group)
+#' table(labels)
+#'
+genereateLabelsByGroup <- function(label=NULL,...){
+
+  l = list(...)
+
+  if(is.null(label)){
+    stop("Please set labels which will be used as label")
+  }
+
+  if(length(l)!=length(label)){
+    stop("Please input vectors in order to generate labels. Number of vectors should be the same as element in labels")
+  }
+
+  label.list = lapply(1:length(l), function(x) {
+    g.labels <- rep( label[x], length(l[[x]])  )
+    names(g.labels) = l[[x]]
+    g.labels
+  }
+  )
+
+
+  return( unlist(label.list) )
+
+}
+
+

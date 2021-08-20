@@ -18,7 +18,15 @@ MannWhitneyU_WilcoxonRankSumTest_differential(
 \arguments{
 \item{df}{Row is gene, column is sample}
 
+\item{cal.AUC}{If to calculate AUC}
+
+\item{exclude.zore}{If to exclude zore}
+
+\item{exclude.na}{If to exclude na}
+
 \item{alternative}{c("two.sided", "less", "greater")}
+
+\item{cores}{number of cores to use}
 
 \item{paired}{Default FALSE}
 }

@@ -82,7 +82,13 @@
     <loc>/reference/cross.validation.html</loc>
   </url>
   <url>
+    <loc>/reference/decisionCurve.diff.pvalue.html</loc>
+  </url>
+  <url>
     <loc>/reference/decisionCurveAnalysis.html</loc>
+  </url>
+  <url>
+    <loc>/reference/decisionCurveAnalysisSimple.html</loc>
   </url>
   <url>
     <loc>/reference/determineClusterNumber.html</loc>
@@ -286,10 +292,19 @@
     <loc>/reference/normalize_miRNACount_toCPM.html</loc>
   </url>
   <url>
+    <loc>/reference/ntbft.boot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/ntbft.html</loc>
+  </url>
+  <url>
     <loc>/reference/oneway.anova.html</loc>
   </url>
   <url>
     <loc>/reference/plot.forest.html</loc>
+  </url>
+  <url>
+    <loc>/reference/plot.ntbft.html</loc>
   </url>
   <url>
     <loc>/reference/plotBarWithErr.html</loc>
@@ -326,6 +341,9 @@
   </url>
   <url>
     <loc>/reference/plotggVenn.html</loc>
+  </url>
+  <url>
+    <loc>/reference/prob2logit.html</loc>
   </url>
   <url>
     <loc>/reference/read_mirdeep2_result.html</loc>

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Calibration plot — riskCalibrationPlot • loonR</title>
+<title>riskCalibrationPlot — riskCalibrationPlot • loonR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Calibration plot — riskCalibrationPlot" />
-<meta property="og:description" content="Calibration plot" />
+<meta property="og:title" content="riskCalibrationPlot — riskCalibrationPlot" />
+<meta property="og:description" content="riskCalibrationPlot" />
 
 
 
@@ -57,8 +57,6 @@
 <![endif]-->
 
 
-
-<!-- dependencies from examples -->
 
 
   
@@ -83,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.428</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.535</span>
       </span>
     </div>
 
@@ -108,62 +106,35 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Calibration plot</h1>
+    <h1>riskCalibrationPlot</h1>
     <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/Biomarker.R'><code>R/Biomarker.R</code></a></small>
     <div class="hidden name"><code>riskCalibrationPlot.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Calibration plot</p>
+    <p>riskCalibrationPlot</p>
     </div>
 
     <pre class="usage"><span class='fu'>riskCalibrationPlot</span><span class='op'>(</span>
   <span class='va'>group</span>,
   <span class='va'>pred</span>,
-  smooth <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  rms.method <span class='op'>=</span> <span class='cn'>FALSE</span>,
   title <span class='op'>=</span> <span class='st'>"Calibration plot"</span>,
   show.oberved.ci <span class='op'>=</span> <span class='cn'>FALSE</span>,
   bins <span class='op'>=</span> <span class='fl'>10</span>,
   color <span class='op'>=</span> <span class='st'>"npg"</span>,
   show.group <span class='op'>=</span> <span class='cn'>FALSE</span>,
   ticks.unit <span class='op'>=</span> <span class='fl'>0.25</span>,
-  full.range <span class='op'>=</span> <span class='cn'>TRUE</span>
+  full.range <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>...</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>group</th>
-      <td><p>Must be a TRUE/FALSE factor</p></td>
-    </tr>
-    <tr>
-      <th>pred</th>
-      <td><p>predicted probability</p></td>
-    </tr>
-    <tr>
-      <th>smooth</th>
-      <td><p>Default TRUE</p></td>
-    </tr>
-    <tr>
-      <th>bins</th>
-      <td><p>Number of bins. Default 20</p></td>
-    </tr>
-    <tr>
-      <th>color</th>
-      <td><p>Default npg</p></td>
-    </tr>
-    <tr>
-      <th>show.group</th>
-      <td><p>whether to plot histogram by group</p></td>
-    </tr>
-    <tr>
-      <th>ticks.unit</th>
-      <td><p>0.25 seq(0, 1, by = 0.25)</p></td>
-    </tr>
-    <tr>
-      <th>full.range</th>
-      <td><p>Default TRUE. loess smoothing between 0-1 or first bin to last bin</p></td>
+      <th>...</th>
+      <td></td>
     </tr>
     </table>
 
@@ -173,11 +144,6 @@
 
 
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='fu'>riskCalibrationPlot</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>BreastCancer</span><span class='op'>$</span><span class='va'>Class</span><span class='op'>==</span><span class='st'>"malignant"</span>, levels<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>FALSE</span>, <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>,</span>
-<span class='r-in'>                   <span class='va'>BreastCancer</span><span class='op'>$</span><span class='va'>pred</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in data.frame(pred = pred, RawClass = group)</span> arguments imply differing number of rows: 0, 699</span>
-</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

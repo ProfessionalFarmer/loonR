@@ -310,6 +310,65 @@ decisionCurveAnalysisSimple <- function(label, pred, xstart=0.01, xstop=0.99, st
 }
 
 
+
+#' Comparing two decision curves and reporting P value
+#'
+#' @param outcome
+#' @param pred1
+#' @param pred2
+#' @param xstart the starting point of the threshold probability, the default value is 0.01.
+#' @param xstop the end point of the threshold probability, the default value is 0.99
+#' @param step a numerical value specifying the incremental step of the threshold probability, the default value is 0.01
+#' @param type controls the type of net benefit to be computed. The allowed values correspond to the treated (“treated”), untreated (“untreated”) and overall (“overall”) patients, or to the ADAPT index (“adapt”). The default is the “treated”
+#' @param model.name Default Model
+#' @param boots 100 Bootstrape to avoid overfitting
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data(LIRI)
+#'
+#' pred1 <- as.vector( unlist( LIRI[,c(3)] ) )
+#' pred2 <- as.vector( unlist( LIRI[,c(2)] ) )
+#' decisionCurve.diff.pvalue(LIRI$status, pred1, pred2)
+#'
+decisionCurve.diff.pvalue <- function(outcome, pred1, pred2, boots = 100, xstart=0.01, xstop=0.99, step=0.01, type = "treated", model.name = "Model"){
+
+  nbdiff <- function(outcome.infunction, ii, pred1, pred2){
+
+    # ii to allow boot() function to select a sample
+    #cat(ii)
+    nb1 <- ntbft(outcome.infunction[ii], pred1[ii],
+                 xstart=xstart, xstop=xstop,
+                 step=step, type=type, model.name = model.name)
+
+    nb2 <- ntbft(outcome.infunction[ii], pred2[ii],
+                 xstart=xstart, xstop=xstop,
+                 step=step, type=type, model.name = model.name)
+
+    nb.diff <- as.vector( unlist(nb2[model.name] - nb1[model.name] ) )
+
+    cat(".")
+    return(nb.diff)
+  }
+
+  set.seed(127)
+  library(boot)
+  boot.diff <- boot(outcome, statistic = nbdiff,
+                  R = boots, pred1 = pred1, pred2 = pred2)
+  pvalue<-NULL
+  for(i in 1:length(boot.diff$t0))
+    pvalue<-c(pvalue,mean(abs(boot.diff$t[,i]-
+                                boot.diff$t0[i])>abs(boot.diff$t0[i])))
+  cat("\n","number of significant differences over threshold probabilities",
+      xstart,"-",xstop,"=",sum(pvalue<=0.05),"\n")
+  cat("\n","number of non-significant differences over threshold probabilities", xstart,"-",xstop,"=",sum(pvalue>0.05),"\n")
+
+}
+
+
+
 #' Calibration plot by rms.calibrate
 #'
 #' @param rms.model A model built by rms package

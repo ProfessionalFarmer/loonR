@@ -72,11 +72,11 @@ limma_differential <- function(df, group, rawcount = FALSE, voom = FALSE, pre.fi
 #'
 #' @param df Row is gene, column is sample
 #' @param group
-#' @param cal.AUC
-#' @param exclude.zore
+#' @param cal.AUC If to calculate AUC
+#' @param exclude.zore If to exclude zore
 #' @param alternative c("two.sided", "less", "greater")
-#' @param exclude.na
-#' @param cores
+#' @param exclude.na If to exclude na
+#' @param cores number of cores to use
 #' @param paired Default FALSE
 #'
 #' @return

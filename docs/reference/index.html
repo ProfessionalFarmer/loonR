@@ -80,7 +80,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.515</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.535</span>
       </span>
     </div>
 
@@ -259,13 +259,25 @@
         <td>
           <p><code><a href="cross.validation.html">cross.validation()</a></code> </p>
         </td>
-        <td><p>Title</p></td>
+        <td><p>k fold n times cross validation</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="decisionCurve.diff.pvalue.html">decisionCurve.diff.pvalue()</a></code> </p>
+        </td>
+        <td><p>Comparing two decision curves and reporting P value</p></td>
       </tr><tr>
         
         <td>
           <p><code><a href="decisionCurveAnalysis.html">decisionCurveAnalysis()</a></code> </p>
         </td>
         <td><p>Decision curve analysis</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="decisionCurveAnalysisSimple.html">decisionCurveAnalysisSimple()</a></code> </p>
+        </td>
+        <td><p>Decision curve analysis using risk probability and label</p></td>
       </tr><tr>
         
         <td>
@@ -664,9 +676,27 @@ Row: sample, Column: gene expression</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="ntbft.html">ntbft()</a></code> </p>
+        </td>
+        <td><p>Net benifit</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="ntbft.boot.html">ntbft.boot()</a></code> </p>
+        </td>
+        <td><p>Net benefit Bootstrap method to correct overfitting</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="oneway.anova.html">oneway.anova()</a></code> </p>
         </td>
         <td><p>Kruskal Wallis Test One Way Anova by Ranks or F test</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="plot.ntbft.html">plot(<i>&lt;ntbft&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Plotting the Net benefit function</p></td>
       </tr><tr>
         
         <td>
@@ -737,6 +767,12 @@ Please note: scale will be performed autmaticly</p></td>
       </tr><tr>
         
         <td>
+          <p><code><a href="prob2logit.html">prob2logit()</a></code> </p>
+        </td>
+        <td><p>Convert Probability to Logit</p></td>
+      </tr><tr>
+        
+        <td>
           <p><code><a href="read_mirdeep2_result.html">read_mirdeep2_result()</a></code> </p>
         </td>
         <td><p>Load miRDeep2 expression matrix</p></td>
@@ -761,26 +797,19 @@ Please note: scale will be performed autmaticly</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="riskCalibrationPlot.default.html">riskCalibrationPlot.default()</a></code> </p>
+          <p><code><a href="riskCalibrationPlot.html">riskCalibrationPlot()</a></code> </p>
         </td>
-        <td><p>#' riskCalibrationPlot
-#'
-#' @param x
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-riskCalibrationPlot&lt;-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, ...) Generics function
-
-UseMethod('riskCalibrationPlot')
-
-Calibration plot</p></td>
+        <td><p>riskCalibrationPlot</p></td>
       </tr><tr>
         
         <td>
-          <p><code><a href="riskCalibrationPlot.lrm.html">riskCalibrationPlot.lrm()</a></code> </p>
+          <p><code><a href="riskCalibrationPlot.default.html">riskCalibrationPlot(<i>&lt;default&gt;</i>)</a></code> </p>
+        </td>
+        <td><p>Calibration plot</p></td>
+      </tr><tr>
+        
+        <td>
+          <p><code><a href="riskCalibrationPlot.lrm.html">riskCalibrationPlot(<i>&lt;lrm&gt;</i>)</a></code> </p>
         </td>
         <td><p>Calibration plot by rms.calibrate</p></td>
       </tr><tr>

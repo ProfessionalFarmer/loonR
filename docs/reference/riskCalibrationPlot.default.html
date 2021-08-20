@@ -6,20 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>#' riskCalibrationPlot
-#'
-#' @param x
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-riskCalibrationPlot&lt;-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, ...) Generics function
-
-UseMethod('riskCalibrationPlot')
-
-Calibration plot — riskCalibrationPlot.default • loonR</title>
+<title>Calibration plot — riskCalibrationPlot.default • loonR</title>
 
 
 <!-- jquery -->
@@ -52,32 +39,8 @@ Calibration plot — riskCalibrationPlot.default • loonR</title>
 
 
 
-<meta property="og:title" content="#' riskCalibrationPlot
-#'
-#' @param x
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-riskCalibrationPlot&lt;-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, ...) Generics function
-
-UseMethod('riskCalibrationPlot')
-
-Calibration plot — riskCalibrationPlot.default" />
-<meta property="og:description" content="#' riskCalibrationPlot
-#'
-#' @param x
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-riskCalibrationPlot&amp;lt;-function(group, pred, rms.method = FALSE, title = &quot;Calibration plot&quot;, show.oberved.ci = FALSE,  bins = 10, color=&quot;npg&quot;, show.group = FALSE, ticks.unit=0.25, full.range=TRUE, ...) Generics functionUseMethod('riskCalibrationPlot')
-
-Calibration plot" />
+<meta property="og:title" content="Calibration plot — riskCalibrationPlot.default" />
+<meta property="og:description" content="Calibration plot" />
 
 
 
@@ -120,7 +83,7 @@ Calibration plot" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.515</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.535</span>
       </span>
     </div>
 
@@ -145,40 +108,17 @@ Calibration plot" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>#' riskCalibrationPlot
-#'
-#' @param x
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-riskCalibrationPlot&lt;-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, ...) Generics function
-
-UseMethod('riskCalibrationPlot')
-
-Calibration plot</h1>
+    <h1>Calibration plot</h1>
     <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/Biomarker.R'><code>R/Biomarker.R</code></a></small>
     <div class="hidden name"><code>riskCalibrationPlot.default.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>#' riskCalibrationPlot
-#'
-#' @param x
-#' @param ...
-#'
-#' @return
-#' @export
-#'
-#' @examples
-riskCalibrationPlot&lt;-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, ...) Generics functionUseMethod('riskCalibrationPlot')
-
-Calibration plot</p>
+    <p>Calibration plot</p>
     </div>
 
-    <pre class="usage"><span class='fu'>riskCalibrationPlot.default</span><span class='op'>(</span>
+    <pre class="usage"><span class='co'># S3 method for default</span>
+<span class='fu'><a href='riskCalibrationPlot.html'>riskCalibrationPlot</a></span><span class='op'>(</span>
   <span class='va'>group</span>,
   <span class='va'>pred</span>,
   rms.method <span class='op'>=</span> <span class='cn'>FALSE</span>,
@@ -240,17 +180,32 @@ Calibration plot</p>
 <span class='r-in'><span class='va'>BreastCancer</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/na.fail.html'>na.omit</a></span><span class='op'>(</span><span class='va'>BreastCancer</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/glm.html'>glm</a></span><span class='op'>(</span><span class='va'>Class</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>BreastCancer</span>, family <span class='op'>=</span> <span class='va'>binomial</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>BreastCancer</span><span class='op'>$</span><span class='va'>pred</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span><span class='op'>(</span><span class='va'>m</span>, type <span class='op'>=</span> <span class='st'>"response"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'>riskCalibrationPlot</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>BreastCancer</span><span class='op'>$</span><span class='va'>Class</span><span class='op'>==</span><span class='st'>"malignant"</span>, levels<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>FALSE</span>, <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>,</span>
+<span class='r-in'><span class='fu'><a href='riskCalibrationPlot.html'>riskCalibrationPlot</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>BreastCancer</span><span class='op'>$</span><span class='va'>Class</span><span class='op'>==</span><span class='st'>"malignant"</span>, levels<span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='cn'>FALSE</span>, <span class='cn'>TRUE</span><span class='op'>)</span><span class='op'>)</span>,</span>
 <span class='r-in'>                   <span class='va'>BreastCancer</span><span class='op'>$</span><span class='va'>pred</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in riskCalibrationPlot(factor(BreastCancer$Class == "malignant",     levels = c(FALSE, TRUE)), BreastCancer$pred)</span> could not find function "riskCalibrationPlot"</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: gridExtra</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Attaching package: ‘gridExtra’</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following object is masked from ‘package:Biobase’:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     combine</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following object is masked from ‘package:BiocGenerics’:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     combine</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following object is masked from ‘package:dplyr’:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     combine</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error:</span> Problem with `mutate()` input `n`.</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span style='color: #BB0000;'>x</span><span> This function should not be called directly</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB;'>ℹ</span><span> Input `n` is `n()`.</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span style='color: #0000BB;'>ℹ</span><span> The error occurred in group 1: bin = 1.</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>)</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='va'>d1</span> <span class='op'>&lt;-</span> <span class='va'>LIRI</span><span class='op'>[</span>,<span class='op'>-</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>5</span><span class='op'>)</span><span class='op'>]</span></span>
 <span class='r-in'><span class='va'>m</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/glm.html'>glm</a></span><span class='op'>(</span><span class='va'>status</span> <span class='op'>~</span> <span class='va'>.</span>, data <span class='op'>=</span> <span class='va'>d1</span>, family <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/stats/family.html'>binomial</a></span><span class='op'>(</span><span class='va'>logit</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>d1</span><span class='op'>$</span><span class='va'>pred</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/stats/predict.html'>predict</a></span><span class='op'>(</span><span class='va'>m</span>, type <span class='op'>=</span> <span class='st'>"response"</span><span class='op'>)</span></span>
-<span class='r-in'><span class='fu'>riskCalibrationPlot</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>$</span><span class='va'>status</span><span class='op'>)</span>, <span class='va'>d1</span><span class='op'>$</span><span class='va'>pred</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in riskCalibrationPlot(factor(LIRI$status), d1$pred)</span> could not find function "riskCalibrationPlot"</span>
+<span class='r-in'><span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>riskCalibrationPlot.default</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/factor.html'>factor</a></span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>$</span><span class='va'>status</span><span class='op'>)</span>, <span class='va'>d1</span><span class='op'>$</span><span class='va'>pred</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error:</span> 'riskCalibrationPlot.default' is not an exported object from 'namespace:loonR'</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

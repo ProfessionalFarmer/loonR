@@ -369,6 +369,155 @@ decisionCurve.diff.pvalue <- function(outcome, pred1, pred2, boots = 100, xstart
 
 
 
+
+
+#' riskCalibrationPlot
+#'
+#' @param x
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+riskCalibrationPlot<-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, smooth.method = "loess", ...) {
+  # Generics function
+  UseMethod('riskCalibrationPlot')
+}
+
+
+#' Calibration plot
+#'
+#' @param group Must be a TRUE/FALSE factor
+#' @param pred predicted probability
+#' @param rms.method If TRUE, use rms::val.prob function instead
+#' @param title
+#' @param show.oberved.ci
+#' @param bins Number of bins. Default 20
+#' @param color Default npg
+#' @param show.group whether to plot histogram by group
+#' @param ticks.unit 0.25 seq(0, 1, by = 0.25)
+#' @param full.range Default TRUE. loess smoothing between 0-1 or first bin to last bin
+#' @param smooth.method Smoothing method (function) to use, accepts either NULL or a character vector, e.g. "lm", "glm", "gam", "loess" or a function, e.g. MASS::rlm or mgcv::gam, stats::lm, or stats::loess. "auto" is also accepted for backwards compatibility.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data(BreastCancer)
+#' BreastCancer = BreastCancer[,-c(1)]
+#' BreastCancer = na.omit(BreastCancer)
+#' m <- glm(Class ~ ., data = BreastCancer, family = binomial)
+#' BreastCancer$pred <- predict(m, type = "response")
+#' riskCalibrationPlot(factor(BreastCancer$Class=="malignant", levels=c(FALSE, TRUE)),
+#'                    BreastCancer$pred)
+#'
+#' data(LIRI)
+#'
+#' d1 <- LIRI[,-c(1,5)]
+#' m <- glm(status ~ ., data = d1, family = binomial(logit))
+#' d1$pred <- predict(m, type = "response")
+#' loonR::riskCalibrationPlot(factor(LIRI$status), d1$pred)
+riskCalibrationPlot.default <- function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, smooth.method = "loess"){
+
+  # Thanks reference: https://darrendahly.github.io/post/homr/
+  # 公众号《绘制预测模型的校准曲线》用的riskRegression包（https://cran.r-project.org/web/packages/riskRegression/）也不错
+
+  df <- data.frame(pred=pred, RawClass=group)
+  if(!is.factor(group)){
+    warning("group Must be a TRUE/FALSE factor")
+    group = factor(group==unique(group)[2], levels = c(FALSE,TRUE))
+  }
+  df$Class=group
+
+
+  if(rms.method){
+    print(rms::val.prob(df$pred, as.numeric(df$Class)))
+    return()
+  }
+
+
+
+  require(gridExtra)
+  require(dplyr)
+  require(ggpubr)
+
+
+
+  df.cal.grouped <- arrange(df, pred) %>%
+    mutate(bin = ntile(pred, bins)) %>%
+    group_by(bin) %>%
+    mutate(n = n(),
+           bin_pred = mean(pred),
+           bin_prob = mean(as.numeric(Class)-1),
+           se = sqrt((bin_prob * (1 - bin_prob)) / n),
+           ul = bin_prob + 1.96 * se,
+           ll = bin_prob - 1.96 * se
+    ) # %>% select(n, bin, bin_pred, bin_prob, se, ul ,ll) %>% unique() %>% arrange(bin)
+  #ungroup()
+
+  # 不在用，这里显示的CI是根据标准差计算得到
+  # if(show.oberved.ci){
+  #   p1 = ggplot(df.cal.grouped, aes(x = bin_pred, y = bin_prob, ymin = ll, ymax = ul)) +
+  #     geom_pointrange(size = 0.5, color = "black") +
+  #     scale_y_continuous(limits = c(0, 1), breaks = seq(0, 1, by = ticks.unit)) +
+  #     scale_x_continuous(limits = c(0, 1), breaks = seq(0, 1, by = ticks.unit)) +
+  #     geom_abline() + # 45 degree line indicating perfect calibration
+  #     theme_pubr() + theme(panel.grid.minor = element_blank(), panel.grid.major = element_blank())
+  # }else{
+  #  p1 = ggscatter(df.cal.grouped, x="bin_pred", y ="bin_prob" ) +
+  #    geom_abline(intercept = 0, slope = 1)
+  # }
+
+
+  p1 = ggscatter(df.cal.grouped, x="bin_pred", y ="bin_prob" ) +
+    geom_abline(intercept = 0, slope = 1)
+  # loess fit through estimates，并且显示标准差
+  if(full.range){
+    # This plot the full range 0-1
+    p1 = p1 + geom_smooth( aes(x = pred, y = as.numeric(Class)-1 ), level = 0.95,
+                           color = "red", se = show.oberved.ci, method = smooth.method )
+  }else{
+    #this only plot between bins: the first bin_pred to the last bin_pred
+    p1 = p1 + geom_smooth(aes(x = bin_pred, y = bin_prob ), level = 0.95,
+                          color = "red", se = show.oberved.ci, method = smooth.method )
+  }
+
+
+  p1 = ggpar(p1, xlim = c(0,1), ylim = c(0,1), xticks.by =  ticks.unit,
+             xlab = "", ylab="Observed proportion", title = title)
+
+
+  # The distribution plot
+  if(show.group){
+    p2 <- gghistogram(df, x="pred", fill = "RawClass", bins = bins, rug = TRUE,
+                      palette = color, position = "stack") +
+      xlab("Predicted probability") + ylab("Count")
+  }else{
+    p2 <- gghistogram(df, x="pred", fill = "black", bins = bins, rug = TRUE,
+                      palette = "black", color="black") +
+      xlab("Predicted probability") +  ylab("Count")
+  }
+  p2 <- ggpar(p2, legend = "none", xlim = c(0,1), xticks.by = ticks.unit)
+
+
+  plot_row <- cowplot::plot_grid(p1, p2, nrow = 2, ncol = 1, rel_heights = c(2,1))
+
+  print(ResourceSelection::hoslem.test(as.numeric(df$Class)-1, df$pred, g = 10))
+
+  #### rms plot
+  # this function can also plot calbiration curve
+  library(rms)
+  val.prob(df$pred, as.numeric(df$Class) )
+  ####
+
+  plot_row
+}
+
+
+
+
+
 #' Calibration plot by rms.calibrate
 #'
 #' @param rms.model A model built by rms package
@@ -390,6 +539,10 @@ riskCalibrationPlot.lrm <- function(rms.model, cox=FALSE){
         xlab = "Predicted probability"
   )
 }
+
+
+
+
 
 
 #' Resampling Validation of a Fitted Model's Indexes of Fit

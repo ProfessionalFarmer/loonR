@@ -361,15 +361,20 @@ plotSilhouette <- function(df, group, color = "aaas", class = "Class", label=FAL
 #' @param show.sample.name Default FALSE
 #' @param label Default NULL
 #' @param cor.coef TRUE/FALSE to show coefficient
+#' @param remove.legend Default FALSE
+#' @param cor.method	method for computing correlation coefficient. Allowed values are one of "pearson", "kendall", or "spearman"
 #'
 #' @return ggplot2 object
 #' @export
 #'
-#' @examples loonR::drawScatter(sample.info$before_reads, sample.info$mirdeep2_mapped)
+#' @examples
+#' library(ggpubr)
+#' data("mtcars")
+#' loonR::drawScatter(mtcars$wt, mtcars$mpg, xlab = "wt", ylab = "mpg",  remove.legend = T, cor.coef = F)
 drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA,
-                        color = "jco", title = "",
+                        color = "jco", title = "", remove.legend = FALSE,
                         margin = TRUE, xlim = NULL, ylim = NULL,
-                        show.sample.name = FALSE, label = NULL, cor.coef = F ){
+                        show.sample.name = FALSE, label = NULL, cor.coef = F, cor.method = "pearson" ){
 
   # http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/78-perfect-scatter-plots-with-correlation-and-marginal-histograms/
 
@@ -408,11 +413,14 @@ drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA,
                              palette = color, xlim=xlim, xlab = xlab, ylab = ylab,
                              title = title,
                              cor.coef = cor.coef,
-                             cor.coeff.args = list(method = "pearson",
+                             cor.coeff.args = list(method = cor.method,
                                                    label.x.npc = "left",
                                                    label.y.npc = "top")
   )
 
+  if(remove.legend){
+    pmain = pmain + ggpubr::rremove("legend")
+  }
 
   if (!margin){
     return(pmain)

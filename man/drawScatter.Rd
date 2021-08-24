@@ -12,12 +12,14 @@ drawScatter(
   group = NA,
   color = "jco",
   title = "",
+  remove.legend = FALSE,
   margin = TRUE,
   xlim = NULL,
   ylim = NULL,
   show.sample.name = FALSE,
   label = NULL,
-  cor.coef = F
+  cor.coef = F,
+  cor.method = "pearson"
 )
 }
 \arguments{
@@ -27,6 +29,8 @@ drawScatter(
 
 \item{color}{Default jco}
 
+\item{remove.legend}{Default FALSE}
+
 \item{margin}{Default TRUE, show margin plot}
 
 \item{show.sample.name}{Default FALSE}
@@ -34,6 +38,8 @@ drawScatter(
 \item{label}{Default NULL}
 
 \item{cor.coef}{TRUE/FALSE to show coefficient}
+
+\item{cor.method}{method for computing correlation coefficient. Allowed values are one of "pearson", "kendall", or "spearman"}
 }
 \value{
 ggplot2 object
@@ -42,5 +48,7 @@ ggplot2 object
 Draw scatter plot
 }
 \examples{
-loonR::drawScatter(sample.info$before_reads, sample.info$mirdeep2_mapped)
+library(ggpubr)
+data("mtcars")
+loonR::drawScatter(mtcars$wt, mtcars$mpg, xlab = "wt", ylab = "mpg",  remove.legend = T, cor.coef = F)
 }

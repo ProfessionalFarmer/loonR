@@ -363,6 +363,7 @@ plotSilhouette <- function(df, group, color = "aaas", class = "Class", label=FAL
 #' @param cor.coef TRUE/FALSE to show coefficient
 #' @param remove.legend Default FALSE
 #' @param cor.method	method for computing correlation coefficient. Allowed values are one of "pearson", "kendall", or "spearman"
+#' @param add c("none", "reg.line", "loess")
 #'
 #' @return ggplot2 object
 #' @export
@@ -373,7 +374,7 @@ plotSilhouette <- function(df, group, color = "aaas", class = "Class", label=FAL
 #' loonR::drawScatter(mtcars$wt, mtcars$mpg, xlab = "wt", ylab = "mpg",  remove.legend = T, cor.coef = F)
 drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA,
                         color = "jco", title = "", remove.legend = FALSE,
-                        margin = TRUE, xlim = NULL, ylim = NULL,
+                        margin = TRUE, xlim = NULL, ylim = NULL, add = "none",
                         show.sample.name = FALSE, label = NULL, cor.coef = F, cor.method = "pearson" ){
 
   # http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/78-perfect-scatter-plots-with-correlation-and-marginal-histograms/
@@ -410,8 +411,8 @@ drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA,
   # Main plot
   pmain <- ggpubr::ggscatter(df, x="x", y="y", color = "Type",
                              label = label, repel = show.sample.name,
-                             palette = color, xlim=xlim, xlab = xlab, ylab = ylab,
-                             title = title,
+                             palette = color, xlim=xlim, ylim = ylim, xlab = xlab, ylab = ylab,
+                             title = title, add = add,
                              cor.coef = cor.coef,
                              cor.coeff.args = list(method = cor.method,
                                                    label.x.npc = "left",

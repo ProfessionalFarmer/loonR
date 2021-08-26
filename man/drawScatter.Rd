@@ -16,6 +16,7 @@ drawScatter(
   margin = TRUE,
   xlim = NULL,
   ylim = NULL,
+  add = "none",
   show.sample.name = FALSE,
   label = NULL,
   cor.coef = F,
@@ -32,6 +33,8 @@ drawScatter(
 \item{remove.legend}{Default FALSE}
 
 \item{margin}{Default TRUE, show margin plot}
+
+\item{add}{c("none", "reg.line", "loess")}
 
 \item{show.sample.name}{Default FALSE}
 

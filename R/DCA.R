@@ -22,6 +22,9 @@ decisionCurveAnalysis <- function(data.frame.list=NULL, label = NULL, rms=FALSE,
   # https://www.mskcc.org/departments/epidemiology-biostatistics/biostatistics/decision-curve-analysis
   # https://atm.amegroups.com/article/view/20389/pdf
 
+  # 除了ggDCA dcurves 也可以
+  # http://www.danieldsjoberg.com/dcurves/articles/dca.html  http://www.danieldsjoberg.com/dcurves/articles/dca.html
+
   if(!require(ggDCA)){
     install.packages('ggDCA')
   }
@@ -503,12 +506,15 @@ riskCalibrationPlot.default <- function(group, pred, rms.method = FALSE, title =
 
   plot_row <- cowplot::plot_grid(p1, p2, nrow = 2, ncol = 1, rel_heights = c(2,1))
 
-  print(ResourceSelection::hoslem.test(as.numeric(df$Class)-1, df$pred, g = 10))
+  print(ResourceSelection::hoslem.test(as.numeric(df$Class)-1, df$pred, g = bins))
 
   #### rms plot
   # this function can also plot calbiration curve
   library(rms)
-  val.prob(df$pred, as.numeric(df$Class) )
+
+  rms::val.prob(  df$pred, as.integer(df$Class)-1,
+                  logistic.cal= F, statloc = F, legendloc = F,
+                  ylab = "Observed proportion"  )
   ####
 
   plot_row

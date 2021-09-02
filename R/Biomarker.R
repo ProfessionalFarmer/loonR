@@ -1698,6 +1698,7 @@ splitDataByGroup <- function(data.frame=NULL, group=NULL, seed = 666, fraction =
   if(is.null(data.frame) | is.null(group)){
     stop("data.frame or group should not be NA")
   }
+  set.seed(seed)
   train_idx = caret::createDataPartition(y = group,p = fraction,list = FALSE)
 
   train.df <- data.frame[train_idx,]
@@ -1706,8 +1707,10 @@ splitDataByGroup <- function(data.frame=NULL, group=NULL, seed = 666, fraction =
   validation.df <- data.frame[-train_idx,]
   validation.group <- group[-train_idx]
 
-  list(Train.df=train.df, Validation.df=validation.df,
-       Train.group=train.group, Validation.group=validation.group)
+  list(Train.df=data.frame(train.df, check.names = F),
+       Validation.df=data.frame(validation.df, check.names = F),
+       Train.group=train.group,
+       Validation.group=validation.group)
 
 }
 

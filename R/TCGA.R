@@ -1,9 +1,7 @@
 #' Get sample barcode and TCGA project map information
 #'
 #'
-#' @param project A vector.
-#'  TCGA-ACC, TCGA-COAD.
-#'  See getGDCprojects()$project_id
+#' @param project A vector. TCGA-ACC, TCGA-COAD. See TCGAbiolinks::getGDCprojects()$project_id
 #' @return A data.frame
 #'  X1 proj samples
 #'	1	1	TCGA-ACC	TCGA-OR-A5JZ
@@ -11,7 +9,7 @@
 #' @export
 #'
 #' @examples
-get.sample.project.infomap <- function(project=NA){
+get.TCGA.sample.project.infomap <- function(project=NA){
 
   library(TCGAbiolinks)
 
@@ -374,6 +372,91 @@ get.TCGA.miRNAExpression <- function(tcga.project=NULL, rawCount=FALSE, CPM=FALS
   res
 }
 
+
+#' Get TCGA project clinical information
+#'
+#' @param project ESCA. TCGAbiolinks::getGDCprojects()$project_id without "TCGA_"
+#' @param subtype if download subtype information
+#' @param microsatellite if download microsatellite data
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get.TCGA.Project.Clinical <- function(project, subtype=FASLE, microsatellite=FALSE){
+
+  library(TCGAbiolinks)
+
+  res = list()
+
+  # 1 Clinical indexed data
+  clinical = TCGAbiolinks::GDCquery_clinic(project = paste0(c("TCGA-",project), sep="", collapse = "" ), type = "clinical")
+  res$clinical = clinical
+
+  # 2 BCR Biotab: tsv files parsed from XML files
+  query <- TCGAbiolinks::GDCquery(project = paste0(c("TCGA-",project), sep="", collapse = "" ),
+                    data.category = "Clinical",
+                    data.type = "Clinical Supplement",
+                    data.format = "BCR Biotab")
+  GDCdownload(query)
+  clinical.BCRtab.all <- GDCprepare(query)
+  res$clinical.BCRtab.all = clinical.BCRtab.all
+
+
+
+  # 3 MSI-Mono-Dinucleotide Assay is performed to test a panel of four mononucleotide repeat loci
+  if(microsatellite){
+    query <- GDCquery(project = paste0(c("TCGA-",project), sep="", collapse = "" ),
+                      data.category = "Other",
+                      legacy = TRUE,
+                      access = "open",
+                      data.type = "Auxiliary test"  )
+    GDCdownload(query)
+    msi_results <- GDCprepare_clinic(query, "msi")
+
+    res$msi = msi_results
+  }
+
+  if(subtype){
+    subtype = TCGAbiolinks::TCGAquery_subtype(tumor = project)
+    res$subtype.info = subtype
+  }
+
+  res
+
+}
+
+
+#' Download 450K methylation data
+#'
+#' @param project e.g. TCGA-COAD. See getGDCprojects()$project_id
+#'
+#' @return
+#' @export
+#'
+#' @examples
+tcgabiolinks.get.450k.methylation <- function(project){
+
+  library(TCGAbiolinks)
+  library(SummarizedExperiment)
+
+  query <- GDCquery(project = project,
+                    data.category = "DNA Methylation",
+                    platform = "Illumina Human Methylation 450"
+  )
+  GDCdownload(query)
+  met.dat <- GDCprepare(
+    query = query,
+    summarizedExperiment = TRUE
+  )
+
+  clin = data.frame( colData(met.dat) )
+
+  met.dat <- assay(met.dat)
+
+  list(clinical=clin, data=met.dat)
+
+}
 
 
 

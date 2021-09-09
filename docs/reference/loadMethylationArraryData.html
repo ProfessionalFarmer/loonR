@@ -81,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.539</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.563</span>
       </span>
     </div>
 
@@ -115,7 +115,12 @@
     <p>Load methylation arrary from directory</p>
     </div>
 
-    <pre class="usage"><span class='fu'>loadMethylationArraryData</span><span class='op'>(</span><span class='va'>dir</span>, arraytype <span class='op'>=</span> <span class='st'>"EPIC"</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>loadMethylationArraryData</span><span class='op'>(</span>
+  <span class='va'>dir</span>,
+  arraytype <span class='op'>=</span> <span class='st'>"EPIC"</span>,
+  combat <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  batchname <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"Slide"</span><span class='op'>)</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -123,6 +128,14 @@
     <tr>
       <th>arraytype</th>
       <td><p>EPIC or 450K</p></td>
+    </tr>
+    <tr>
+      <th>combat</th>
+      <td><p>If run combat to remove batch effect</p></td>
+    </tr>
+    <tr>
+      <th>batchname</th>
+      <td><p>Default c("Slide")</p></td>
     </tr>
     </table>
 

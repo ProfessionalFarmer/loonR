@@ -53,24 +53,147 @@ getPromoterRegions <- function(upstream=2000, downstream=500, ann = "Ensembl", r
 #'
 #' @param dir
 #' @param arraytype EPIC or 450K
+#' @param combat If run combat to remove batch effect
+#' @param batchname Default c("Slide")
 #'
 #' @return
 #' @export
 #'
 #' @examples
 #' Reference: https://bioconductor.org/packages/release/bioc/vignettes/ChAMP/inst/doc/ChAMP.html
-loadMethylationArraryData <- function(dir, arraytype = 'EPIC'){
+loadMethylationArraryData <- function(dir, arraytype = 'EPIC', combat=FALSE, batchname=c("Slide")){
   library(ChAMP)
   myLoad <- champ.load(dir, arraytype = arraytype)
 
   # champ.QC() function and QC.GUI() function would draw some plots for user to easily check their data’s quality.
   champ.QC()
-  myNorm <-champ.norm(arraytype = arraytype, cores=50)
+  myNorm <-champ.norm(arraytype = arraytype, cores=50, method="BMIQ")
   champ.SVD()
 
+  # 5.6 Batch Effect Correction
+  if(combat){
+    myCombat <- champ.runCombat(beta=myNorm,pd=myLoad$pd, batchname= batchname )
+    myCombat
+  }else{
+    myNorm
+  }
 
 }
 
 
 
+
+
+#' ChAMP QC Pipeline for beta matrix
+#'
+#' @param Sample.beta.df Column is sample
+#' @param Sample.Group
+#' @param Slide
+#' @param arraytype 450K or EPIC
+#' @param CpG.GUI If use CpG.GUI
+#' @param QC.GUI
+#' @param combat If perform combat to remove batch effect
+#' @param batchname Batch variable name. Default is c("Slide")
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+#' library(ChAMP)
+#' testDir=system.file("extdata",package="ChAMPdata")
+#' myImport <- champ.import(testDir)
+#'
+#' beta.df = myImport$beta
+#' group = myImport$pd$Sample_Group
+#' ChAMP_QC_Pipeline(Sample.beta.df=beta.df, Sample.Group=group)
+#'
+ChAMP_QC_Pipeline_Frome_Beta_Value <- function(Sample.beta.df=NULL, Sample.Group='', Slide = '', arraytype=c("450K","EPIC"), CpG.GUI=FALSE, QC.GUI=FALSE, combat=FALSE, batchname=c("Slide") ){
+
+  library(ChAMP)
+  # https://www.bioconductor.org/packages/release/bioc/vignettes/ChAMP/inst/doc/ChAMP.html
+  res = list()
+
+  if(is.null(Sample.beta.df)){
+    stop("Please input sample beta data.frame")
+  }
+
+  arraytype <- match.arg(arraytype)
+
+  pd = data.frame(
+    Sample_Name = colnames(Sample.beta.df),
+    rownames=colnames(Sample.beta.df),
+    Sample_Group = Sample.Group,
+    Slide = Slide
+  )
+
+  res$rawBeta = Sample.beta.df
+  res$pd = pd
+
+  # 5.2 filter 过滤SNP和XY上的
+  myLoad = champ.filter(
+    beta = Sample.beta.df,
+    pd = pd,
+    filterXY=TRUE,
+    filterMultiHit=TRUE,
+    arraytype=arraytype,
+    filterSNPs=TRUE,
+    filterNoCG=TRUE,
+    fixOutlier=FALSE,
+    autoimpute=TRUE
+  )
+
+  #if NAs are still existing
+  # champ.impute()
+  if(sum(is.na(myLoad$beta))!=0){
+    warning("LoonR:: Because there still has NA values after filtering, we need to use champ.impute")
+    row.to.remove = rowSums(is.na(myLoad$beta)) > (ncol(myLoad$beta)/2)
+    warning("LoonR:: ", sum(row.to.remove), " Probes have 0.5 or above NA will be removed")
+
+    myLoad <- champ.impute(
+      beta=as.matrix(myLoad$beta[!row.to.remove, ]),
+      pd=myLoad$pd,
+      method="Combine",
+      k=5,
+      ProbeCutoff=0.2,
+      SampleCutoff=0.2
+    )
+  }
+  res$myLoad = myLoad
+
+  # 5.3 show CpG distribution, 也可以显示DMP的分布
+  # This is a useful function to demonstrate the distribution of your CpG list. If you get a DMP list, you may use this function to check your DMP’s distribution on chromosome.
+  if(CpG.GUI){
+    CpG.GUI(CpG=rownames(myLoad$beta),arraytype=arraytype)
+  }
+
+  # QC check
+  # champ.QC() function and QC.GUI() function would draw some plots for user to easily check their data’s quality.
+  champ.QC()
+  if(QC.GUI){
+    QC.GUI(beta=myLoad$beta,arraytype=arraytype)
+  }
+
+  # 5.4 Normalization
+  myNorm <- champ.norm(beta=myLoad$beta, arraytype=arraytype, cores=50, method="BMIQ")
+  res$myNorm = myNorm
+
+  # QC check again
+  champ.QC()
+  if(QC.GUI){
+    QC.GUI(beta=myNorm,arraytype=arraytype)
+  }
+
+  # 5.5
+  champ.SVD(beta=myNorm,pd=myLoad$pd)
+
+  # 5.6 Batch Effect Correction
+  if(combat){
+    myCombat <- champ.runCombat(beta=myNorm,pd=myLoad$pd, batchname= batchname )
+    res$myCombat = myCombat
+  }
+
+  res
+
+}
 

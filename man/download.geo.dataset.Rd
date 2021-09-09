@@ -4,7 +4,7 @@
 \alias{download.geo.dataset}
 \title{Download dataset from GEO by accession ID and platform}
 \usage{
-download.geo.dataset(geo.accession.id, platform, destdir = tempdir())
+download.geo.dataset(geo.accession.id, platform, destdir = "~/GSE")
 }
 \arguments{
 \item{geo.accession.id}{GEO Accession ID}

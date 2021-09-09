@@ -7,7 +7,7 @@
 confusion_matrix(groups, risk.pro, cancer = "Cancer", best.cutoff = NA)
 }
 \arguments{
-\item{groups}{True label}
+\item{groups}{TRUE/FALSE label}
 
 \item{cancer}{Cancer Name}
 
@@ -22,7 +22,7 @@ A data.frame object
 Get confusion matrix
 }
 \examples{
-label = c(1,1,1,1,1,2,2,2,2,2)
+label = c(1,1,1,1,1,2,2,2,2,2) == 1
 risk.probability = runif(10, min=0, max=100)
 confusion_matrix(label, risk.probability, cancer = "ESCC")
 }

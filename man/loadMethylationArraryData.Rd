@@ -4,10 +4,19 @@
 \alias{loadMethylationArraryData}
 \title{Load methylation arrary from directory}
 \usage{
-loadMethylationArraryData(dir, arraytype = "EPIC")
+loadMethylationArraryData(
+  dir,
+  arraytype = "EPIC",
+  combat = FALSE,
+  batchname = c("Slide")
+)
 }
 \arguments{
 \item{arraytype}{EPIC or 450K}
+
+\item{combat}{If run combat to remove batch effect}
+
+\item{batchname}{Default c("Slide")}
 }
 \value{
 

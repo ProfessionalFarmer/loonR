@@ -72,6 +72,7 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE, ty
   # label = mir.sample.group
   # k = 5
   # n = 100
+  # type <- match.arg(type)
 
   if(df == '' | label == ''){
     stop("provide a datafram or lables")
@@ -255,7 +256,7 @@ build.randomforest.model <- function(df, group, seed = 666, scale=TRUE){
 
 #' Get confusion matrix
 #'
-#' @param groups True label
+#' @param groups TRUE/FALSE label
 #' @param rs Predicted score
 #' @param cancer Cancer Name
 #' @param best.cutoff If not set, use youden index instead
@@ -264,7 +265,7 @@ build.randomforest.model <- function(df, group, seed = 666, scale=TRUE){
 #' @export
 #'
 #' @examples
-#' label = c(1,1,1,1,1,2,2,2,2,2)
+#' label = c(1,1,1,1,1,2,2,2,2,2) == 1
 #' risk.probability = runif(10, min=0, max=100)
 #' confusion_matrix(label, risk.probability, cancer = "ESCC")
 confusion_matrix <- function(groups, risk.pro, cancer="Cancer", best.cutoff = NA){
@@ -1242,7 +1243,7 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
 #' @export
 #'
 #' @examples
-download.geo.dataset <- function(geo.accession.id, platform, destdir = tempdir()){
+download.geo.dataset <- function(geo.accession.id, platform, destdir = "~/GSE"){
 
   if (missing("geo.accession.id") | missing("platform")){
     stop("Please provide both geo.accession.id and platform")

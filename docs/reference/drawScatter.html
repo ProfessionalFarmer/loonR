@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.539</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.563</span>
       </span>
     </div>
 
@@ -129,6 +129,7 @@
   margin <span class='op'>=</span> <span class='cn'>TRUE</span>,
   xlim <span class='op'>=</span> <span class='cn'>NULL</span>,
   ylim <span class='op'>=</span> <span class='cn'>NULL</span>,
+  add <span class='op'>=</span> <span class='st'>"none"</span>,
   show.sample.name <span class='op'>=</span> <span class='cn'>FALSE</span>,
   label <span class='op'>=</span> <span class='cn'>NULL</span>,
   cor.coef <span class='op'>=</span> <span class='cn'>F</span>,
@@ -157,6 +158,10 @@
     <tr>
       <th>margin</th>
       <td><p>Default TRUE, show margin plot</p></td>
+    </tr>
+    <tr>
+      <th>add</th>
+      <td><p>c("none", "reg.line", "loess")</p></td>
     </tr>
     <tr>
       <th>show.sample.name</th>

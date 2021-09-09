@@ -19,6 +19,9 @@
     <loc>/reference/AllEqual.html</loc>
   </url>
   <url>
+    <loc>/reference/ChAMP_QC_Pipeline_Frome_Beta_Value.html</loc>
+  </url>
+  <url>
     <loc>/reference/ClusterProfiler.GSEA.Compare.html</loc>
   </url>
   <url>
@@ -160,10 +163,16 @@
     <loc>/reference/get.AUC.html</loc>
   </url>
   <url>
+    <loc>/reference/get.TCGA.Project.Clinical.html</loc>
+  </url>
+  <url>
     <loc>/reference/get.TCGA.RNA.FPKM.html</loc>
   </url>
   <url>
     <loc>/reference/get.TCGA.miRNAExpression.html</loc>
+  </url>
+  <url>
+    <loc>/reference/get.TCGA.sample.project.infomap.html</loc>
   </url>
   <url>
     <loc>/reference/get.YoudenIndex.html</loc>
@@ -407,6 +416,9 @@
   </url>
   <url>
     <loc>/reference/tanimoto_distance.html</loc>
+  </url>
+  <url>
+    <loc>/reference/tcgabiolinks.get.450k.methylation.html</loc>
   </url>
   <url>
     <loc>/reference/tcgabiolinks.get.RNA.expression.log2tpm.html</loc>

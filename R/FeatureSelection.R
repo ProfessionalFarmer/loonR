@@ -130,7 +130,7 @@ feature.selection.4givenMLAlgorithm <- function(feature.df, group, seed=111, sca
 #' @param folds
 #' @param seed
 #' @param family Default binomial. Should be one of “gaussian”, “binomial”, “poisson”, “multinomial”, “cox”, “mgaussian”
-#' @param type.measure class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.
+#' @param type.measure Default auc. Can be class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.
 #' @param s Defalut is lambda.min. User can specify
 #' @param scale Default TRUE
 #'
@@ -197,7 +197,7 @@ lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
 #' @param family Default binomial
 #' @param n 100
 #' @param cores 50
-#' @param type.measure class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.
+#' @param type.measure Default auc. Can be class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.
 #' @param scale Default TRUE
 #'
 #' @return
@@ -205,7 +205,7 @@ lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
 #'
 #' @examples
 lasso.cv.select.feature <- function(data.matrix, label, folds = 5, seed = 666, n = 100,
-                                    family = "binomial", type.measure = "class" ,
+                                    family = "binomial", type.measure = "auc" ,
                                     cores = 50, scale=TRUE){
   library(foreach)
   library(dplyr)

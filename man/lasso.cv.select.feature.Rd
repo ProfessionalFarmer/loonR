@@ -11,7 +11,7 @@ lasso.cv.select.feature(
   seed = 666,
   n = 100,
   family = "binomial",
-  type.measure = "class",
+  type.measure = "auc",
   cores = 50,
   scale = TRUE
 )
@@ -23,7 +23,7 @@ lasso.cv.select.feature(
 
 \item{family}{Default binomial}
 
-\item{type.measure}{class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.}
+\item{type.measure}{Default auc. Can be class, auc, deviance, mae. “deviance” uses actual deviance. “mae” uses mean absolute error. “class” gives misclassification error. “auc” (for two-class logistic regression ONLY) gives area under the ROC curve.}
 
 \item{cores}{50}
 

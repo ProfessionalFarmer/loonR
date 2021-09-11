@@ -675,6 +675,19 @@ compare.GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=
 
 
 
-
+#' Read in gene set information from .gmt files
+#'
+#' @param gmt.path Please make sure the second column is description. The name of a file to read data values from. Should be a tab-separated text file, with one row per gene set. Column 1 has gene set names (identifiers), column 2 has gene set descriptions, remaining columns are gene ids for genes in that geneset
+#'
+#' @return A list, where each index represents a separate gene set.
+#' @export
+#'
+#' @examples
+load.gmt <- function(gmt.path){
+  # https://www.rdocumentation.org/packages/qusage/versions/2.4.0/topics/read.gmt
+  qusage::read.gmt(gmt.path)
+  # https://www.rdocumentation.org/packages/GSA/versions/1.03.1/topics/GSA.read.gmt
+  # GSA::GSA.read.gmt(gmt.path)
+}
 
 

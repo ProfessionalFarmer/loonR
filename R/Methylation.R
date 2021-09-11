@@ -106,7 +106,7 @@ loadMethylationArraryData <- function(dir, arraytype = 'EPIC', combat=FALSE, bat
 #'
 #' beta.df = myImport$beta
 #' group = myImport$pd$Sample_Group
-#' ChAMP_QC_Pipeline(Sample.beta.df=beta.df, Sample.Group=group)
+#' loonR::ChAMP_QC_Pipeline(Sample.beta.df=beta.df, Sample.Group=group)
 #'
 ChAMP_QC_Pipeline_Frome_Beta_Value <- function(Sample.beta.df=NULL, Sample.Group='', Slide = '', arraytype=c("450K","EPIC"), CpG.GUI=FALSE, QC.GUI=FALSE, combat=FALSE, batchname=c("Slide") ){
 
@@ -144,7 +144,15 @@ ChAMP_QC_Pipeline_Frome_Beta_Value <- function(Sample.beta.df=NULL, Sample.Group
   )
 
   #if NAs are still existing
-  # champ.impute()
+  tmp.myLoad = champ.impute()
+  if(ncol(tmp.myLoad$beta)!=ncol(myLoad$beta)){
+    stop("Some samples are filtered out, pls make sure not samples were filtered")
+  }else{
+    myLoad$beta = tmp.myLoad
+    rm(tmp.myLoad)
+  }
+
+
   if(sum(is.na(myLoad$beta))!=0){
     warning("LoonR:: Because there still has NA values after filtering, we need to use champ.impute")
     row.to.remove = rowSums(is.na(myLoad$beta)) > (ncol(myLoad$beta)/2)

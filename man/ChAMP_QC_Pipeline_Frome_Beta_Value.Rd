@@ -40,6 +40,6 @@ myImport <- champ.import(testDir)
 
 beta.df = myImport$beta
 group = myImport$pd$Sample_Group
-ChAMP_QC_Pipeline(Sample.beta.df=beta.df, Sample.Group=group)
+loonR::ChAMP_QC_Pipeline(Sample.beta.df=beta.df, Sample.Group=group)
 
 }

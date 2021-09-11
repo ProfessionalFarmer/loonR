@@ -517,7 +517,42 @@ riskCalibrationPlot.default <- function(group, pred, rms.method = FALSE, title =
                   ylab = "Observed proportion"  )
   ####
 
+  # The calibration performance was assessed with a predicted and observed mortalities plot and summarized across the full range of risk scores using the Hosmer-Lemeshow statistic.
+
   plot_row
+}
+
+
+
+
+
+#' Hosmer-Lemeshow Goodness of Fit (GOF) Test
+#'
+#' @param pred pred score
+#' @param label Label
+#' @param bin Default 10
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' set.seed(123)
+# n <- 500
+# x <- rnorm(n)
+# y <- rbinom(n, 1, plogis(0.1 + 0.5*x))
+# HosmerLemesGoodnessOfFitTest(x, y)
+HosmerLemesGoodnessOfFitTest <- function(pred=NULL, label=NULL, bin=10){
+
+  # Method 1: generalhoslem::logitgof(repdata$type, fitted(multinom.fit))
+  # Method 2: ResourceSelection::hoslem.test(mod$y, fitted(mod), g=10)
+  # Method 3: DescTools::HosmerLemeshowTest(fit = fitted(m),obs= y)
+
+  if(!require(ResourceSelection, quietly = T)){
+    BiocManager::install("ResourceSelection")
+  }
+
+  ResourceSelection::hoslem.test(label, pred, g=bin)
+
 }
 
 

@@ -7,7 +7,7 @@
 heatmap.with.lgfold.riskpro(
   heatmap.df,
   label,
-  risk.pro,
+  risk.pro = NA,
   lgfold = NA,
   scale = TRUE,
   group.name = "Cancer",
@@ -36,7 +36,7 @@ heatmap.with.lgfold.riskpro(
 
 \item{ylim}{= c(0, 1), risk score range.}
 
-\item{show.lgfold}{= TRUE。 Whether to show right panel.}
+\item{show.lgfold}{= TRUE. Whether to show right panel.}
 
 \item{show_column_names}{Default False}
 

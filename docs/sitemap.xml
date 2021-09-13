@@ -43,6 +43,9 @@
     <loc>/reference/DESeq2_differential.html</loc>
   </url>
   <url>
+    <loc>/reference/HosmerLemesGoodnessOfFitTest.html</loc>
+  </url>
+  <url>
     <loc>/reference/MA_plot.html</loc>
   </url>
   <url>
@@ -254,6 +257,9 @@
   </url>
   <url>
     <loc>/reference/limma_differential.html</loc>
+  </url>
+  <url>
+    <loc>/reference/load.gmt.html</loc>
   </url>
   <url>
     <loc>/reference/load.rsem.matrix.html</loc>

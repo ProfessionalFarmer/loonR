@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Perform over-representation test across multiple group by cluster profiler — ClusterProfiler.OverRepresentationTest.Compare • loonR</title>
+<title>Read in gene set information from .gmt files — load.gmt • loonR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Perform over-representation test across multiple group by cluster profiler — ClusterProfiler.OverRepresentationTest.Compare" />
-<meta property="og:description" content="Perform over-representation test across multiple group by cluster profiler" />
+<meta property="og:title" content="Read in gene set information from .gmt files — load.gmt" />
+<meta property="og:description" content="Read in gene set information from .gmt files" />
 
 
 
@@ -106,68 +106,29 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Perform over-representation test across multiple group by cluster profiler</h1>
+    <h1>Read in gene set information from .gmt files</h1>
     <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/GSE.R'><code>R/GSE.R</code></a></small>
-    <div class="hidden name"><code>ClusterProfiler.OverRepresentationTest.Compare.Rd</code></div>
+    <div class="hidden name"><code>load.gmt.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Perform over-representation test across multiple group by cluster profiler</p>
+    <p>Read in gene set information from .gmt files</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ClusterProfiler.OverRepresentationTest.Compare</span><span class='op'>(</span>
-  <span class='va'>gene</span>,
-  minGSSize <span class='op'>=</span> <span class='fl'>10</span>,
-  qvalue <span class='op'>=</span> <span class='fl'>0.05</span>,
-  GO <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  KEGG <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  MSigDb <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  Hallmark <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  exp.gene.type <span class='op'>=</span> <span class='st'>"ENSEMBL"</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>load.gmt</span><span class='op'>(</span><span class='va'>gmt.path</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>gene</th>
-      <td><p>A list including multiple group. Must gene symbol</p></td>
-    </tr>
-    <tr>
-      <th>minGSSize</th>
-      <td><p>10</p></td>
-    </tr>
-    <tr>
-      <th>qvalue</th>
-      <td><p>0.05</p></td>
-    </tr>
-    <tr>
-      <th>GO</th>
-      <td><p>TRUE</p></td>
-    </tr>
-    <tr>
-      <th>KEGG</th>
-      <td><p>TRUE</p></td>
-    </tr>
-    <tr>
-      <th>MSigDb</th>
-      <td><p>TRUE</p></td>
-    </tr>
-    <tr>
-      <th>Hallmark</th>
-      <td><p>TRUE</p></td>
-    </tr>
-    <tr>
-      <th>exp.gene.type</th>
-      <td><p>RNA expression ID ENSEMBL. keytypes(org.Hs.eg.db)</p></td>
+      <th>gmt.path</th>
+      <td><p>Please make sure the second column is description. The name of a file to read data values from. Should be a tab-separated text file, with one row per gene set. Column 1 has gene set names (identifiers), column 2 has gene set descriptions, remaining columns are gene ids for genes in that geneset</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    
-
-
+    <p>A list, where each index represents a separate gene set.</p>
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

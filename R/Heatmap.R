@@ -8,7 +8,7 @@
 #' @param group.name Default "Cancer"
 #' @param scale Default "TRUE"
 #' @param ylim = c(0, 1), risk score range.
-#' @param show.lgfold = TRUE。 Whether to show right panel.
+#' @param show.lgfold = TRUE. Whether to show right panel.
 #' @param show.risk.pro
 #' @param bar.name
 #' @param height
@@ -22,100 +22,107 @@
 #' @export
 #'
 #' @examples heatmap.with.lgfold.riskpro(data.tmp[candi,],label, logfd,  risk.pro)
-heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro, lgfold=NA, scale=TRUE, group.name="Cancer", bar.name = "Log2FC", ylim = c(0, 1),
+heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=NA, scale=TRUE, group.name="Cancer", bar.name = "Log2FC", ylim = c(0, 1),
                                         show.lgfold = TRUE, show.risk.pro = TRUE, height = 5, show_column_names = FALSE, cluster_rows = FALSE,
                                         cluster_columns = FALSE, z.score.cutoff = 2, specified.color = c("#0c3e74","#77a8cd","white","#d86652","#7e0821") ){
-  if(!require(ComplexHeatmap)){
+
+  if (!require(ComplexHeatmap)) {
     BiocManager::install("ComplexHeatmap")
   }
 
 
-
-  if (anyNA(lgfold)){
-    show.lgfold = FALSE
-    lgfold = replicate(nrow(heatmap.df),1)
+  if (anyNA(lgfold)) {
+    show.lgfold <- FALSE
+    lgfold <- replicate(nrow(heatmap.df), 1)
   }
 
-  label = factor(label, levels = unique(label))
+  label <- factor(label, levels = unique(label))
 
-  if(scale){
-    heatmap.df = t(scale(t(heatmap.df)))
-    heatmap.df[ heatmap.df > z.score.cutoff] <- z.score.cutoff
-    heatmap.df[ heatmap.df < -z.score.cutoff] <- -z.score.cutoff
+  label.risk.df <- data.frame(
+    label = label, risk.pro = risk.pro, index = (1:length(label))
+  )
+
+
+  if (scale) {
+    heatmap.df <- t(scale(t(heatmap.df)))
+    heatmap.df[heatmap.df > z.score.cutoff] <- z.score.cutoff
+    heatmap.df[heatmap.df < -z.score.cutoff] <- -z.score.cutoff
   }
 
   library(ComplexHeatmap)
-  if(show.risk.pro){
-    # 根据risk score排序
-    heatmap.df <- cbind(
-      heatmap.df[, label==levels(label)[1] ][, order(risk.pro[ label==levels(label)[1] ] ) ],
-      heatmap.df[, label==levels(label)[2] ][, order(risk.pro[ label==levels(label)[2] ] ) ]  )
+  if (show.risk.pro) {
+    # 根据label和risk score同时排序
+    label.risk.df = arrange(label.risk.df, label, risk.pro)
+
+    heatmap.df <- heatmap.df[,label.risk.df$index]
 
     # 对riskscore排序
-    risk.pro <- c(
-      risk.pro[label==levels(label)[1] ][order(risk.pro[label==levels(label)[1] ] ) ],
-      risk.pro[label==levels(label)[2] ][order(risk.pro[label==levels(label)[2] ] ) ]  )
-  }else{
+    risk.pro <- label.risk.df$risk.pro
+
+  } else {
     # 根据分组排序
-    heatmap.df <- heatmap.df[,c(which(label==levels(label)[1]), which(label==levels(label)[2]))]
-    label <- label[c(which(label==levels(label)[1]), which(label==levels(label)[2]))]
+    label.risk.df = arrange(label.risk.df, label)
+
+    heatmap.df <- heatmap.df[,label.risk.df$index]
+
   }
 
 
   # heatmap和barplot一起画
 
-  #row_ha = rowAnnotation( assign(eval(bar.name), anno_barplot(lgfold, gp = gpar(fill = "black",col="black")))   )
-  row_ha = rowAnnotation( Log2FC = anno_barplot(lgfold, gp = gpar(fill = "black",col="black")))
+  # row_ha = rowAnnotation( assign(eval(bar.name), anno_barplot(lgfold, gp = gpar(fill = "black",col="black")))   )
+  row_ha <- rowAnnotation(Log2FC = anno_barplot(lgfold, gp = gpar(fill = "black", col = "black")))
 
-  label = factor(label)
-  Tumor = loonR::get.palette.color("jama_classic", n = 2)
-  names(Tumor) = levels(label)
+  label <- label.risk.df$label
+
+  Tumor <- loonR::get.palette.color("jama_classic", n = length(unique(label.risk.df$label)))
+  names(Tumor) <- levels(label)
 
 
 
   # rename annotation names
-  annotation <- data.frame(Tmp = label[ c(which(label==levels(label)[1]),
-                                          which(label==levels(label)[2]) )
-  ]
-  )
+  annotation <- data.frame(Tmp = label.risk.df$label)
   colnames(annotation) <- group.name
 
-  ann_colors = list(Tmp = Tumor)
-  names(ann_colors) = group.name
+  ann_colors <- list(Tmp = Tumor)
+  names(ann_colors) <- group.name
 
 
-  if(show.risk.pro){
-    ha = HeatmapAnnotation(df = annotation,
-                           col = ann_colors,
-                           Risk = anno_points(risk.pro, pch = 16, size = unit(1, "mm"),
-                                              gp = gpar(col = "black"),
-                                              ylim = ylim,
-                                              axis_param = list( side = "left", at = ylim, labels = as.character(ylim) )
-                           )
+  if (show.risk.pro) {
+    ha <- HeatmapAnnotation(
+      df = annotation,
+      col = ann_colors,
+      Risk = anno_points(risk.pro,
+        pch = 16, size = unit(1, "mm"),
+        gp = gpar(col = "black"),
+        ylim = ylim,
+        axis_param = list(side = "left", at = ylim, labels = as.character(ylim))
+      )
     )
-  }else{
-    ha = HeatmapAnnotation(df = annotation,
-                           col = ann_colors    )
+  } else {
+    ha <- HeatmapAnnotation(
+      df = annotation,
+      col = ann_colors
+    )
   }
 
   #
-  if(show.lgfold){
-
-    Heatmap(heatmap.df, col = specified.color,
-            name = " ", cluster_rows = cluster_rows, cluster_columns = cluster_columns,
-            show_row_names = TRUE, show_column_names = show_column_names, height = unit(height, "cm"),
-            top_annotation = ha,
-            right_annotation = row_ha  )
-
-  }else{
-
-    Heatmap(heatmap.df, col = specified.color,
-            name = " ", cluster_rows = cluster_rows, cluster_columns = cluster_columns,
-            show_row_names = TRUE, show_column_names = show_column_names, height = unit(height, "cm"),
-            top_annotation = ha  )
-
+  if (show.lgfold) {
+    Heatmap(heatmap.df,
+      col = specified.color,
+      name = " ", cluster_rows = cluster_rows, cluster_columns = cluster_columns,
+      show_row_names = TRUE, show_column_names = show_column_names, height = unit(height, "cm"),
+      top_annotation = ha,
+      right_annotation = row_ha
+    )
+  } else {
+    Heatmap(heatmap.df,
+      col = specified.color,
+      name = " ", cluster_rows = cluster_rows, cluster_columns = cluster_columns,
+      show_row_names = TRUE, show_column_names = show_column_names, height = unit(height, "cm"),
+      top_annotation = ha
+    )
   }
-
 
 }
 

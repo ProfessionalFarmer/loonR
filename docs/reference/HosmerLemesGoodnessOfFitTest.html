@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Perform over-representation test across multiple group by cluster profiler — ClusterProfiler.OverRepresentationTest.Compare • loonR</title>
+<title>Hosmer-Lemeshow Goodness of Fit (GOF) Test — HosmerLemesGoodnessOfFitTest • loonR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Perform over-representation test across multiple group by cluster profiler — ClusterProfiler.OverRepresentationTest.Compare" />
-<meta property="og:description" content="Perform over-representation test across multiple group by cluster profiler" />
+<meta property="og:title" content="Hosmer-Lemeshow Goodness of Fit (GOF) Test — HosmerLemesGoodnessOfFitTest" />
+<meta property="og:description" content="Hosmer-Lemeshow Goodness of Fit (GOF) Test" />
 
 
 
@@ -57,6 +57,8 @@
 <![endif]-->
 
 
+
+<!-- dependencies from examples -->
 
 
   
@@ -106,60 +108,31 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Perform over-representation test across multiple group by cluster profiler</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/GSE.R'><code>R/GSE.R</code></a></small>
-    <div class="hidden name"><code>ClusterProfiler.OverRepresentationTest.Compare.Rd</code></div>
+    <h1>Hosmer-Lemeshow Goodness of Fit (GOF) Test</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/DCA.R'><code>R/DCA.R</code></a></small>
+    <div class="hidden name"><code>HosmerLemesGoodnessOfFitTest.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Perform over-representation test across multiple group by cluster profiler</p>
+    <p>Hosmer-Lemeshow Goodness of Fit (GOF) Test</p>
     </div>
 
-    <pre class="usage"><span class='fu'>ClusterProfiler.OverRepresentationTest.Compare</span><span class='op'>(</span>
-  <span class='va'>gene</span>,
-  minGSSize <span class='op'>=</span> <span class='fl'>10</span>,
-  qvalue <span class='op'>=</span> <span class='fl'>0.05</span>,
-  GO <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  KEGG <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  MSigDb <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  Hallmark <span class='op'>=</span> <span class='cn'>TRUE</span>,
-  exp.gene.type <span class='op'>=</span> <span class='st'>"ENSEMBL"</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>HosmerLemesGoodnessOfFitTest</span><span class='op'>(</span>pred <span class='op'>=</span> <span class='cn'>NULL</span>, label <span class='op'>=</span> <span class='cn'>NULL</span>, bin <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>gene</th>
-      <td><p>A list including multiple group. Must gene symbol</p></td>
+      <th>pred</th>
+      <td><p>pred score</p></td>
     </tr>
     <tr>
-      <th>minGSSize</th>
-      <td><p>10</p></td>
+      <th>label</th>
+      <td><p>Label</p></td>
     </tr>
     <tr>
-      <th>qvalue</th>
-      <td><p>0.05</p></td>
-    </tr>
-    <tr>
-      <th>GO</th>
-      <td><p>TRUE</p></td>
-    </tr>
-    <tr>
-      <th>KEGG</th>
-      <td><p>TRUE</p></td>
-    </tr>
-    <tr>
-      <th>MSigDb</th>
-      <td><p>TRUE</p></td>
-    </tr>
-    <tr>
-      <th>Hallmark</th>
-      <td><p>TRUE</p></td>
-    </tr>
-    <tr>
-      <th>exp.gene.type</th>
-      <td><p>RNA expression ID ENSEMBL. keytypes(org.Hs.eg.db)</p></td>
+      <th>bin</th>
+      <td><p>Default 10</p></td>
     </tr>
     </table>
 
@@ -169,6 +142,9 @@
 
 
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Random.html'>set.seed</a></span><span class='op'>(</span><span class='fl'>123</span><span class='op'>)</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

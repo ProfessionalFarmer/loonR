@@ -592,15 +592,68 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2){  #  x="be
   rname <- names(res)
   value <- sapply(strsplit(res," \\("), function(x) paste(x[1]) )
 
+
   tmp <- sapply(strsplit(res," \\("), function(x) paste(x[2]) )
   conf <- sapply(strsplit(tmp,"\\)"), function(x) paste(x[1]) )
+  # N and T don't have CI
+  conf[1:2] <- ''
+
 
   df <- data.frame(Name = rname, value = value, confidence = conf)
+
+
+  df$Formated <- paste0(df$value, " ", "(", df$confidence, ")"  )
+  df$Formated <- stringr::str_remove_all(df$Formated, " \\(\\)")
+
 
   df
 
 }
 
+
+#' Get individual_candidates_performance
+#'
+#' @param scores Df or list, if data.frame, column is feature.
+#' @param labels Vector or list
+#' @param best.cutoff
+#' @param digit 2 for 0.01, 3 for 0.001
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_individual_candidates_performance <- function(scores, labels, best.cutoff =NA, digit = 2){
+
+  oldw <- getOption("warn")
+  options(warn = -1)
+
+  set.seed(100)
+
+  require(pROC)
+
+  if(inherits(scores, "list") ) {
+    performance.list <- lapply(1:length(scores), function(i){
+      index <- !is.na(scores[[i]])
+      loonR::get_performance(scores[[i]][index], labels[[i]][index], best.cutoff = best.cutoff, digit = 2)
+
+    })
+    names(performance.list) <- names(scores)
+
+  }else{
+    performance.list <- apply(scores, 2, function(x) loonR::get_performance(x, labels, best.cutoff = best.cutoff, digit = 2) )
+    # https://stackoverflow.com/questions/57608056/how-to-change-legend-description-on-ggroc-function
+  }
+
+  performance.formated.list <- lapply(performance.list, function(x){
+    dplyr::pull(x,4)
+  })
+
+  performance.formated.df <- do.call(cbind,performance.formated.list)
+  row.names(performance.formated.df) <- row.names(performance.list[[1]])
+
+  data.frame(performance.formated.df, check.names = F)
+
+}
 
 
 
@@ -1065,7 +1118,7 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
     names(roclist) <- names(scores)
 
   }else{
-    roclist <- apply(scores, 2, function(x) roc(labels,x) )
+    roclist <- apply(scores, 2, function(x) pROC::roc(labels,x) )
     # https://stackoverflow.com/questions/57608056/how-to-change-legend-description-on-ggroc-function
   }
 

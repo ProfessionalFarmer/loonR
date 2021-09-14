@@ -20,7 +20,8 @@ heatmap.with.lgfold.riskpro(
   cluster_rows = FALSE,
   cluster_columns = FALSE,
   z.score.cutoff = 2,
-  specified.color = c("#0c3e74", "#77a8cd", "white", "#d86652", "#7e0821")
+  specified.color = c("#0c3e74", "#77a8cd", "white", "#d86652", "#7e0821"),
+  palette = "jama_classic"
 )
 }
 \arguments{
@@ -43,6 +44,8 @@ heatmap.with.lgfold.riskpro(
 \item{z.score.cutoff}{Default 2}
 
 \item{specified.color}{Default c("#0c3e74","#77a8cd","white","#d86652","#7e0821") or colorRampPalette(c("navy", "white", "firebrick3"))(50)}
+
+\item{palette}{Color palette for group. Default "jama_classic"}
 }
 \value{
 A heatmap plot by complex heatmap

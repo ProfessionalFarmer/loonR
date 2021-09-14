@@ -17,6 +17,7 @@
 #' @param z.score.cutoff Default 2
 #' @param cluster_columns
 #' @param specified.color Default c("#0c3e74","#77a8cd","white","#d86652","#7e0821") or colorRampPalette(c("navy", "white", "firebrick3"))(50)
+#' @param palette Color palette for group. Default "jama_classic"
 #'
 #' @return A heatmap plot by complex heatmap
 #' @export
@@ -24,7 +25,7 @@
 #' @examples heatmap.with.lgfold.riskpro(data.tmp[candi,],label, logfd,  risk.pro)
 heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=NA, scale=TRUE, group.name="Cancer", bar.name = "Log2FC", ylim = c(0, 1),
                                         show.lgfold = TRUE, show.risk.pro = TRUE, height = 5, show_column_names = FALSE, cluster_rows = FALSE,
-                                        cluster_columns = FALSE, z.score.cutoff = 2, specified.color = c("#0c3e74","#77a8cd","white","#d86652","#7e0821") ){
+                                        cluster_columns = FALSE, z.score.cutoff = 2, specified.color = c("#0c3e74","#77a8cd","white","#d86652","#7e0821"), palette = "jama_classic" ){
 
   if (!require(ComplexHeatmap)) {
     BiocManager::install("ComplexHeatmap")
@@ -52,7 +53,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=N
   library(ComplexHeatmap)
   if (show.risk.pro) {
     # 根据label和risk score同时排序
-    label.risk.df = arrange(label.risk.df, label, risk.pro)
+    label.risk.df = dplyr::arrange(label.risk.df, label, risk.pro)
 
     heatmap.df <- heatmap.df[,label.risk.df$index]
 
@@ -61,7 +62,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=N
 
   } else {
     # 根据分组排序
-    label.risk.df = arrange(label.risk.df, label)
+    label.risk.df = dplyr::arrange(label.risk.df, label)
 
     heatmap.df <- heatmap.df[,label.risk.df$index]
 
@@ -75,8 +76,9 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=N
 
   label <- label.risk.df$label
 
-  Tumor <- loonR::get.palette.color("jama_classic", n = length(unique(label.risk.df$label)))
+  Tumor <- loonR::get.palette.color(palette, n = length(unique(label.risk.df$label)))
   names(Tumor) <- levels(label)
+
 
 
 

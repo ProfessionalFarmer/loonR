@@ -160,12 +160,15 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = 
          eliminationCandidates=stringr::str_remove_all(names(unclass(coef(elimination))[-c(1)]),'`')
     )
 
-    elimination.df <- lg.df[ , c("label", res$eliminationCandidates) ]
 
-    elimination.df$risk.score = predict(res$StepwiseModel, elimination.df, type = "response")
-    res$elimination.result = elimination.df
-    res$elimination.ROC = loonR::roc_with_ci(elimination.df$label, elimination.df$risk.score, ci = FALSE)
-    res$elimination.AUC = loonR::get.AUC(elimination.df$risk.score, elimination.df$label, raw = F)
+    if(length(res$eliminationCandidates)!=0){
+      elimination.df <- lg.df[ , c("label", res$eliminationCandidates) ]
+      elimination.df$risk.score = predict(res$StepwiseModel, elimination.df, type = "response")
+      res$elimination.result = elimination.df
+      res$elimination.ROC = loonR::roc_with_ci(elimination.df$label, elimination.df$risk.score, ci = FALSE)
+      res$elimination.AUC = loonR::get.AUC(elimination.df$risk.score, elimination.df$label, raw = F)
+    }
+
 
   }else{
     glm.fit <- rms::lrm(label ~ .,lg.df, x = TRUE, y = TRUE)

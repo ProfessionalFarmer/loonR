@@ -1,6 +1,6 @@
 ## About package name
 
-The 'loon' is taken from the word 'Kowloon'. Loon stands for dragon in chinese.
+The 'loon' is taken from the word 'Kowloon'. Loon stands for dragon in Chinese.
 
 ## About this package
 

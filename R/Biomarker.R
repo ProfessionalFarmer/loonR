@@ -533,15 +533,24 @@ loo.cv.cox <- function(df, status, time,  seed=999, label=NA, scale =TRUE){
 #' Title Get model performace, sensitivity, sepcificity and others
 #'
 #' @param pred Predicted score
-#' @param labels True label
+#' @param labels T/F label
 #' @param best.cutoff
 #' @param digit 2 for 0.01, 3 for 0.001
+#' @param boot.n Default 2000
 #'
 #' @return
 #' @export
 #'
 #' @examples get_performance(risk.probability, label)
-get_performance <- function(pred, labels, best.cutoff =NA, digit = 2){  #  x="best", input = "threshold"
+get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2000){  #  x="best", input = "threshold"
+
+  labels = factor(labels)
+
+  if(length( setdiff(unique(labels), c(FALSE,TRUE)) ) != 0 ){
+    warning("Pls note second label will be used as TRUE label when get performance")
+    labels = labels == unique(labels)[2]
+  }
+
 
   # 这个更简单
   # reportROC::reportROC(gold = groups=="T", predictor = tmp.mir.exp, plot = F)
@@ -590,7 +599,7 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2){  #  x="be
   # get AUC CI
   set.seed(100)
   roc.obj <- pROC::roc(labels, pred, ci=TRUE, plot=FALSE)
-  auc <- pROC::ci(roc.obj,boot.n=2000)[c(2, 1, 3)]
+  auc <- pROC::ci(roc.obj, boot.n = boot.n)[c(2, 1, 3)]
   auc <- round(auc, digit)
   auc <- sprintf(string.format, auc[1], auc[2], auc[3])
 
@@ -598,7 +607,7 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2){  #  x="be
   set.seed(100)
   rets <- c("threshold", "specificity", "sensitivity", "accuracy", "tn", "tp", "fn", "fp", "npv",
             "ppv", "1-specificity", "1-sensitivity", "1-accuracy", "1-npv", "1-ppv", "precision", "recall")
-  others <- pROC::ci.coords(roc.obj, x = best.cutoff, boot.n = 2000, input = input, ret = rets, best.policy = "random", transpose = TRUE)
+  others <- pROC::ci.coords(roc.obj, x = best.cutoff, boot.n = boot.n, input = input, ret = rets, best.policy = "random", transpose = TRUE)
   # to be continue
 
   # ppv Precision  https://www.rdocumentation.org/packages/pROC/versions/1.16.2/topics/coords
@@ -976,7 +985,13 @@ plot_miRCorrelation <- function(df, title="miRs' correlation", cl.lim = c(-0.5,1
 #' @return ggplot object
 #' @export
 #'
-#' @examples roc_with_ci(labels, rs,
+#' @examples
+#' data("LIRI")
+#' loonR::roc_with_ci(LIRI$status, LIRI$ANLN,
+#'    panel = data.frame(Evebt=LIRI$status, LIRI[,c(3,4)])  )
+#'
+#'
+#' roc_with_ci(labels, rs,
 #' font = "Arial",
 #' palette = "jama_classic",
 #' title = "HGD vs Healthy",
@@ -1074,10 +1089,10 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
 
         tmp.res <- c(
           stringr::str_split( perf[c("Specificity"),c("confidence")],"-")[[1]][1],
-          perf[c("Specificity"),c("Value")],
+          perf[c("Specificity"),c("value")],
           stringr::str_split( perf[c("Specificity"),c("confidence")],"-")[[1]][2],
           stringr::str_split( perf[c("Recall"),c("confidence")],"-")[[1]][1],
-          perf[c("Recall"),c("Value")],
+          perf[c("Recall"),c("value")],
           stringr::str_split( perf[c("Recall"),c("confidence")],"-")[[1]][2]
         )
 
@@ -1086,29 +1101,30 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
       }
     p.mem.res <- as.data.frame(p.mem.res)
 
-    colnames(p.mem.res) <- c("specificity.low", "specificity.median", "specificity.high", "sensitivity.low", "sensitivity.median", "sensitivity.high")
+    colnames(p.mem.res) <- c("specificity.low", "specificity", "specificity.high", "sensitivity.low", "sensitivity", "sensitivity.high")
     row.names(p.mem.res) <- colnames(panel[,-c(1)])
 
 
+    # 1-specificity
     p + geom_segment(data=p.mem.res, color="#009090",
                      aes(x=1-specificity.high,
                          xend=1-specificity.low,
-                         ymin=(sensitivity.low+sensitivity.high)/2,
-                         ymax=(sensitivity.low+sensitivity.high)/2,
-                         y=(sensitivity.low+sensitivity.high)/2,
-                         yend=(sensitivity.low+sensitivity.high)/2)
-    )  +
+                         #ymin=(sensitivity)/2,
+                         #ymax=(sensitivity)/2,
+                         y=(sensitivity),
+                         yend=(sensitivity))
+    )  + # sensitivity
       geom_segment(data=p.mem.res,  color="#009090",
-                   aes(x=(1-specificity.high+1-specificity.low)/2,
-                       xend=(1-specificity.high+1-specificity.low)/2,
-                       ymin=sensitivity.low,
-                       ymax=sensitivity.high,
+                   aes(x=1-specificity,
+                       xend=1-specificity,
+                       #ymin=sensitivity.low,
+                       #ymax=sensitivity.high,
                        y=sensitivity.low,
                        yend=sensitivity.high)
       ) +
-      geom_point(data=p.mem.res, mapping=aes(x=(1-specificity.high+1-specificity.low)/2,
-                                             y=(sensitivity.low+sensitivity.high)/2,
-                                             ymin=0,ymax=0),
+      geom_point(data=p.mem.res, mapping=aes(x=(1-specificity),
+                                             y=(sensitivity)  #, ymin=0,ymax=0
+                                             ),
                  size=3.5, shape=16, fill="#009090",color="#009090")
 
   }
@@ -1279,10 +1295,10 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
 
         tmp.res <- c(
           stringr::str_split( perf[c("Specificity"),c("confidence")],"-")[[1]][1],
-          perf[c("Specificity"),c("Value")],
+          perf[c("Specificity"),c("value")],
           stringr::str_split( perf[c("Specificity"),c("confidence")],"-")[[1]][2],
           stringr::str_split( perf[c("Recall"),c("confidence")],"-")[[1]][1],
-          perf[c("Recall"),c("Value")],
+          perf[c("Recall"),c("value")],
           stringr::str_split( perf[c("Recall"),c("confidence")],"-")[[1]][2]
         )
 
@@ -1293,30 +1309,32 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
     #cat(dim(p.mem.res))
 
 
-    colnames(p.mem.res) <- c("specificity.low", "specificity.median", "specificity.high", "sensitivity.low", "sensitivity.median", "sensitivity.high")
+    colnames(p.mem.res) <- c("specificity.low", "specificity", "specificity.high", "sensitivity.low", "sensitivity", "sensitivity.high")
     row.names(p.mem.res) <- colnames(panel[,-c(1)])
     options(warn = oldw)
 
+    # 1-specificity
     p + geom_segment(data=p.mem.res, color="#009090",
                      aes(x=1-specificity.high,
                          xend=1-specificity.low,
-                         ymin=(sensitivity.low+sensitivity.high)/2,
-                         ymax=(sensitivity.low+sensitivity.high)/2,
-                         y=(sensitivity.low+sensitivity.high)/2,
-                         yend=(sensitivity.low+sensitivity.high)/2)
-    )  +
+                         #ymin=(sensitivity)/2,
+                         #ymax=(sensitivity)/2,
+                         y=(sensitivity),
+                         yend=(sensitivity))
+    )  + # sensitivity
       geom_segment(data=p.mem.res,  color="#009090",
-                   aes(x=(1-specificity.high+1-specificity.low)/2,
-                       xend=(1-specificity.high+1-specificity.low)/2,
-                       ymin=sensitivity.low,
-                       ymax=sensitivity.high,
+                   aes(x=1-specificity,
+                       xend=1-specificity,
+                       #ymin=sensitivity.low,
+                       #ymax=sensitivity.high,
                        y=sensitivity.low,
                        yend=sensitivity.high)
       ) +
-      geom_point(data=p.mem.res, mapping=aes(x=(1-specificity.high+1-specificity.low)/2,
-                                             y=(sensitivity.low+sensitivity.high)/2,
-                                             ymin=0,ymax=0),
-                 size=3.5, shape=16, fill="#009090",color="#009090")
+      geom_point(data=p.mem.res, mapping=aes(x=(1-specificity),
+                                             y=(sensitivity)  #, ymin=0,ymax=0
+      ),
+      size=3.5, shape=16, fill="#009090",color="#009090")
+
 
   }
   ## if else

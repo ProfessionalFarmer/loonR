@@ -4,14 +4,16 @@
 \alias{get_performance}
 \title{Title Get model performace, sensitivity, sepcificity and others}
 \usage{
-get_performance(pred, labels, best.cutoff = NA, digit = 2)
+get_performance(pred, labels, best.cutoff = NA, digit = 2, boot.n = 2000)
 }
 \arguments{
 \item{pred}{Predicted score}
 
-\item{labels}{True label}
+\item{labels}{T/F label}
 
 \item{digit}{2 for 0.01, 3 for 0.001}
+
+\item{boot.n}{Default 2000}
 }
 \value{
 

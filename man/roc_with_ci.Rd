@@ -37,6 +37,11 @@ ggplot object
 plot ROC with CI. Stratified bootstrap 2000 times
 }
 \examples{
+data("LIRI")
+loonR::roc_with_ci(LIRI$status, LIRI$ANLN,
+   panel = data.frame(Evebt=LIRI$status, LIRI[,c(3,4)])  )
+
+
 roc_with_ci(labels, rs,
 font = "Arial",
 palette = "jama_classic",

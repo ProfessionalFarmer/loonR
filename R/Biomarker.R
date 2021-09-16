@@ -100,7 +100,19 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE, ty
 
   #stopCluster(cl)
   cv.res.mean <- cv.res.mean[match(row.names(df), cv.res.mean$Name), ]
-  cv.res.mean
+
+  p = loonR::roc_with_ci(final.cv.res$Label, final.cv.res$Mean, ci="FALSE", title = "Cross validation")
+
+  cv.res.return = list()
+  cv.res.return$data = cv.res.mean
+  cv.res.return$Label = cv.res.mean$Label
+  cv.res.return$Mean = cv.res.mean$Mean
+  cv.res.return$Name = cv.res.mean$Name
+  cv.res.return$ROC = p
+  cv.res.return$Raw = cv.res
+
+  cv.res.return
+
 }
 
 
@@ -120,6 +132,10 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE, ty
 #' @export
 #'
 #' @examples
+#'
+#' data("LIRI")
+#' lg.res <- loonR::build.logistic.model(LIRI[,3:5],LIRI$status)
+#'
 build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = "backward", rms = FALSE){
 
   cat("Pls note: Second unique variable is defined as experiment group\n")
@@ -135,6 +151,7 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = 
 
   set.seed(seed)
   if(!rms){
+
     # The type="response" option tells R to output probabilities of the form P(Y = 1|X), as opposed to other information such as the logit.
     suppressWarnings( glm.fit <- glm(label ~ ., data = lg.df, family = binomial(logit)) )
     elimination = step(glm.fit, direction = direction, trace = 0)
@@ -142,6 +159,14 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = 
          StepwiseModel=elimination,
          eliminationCandidates=stringr::str_remove_all(names(unclass(coef(elimination))[-c(1)]),'`')
     )
+
+    elimination.df <- lg.df[ , c("label", res$eliminationCandidates) ]
+
+    elimination.df$risk.score = predict(res$StepwiseModel, elimination.df, type = "response")
+    res$elimination.result = elimination.df
+    res$elimination.ROC = loonR::roc_with_ci(elimination.df$label, elimination.df$risk.score, ci = FALSE)
+    res$elimination.AUC = loonR::get.AUC(elimination.df$risk.score, elimination.df$label, raw = F)
+
   }else{
     glm.fit <- rms::lrm(label ~ .,lg.df, x = TRUE, y = TRUE)
     res <- list(model=glm.fit)
@@ -152,6 +177,9 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = 
 
   res$data = lg.df
   res$ROC = p
+  res$AUC = loonR::get.AUC(lg.df$risk.score, lg.df$label, raw = F)
+
+
 
   res
 
@@ -1692,22 +1720,32 @@ get.YoudenIndex <- function(pred, label){
 }
 
 
-#' Title
+#' Obtain AUC value
 #'
-#' @param pred
-#' @param label
+#' @param pred Predicted score or probability
+#' @param label label/class/group
+#' @param raw Default TRUE, return raw auc result with description
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get.AUC <- function(pred, label){
+#' data("LIRI")
+#' loonR::get.AUC(LIRI$ANLN, LIRI$status)
+#'
+get.AUC <- function(pred, label, raw=TRUE){
 
   library(pROC)
   library(caret)
 
   roc_obj <- roc(label, pred, quiet=TRUE)
-  auc(roc_obj)
+  if(raw){
+    auc(roc_obj)
+  }else{
+    auc = stringr::str_remove( auc(roc_obj), "Area under the curve: " )
+    round( as.numeric(auc), digits = 3)
+  }
+
 
 }
 

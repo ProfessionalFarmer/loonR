@@ -31,3 +31,9 @@ eliminationCandidates=stringr::str_remove_all(names(unclass(coef(elimination))\l
 \description{
 Build a logistic model
 }
+\examples{
+
+data("LIRI")
+lg.res <- loonR::build.logistic.model(LIRI[,3:5],LIRI$status)
+
+}

@@ -2,16 +2,25 @@
 % Please edit documentation in R/Biomarker.R
 \name{get.AUC}
 \alias{get.AUC}
-\title{Title}
+\title{Obtain AUC value}
 \usage{
-get.AUC(pred, label)
+get.AUC(pred, label, raw = TRUE)
 }
 \arguments{
-\item{label}{}
+\item{pred}{Predicted score or probability}
+
+\item{label}{label/class/group}
+
+\item{raw}{Default TRUE, return raw auc result with description}
 }
 \value{
 
 }
 \description{
-Title
+Obtain AUC value
+}
+\examples{
+data("LIRI")
+loonR::get.AUC(LIRI$ANLN, LIRI$status)
+
 }

@@ -15,7 +15,7 @@ generateCombinations(
 \arguments{
 \item{panel}{panel which will be used to make combinations}
 
-\item{size}{size of a single combination}
+\item{size}{size of a single combination. Can be a signle value or a vector value}
 
 \item{repeats}{Default FALSE, not allow repeats}
 

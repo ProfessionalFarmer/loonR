@@ -2,7 +2,7 @@
 % Please edit documentation in R/Common.R
 \name{plotSilhouette}
 \alias{plotSilhouette}
-\title{Title}
+\title{Silhouette plot}
 \usage{
 plotSilhouette(
   df,
@@ -23,5 +23,5 @@ plotSilhouette(
 
 }
 \description{
-Title
+Silhouette plot
 }

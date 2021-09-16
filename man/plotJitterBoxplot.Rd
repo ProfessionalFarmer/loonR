@@ -2,36 +2,66 @@
 % Please edit documentation in R/Common.R
 \name{plotJitterBoxplot}
 \alias{plotJitterBoxplot}
-\title{Boxplot with jitter}
+\title{Boxplot with jitter, barplot with mean_se, violin plot with box}
 \usage{
 plotJitterBoxplot(
-  values,
+  xvalues,
+  yvalues,
   group,
   title = "",
-  xlab = "Group",
+  xlab = "",
   ylab = "Value",
+  group.name = "Group",
   color = "aaas",
-  comparisons = "",
+  comparisons = NULL,
   method = "wilcox.test",
   label.y = NULL,
-  add = "jitter",
-  alternative = "both"
+  add = NULL,
+  alternative = "two.sided",
+  rotate.x = 0,
+  outlier.shape = 19,
+  ylim = NULL,
+  stat = TRUE,
+  barplot = FALSE,
+  violin = FALSE,
+  facet = FALSE
 )
 }
 \arguments{
-\item{values}{vector}
-
 \item{group}{vector}
 
 \item{comparisons}{list( c("N", "T") )}
 
 \item{method}{wilcox.test or t.test}
 
-\item{label.y}{}
+\item{add}{Default jitter for boxplot, mean_se for barplot, boxplot for violin. character vector for adding another plot element (e.g.: dot plot or error bars). Allowed values are one or the combination of: "none", "dotplot", "jitter", "boxplot", "point", "mean", "mean_se", "mean_sd", "mean_ci", "mean_range", "median", "median_iqr", "median_hilow", "median_q1q3", "median_mad", "median_range"; see ?desc_statby for more details.}
+
+\item{alternative}{should be one of “two.sided”, “less”, “greater”}
+
+\item{rotate.x}{Default 0. numeric value specifying the rotation angle. 90 for vertical x-axis text.}
+
+\item{outlier.shape}{point shape of outlier. Default is 19. To hide outlier, specify outlier.shape = NA. When jitter is added, then outliers will be automatically hidden.}
+
+\item{facet}{stat can work only after setting facet=TRUE}
 }
 \value{
 
 }
 \description{
-Boxplot with jitter
+Boxplot with jitter, barplot with mean_se, violin plot with box
+}
+\examples{
+data("LIRI")
+liri.melt <- loonR::melt
+
+d.frame = LIRI[,3:6]
+group = LIRI$status
+liri.melt <- loonR::meltDataFrameByGroup(d.frame, group)
+
+xvalues=liri.melt$Gene
+yvalues=liri.melt$value
+group=liri.melt$Group
+
+loonR::plotJitterBoxplot(xvalues, yvalues, group, violin = T, facet = T)
+
 }

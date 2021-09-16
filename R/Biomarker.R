@@ -1038,15 +1038,20 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
       foreach(p.mem = colnames(panel[,-c(1)]), .combine = rbind) %dopar% {
         cat(p.mem,"\n")
         set.seed(100)
-        obj <- pROC::roc( panel[,c(1)], panel[,p.mem], ci=TRUE, plot=FALSE)
 
-        # get performance
-        set.seed(100)
-        others <- ci.coords(obj, x="best", input="threshold", best.policy = "random")
+        perf = loonR::get_performance(panel[,p.mem], panel[,c(1)] )
 
-        tmp.res <- c(as.numeric( round(as.vector(others[["specificity"]]),2)  )  )
-        tmp.res <- c(tmp.res, as.numeric( round(as.vector(others[["sensitivity"]]),2)  )  )
+        tmp.res <- c(
+          stringr::str_split( perf[c("Specificity"),c("confidence")],"-")[[1]][1],
+          perf[c("Specificity"),c("Value")],
+          stringr::str_split( perf[c("Specificity"),c("confidence")],"-")[[1]][2],
+          stringr::str_split( perf[c("Recall"),c("confidence")],"-")[[1]][1],
+          perf[c("Recall"),c("Value")],
+          stringr::str_split( perf[c("Recall"),c("confidence")],"-")[[1]][2]
+        )
+
         as.numeric(tmp.res)
+
       }
     p.mem.res <- as.data.frame(p.mem.res)
 
@@ -1238,14 +1243,18 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
       foreach(p.mem = colnames(panel[,-c(1)]), .combine = rbind) %dopar% {
         cat(p.mem,"\n")
         set.seed(100)
-        obj <- pROC::roc( panel[,c(1)], panel[,p.mem], ci=TRUE, plot=FALSE)
 
-        # get performance
-        set.seed(100)
-        others <- ci.coords(obj, x="best", input="threshold", best.policy = "random")
+        perf = loonR::get_performance(panel[,p.mem], panel[,c(1)] )
 
-        tmp.res <- c(as.numeric( round(as.vector(others[["specificity"]]),2)  )  )
-        tmp.res <- c(tmp.res, as.numeric( round(as.vector(others[["sensitivity"]]),2)  )  )
+        tmp.res <- c(
+          stringr::str_split( perf[c("Specificity"),c("confidence")],"-")[[1]][1],
+          perf[c("Specificity"),c("Value")],
+          stringr::str_split( perf[c("Specificity"),c("confidence")],"-")[[1]][2],
+          stringr::str_split( perf[c("Recall"),c("confidence")],"-")[[1]][1],
+          perf[c("Recall"),c("Value")],
+          stringr::str_split( perf[c("Recall"),c("confidence")],"-")[[1]][2]
+        )
+
         as.numeric(tmp.res)
       }
     p.mem.res <- as.data.frame(p.mem.res)
@@ -2052,6 +2061,28 @@ nomogram.plot <- function(fit=NULL, data = NULL, fun.list = NA, lp =F){
 }
 
 
+
+#' Compare two ROC curves
+#'
+#' @param risk1
+#' @param lab1
+#' @param risk2
+#' @param lab2
+#' @param method the method to use, either “delong”, “bootstrap” or “venkatraman”. The first letter is sufficient.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+compareROC <- function(risk1, lab1, risk2, lab2, method = c("delong", "bootstrap", "venkatraman") ){
+
+  method  = match.arg(method)
+
+  pROC::roc.test( pROC::roc(lab1, risk1),
+                  pROC::roc(lab2, risk2),
+                  method=method)
+
+}
 
 
 

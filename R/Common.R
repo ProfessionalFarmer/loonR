@@ -232,41 +232,10 @@ show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = 
 }
 
 
-#' Plot bar with mean and standard error
-#'
-#' @param values vector
-#' @param group vector
-#' @param title
-#' @param xlab
-#' @param ylab
-#' @param color
-#' @param comparisons list( c("N", "T") )
-#' @param method wilcox.test or t.test
-#' @param label.y
-#' @param rotate.x Default 0. numeric value specifying the rotation angle. 90 for vertical x-axis text.
-#'
-#' @return
-#' @export
-#'
-#' @examples
-plotBarWithErr <- function(values, group, title = "", xlab = "X label", ylab = "Mean", color = "aaas", comparisons = '', method = "wilcox.test", label.y = NULL, rotate.x = 0){
-  library(ggpubr)
-  tmp.df <- data.frame(Value = values, Group = as.factor(group), stringsAsFactors = FALSE, check.names = F)
-  colnames(tmp.df) <- c(ylab, xlab)
-
-  p <- ggbarplot(tmp.df, x = xlab, y = ylab, add = "mean_se", fill = xlab, palette = color, title = title ) +
-    rotate_x_text(angle = rotate.x)
-
-  if(comparisons != ''){# label = "p.signif"
-    p <- p + stat_compare_means( method = method, comparisons =comparisons, label.y = label.y )
-  }
-  p
-}
 
 
-#' Boxplot with jitter
+#' Boxplot with jitter, barplot with mean_se, violin plot with box
 #'
-#' @param values  vector
 #' @param group  vector
 #' @param title
 #' @param xlab
@@ -275,28 +244,106 @@ plotBarWithErr <- function(values, group, title = "", xlab = "X label", ylab = "
 #' @param comparisons list( c("N", "T") )
 #' @param method wilcox.test or t.test
 #' @param label.y
+#' @param xvalues
+#' @param yvalues
+#' @param add Default jitter for boxplot, mean_se for barplot, boxplot for violin. character vector for adding another plot element (e.g.: dot plot or error bars). Allowed values are one or the combination of: "none", "dotplot", "jitter", "boxplot", "point", "mean", "mean_se", "mean_sd", "mean_ci", "mean_range", "median", "median_iqr", "median_hilow", "median_q1q3", "median_mad", "median_range"; see ?desc_statby for more details.
+#' @param alternative should be one of “two.sided”, “less”, “greater”
+#' @param rotate.x Default 0. numeric value specifying the rotation angle. 90 for vertical x-axis text.
+#' @param group.name
+#' @param outlier.shape point shape of outlier. Default is 19. To hide outlier, specify outlier.shape = NA. When jitter is added, then outliers will be automatically hidden.
+#' @param ylim
+#' @param stat
+#' @param barplot
+#' @param violin
+#' @param facet stat can work only after setting facet=TRUE
 #'
 #' @return
 #' @export
 #'
 #' @examples
-plotJitterBoxplot <- function(values, group, title = "", xlab = "Group", ylab = "Value", color = "aaas", comparisons = '', method = "wilcox.test", label.y = NULL, add = "jitter", alternative = "both"){
+#' data("LIRI")
+#' liri.melt <- loonR::melt
+#'
+#' d.frame = LIRI[,3:6]
+#' group = LIRI$status
+#' liri.melt <- loonR::meltDataFrameByGroup(d.frame, group)
+#'
+#' xvalues=liri.melt$Gene
+#' yvalues=liri.melt$value
+#' group=liri.melt$Group
+#'
+#' loonR::plotJitterBoxplot(xvalues, yvalues, group, violin = T, facet = T)
+#'
+plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", ylab = "Value",
+                              group.name = "Group", color = "aaas",
+                              comparisons = NULL, method = "wilcox.test", label.y = NULL, add = NULL,
+                              alternative = "two.sided", rotate.x = 0, outlier.shape = 19, ylim=NULL, stat = TRUE,
+                              barplot=FALSE, violin = FALSE, facet=FALSE){
+
+  group = as.character(group)
+
+  if(length(unique(group))==2){ comparisons = list( c(unique(group)) ) }
+
   library(ggpubr)
-  tmp.df <- data.frame(Value = values, Group = as.factor(group), stringsAsFactors = FALSE, check.names = F)
-  colnames(tmp.df) <- c(ylab, xlab)
+  tmp.df <- data.frame(X = xvalues, Y = yvalues,
+                       Group = as.character(group),
+                       stringsAsFactors = FALSE,
+                       check.names = F)
+  colnames(tmp.df)[3] <- group.name
 
-  p <- ggboxplot(tmp.df, x=xlab, y=ylab,
-                 outlier.shape = NA, title = title,
-                 add = add,  color = xlab,
-                 palette = color )
+  if(facet){
 
-  if(comparisons != ''){# label = "p.signif"
-    p <- p + stat_compare_means(method = method,
-                                comparisons =comparisons,
-                                label.y = label.y,
-                                method.args = list(alternative = alternative))
+    if(barplot){
+      if(is.null(add)){add="mean_se"}
+      p <- ggbarplot(tmp.df, x = group.name, y="Y", add = add, fill = group.name,  ylim = ylim,
+                     palette = color, title = title, position = position_dodge(0.9))
+    }else if(violin){
+      if(is.null(add)){add="boxplot"}
+      p <- ggviolin(tmp.df, x=group.name, y="Y", fill = group.name,  ylim = ylim,
+                    palette = color, title = title, color = group.name, shape = group.name,
+                    add = add, add.params = list(fill = "white") )
+    }else{
+      if(is.null(add)){add="jitter"}
+      p <- ggboxplot(tmp.df, x=group.name, y="Y",
+                     outlier.shape = outlier.shape,
+                     add = add,  color = group.name, ylim = ylim,
+                     palette = color)
+    }
+
+    p = facet(p, facet.by = "X", nrow = 1)
+
+    if(stat & !is.null(comparisons)  ){# label = "p.signif"
+      p <- p + stat_compare_means(method = method,
+                                  comparisons = comparisons,
+                                  label.y = label.y,
+                                  method.args = list(alternative = alternative))
+    }
+
+  }else{
+    if(barplot){
+      if(is.null(add)){add="mean_se"}
+      p <- ggbarplot(tmp.df, x="X", y="Y", add = add, fill = group.name,  ylim = ylim,
+                     palette = color, title = title, position = position_dodge(0.9) ) +
+        rotate_x_text(angle = rotate.x)
+    }else if(violin){
+      if(is.null(add)){add="boxplot"}
+      p <- ggviolin(tmp.df, x="X", y="Y", fill = group.name,  ylim = ylim,
+                    palette = color, title = title, color = group.name, shape = group.name,
+                    add = add, add.params = list(fill = "white") ) +
+        rotate_x_text(angle = rotate.x)
+    }else{
+      if(is.null(add)){add="jitter"}
+      p <- ggboxplot(tmp.df, x="X", y="Y",
+                     outlier.shape = outlier.shape,
+                     add = add,  color = group.name, ylim = ylim,
+                     palette = color ) + rotate_x_text(angle = rotate.x)
+    }
   }
+
+
+  p = ggpar(p, xlab = xlab, ylab = ylab, title = title)
   p
+
 
 }
 
@@ -304,7 +351,7 @@ plotJitterBoxplot <- function(values, group, title = "", xlab = "Group", ylab = 
 
 
 
-#' Title
+#' Silhouette plot
 #'
 #' @param df row is feature, column is sample
 #' @param group
@@ -674,6 +721,9 @@ scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRU
 #' @export
 #'
 #' @examples
+#' data(LIRI)
+#' loonR::plotClevelandDot(1:10, LIRI$ANLN[1:10], lollipop = T )
+#'
 plotClevelandDot <- function(name, value, group=NA, palette = "aaas", dot.size = 2, ylab = NULL, legend.title = "Group", title = "",
                              cleveland = TRUE, lollipop = FALSE, value.name = "Value",  sample.name = "Name"){
 
@@ -696,7 +746,7 @@ plotClevelandDot <- function(name, value, group=NA, palette = "aaas", dot.size =
                     rotate = TRUE,                                # Rotate vertically
                     dot.size = dot.size,                          # Large dot size
                     y.text.col = TRUE,                            # Color y text by groups
-                    ylab = ylab,
+                    ylab = ylab, # position = position_dodge(0.9),
                     ggtheme = theme_pubr()                        # ggplot2 theme
     )  +  theme_cleveland()                                      # Add dashed grids
   }else if(lollipop){
@@ -705,7 +755,7 @@ plotClevelandDot <- function(name, value, group=NA, palette = "aaas", dot.size =
                     # c("#00AFBB", "#E7B800", "#FC4E07")
                     palette = ifelse(anyNA(group)&palette=="aaas","#00AFBB", palette) , # Custom color palette
                     sorting = "ascending",                        # Sort value in descending order
-                    add = "segments",                             # Add segments from y = 0 to dots
+                    add = "segments", # position = position_dodge(0.9),                             # Add segments from y = 0 to dots
                     ggtheme = theme_pubr()    # ggplot2 theme
     )
 
@@ -1111,7 +1161,7 @@ is.nan.data.frame <- function(x) {
 #' Gnenerate combinations with specified size
 #'
 #' @param panel panel which will be used to make combinations
-#' @param size size of a single combination
+#' @param size size of a single combination. Can be a signle value or a vector value
 #' @param repeats Default FALSE, not allow repeats
 #' @param vector
 #' @param sep If return a vector, sep is needed
@@ -1125,7 +1175,7 @@ generateCombinations <- function(panel=NULL, size = 0, repeats=FALSE, vector=FAL
 
     res <- lapply(size, function(x){
       combs = gtools::combinations(length(panel), x, panel, repeats=repeats)
-      if(vector==TURE){
+      if(vector==TRUE){
         if(x==1){
           combs = unclass(unlist(combs[,1]))
         }else{
@@ -1198,4 +1248,29 @@ genereateLabelsByGroup <- function(label=NULL,...){
 
 }
 
+
+
+#' Melt data frame by group
+#'
+#' @param d.frame Row is sample, column is feature.
+#' @param group
+#' @param na.rm Default TRUE. Should NA values be removed from the data set?
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data(LIRI)
+#' d.frame = LIRI[,3:6]
+#' group = LIRI$status
+#' loonR::meltDataFrameByGroup(d.frame, group)
+meltDataFrameByGroup <- function(d.frame, group, na.rm = TRUE, variable_name="Gene"){
+
+  melt.df <- data.frame(d.frame, Group = group,
+                        check.names = F, stringsAsFactors = F)
+
+  melted.df <- reshape2::melt(melt.df, id.vars="Group", na.rm = na.rm, variable.name = variable_name )
+
+
+}
 

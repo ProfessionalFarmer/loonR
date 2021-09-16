@@ -435,7 +435,7 @@ riskCalibrationPlot.default <- function(group, pred, rms.method = FALSE, title =
 
 
   if(rms.method){
-    print(rms::val.prob(df$pred, as.numeric(df$Class)))
+    print( rms::val.prob(df$pred, as.numeric(df$Class))  )
     return()
   }
 
@@ -656,5 +656,19 @@ time_serials_Cindex <- function(list.cox.model, df, palette="aaas", main=""){
        legend.cex=1,    #图例字号
   );title(main = main)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

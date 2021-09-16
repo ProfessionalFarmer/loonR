@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.570</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.579</span>
       </span>
     </div>
 
@@ -120,7 +120,7 @@
     <pre class="usage"><span class='fu'>heatmap.with.lgfold.riskpro</span><span class='op'>(</span>
   <span class='va'>heatmap.df</span>,
   <span class='va'>label</span>,
-  <span class='va'>risk.pro</span>,
+  risk.pro <span class='op'>=</span> <span class='cn'>NA</span>,
   lgfold <span class='op'>=</span> <span class='cn'>NA</span>,
   scale <span class='op'>=</span> <span class='cn'>TRUE</span>,
   group.name <span class='op'>=</span> <span class='st'>"Cancer"</span>,
@@ -133,7 +133,8 @@
   cluster_rows <span class='op'>=</span> <span class='cn'>FALSE</span>,
   cluster_columns <span class='op'>=</span> <span class='cn'>FALSE</span>,
   z.score.cutoff <span class='op'>=</span> <span class='fl'>2</span>,
-  specified.color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"#0c3e74"</span>, <span class='st'>"#77a8cd"</span>, <span class='st'>"white"</span>, <span class='st'>"#d86652"</span>, <span class='st'>"#7e0821"</span><span class='op'>)</span>
+  specified.color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"#0c3e74"</span>, <span class='st'>"#77a8cd"</span>, <span class='st'>"white"</span>, <span class='st'>"#d86652"</span>, <span class='st'>"#7e0821"</span><span class='op'>)</span>,
+  palette <span class='op'>=</span> <span class='st'>"jama_classic"</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -165,7 +166,7 @@
     </tr>
     <tr>
       <th>show.lgfold</th>
-      <td><p>= TRUE。 Whether to show right panel.</p></td>
+      <td><p>= TRUE. Whether to show right panel.</p></td>
     </tr>
     <tr>
       <th>show_column_names</th>
@@ -178,6 +179,10 @@
     <tr>
       <th>specified.color</th>
       <td><p>Default c("#0c3e74","#77a8cd","white","#d86652","#7e0821") or colorRampPalette(c("navy", "white", "firebrick3"))(50)</p></td>
+    </tr>
+    <tr>
+      <th>palette</th>
+      <td><p>Color palette for group. Default "jama_classic"</p></td>
     </tr>
     </table>
 

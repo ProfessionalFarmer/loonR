@@ -44,3 +44,8 @@ plotClevelandDot(
 \description{
 Draw Celventland dot plot
 }
+\examples{
+data(LIRI)
+loonR::plotClevelandDot(1:10, LIRI$ANLN[1:10], lollipop = T )
+
+}

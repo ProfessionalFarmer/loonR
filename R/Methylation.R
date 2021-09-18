@@ -106,7 +106,7 @@ loadMethylationArraryData <- function(dir, arraytype = 'EPIC', combat=FALSE, bat
 #'
 #' beta.df = myImport$beta
 #' group = myImport$pd$Sample_Group
-#' loonR::ChAMP_QC_Pipeline(Sample.beta.df=beta.df, Sample.Group=group)
+#' loonR::ChAMP_QC_Pipeline_Frome_Beta_Value(Sample.beta.df=beta.df, Sample.Group=group)
 #'
 ChAMP_QC_Pipeline_Frome_Beta_Value <- function(Sample.beta.df=NULL, Sample.Group='', Slide = '', arraytype=c("450K","EPIC"), CpG.GUI=FALSE, QC.GUI=FALSE, combat=FALSE, batchname=c("Slide") ){
 

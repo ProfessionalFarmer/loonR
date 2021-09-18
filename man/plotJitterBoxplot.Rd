@@ -13,6 +13,7 @@ plotJitterBoxplot(
   ylab = "Value",
   group.name = "Group",
   color = "aaas",
+  color.by.x = FALSE,
   comparisons = NULL,
   method = "wilcox.test",
   label.y = NULL,
@@ -21,26 +22,31 @@ plotJitterBoxplot(
   rotate.x = 0,
   outlier.shape = 19,
   ylim = NULL,
-  stat = TRUE,
+  stat = FALSE,
   barplot = FALSE,
   violin = FALSE,
-  facet = FALSE
+  facet = FALSE,
+  dotplot = FALSE
 )
 }
 \arguments{
 \item{group}{vector}
 
+\item{color.by.x}{Group by x lab. In this way we can perform stats}
+
 \item{comparisons}{list( c("N", "T") )}
 
 \item{method}{wilcox.test or t.test}
 
-\item{add}{Default jitter for boxplot, mean_se for barplot, boxplot for violin. character vector for adding another plot element (e.g.: dot plot or error bars). Allowed values are one or the combination of: "none", "dotplot", "jitter", "boxplot", "point", "mean", "mean_se", "mean_sd", "mean_ci", "mean_range", "median", "median_iqr", "median_hilow", "median_q1q3", "median_mad", "median_range"; see ?desc_statby for more details.}
+\item{add}{Default jitter for boxplot, mean_se for barplot, boxplot for violin and dot plot. character vector for adding another plot element (e.g.: dot plot or error bars). Allowed values are one or the combination of: "none", "dotplot", "jitter", "boxplot", "point", "mean", "mean_se", "mean_sd", "mean_ci", "mean_range", "median", "median_iqr", "median_hilow", "median_q1q3", "median_mad", "median_range"; see ?desc_statby for more details.}
 
 \item{alternative}{should be one of “two.sided”, “less”, “greater”}
 
 \item{rotate.x}{Default 0. numeric value specifying the rotation angle. 90 for vertical x-axis text.}
 
 \item{outlier.shape}{point shape of outlier. Default is 19. To hide outlier, specify outlier.shape = NA. When jitter is added, then outliers will be automatically hidden.}
+
+\item{stat}{Default FALSE}
 
 \item{facet}{stat can work only after setting facet=TRUE}
 }
@@ -52,7 +58,6 @@ Boxplot with jitter, barplot with mean_se, violin plot with box
 }
 \examples{
 data("LIRI")
-liri.melt <- loonR::melt
 
 d.frame = LIRI[,3:6]
 group = LIRI$status

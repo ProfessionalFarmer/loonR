@@ -21,5 +21,5 @@ Melt data frame by group
 data(LIRI)
 d.frame = LIRI[,3:6]
 group = LIRI$status
-loonR::meltDataFrameByGroup(d.frame, group)
+head( loonR::meltDataFrameByGroup(d.frame, group) )
 }

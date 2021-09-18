@@ -2,7 +2,7 @@
 % Please edit documentation in R/Biomarker.R
 \name{getOneRoundCVRes}
 \alias{getOneRoundCVRes}
-\title{Title}
+\title{Get one round CV result}
 \usage{
 getOneRoundCVRes(df, label, k, seed = 1, times = 1, type = "response")
 }
@@ -21,5 +21,5 @@ getOneRoundCVRes(df, label, k, seed = 1, times = 1, type = "response")
 
 }
 \description{
-Title
+Get one round CV result
 }

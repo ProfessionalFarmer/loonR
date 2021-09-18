@@ -18,13 +18,14 @@
 #' @param cluster_columns
 #' @param specified.color Default c("#0c3e74","#77a8cd","white","#d86652","#7e0821") or colorRampPalette(c("navy", "white", "firebrick3"))(50)
 #' @param palette Color palette for group. Default "jama_classic"
+#' @param show_row_names Defaut TRUE
 #'
 #' @return A heatmap plot by complex heatmap
 #' @export
 #'
 #' @examples heatmap.with.lgfold.riskpro(data.tmp[candi,],label, logfd,  risk.pro)
 heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=NA, scale=TRUE, group.name="Cancer", bar.name = "Log2FC", ylim = c(0, 1),
-                                        show.lgfold = TRUE, show.risk.pro = TRUE, height = 5, show_column_names = FALSE, cluster_rows = FALSE,
+                                        show.lgfold = TRUE, show.risk.pro = TRUE, height = 5, show_column_names = FALSE, show_row_names = TRUE, cluster_rows = FALSE,
                                         cluster_columns = FALSE, z.score.cutoff = 2, specified.color = c("#0c3e74","#77a8cd","white","#d86652","#7e0821"), palette = "jama_classic" ){
 
   if (!require(ComplexHeatmap)) {
@@ -37,10 +38,14 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=N
     lgfold <- replicate(nrow(heatmap.df), 1)
   }
 
-  label <- factor(label, levels = unique(label))
+  if(!is.factor(label)){
+    label <- factor(label, levels = unique(label))
+  }
 
   label.risk.df <- data.frame(
-    label = label, risk.pro = risk.pro, index = (1:length(label))
+    label = label,
+    risk.pro = risk.pro,
+    index = (1:length(label))
   )
 
 
@@ -113,7 +118,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=N
     Heatmap(heatmap.df,
       col = specified.color,
       name = " ", cluster_rows = cluster_rows, cluster_columns = cluster_columns,
-      show_row_names = TRUE, show_column_names = show_column_names, height = unit(height, "cm"),
+      show_row_names = show_row_names, show_column_names = show_column_names, height = unit(height, "cm"),
       top_annotation = ha,
       right_annotation = row_ha
     )
@@ -121,7 +126,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=N
     Heatmap(heatmap.df,
       col = specified.color,
       name = " ", cluster_rows = cluster_rows, cluster_columns = cluster_columns,
-      show_row_names = TRUE, show_column_names = show_column_names, height = unit(height, "cm"),
+      show_row_names = show_row_names, show_column_names = show_column_names, height = unit(height, "cm"),
       top_annotation = ha
     )
   }

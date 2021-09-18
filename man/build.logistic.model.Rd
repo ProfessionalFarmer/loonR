@@ -35,5 +35,6 @@ Build a logistic model
 
 data("LIRI")
 lg.res <- loonR::build.logistic.model(LIRI[,3:5],LIRI$status)
+lg.res
 
 }

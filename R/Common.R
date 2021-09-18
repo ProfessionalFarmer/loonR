@@ -236,6 +236,8 @@ show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = 
 
 #' Boxplot with jitter, barplot with mean_se, violin plot with box
 #'
+#' @param xvalues
+#' @param yvalues
 #' @param group  vector
 #' @param title
 #' @param xlab
@@ -244,25 +246,24 @@ show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = 
 #' @param comparisons list( c("N", "T") )
 #' @param method wilcox.test or t.test
 #' @param label.y
-#' @param xvalues
-#' @param yvalues
-#' @param add Default jitter for boxplot, mean_se for barplot, boxplot for violin. character vector for adding another plot element (e.g.: dot plot or error bars). Allowed values are one or the combination of: "none", "dotplot", "jitter", "boxplot", "point", "mean", "mean_se", "mean_sd", "mean_ci", "mean_range", "median", "median_iqr", "median_hilow", "median_q1q3", "median_mad", "median_range"; see ?desc_statby for more details.
+#' @param add Default jitter for boxplot, mean_se for barplot, boxplot for violin and dot plot. character vector for adding another plot element (e.g.: dot plot or error bars). Allowed values are one or the combination of: "none", "dotplot", "jitter", "boxplot", "point", "mean", "mean_se", "mean_sd", "mean_ci", "mean_range", "median", "median_iqr", "median_hilow", "median_q1q3", "median_mad", "median_range"; see ?desc_statby for more details.
 #' @param alternative should be one of “two.sided”, “less”, “greater”
 #' @param rotate.x Default 0. numeric value specifying the rotation angle. 90 for vertical x-axis text.
 #' @param group.name
 #' @param outlier.shape point shape of outlier. Default is 19. To hide outlier, specify outlier.shape = NA. When jitter is added, then outliers will be automatically hidden.
 #' @param ylim
-#' @param stat
+#' @param stat Default FALSE
 #' @param barplot
 #' @param violin
 #' @param facet stat can work only after setting facet=TRUE
+#' @param dotplot
+#' @param color.by.x Group by x lab. In this way we can perform stats
 #'
 #' @return
 #' @export
 #'
 #' @examples
 #' data("LIRI")
-#' liri.melt <- loonR::melt
 #'
 #' d.frame = LIRI[,3:6]
 #' group = LIRI$status
@@ -275,18 +276,29 @@ show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = 
 #' loonR::plotJitterBoxplot(xvalues, yvalues, group, violin = T, facet = T)
 #'
 plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", ylab = "Value",
-                              group.name = "Group", color = "aaas",
+                              group.name = "Group", color = "aaas", color.by.x = FALSE,
                               comparisons = NULL, method = "wilcox.test", label.y = NULL, add = NULL,
-                              alternative = "two.sided", rotate.x = 0, outlier.shape = 19, ylim=NULL, stat = TRUE,
-                              barplot=FALSE, violin = FALSE, facet=FALSE){
+                              alternative = "two.sided", rotate.x = 0, outlier.shape = 19, ylim=NULL, stat = FALSE,
+                              barplot=FALSE, violin = FALSE, facet=FALSE, dotplot=FALSE){
+  if(!is.numeric(rotate.x)){
+    stop("Please set rotate.x a numeric value not string")
+  }
 
-  group = as.character(group)
+  if(color.by.x){
+    group=xvalues
+  }
+
+  if(!is.factor(group)){
+    group = as.character(group)
+    group = factor(group)
+  }
+
 
   if(length(unique(group))==2){ comparisons = list( c(unique(group)) ) }
 
   library(ggpubr)
   tmp.df <- data.frame(X = xvalues, Y = yvalues,
-                       Group = as.character(group),
+                       Group = group,
                        stringsAsFactors = FALSE,
                        check.names = F)
   colnames(tmp.df)[3] <- group.name
@@ -296,20 +308,28 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
     if(barplot){
       if(is.null(add)){add="mean_se"}
       p <- ggbarplot(tmp.df, x = group.name, y="Y", add = add, fill = group.name,  ylim = ylim,
-                     palette = color, title = title, position = position_dodge(0.9))
+                     show.legend = FALSE, legend = '',
+                     palette = color, position = position_dodge(0.9))
     }else if(violin){
       if(is.null(add)){add="boxplot"}
-      p <- ggviolin(tmp.df, x=group.name, y="Y", fill = group.name,  ylim = ylim,
-                    palette = color, title = title, color = group.name, shape = group.name,
+      p <- ggviolin(tmp.df, x=group.name, y="Y",  ylim = ylim,
+                    palette = color, color = group.name, shape = group.name,
+                    show.legend = FALSE, legend = '',
                     add = add, add.params = list(fill = "white") )
+    }else if(dotplot){
+      if(is.null(add)){add="boxplot"}
+      p <- ggdotplot(tmp.df, x = group.name, y="Y", add = add, fill = group.name,  ylim = ylim,
+                      show.legend = FALSE, legend = '',
+                     palette = color, position = position_dodge(0.9))
     }else{
       if(is.null(add)){add="jitter"}
       p <- ggboxplot(tmp.df, x=group.name, y="Y",
                      outlier.shape = outlier.shape,
                      add = add,  color = group.name, ylim = ylim,
+                     show.legend = FALSE, legend = '',
                      palette = color)
     }
-
+    p = p + rotate_x_text(angle = rotate.x)
     p = facet(p, facet.by = "X", nrow = 1)
 
     if(stat & !is.null(comparisons)  ){# label = "p.signif"
@@ -318,28 +338,45 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
                                   label.y = label.y,
                                   method.args = list(alternative = alternative))
     }
+    p = p  + theme(strip.background = element_blank(), strip.text.x = element_text(size = 14) )
 
   }else{
     if(barplot){
       if(is.null(add)){add="mean_se"}
       p <- ggbarplot(tmp.df, x="X", y="Y", add = add, fill = group.name,  ylim = ylim,
-                     palette = color, title = title, position = position_dodge(0.9) ) +
-        rotate_x_text(angle = rotate.x)
+                     show.legend = FALSE, legend = '',
+                     palette = color, position = position_dodge(0.9) )
+
     }else if(violin){
       if(is.null(add)){add="boxplot"}
-      p <- ggviolin(tmp.df, x="X", y="Y", fill = group.name,  ylim = ylim,
-                    palette = color, title = title, color = group.name, shape = group.name,
-                    add = add, add.params = list(fill = "white") ) +
-        rotate_x_text(angle = rotate.x)
+      p <- ggviolin(tmp.df, x="X", y="Y", ylim = ylim,
+                    palette = color, color = group.name, shape = group.name,
+                    show.legend = FALSE, legend = '',
+                    add = add, add.params = list(fill = "white") )
+    }else if(dotplot){
+      if(is.null(add)){add="boxplot"}
+      p <- ggdotplot(tmp.df, y="Y", x= "X", add = add,
+                     color = group.name, palette = color, show.legend = FALSE, legend = '',
+                     short.panel.labs = FALSE, ylim = ylim )
     }else{
       if(is.null(add)){add="jitter"}
       p <- ggboxplot(tmp.df, x="X", y="Y",
                      outlier.shape = outlier.shape,
                      add = add,  color = group.name, ylim = ylim,
-                     palette = color ) + rotate_x_text(angle = rotate.x)
+                     show.legend = FALSE, legend = '',
+                     palette = color )
     }
-  }
+    p = p + rotate_x_text(angle = rotate.x)
 
+    if(stat & !is.null(comparisons) & color.by.x ){# label = "p.signif"
+      p <- p + stat_compare_means(method = method,
+                                  comparisons = comparisons,
+                                  label.y = label.y,
+                                  method.args = list(alternative = alternative))
+    }
+
+
+  }
 
   p = ggpar(p, xlab = xlab, ylab = ylab, title = title)
   p
@@ -1263,7 +1300,7 @@ genereateLabelsByGroup <- function(label=NULL,...){
 #' data(LIRI)
 #' d.frame = LIRI[,3:6]
 #' group = LIRI$status
-#' loonR::meltDataFrameByGroup(d.frame, group)
+#' head( loonR::meltDataFrameByGroup(d.frame, group) )
 meltDataFrameByGroup <- function(d.frame, group, na.rm = TRUE, variable_name="Gene"){
 
   melt.df <- data.frame(d.frame, Group = group,

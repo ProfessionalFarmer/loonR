@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.579</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.593</span>
       </span>
     </div>
 
@@ -382,8 +382,67 @@
 <span class='r-in'></span>
 <span class='r-in'><span class='va'>beta.df</span> <span class='op'>=</span> <span class='va'>myImport</span><span class='op'>$</span><span class='va'>beta</span></span>
 <span class='r-in'><span class='va'>group</span> <span class='op'>=</span> <span class='va'>myImport</span><span class='op'>$</span><span class='va'>pd</span><span class='op'>$</span><span class='va'>Sample_Group</span></span>
-<span class='r-in'><span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>ChAMP_QC_Pipeline</span><span class='op'>(</span>Sample.beta.df<span class='op'>=</span><span class='va'>beta.df</span>, Sample.Group<span class='op'>=</span><span class='va'>group</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error:</span> 'ChAMP_QC_Pipeline' is not an exported object from 'namespace:loonR'</span>
+<span class='r-in'><span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>ChAMP_QC_Pipeline_Frome_Beta_Value</span><span class='op'>(</span>Sample.beta.df<span class='op'>=</span><span class='va'>beta.df</span>, Sample.Group<span class='op'>=</span><span class='va'>group</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> [===========================]</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> [&lt;&lt;&lt;&lt; ChAMP.FILTER START &gt;&gt;&gt;&gt;&gt;]</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> -----------------------------</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> In New version ChAMP, champ.filter() function has been set to do filtering on the result of champ.import(). You can use champ.import() + champ.filter() to do Data Loading, or set "method" parameter in champ.load() as "ChAMP" to get the same effect.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> This function is provided for user need to do filtering on some beta (or M) matrix, which contained most filtering system in champ.load except beadcount. User need to input beta matrix, pd file themselves. If you want to do filterintg on detP matrix and Bead Count, you also need to input a detected P matrix and Bead Count information.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Note that if you want to filter more data matrix, say beta, M, intensity... please make sure they have exactly the same rownames and colnames.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> [ Section 1:  Check Input Start ]</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   You have inputed beta for Analysis.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   pd file provided, checking if it's in accord with Data Matrix...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     pd file check success.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   Parameter filterDetP is TRUE, checking if detP in accord with Data Matrix...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     !!! Parameter detP is not found, filterDetP is reset FALSE now.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   Parameter filterBeads is TRUE, checking if beadcount in accord with Data Matrix...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     !!! Parameter beadcount is not found, filterBeads is reset FALSE now.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   parameter autoimpute is TRUE. Checking if the conditions are fulfilled...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     !!! ProbeCutoff is 0, which means you have no needs to do imputation. autoimpute has been reset FALSE.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   Checking Finished :filterMultiHit,filterSNPs,filterNoCG,filterXY would be done on beta.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> [ Section 1: Check Input Done ]</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> [ Section 2: Filtering Start &gt;&gt;</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   Filtering NoCG Start</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     Only Keep CpGs, removing 3091 probes from the analysis.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   Filtering SNPs Start</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     Using general 450K SNP list for filtering.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     Filtering probes with SNPs as identified in Zhou's Nucleic Acids Research Paper 2016.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     Removing 59901 probes from the analysis.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   Filtering MultiHit Start</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     Filtering probes that align to multiple locations as identified in Nordlund et al</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     Removing 11 probes from the analysis.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   Filtering XY Start</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     Filtering probes located on X,Y chromosome, removing 10028 probes from the analysis.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   Updating PD file</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     filterDetP parameter is FALSE, so no Sample Would be removed.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> [ Section 2: Filtering Done ]</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>  All filterings are Done, now you have 412481 probes and 8 samples.</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> [&lt;&lt;&lt;&lt;&lt; ChAMP.FILTER END &gt;&gt;&gt;&gt;&gt;&gt;]</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> [===========================]</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> [You may want to process champ.QC() next.]</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> [===========================]</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> [&lt;&lt;&lt; ChAMP.IMPUTE START &gt;&gt;&gt;&gt;]</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> -----------------------------</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> &lt;method&gt;:Combine. (Suitable for Large Data Set)</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in apply(beta, 2, function(x) length(which(is.na(x)))/length(x))</span> object 'myLoad' not found</span>
 <span class='r-in'></span>
 </pre>
   </div>

@@ -1,5 +1,5 @@
 
-#' Title
+#' Get one round CV result
 #'
 #' @param df data.frame. Row is sample, col is gene
 #' @param label TRUE/FALSE vector
@@ -101,7 +101,7 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE, ty
   #stopCluster(cl)
   cv.res.mean <- cv.res.mean[match(row.names(df), cv.res.mean$Name), ]
 
-  p = loonR::roc_with_ci(final.cv.res$Label, final.cv.res$Mean, ci="FALSE", title = "Cross validation")
+  p = loonR::roc_with_ci(cv.res.mean$Label, cv.res.mean$Mean, ci=FALSE, title = "Cross validation")
 
   cv.res.return = list()
   cv.res.return$data = cv.res.mean
@@ -135,6 +135,7 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE, ty
 #'
 #' data("LIRI")
 #' lg.res <- loonR::build.logistic.model(LIRI[,3:5],LIRI$status)
+#' lg.res
 #'
 build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = "backward", rms = FALSE){
 
@@ -163,10 +164,11 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = 
 
     if(length(res$eliminationCandidates)!=0){
       elimination.df <- lg.df[ , c("label", res$eliminationCandidates) ]
-      elimination.df$risk.score = predict(res$StepwiseModel, elimination.df, type = "response")
+      elimination.df$risk.score = predict(res$StepwiseModel, elimination.df, type = "link")
       res$elimination.result = elimination.df
       res$elimination.ROC = loonR::roc_with_ci(elimination.df$label, elimination.df$risk.score, ci = FALSE)
       res$elimination.AUC = loonR::get.AUC(elimination.df$risk.score, elimination.df$label, raw = F)
+      res$elimination.Waterfull = loonR::plot_waterfall(elimination.df$risk.score, elimination.df$label , yticks.labl = NA )
     }
 
 
@@ -181,6 +183,7 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = 
   res$data = lg.df
   res$ROC = p
   res$AUC = loonR::get.AUC(lg.df$risk.score, lg.df$label, raw = F)
+  res$Waterfull = loonR::plot_waterfall(lg.df$risk.score, lg.df$label, yticks.labl = NA  )
 
 
 
@@ -1455,6 +1458,13 @@ prob2logit <- function(x) {
 #' @examples loonR::plot_waterfall(average.riskscore$Mean, average.riskscore$Label, xlab = "Risk probability")
 plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette = "jco", title = "", yticks.labl = c(0,0.25,0.5,0.75,1), sample = NA, rotate.x = 90){
 
+    if( ( max(risk.score)>1|min(risk.score)<(-1) ) & xlab == "Risk probability")  {
+      xlab = "Risk score"
+      if( !is.na(yticks.labl) & sum(yticks.labl == c(0,0.25,0.5,0.75,1)) == length(yticks.labl) ){
+        yticks.labl=NA
+      }
+    }
+
     library(ggpubr)
     risk.score = risk.score
     idx = order(risk.score)
@@ -1893,7 +1903,7 @@ confidence_interval <- function(vector, interval) {
 #' estimate.data = or.res[,c(2,3,4)]
 #' text.data = data.frame(Variate = or.res$Variate, OR = or.res$OR)
 #'
-#' plot.forest(text.data, estimate.data, graph.pos = 2, specify.summary = 1)
+#' loonR::plot.forest(text.data, estimate.data, graph.pos = 2, specify.summary = 1)
 forest_plot <- function(tabletext, estimate.data, appendHeader = NULL, specify.summary = NULL,
                         clipping = c(0.1, 4), graph.pos = "right", xlab = "", xlog = TRUE, xticks = c( 0.1, 0.5, seq(1,4,1) ) ){
 

@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.579</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.593</span>
       </span>
     </div>
 
@@ -142,7 +142,14 @@
     <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>d.frame</span> <span class='op'>=</span> <span class='va'>LIRI</span><span class='op'>[</span>,<span class='fl'>3</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>]</span></span>
 <span class='r-in'><span class='va'>group</span> <span class='op'>=</span> <span class='va'>LIRI</span><span class='op'>$</span><span class='va'>status</span></span>
-<span class='r-in'><span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>meltDataFrameByGroup</span><span class='op'>(</span><span class='va'>d.frame</span>, <span class='va'>group</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span> <span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>meltDataFrameByGroup</span><span class='op'>(</span><span class='va'>d.frame</span>, <span class='va'>group</span><span class='op'>)</span> <span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   Group Gene     value</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1     1 ANLN  6.821354</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2     0 ANLN  1.073527</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3     0 ANLN  2.579530</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4     1 ANLN 14.183630</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5     0 ANLN  3.588320</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6     0 ANLN  6.079665</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

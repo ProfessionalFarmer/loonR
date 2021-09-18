@@ -1,6 +1,6 @@
 Package: loonR
 Title: Common function in bioinformatics analysis
-Version: 0.1.590
+Version: 0.1.593
 Authors@R: 
     person(given = "Zhongxu",
            family = " ",
@@ -14,15 +14,10 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Depends: 
-  R (>= 3.0.2),
-  ggplot2,
-  ggsci,
+  R (>= 4.0.2),
   ggpubr,
-  cowplot,
-  scales,
   pROC,
   dplyr,
-  reshape2,
   BiocManager
 Remotes:
     bioc::release/limma,

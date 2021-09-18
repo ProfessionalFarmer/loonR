@@ -1903,7 +1903,7 @@ confidence_interval <- function(vector, interval) {
 #' estimate.data = or.res[,c(2,3,4)]
 #' text.data = data.frame(Variate = or.res$Variate, OR = or.res$OR)
 #'
-#' loonR::plot.forest(text.data, estimate.data, graph.pos = 2, specify.summary = 1)
+#' loonR::forest_plot(text.data, estimate.data, graph.pos = 2, specify.summary = 1)
 forest_plot <- function(tabletext, estimate.data, appendHeader = NULL, specify.summary = NULL,
                         clipping = c(0.1, 4), graph.pos = "right", xlab = "", xlog = TRUE, xticks = c( 0.1, 0.5, seq(1,4,1) ) ){
 

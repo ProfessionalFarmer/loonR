@@ -48,5 +48,5 @@ or.res <- loonR::univariate_or(LIRI[,c(1,3,4)],LIRI$status)
 estimate.data = or.res[,c(2,3,4)]
 text.data = data.frame(Variate = or.res$Variate, OR = or.res$OR)
 
-loonR::plot.forest(text.data, estimate.data, graph.pos = 2, specify.summary = 1)
+loonR::forest_plot(text.data, estimate.data, graph.pos = 2, specify.summary = 1)
 }

@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.593</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.596</span>
       </span>
     </div>
 
@@ -186,8 +186,20 @@
 <span class='r-in'><span class='va'>estimate.data</span> <span class='op'>=</span> <span class='va'>or.res</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>2</span>,<span class='fl'>3</span>,<span class='fl'>4</span><span class='op'>)</span><span class='op'>]</span></span>
 <span class='r-in'><span class='va'>text.data</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>Variate <span class='op'>=</span> <span class='va'>or.res</span><span class='op'>$</span><span class='va'>Variate</span>, OR <span class='op'>=</span> <span class='va'>or.res</span><span class='op'>$</span><span class='va'>OR</span><span class='op'>)</span></span>
 <span class='r-in'></span>
-<span class='r-in'><span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>plot.forest</span><span class='op'>(</span><span class='va'>text.data</span>, <span class='va'>estimate.data</span>, graph.pos <span class='op'>=</span> <span class='fl'>2</span>, specify.summary <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error:</span> 'plot.forest' is not an exported object from 'namespace:loonR'</span>
+<span class='r-in'><span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>forest_plot</span><span class='op'>(</span><span class='va'>text.data</span>, <span class='va'>estimate.data</span>, graph.pos <span class='op'>=</span> <span class='fl'>2</span>, specify.summary <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: forestplot</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: grid</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: magrittr</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Loading required package: checkmate</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Attaching package: 'checkmate'</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following object is masked from 'package:Biobase':</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     anyMissing</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> The following object is masked from 'package:matrixStats':</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>     anyMissing</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in ncol(text.data)</span> object 'text.data' not found</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

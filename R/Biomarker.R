@@ -1929,12 +1929,12 @@ forest_plot <- function(tabletext, estimate.data, appendHeader = NULL, specify.s
     hline[2] = 3
   }
 
-  hrzl_lines_width = 1:ncol(text.data)
+  hrzl_lines_width = 1:ncol(tabletext)
   if(graph.pos=="left"){
     hrzl_lines_width = hrzl_lines_width + 1
   }else if( graph.pos!="left" & graph.pos!="right" ){
     # add plot index to the last column
-    hrzl_lines_width = c( hrzl_lines_width, ncol(text.data) + 1 )
+    hrzl_lines_width = c( hrzl_lines_width, ncol(tabletext) + 1 )
     # remove plot ined
     hrzl_lines_width= hrzl_lines_width[ hrzl_lines_width != (graph.pos) ]
 

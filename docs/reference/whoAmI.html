@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Retrieve full ID mapping table — get_full_mapping_table • loonR</title>
+<title>Introduce me — whoAmI • loonR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Retrieve full ID mapping table — get_full_mapping_table" />
-<meta property="og:description" content="Retrieve full ID mapping table" />
+<meta property="og:title" content="Introduce me — whoAmI" />
+<meta property="og:description" content="Introduce me" />
 
 
 
@@ -108,42 +108,27 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Retrieve full ID mapping table</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/IDMapping.R'><code>R/IDMapping.R</code></a></small>
-    <div class="hidden name"><code>get_full_mapping_table.Rd</code></div>
+    <h1>Introduce me</h1>
+    <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/Hello.R'><code>R/Hello.R</code></a></small>
+    <div class="hidden name"><code>whoAmI.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Retrieve full ID mapping table</p>
+    <p>Introduce me</p>
     </div>
 
-    <pre class="usage"><span class='fu'>get_full_mapping_table</span><span class='op'>(</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>whoAmI</span><span class='op'>(</span><span class='op'>)</span></pre>
 
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>A full annotation table</p>
+    
+
+
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='va'>get_full_mapping_table</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> function () </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> {</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     require("biomaRt")</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     mart &lt;- useMart("ENSEMBL_MART_ENSEMBL")</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     mart &lt;- useDataset("hsapiens_gene_ensembl", mart)</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     searchDatasets(mart = mart, pattern = "hsapiens")</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     transcriptLookup &lt;- getBM(mart = mart, attributes = c("ensembl_transcript_id", </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>         "ensembl_gene_id", "transcript_mane_select", "transcript_biotype"), </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>         uniqueRows = TRUE)</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     geneLookup &lt;- getBM(mart = mart, attributes = c("ensembl_transcript_id", </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>         "ensembl_gene_id", "hgnc_symbol", "hgnc_id", "external_gene_name", </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>         "entrezgene_id", "gene_biotype"), uniqueRows = TRUE)</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     annotLookup &lt;- dplyr::full_join(transcriptLookup, geneLookup, </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>         by = "ensembl_transcript_id")</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>     annotLookup</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> }</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;bytecode: 0x560954b8&gt;</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> &lt;environment: namespace:loonR&gt;</span>
+    <pre class="examples"><span class='r-in'></span>
+<span class='r-in'></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -1140,9 +1140,9 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
 #' Plot multiple ROCs in one figure
 #'
 #' @param scores A list or a data.frame. If list, labels shoule also be a list
-#' @param labels
-#' @param font
-#' @param palette
+#' @param labels A list or vector
+#' @param font Arial
+#' @param palette jama
 #' @param legend.pos
 #' @param title
 #' @param panel

@@ -20,6 +20,12 @@ multi_roc_with_ci(
 \arguments{
 \item{scores}{A list or a data.frame. If list, labels shoule also be a list}
 
+\item{labels}{A list or vector}
+
+\item{font}{Arial}
+
+\item{palette}{jama}
+
 \item{color}{specify the color manually}
 
 \item{SE.SP}{Whether to show SE and SP instead of CI of AUC}

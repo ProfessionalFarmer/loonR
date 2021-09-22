@@ -783,7 +783,7 @@ plotClevelandDot <- function(name, value, group=NA, palette = "aaas", dot.size =
                     rotate = TRUE,                                # Rotate vertically
                     dot.size = dot.size,                          # Large dot size
                     y.text.col = TRUE,                            # Color y text by groups
-                    ylab = ylab, # position = position_dodge(0.9),
+                    ylab = ylab, position = position_dodge(0.3),
                     ggtheme = theme_pubr()                        # ggplot2 theme
     )  +  theme_cleveland()                                      # Add dashed grids
   }else if(lollipop){
@@ -792,7 +792,7 @@ plotClevelandDot <- function(name, value, group=NA, palette = "aaas", dot.size =
                     # c("#00AFBB", "#E7B800", "#FC4E07")
                     palette = ifelse(anyNA(group)&palette=="aaas","#00AFBB", palette) , # Custom color palette
                     sorting = "ascending",                        # Sort value in descending order
-                    add = "segments", # position = position_dodge(0.9),                             # Add segments from y = 0 to dots
+                    add = "segments", position = position_dodge(0.3),                             # Add segments from y = 0 to dots
                     ggtheme = theme_pubr()    # ggplot2 theme
     )
 
@@ -1310,4 +1310,84 @@ meltDataFrameByGroup <- function(d.frame, group, na.rm = TRUE, variable_name="Ge
 
 
 }
+
+
+
+#' Radar plot (aka spider plot)
+#'
+#' @param df Column is variable, Row is samples/class
+#' @param palette Default aaas
+#' @param min min of the axis
+#' @param max max of the axis
+#' @param fill.color Default is FALSE, no fill color
+#' @param axistype Default 0. The type of axes, specified by any of 0:5. 0 means no axis label. 1 means center axis label only. 2 means around-the-chart label only. 3 means both center and around-the-chart (peripheral) labels. 4 is *.** format of 1, 5 is *.** format of 3. Default is 0.
+#' @param cglcol Default 'navy'. color of the net
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' # https://www.r-graph-gallery.com/143-spider-chart-with-saveral-individuals.html
+#' # Create data: note in High school for several students
+#' set.seed(99)
+#' df <- as.data.frame(matrix( sample( 0:20 , 15 , replace=F) , ncol=5))
+#' colnames(df) <- c("math" , "english" , "biology" , "music" , "R-coding" )
+#' rownames(df) <- paste("mister" , letters[1:3] , sep="-")
+#' loonR::radarSpiderPlot(df)
+#'
+radarSpiderPlot <- function(df, palette = "aaas", min = 0, max = NULL, fill.color=FALSE, axistype = 0, cglcol = "navy"){
+  # https://www.r-graph-gallery.com/143-spider-chart-with-saveral-individuals.html
+  # Use ggradar
+  # https://github.com/ricardo-bion/ggradar
+
+  if(!require("fmsb")){
+    BiocManager::install("fmsb")
+  }
+
+  df = as.data.frame(df)
+
+  if(min==0){
+    warning("Pls note the minimum tick for plot is 0")
+  }
+  if(is.null(max)){
+    max = max(df) + max(df)
+  }
+
+
+  df <- rbind(rep(max,ncol(df)) , rep(min,ncol(df)) , df)
+
+  colors_border = loonR::get.palette.color(palette, ncol(df) )
+
+  if(fill.color){
+    colors_in = loonR::get.palette.color(palette, ncol(df), alpha = 0.2)
+  }else{
+    colors_in = NA
+  }
+
+
+  radarchart(
+    df, axistype = axistype,
+    #custom polygon
+    pcol = colors_border , # line color
+    pfcol = colors_in , # fill color
+    plwd = 4 ,
+    plty = 1,
+    #custom the grid
+    cglcol = "navy", # color of the net
+    cglty = 3, # net line type # https://www.r-graph-gallery.com/6-graph-parameters-reminder.html
+    axislabcol="grey", # color of axis labels
+    # caxislabels=seq(0,20,5), #vector of axis labels to display
+    cglwd=0.8, # net width
+    #custom labels
+    vlcex=0.8 #  group labels size
+  )
+
+  # Add a legend
+  legend(x=0.7, y=1.3, legend = rownames(df[-c(1,2),]), bty = "n", pch=20 , col=colors_border , text.col = "black", cex=1.2, pt.cex=3)
+
+}
+
+
+
+
 

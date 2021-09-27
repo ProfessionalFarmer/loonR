@@ -2,7 +2,7 @@
 % Please edit documentation in R/Biomarker.R
 \name{get_performance}
 \alias{get_performance}
-\title{Title Get model performace, sensitivity, sepcificity and others}
+\title{Get model performace, sensitivity, sepcificity and others}
 \usage{
 get_performance(pred, labels, best.cutoff = NA, digit = 2, boot.n = 2000)
 }
@@ -19,7 +19,7 @@ get_performance(pred, labels, best.cutoff = NA, digit = 2, boot.n = 2000)
 
 }
 \description{
-Title Get model performace, sensitivity, sepcificity and others
+Get model performace, sensitivity, sepcificity and others
 }
 \examples{
 get_performance(risk.probability, label)

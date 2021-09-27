@@ -1006,17 +1006,14 @@ splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.c
 
     ###### if set a function, e.g. mean median
     if(!is.null(fun)){
-
       global.cut = get(fun)(data.df$Value)
 
       ###### if set a quantile cutoff
     }else if(!is.null(quantile.cutoff)){
-
       global.cut = quantile(data.df$Value, prob=c(quantile.cutoff))
 
       ###### if set cut point
     }else if(!is.null(cut.point)){
-
       global.cut = cut.point
 
     }
@@ -1025,6 +1022,7 @@ splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.c
                          c(min(data.df$Value)-0.1, global.cut, max(data.df$Value)),
                          labels = cut.label )
 
+    data.df$Label <- as.character(data.df$Label)
 
     ######### if specify group
   }else{
@@ -1042,17 +1040,14 @@ splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.c
 
       ###### if set a function, e.g. mean median
       if(!is.null(fun)){
-
         local.cut = get(fun)(g.value)
 
         ###### if set a quantile cutoff
       }else if(!is.null(quantile.cutoff)){
-
         local.cut = quantile(g.value, prob=c(quantile.cutoff))
 
         ###### if set cut point
       }else if(!is.null(cut.point)){
-
         local.cut = cut.point
 
       }

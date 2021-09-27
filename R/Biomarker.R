@@ -533,7 +533,7 @@ loo.cv.cox <- function(df, status, time,  seed=999, label=NA, scale =TRUE){
 
 
 
-#' Title Get model performace, sensitivity, sepcificity and others
+#' Get model performace, sensitivity, sepcificity and others
 #'
 #' @param pred Predicted score
 #' @param labels T/F label
@@ -629,7 +629,10 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2
     sprintf(string.format, others$npv[1,c("50%")],others$npv[1,c("2.5%")],others$npv[1,c("97.5%")]),#npv
     or  # Odds ratio
   )
-  names(res) <- c("Ncount", "Tcount", "AUC (CI)",  "Accuracy", "Precision", "Recall", "Specificity", "NPV","Odds Ratio")
+
+  #names(res) <- c("Ncount", "Tcount", "AUC (CI)",  "Accuracy", "Precision", "Recall", "Specificity", "NPV","Odds Ratio")
+  #recall = sensititivity, precision=PPV
+  names(res) <- c("Ncount", "Tcount", "AUC (CI)",  "Accuracy",  "PPV", "Sensitivity", "Specificity", "NPV","Odds Ratio")
 
   # value (conf) -> value  conf
   rname <- names(res)

@@ -22,5 +22,5 @@ get_performance(pred, labels, best.cutoff = NA, digit = 2, boot.n = 2000)
 Get model performace, sensitivity, sepcificity and others
 }
 \examples{
-get_performance(risk.probability, label)
+loonR::get_performance(risk.probability, label)
 }

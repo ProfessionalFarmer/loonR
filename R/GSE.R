@@ -1,5 +1,3 @@
-
-
 #' Perform over-representation test by cluster profiler
 #'
 #' @param gene A vector. Must gene symbol
@@ -96,7 +94,7 @@ ClusterProfiler.OverRepresentationTest <-  function(gene, minGSSize = 10, qvalue
 #'
 #' @examples
 ClusterProfiler.GSEA <- function(phenotype, geneNames, minGSSize = 10, qvalue = 0.05,
-                                 GO=TRUE, KEGG =TRUE, MSigDb=TRUE, Hallmark = TRUE, exp.gene.type = "ENSEMBL") {
+                                 GO=TRUE, KEGG =TRUE, MSigDb=TRUE, Hallmark = TRUE, exp.gene.type = "SYMBOL") {
 
   library(clusterProfiler)
   library(org.Hs.eg.db)

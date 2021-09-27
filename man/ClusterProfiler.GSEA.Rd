@@ -13,7 +13,7 @@ ClusterProfiler.GSEA(
   KEGG = TRUE,
   MSigDb = TRUE,
   Hallmark = TRUE,
-  exp.gene.type = "ENSEMBL"
+  exp.gene.type = "SYMBOL"
 )
 }
 \arguments{

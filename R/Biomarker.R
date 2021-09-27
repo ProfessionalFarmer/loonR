@@ -544,7 +544,7 @@ loo.cv.cox <- function(df, status, time,  seed=999, label=NA, scale =TRUE){
 #' @return
 #' @export
 #'
-#' @examples get_performance(risk.probability, label)
+#' @examples loonR::get_performance(risk.probability, label)
 get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2000){  #  x="best", input = "threshold"
 
   labels = factor(labels)

@@ -2,14 +2,14 @@
 % Please edit documentation in R/Common.R
 \name{splitGroupByCutoff}
 \alias{splitGroupByCutoff}
-\title{Title}
+\title{Split group by various methods. Useful}
 \usage{
 splitGroupByCutoff(
   group = "",
   values = NULL,
   fun = NULL,
   quantile.cutoff = NULL,
-  sample.names = NA,
+  sample.names = NULL,
   cut.point = NULL,
   cut.label = NULL,
   specific.group = NULL,
@@ -35,7 +35,7 @@ splitGroupByCutoff(
 
 }
 \description{
-Title
+Split group by various methods. Useful
 }
 \examples{
 set.seed(111)
@@ -44,6 +44,6 @@ set.seed(111)
 group = sample(c(1,2,3),100, replace = TRUE)
 table(group)
 
-res <- splitGroupByCutoff(group, value, fun="mean", cut.label = c("L","H"), group.prefix = "G", specific.group = c(1,2))
+res <- loonR::splitGroupByCutoff(group, value, fun="mean", cut.label = c("L","H"), group.prefix = "G", specific.group = c(1,2))
 table(res$New.Label)
 }

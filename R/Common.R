@@ -949,7 +949,7 @@ gapStat <- function(df, dist="spearman", method="average"){
 
 
 
-#' Title
+#' Split group by various methods. Useful
 #'
 #' @param group
 #' @param values
@@ -971,9 +971,9 @@ gapStat <- function(df, dist="spearman", method="average"){
 #' group = sample(c(1,2,3),100, replace = TRUE)
 #' table(group)
 #'
-#' res <- splitGroupByCutoff(group, value, fun="mean", cut.label = c("L","H"), group.prefix = "G", specific.group = c(1,2))
+#' res <- loonR::splitGroupByCutoff(group, value, fun="mean", cut.label = c("L","H"), group.prefix = "G", specific.group = c(1,2))
 #' table(res$New.Label)
-splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.cutoff = NULL, sample.names = NA,
+splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.cutoff = NULL, sample.names = NULL,
                                cut.point = NULL, cut.label = NULL, specific.group = NULL, group.prefix = NULL){
 
   if(is.null(values)){
@@ -986,8 +986,9 @@ splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.c
   data.df <- data.frame(Group = group, Value = values, Label = "",
                         check.names = F, stringsAsFactors = F)
 
-  if(!is.na(sample.names)){
+  if(!is.null(sample.names)){
     row.names(data.df) <- sample.names
+    data.df$Name = row.names(data.df)
   }
 
   if(is.null(cut.point) & is.null(fun) & is.null(quantile.cutoff)){
@@ -1073,6 +1074,8 @@ splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.c
   data.df$Label[data.df$Label!=""] = paste("-", data.df$Label[data.df$Label!=""], sep="")
 
   data.df$New.Label = paste(data.df$Group, data.df$Label, sep="")
+  data.df$Label = stringr::str_remove_all(data.df$Label, "^-")
+
 
   data.df
 
@@ -1383,6 +1386,40 @@ radarSpiderPlot <- function(df, palette = "aaas", min = 0, max = NULL, fill.colo
 }
 
 
+#' Convert a text table to figure
+#'
+#' @param data
+#' @param rowname Default NULL
+#' @param ttheme Default blank. character string the table style/theme. The available themes are illustrated in the ggtexttable-theme.pdf file. Allowed values include one of c("default", "blank", "classic", "minimal", "light", "lBlack", "lBlue", "lRed", "lGreen", "lViolet", "lCyan", "lOrange", "lBlackWhite", "lBlueWhite", "lRedWhite", "lGreenWhite", "lVioletWhite", "lCyanWhite", "lOrangeWhite", "mBlack", "mBlue", "mRed", "mGreen", "mViolet", "mCyan", "mOrange", "mBlackWhite", "mBlueWhite", "mRedWhite", "mGreenWhite", "mVioletWhite", "mCyanWhite", "mOrangeWhite" ). Note that, l = "light"; m = "medium"
+#' @param top.black.line Default 1:2. Black line. From top
+#' @param bottom.black.line Default 1. Black line From bottom
+#' @param subtitle Subtitle if you want to show
+#' @param main.title Main title if you want to show
+#' @param footnote Italic footnote at botton if you want to show
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data(iris)
+#' loonR::table2Figure( head(iris), main.title = "IRIS",  footnote = "Here is footnote")
+table2Figure <- function(data, rowname = NULL, ttheme = "blank", top.black.line = 1:2, bottom.black.line =1, subtitle = NULL, main.title = NULL, footnote = NULL){
+  library(ggpubr)
 
+  colname = colnames(data)
+
+  bottom.black.line = nrow(data) + 2 - bottom.black.line
+
+  ggtexttable(data, rows = rowname,
+              cols = colname,
+              theme = ttheme(ttheme)
+              ) %>%
+    tab_add_hline(at.row = top.black.line, row.side = "top", linewidth = 1.5)  %>%
+    tab_add_hline(at.row = bottom.black.line, row.side = "bottom", linewidth = 1.5) %>%
+    tab_add_title(text = subtitle, face = "plain", size = 10) %>%
+    tab_add_title(text = main.title, face = "bold", padding = unit(0.1, "line")) %>%
+    tab_add_footnote(text = footnote, size = 10, face = "italic")
+
+}
 
 

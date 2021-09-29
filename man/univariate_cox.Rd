@@ -2,7 +2,7 @@
 % Please edit documentation in R/Biomarker.R
 \name{univariate_cox}
 \alias{univariate_cox}
-\title{Title}
+\title{Univariate Cox analysis}
 \usage{
 univariate_cox(d.frame, status, time, scale = TRUE)
 }
@@ -17,5 +17,5 @@ univariate_cox(d.frame, status, time, scale = TRUE)
 
 }
 \description{
-Title
+Univariate Cox analysis
 }

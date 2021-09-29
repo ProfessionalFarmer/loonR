@@ -24,5 +24,6 @@ Row: sample, Column: gene expression
 score E.g.: Gene or miRNA expression, or risk score
 }
 \examples{
-univariate_or(risk.df, label)
+data("LIRI")
+loonR::univariate_or(LIRI[,3:6], LIRI$status)
 }

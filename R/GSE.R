@@ -122,7 +122,7 @@ ClusterProfiler.GSEA <- function(phenotype, geneNames, minGSSize = 10, qvalue = 
     ego3 <- gseGO(geneList     = geneList,
                   OrgDb        = org.Hs.eg.db,
                   ont          = "BP",
-                  nPerm        = 1000,
+                  nPerm        = 2000,
                   minGSSize    = minGSSize,
                   pAdjustMethod = "BH",
                   pvalueCutoff = qvalue,
@@ -135,7 +135,7 @@ ClusterProfiler.GSEA <- function(phenotype, geneNames, minGSSize = 10, qvalue = 
 
     kk2 <- gseKEGG(geneList     = geneList,
                    organism     = 'hsa',
-                   nPerm        = 1000,
+                   nPerm        = 2000,
                    minGSSize    = minGSSize,
                    pAdjustMethod = "BH",
                    pvalueCutoff = qvalue,
@@ -156,6 +156,7 @@ ClusterProfiler.GSEA <- function(phenotype, geneNames, minGSSize = 10, qvalue = 
                TERM2GENE = c2c5,
                minGSSize = minGSSize,
                pAdjustMethod = "BH",
+               nPerm        = 2000,
                pvalueCutoff = qvalue,
                verbose      = FALSE)
     result$C2C5 <- kk
@@ -170,6 +171,7 @@ ClusterProfiler.GSEA <- function(phenotype, geneNames, minGSSize = 10, qvalue = 
                minGSSize = minGSSize,
                pAdjustMethod = "BH",
                pvalueCutoff = qvalue,
+               nPerm        = 2000,
                verbose      = FALSE)
     result$Hallmark <- kk
   }
@@ -320,6 +322,7 @@ ClusterProfiler.GSEA.Compare <- function(gene, minGSSize = 10, qvalue = 0.05, ex
                     ont          = "BP",
                     keyType      = "ENTREZID",
                     minGSSize    = minGSSize,
+                    nPerm        = 2000,
                     maxGSSize    = 500,
                     pvalueCutoff = qvalue,
                     pAdjustMethod = "BH",
@@ -337,6 +340,7 @@ ClusterProfiler.GSEA.Compare <- function(gene, minGSSize = 10, qvalue = 0.05, ex
       gseKEGG(geneList     = entrez.sort.by.fc,
               organism     = 'hsa',
               minGSSize    = minGSSize,
+              nPerm        = 2000,
               pAdjustMethod = "BH",
               pvalueCutoff = qvalue,
               verbose      = FALSE)
@@ -358,6 +362,7 @@ ClusterProfiler.GSEA.Compare <- function(gene, minGSSize = 10, qvalue = 0.05, ex
       GSEA(geneList     = entrez.sort.by.fc,
                  TERM2GENE = c2c5,
                  minGSSize = minGSSize,
+                 nPerm        = 2000,
                  pAdjustMethod = "BH",
                  pvalueCutoff = qvalue,
                  verbose      = FALSE)
@@ -376,6 +381,7 @@ ClusterProfiler.GSEA.Compare <- function(gene, minGSSize = 10, qvalue = 0.05, ex
            TERM2GENE = H,
            minGSSize = minGSSize,
            pAdjustMethod = "BH",
+           nPerm        = 2000,
            pvalueCutoff = qvalue,
            verbose      = FALSE)
     }
@@ -422,6 +428,7 @@ ClusterProfiler.GSEA.ORA.customGS <- function(g, CustomGS = NULL, gse=FALSE, ova
     res <- GSEA(geneList     = g,
          TERM2GENE = customGS,
          minGSSize = minGSSize,
+         nPerm        = 2000,
          pAdjustMethod = "BH",
          pvalueCutoff = qvalue,
          verbose      = FALSE)
@@ -485,6 +492,7 @@ ClusterProfiler.GSEA.ORA.customGS.Compare <- function(gene, customGS=NULL, minGS
       GSEA(geneList     = symbol.sorted.byFC.vector,
            TERM2GENE = customGS,
            minGSSize = minGSSize,
+           nPerm        = 2000,
            pAdjustMethod = "BH",
            pvalueCutoff = qvalue,
            verbose      = FALSE)
@@ -538,7 +546,7 @@ compare.GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=
      ListGSC <- list(GO_BP=GO_BP, PW_KEGG=PW_KEGG, MSig_C2=MSig_C2, MSig_C5=MSig_C5, MSig_H=MSig_H)
 
      # paramter
-     nPermutations = 500
+     nPermutations = 1000
      minGeneSetSize = 10
    }else{
      # library(qusage)

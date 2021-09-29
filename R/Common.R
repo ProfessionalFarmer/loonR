@@ -17,6 +17,22 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 }
 
 
+#' Overwrite write.table with modified default option. Export data frame to file
+#'
+#' @param df
+#' @param file file path
+#' @param quote Default FALSE
+#' @param sep Default \t
+#'
+#' @return
+#' @export
+#'
+#' @examples
+exportTable <- function(df, file="~/test.tsv", quote = F, sep = "\t", row.names = F){
+  write.table(df, file = file, quote = F, sep = "\t", row.names = F)
+}
+
+
 
 
 #' PCA plot
@@ -1024,6 +1040,7 @@ splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.c
                          labels = cut.label )
 
     data.df$Label <- as.character(data.df$Label)
+    cat("Cutpoint for is ", global.cut)
 
     ######### if specify group
   }else{
@@ -1059,6 +1076,7 @@ splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.c
 
       data.df$Label[g.index] = as.character(g.label)
 
+      cat("Cutpoint for ",g," is ", local.cut)
     }
 
     data.df$Label <- as.character(data.df$Label)
@@ -1389,13 +1407,14 @@ radarSpiderPlot <- function(df, palette = "aaas", min = 0, max = NULL, fill.colo
 #' Convert a text table to figure
 #'
 #' @param data
-#' @param rowname Default NULL
+#' @param rowname Default TRUE
 #' @param ttheme Default blank. character string the table style/theme. The available themes are illustrated in the ggtexttable-theme.pdf file. Allowed values include one of c("default", "blank", "classic", "minimal", "light", "lBlack", "lBlue", "lRed", "lGreen", "lViolet", "lCyan", "lOrange", "lBlackWhite", "lBlueWhite", "lRedWhite", "lGreenWhite", "lVioletWhite", "lCyanWhite", "lOrangeWhite", "mBlack", "mBlue", "mRed", "mGreen", "mViolet", "mCyan", "mOrange", "mBlackWhite", "mBlueWhite", "mRedWhite", "mGreenWhite", "mVioletWhite", "mCyanWhite", "mOrangeWhite" ). Note that, l = "light"; m = "medium"
 #' @param top.black.line Default 1:2. Black line. From top
 #' @param bottom.black.line Default 1. Black line From bottom
 #' @param subtitle Subtitle if you want to show
 #' @param main.title Main title if you want to show
 #' @param footnote Italic footnote at botton if you want to show
+#' @param vline
 #'
 #' @return
 #' @export
@@ -1403,7 +1422,14 @@ radarSpiderPlot <- function(df, palette = "aaas", min = 0, max = NULL, fill.colo
 #' @examples
 #' data(iris)
 #' loonR::table2Figure( head(iris), main.title = "IRIS",  footnote = "Here is footnote")
-table2Figure <- function(data, rowname = NULL, ttheme = "blank", top.black.line = 1:2, bottom.black.line =1, subtitle = NULL, main.title = NULL, footnote = NULL){
+table2Figure <- function(data, rowname = TRUE, ttheme = "blank", top.black.line = 1:2, bottom.black.line =1, subtitle = NULL, main.title = NULL, footnote = NULL, vline = NULL){
+
+  if(rowname){
+    rowname = row.names(data)
+  }else{
+    rowname=NULL
+  }
+
   library(ggpubr)
 
   colname = colnames(data)
@@ -1418,8 +1444,61 @@ table2Figure <- function(data, rowname = NULL, ttheme = "blank", top.black.line 
     tab_add_hline(at.row = bottom.black.line, row.side = "bottom", linewidth = 1.5) %>%
     tab_add_title(text = subtitle, face = "plain", size = 10) %>%
     tab_add_title(text = main.title, face = "bold", padding = unit(0.1, "line")) %>%
-    tab_add_footnote(text = footnote, size = 10, face = "italic")
+    tab_add_footnote(text = footnote, size = 10, face = "italic") %>%
+    tab_add_vline(at.column = vline, column.side = "left", from.row = 1, linetype = 2)
 
 }
+
+
+
+
+#' Find the column name of maximum/minimum value for each row
+#'
+#' @param df A dataframe
+#' @param max Default FALSE
+#' @param min Default FALSE
+#' @param ties.method "random", "first", "last"
+#' @param specified.column Numeric vector. Which columns want to be checked
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data(LIRI)
+#' df = LIRI
+#' res <- loonR::findMaxMinColumnNamesForEachRow(df, min = T, specified.column = 3:6)
+#' res
+findMaxMinColumnNamesForEachRow <- function(df, max = FALSE, min = FALSE, ties.method = c("random", "first", "last"), specified.column = NULL){
+  tmp.df = df
+
+  ties.method = match.arg(ties.method)
+  res <- data.frame(tmp.df, stringsAsFactors = FALSE, check.names = FALSE)
+
+  if(!is.null(specified.column)){
+    tmp.df = tmp.df[,specified.column]
+  }else{
+    specified.column = 1:ncol(tmp.df)
+  }
+
+  if(max){
+    res$Max.ColID = max.col(tmp.df, ties.method = ties.method )
+    res$Max.ColName = colnames(tmp.df)[res$Max.ColID]
+
+    #use raw ID
+    res$Max.ColID = specified.column[res$Max.ColID]
+  }
+
+  if(min){
+    res$Min.ColID = max.col(tmp.df * -1, ties.method = ties.method )
+    res$Min.ColName = colnames(tmp.df)[res$Min.ColID]
+
+    #use raw ID
+    res$Min.ColID = specified.column[res$Min.ColID]
+  }
+
+  res
+
+}
+
 
 

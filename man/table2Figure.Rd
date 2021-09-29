@@ -6,17 +6,18 @@
 \usage{
 table2Figure(
   data,
-  rowname = NULL,
+  rowname = TRUE,
   ttheme = "blank",
   top.black.line = 1:2,
   bottom.black.line = 1,
   subtitle = NULL,
   main.title = NULL,
-  footnote = NULL
+  footnote = NULL,
+  vline = NULL
 )
 }
 \arguments{
-\item{rowname}{Default NULL}
+\item{rowname}{Default TRUE}
 
 \item{ttheme}{Default blank. character string the table style/theme. The available themes are illustrated in the ggtexttable-theme.pdf file. Allowed values include one of c("default", "blank", "classic", "minimal", "light", "lBlack", "lBlue", "lRed", "lGreen", "lViolet", "lCyan", "lOrange", "lBlackWhite", "lBlueWhite", "lRedWhite", "lGreenWhite", "lVioletWhite", "lCyanWhite", "lOrangeWhite", "mBlack", "mBlue", "mRed", "mGreen", "mViolet", "mCyan", "mOrange", "mBlackWhite", "mBlueWhite", "mRedWhite", "mGreenWhite", "mVioletWhite", "mCyanWhite", "mOrangeWhite" ). Note that, l = "light"; m = "medium"}
 
@@ -29,6 +30,8 @@ table2Figure(
 \item{main.title}{Main title if you want to show}
 
 \item{footnote}{Italic footnote at botton if you want to show}
+
+\item{vline}{}
 }
 \value{
 

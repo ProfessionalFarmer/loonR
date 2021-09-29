@@ -752,7 +752,9 @@ multivariate_or <- function(d.frame, label, scale=TRUE){
 #' @return c(OR, 2.5% CI, 97.5% CI)
 #' @export
 #'
-#' @examples univariate_or(risk.df, label)
+#' @examples
+#' data("LIRI")
+#' loonR::univariate_or(LIRI[,3:6], LIRI$status)
 univariate_or <- function(d.frame, label, scale=TRUE){
 
   library(foreach)
@@ -767,6 +769,9 @@ univariate_or <- function(d.frame, label, scale=TRUE){
 
     # column name
     c.name <- colnames(d.frame)[i]
+
+    # 用t= as.numeric(questionr::odds.ratio(res)[2,])比较简单
+    # t= as.numeric(questionr::odds.ratio(res)[2,])
 
     res <- c( exp( cbind(coef(res), confint(res) )  )[2,] , #  c("OR", "2.5 %", "97.5 %")
               summary(res)$coefficients[2,1], # "Estimate"
@@ -787,7 +792,8 @@ univariate_or <- function(d.frame, label, scale=TRUE){
 }
 
 
-#' Title
+
+#' Univariate Cox analysis
 #'
 #' @param d.frame Data.frame --- Row: sample, Column: gene expression
 #' @param status

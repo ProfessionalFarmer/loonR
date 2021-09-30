@@ -317,13 +317,13 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
   if(shape.color.by.group){
     shape.color.by.group = group.name
   }else{
-    shape.color.by.group = NULL
+    shape.color.by.group = "black"
   }
 
   if(fill.color.by.group){
     fill.color.by.group = group.name
   }else{
-    fill.color.by.group = NULL
+    fill.color.by.group = "white"
   }
 
   if(length(unique(group))==2){ comparisons = list( c(unique(group)) ) }

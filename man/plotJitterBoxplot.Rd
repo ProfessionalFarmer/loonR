@@ -27,9 +27,9 @@ plotJitterBoxplot(
   violin = FALSE,
   facet = FALSE,
   dotplot = FALSE,
-  show.legend = FALSE,
   shape.color.by.group = TRUE,
-  fill.color.by.group = FALSE
+  fill.color.by.group = FALSE,
+  legend.pos = ""
 )
 }
 \arguments{
@@ -53,11 +53,11 @@ plotJitterBoxplot(
 
 \item{facet}{stat can work only after setting facet=TRUE}
 
-\item{show.legend}{Default FALSE}
-
 \item{shape.color.by.group}{TRUE/FALSE. Shape color by group}
 
 \item{fill.color.by.group}{TRUE/FALSE. Fill color by group}
+
+\item{legend.pos}{one of c("", "top", "bottom", "left", "right", "none")}
 }
 \value{
 

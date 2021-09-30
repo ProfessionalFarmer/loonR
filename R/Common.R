@@ -274,6 +274,9 @@ show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = 
 #' @param facet stat can work only after setting facet=TRUE
 #' @param dotplot
 #' @param color.by.x Group by x lab. In this way we can perform stats
+#' @param show.legend Default FALSE
+#' @param shape.color.by.group TRUE/FALSE. Shape color by group
+#' @param fill.color.by.group TRUE/FALSE. Fill color by group
 #'
 #' @return
 #' @export
@@ -295,7 +298,9 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
                               group.name = "Group", color = "aaas", color.by.x = FALSE,
                               comparisons = NULL, method = "wilcox.test", label.y = NULL, add = NULL,
                               alternative = "two.sided", rotate.x = 0, outlier.shape = 19, ylim=NULL, stat = FALSE,
-                              barplot=FALSE, violin = FALSE, facet=FALSE, dotplot=FALSE){
+                              barplot=FALSE, violin = FALSE, facet=FALSE, dotplot=FALSE, show.legend = FALSE,
+                              shape.color.by.group = TRUE, fill.color.by.group = FALSE){
+
   if(!is.numeric(rotate.x)){
     stop("Please set rotate.x a numeric value not string")
   }
@@ -309,6 +314,17 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
     group = factor(group)
   }
 
+  if(shape.color.by.group){
+    shape.color.by.group = group.name
+  }else{
+    shape.color.by.group = NULL
+  }
+
+  if(fill.color.by.group){
+    fill.color.by.group = group.name
+  }else{
+    fill.color.by.group = NULL
+  }
 
   if(length(unique(group))==2){ comparisons = list( c(unique(group)) ) }
 
@@ -323,26 +339,28 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
 
     if(barplot){
       if(is.null(add)){add="mean_se"}
-      p <- ggbarplot(tmp.df, x = group.name, y="Y", add = add, fill = group.name,  ylim = ylim,
-                     show.legend = FALSE, legend = '',
+      p <- ggbarplot(tmp.df, x = group.name, y="Y", add = add,
+                     color = shape.color.by.group, fill = fill.color.by.group,
+                     ylim = ylim, show.legend = show.legend, legend = '',
                      palette = color, position = position_dodge(0.9))
     }else if(violin){
       if(is.null(add)){add="boxplot"}
-      p <- ggviolin(tmp.df, x=group.name, y="Y",  ylim = ylim,
-                    palette = color, color = group.name, shape = group.name,
-                    show.legend = FALSE, legend = '',
+      p <- ggviolin(tmp.df, x = group.name, y="Y",  ylim = ylim, palette = color,
+                    color = shape.color.by.group, fill = fill.color.by.group,
+                    shape = group.name, show.legend = show.legend, legend = '',
                     add = add, add.params = list(fill = "white") )
     }else if(dotplot){
       if(is.null(add)){add="boxplot"}
-      p <- ggdotplot(tmp.df, x = group.name, y="Y", add = add, fill = group.name,  ylim = ylim,
-                      show.legend = FALSE, legend = '',
+      p <- ggdotplot(tmp.df, x = group.name, y="Y", add = add,
+                     color = shape.color.by.group, fill = fill.color.by.group,
+                     ylim = ylim, show.legend = show.legend, legend = '',
                      palette = color, position = position_dodge(0.9))
     }else{
       if(is.null(add)){add="jitter"}
       p <- ggboxplot(tmp.df, x=group.name, y="Y",
-                     outlier.shape = outlier.shape,
-                     add = add,  color = group.name, ylim = ylim,
-                     show.legend = FALSE, legend = '',
+                     outlier.shape = outlier.shape, add = add,
+                     fill = fill.color.by.group, color = shape.color.by.group, ylim = ylim,
+                     show.legend = show.legend, legend = '',
                      palette = color)
     }
     p = p + rotate_x_text(angle = rotate.x)
@@ -359,27 +377,29 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
   }else{
     if(barplot){
       if(is.null(add)){add="mean_se"}
-      p <- ggbarplot(tmp.df, x="X", y="Y", add = add, fill = group.name,  ylim = ylim,
-                     show.legend = FALSE, legend = '',
+      p <- ggbarplot(tmp.df, x="X", y="Y", add = add,
+                     color = shape.color.by.group, fill = group.name,  ylim = ylim,
+                     show.legend = show.legend, legend = '',
                      palette = color, position = position_dodge(0.9) )
 
     }else if(violin){
       if(is.null(add)){add="boxplot"}
-      p <- ggviolin(tmp.df, x="X", y="Y", ylim = ylim,
-                    palette = color, color = group.name, shape = group.name,
-                    show.legend = FALSE, legend = '',
+      p <- ggviolin(tmp.df, x="X", y="Y", ylim = ylim, palette = color,
+                    fill = fill.color.by.group, color = shape.color.by.group, shape = group.name,
+                    show.legend = show.legend, legend = '',
                     add = add, add.params = list(fill = "white") )
     }else if(dotplot){
       if(is.null(add)){add="boxplot"}
       p <- ggdotplot(tmp.df, y="Y", x= "X", add = add,
-                     color = group.name, palette = color, show.legend = FALSE, legend = '',
+                     fill = fill.color.by.group, color = shape.color.by.group,
+                     palette = color, show.legend = show.legend, legend = '',
                      short.panel.labs = FALSE, ylim = ylim )
     }else{
       if(is.null(add)){add="jitter"}
       p <- ggboxplot(tmp.df, x="X", y="Y",
-                     outlier.shape = outlier.shape,
-                     add = add,  color = group.name, ylim = ylim,
-                     show.legend = FALSE, legend = '',
+                     outlier.shape = outlier.shape, add = add,
+                     fill = fill.color.by.group, color = shape.color.by.group, ylim = ylim,
+                     show.legend = show.legend, legend = '',
                      palette = color )
     }
     p = p + rotate_x_text(angle = rotate.x)
@@ -1431,6 +1451,7 @@ table2Figure <- function(data, rowname = TRUE, ttheme = "blank", top.black.line 
   }
 
   library(ggpubr)
+  library(dplyr)
 
   colname = colnames(data)
 

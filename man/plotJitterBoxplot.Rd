@@ -26,7 +26,10 @@ plotJitterBoxplot(
   barplot = FALSE,
   violin = FALSE,
   facet = FALSE,
-  dotplot = FALSE
+  dotplot = FALSE,
+  show.legend = FALSE,
+  shape.color.by.group = TRUE,
+  fill.color.by.group = FALSE
 )
 }
 \arguments{
@@ -49,6 +52,12 @@ plotJitterBoxplot(
 \item{stat}{Default FALSE}
 
 \item{facet}{stat can work only after setting facet=TRUE}
+
+\item{show.legend}{Default FALSE}
+
+\item{shape.color.by.group}{TRUE/FALSE. Shape color by group}
+
+\item{fill.color.by.group}{TRUE/FALSE. Fill color by group}
 }
 \value{
 

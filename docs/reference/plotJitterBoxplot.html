@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.596</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.620</span>
       </span>
     </div>
 
@@ -139,7 +139,12 @@
   barplot <span class='op'>=</span> <span class='cn'>FALSE</span>,
   violin <span class='op'>=</span> <span class='cn'>FALSE</span>,
   facet <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  dotplot <span class='op'>=</span> <span class='cn'>FALSE</span>
+  dotplot <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  shape.color.by <span class='op'>=</span> <span class='st'>"black"</span>,
+  fill.color.by <span class='op'>=</span> <span class='cn'>NULL</span>,
+  legend.pos <span class='op'>=</span> <span class='st'>""</span>,
+  group.position <span class='op'>=</span> <span class='fu'>ggplot2</span><span class='fu'>::</span><span class='fu'><a href='https://ggplot2.tidyverse.org/reference/position_dodge.html'>position_dodge</a></span><span class='op'>(</span><span class='fl'>0.9</span><span class='op'>)</span>,
+  remove.element <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -148,6 +153,10 @@
     <tr>
       <th>group</th>
       <td><p>vector</p></td>
+    </tr>
+    <tr>
+      <th>group.name</th>
+      <td><p>Default "Group"</p></td>
     </tr>
     <tr>
       <th>color.by.x</th>
@@ -184,6 +193,26 @@
     <tr>
       <th>facet</th>
       <td><p>stat can work only after setting facet=TRUE</p></td>
+    </tr>
+    <tr>
+      <th>shape.color.by</th>
+      <td><p>Default "black". If you want set the color by group, please set the group name (Default "Group"). Shape color by group</p></td>
+    </tr>
+    <tr>
+      <th>fill.color.by</th>
+      <td><p>Default by "Group". If you want set the color by group, please set the group name (Default "Group"). Shape color by group</p></td>
+    </tr>
+    <tr>
+      <th>legend.pos</th>
+      <td><p>one of c("", "top", "bottom", "left", "right", "none")</p></td>
+    </tr>
+    <tr>
+      <th>group.position</th>
+      <td><p>Allowed values include "identity", "stack", "dodge", "position_dodge(0.9)", position_stack(). Position adjustment, either as a string, or the result of a call to a position adjustment function</p></td>
+    </tr>
+    <tr>
+      <th>remove.element</th>
+      <td><p>Please refer https://rpkgs.datanovia.com/ggpubr/reference/rremove.html</p></td>
     </tr>
     </table>
 

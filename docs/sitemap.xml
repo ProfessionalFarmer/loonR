@@ -130,6 +130,9 @@
     <loc>/reference/export2ppt.html</loc>
   </url>
   <url>
+    <loc>/reference/exportTable.html</loc>
+  </url>
+  <url>
     <loc>/reference/extractSignaturePercent.html</loc>
   </url>
   <url>
@@ -143,6 +146,9 @@
   </url>
   <url>
     <loc>/reference/filterGenes.html</loc>
+  </url>
+  <url>
+    <loc>/reference/findMaxMinColumnNamesForEachRow.html</loc>
   </url>
   <url>
     <loc>/reference/findSomaticSignature.html</loc>
@@ -328,6 +334,9 @@
     <loc>/reference/oneway.anova.html</loc>
   </url>
   <url>
+    <loc>/reference/pairwiseAdonisTest.html</loc>
+  </url>
+  <url>
     <loc>/reference/plot.forest.html</loc>
   </url>
   <url>
@@ -371,6 +380,9 @@
   </url>
   <url>
     <loc>/reference/prob2logit.html</loc>
+  </url>
+  <url>
+    <loc>/reference/radarSpiderPlot.html</loc>
   </url>
   <url>
     <loc>/reference/read_mirdeep2_result.html</loc>
@@ -425,6 +437,9 @@
   </url>
   <url>
     <loc>/reference/survivaly_analysis.html</loc>
+  </url>
+  <url>
+    <loc>/reference/table2Figure.html</loc>
   </url>
   <url>
     <loc>/reference/tanimoto.html</loc>

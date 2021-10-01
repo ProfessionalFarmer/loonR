@@ -27,13 +27,17 @@ plotJitterBoxplot(
   violin = FALSE,
   facet = FALSE,
   dotplot = FALSE,
-  shape.color.by.group = TRUE,
-  fill.color.by.group = FALSE,
-  legend.pos = ""
+  shape.color.by = "black",
+  fill.color.by = NULL,
+  legend.pos = "",
+  group.position = ggplot2::position_dodge(0.9),
+  remove.element = NULL
 )
 }
 \arguments{
 \item{group}{vector}
+
+\item{group.name}{Default "Group"}
 
 \item{color.by.x}{Group by x lab. In this way we can perform stats}
 
@@ -53,11 +57,15 @@ plotJitterBoxplot(
 
 \item{facet}{stat can work only after setting facet=TRUE}
 
-\item{shape.color.by.group}{TRUE/FALSE. Shape color by group}
+\item{shape.color.by}{Default "black". If you want set the color by group, please set the group name (Default "Group"). Shape color by group}
 
-\item{fill.color.by.group}{TRUE/FALSE. Fill color by group}
+\item{fill.color.by}{Default by "Group". If you want set the color by group, please set the group name (Default "Group"). Shape color by group}
 
 \item{legend.pos}{one of c("", "top", "bottom", "left", "right", "none")}
+
+\item{group.position}{Allowed values include "identity", "stack", "dodge", "position_dodge(0.9)", position_stack(). Position adjustment, either as a string, or the result of a call to a position adjustment function}
+
+\item{remove.element}{Please refer https://rpkgs.datanovia.com/ggpubr/reference/rremove.html}
 }
 \value{
 

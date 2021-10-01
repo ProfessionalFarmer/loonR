@@ -11,7 +11,8 @@ radarSpiderPlot(
   max = NULL,
   fill.color = FALSE,
   axistype = 0,
-  cglcol = "navy"
+  cglcol = "navy",
+  vlabels = NULL
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ radarSpiderPlot(
 \item{axistype}{Default 0. The type of axes, specified by any of 0:5. 0 means no axis label. 1 means center axis label only. 2 means around-the-chart label only. 3 means both center and around-the-chart (peripheral) labels. 4 is \emph{.}* format of 1, 5 is \emph{.}* format of 3. Default is 0.}
 
 \item{cglcol}{Default 'navy'. color of the net}
+
+\item{vlabels}{Character vector for the names for variables. If NULL, the names of the variables as colnames(df) are used. Default NULL.}
 }
 \value{
 

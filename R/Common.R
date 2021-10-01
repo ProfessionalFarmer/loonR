@@ -22,7 +22,7 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 #' @param df
 #' @param file file path
 #' @param quote Default FALSE
-#' @param sep Default \t
+#' @param sep Default \\t
 #'
 #' @return
 #' @export
@@ -265,7 +265,7 @@ show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = 
 #' @param add Default jitter for boxplot, mean_se for barplot, boxplot for violin and dot plot. character vector for adding another plot element (e.g.: dot plot or error bars). Allowed values are one or the combination of: "none", "dotplot", "jitter", "boxplot", "point", "mean", "mean_se", "mean_sd", "mean_ci", "mean_range", "median", "median_iqr", "median_hilow", "median_q1q3", "median_mad", "median_range"; see ?desc_statby for more details.
 #' @param alternative should be one of “two.sided”, “less”, “greater”
 #' @param rotate.x Default 0. numeric value specifying the rotation angle. 90 for vertical x-axis text.
-#' @param group.name
+#' @param group.name Default "Group"
 #' @param outlier.shape point shape of outlier. Default is 19. To hide outlier, specify outlier.shape = NA. When jitter is added, then outliers will be automatically hidden.
 #' @param ylim
 #' @param stat Default FALSE
@@ -274,9 +274,11 @@ show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = 
 #' @param facet stat can work only after setting facet=TRUE
 #' @param dotplot
 #' @param color.by.x Group by x lab. In this way we can perform stats
-#' @param shape.color.by.group TRUE/FALSE. Shape color by group
-#' @param fill.color.by.group TRUE/FALSE. Fill color by group
+#' @param shape.color.by Default "black". If you want set the color by group, please set the group name (Default "Group"). Shape color by group
+#' @param fill.color.by Default by "Group". If you want set the color by group, please set the group name (Default "Group"). Shape color by group
 #' @param legend.pos one of c("", "top", "bottom", "left", "right", "none")
+#' @param group.position Allowed values include "identity", "stack", "dodge", "position_dodge(0.9)", position_stack(). Position adjustment, either as a string, or the result of a call to a position adjustment function
+#' @param remove.element Please refer https://rpkgs.datanovia.com/ggpubr/reference/rremove.html
 #'
 #' @return
 #' @export
@@ -299,10 +301,11 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
                               comparisons = NULL, method = "wilcox.test", label.y = NULL, add = NULL,
                               alternative = "two.sided", rotate.x = 0, outlier.shape = 19, ylim=NULL, stat = FALSE,
                               barplot = FALSE, violin = FALSE, facet=FALSE, dotplot=FALSE,
-                              shape.color.by.group = TRUE, fill.color.by.group = FALSE, legend.pos = "" ){
+                              shape.color.by = "black", fill.color.by = NULL, legend.pos = "",
+                              group.position = ggplot2::position_dodge(0.9), remove.element = NULL){
 
   if(!is.numeric(rotate.x)){
-    stop("Please set rotate.x a numeric value not string")
+    rotate.x = as.numeric(rotate.x)
   }
 
   if(color.by.x){
@@ -314,19 +317,9 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
     group = factor(group)
   }
 
-  if(shape.color.by.group){
-    shape.color.by.group = group.name
-  }else{
-    shape.color.by.group = "black"
+  if(is.null(fill.color.by)){
+    fill.color.by = group.name
   }
-
-  if(fill.color.by.group){
-    fill.color.by.group = group.name
-  }else{
-    fill.color.by.group = "white"
-  }
-
-
 
   if(length(unique(group))==2){ comparisons = list( c(unique(group)) ) }
 
@@ -342,23 +335,23 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
     if(barplot){
       if(is.null(add)){add="mean_se"}
       p <- ggbarplot(tmp.df, x = group.name, y="Y", add = add,
-                     color = shape.color.by.group, fill = fill.color.by.group,
-                     position = position_dodge(0.9))
+                     color = shape.color.by, fill = fill.color.by,
+                     position = group.position )
     }else if(violin){
       if(is.null(add)){add="boxplot"}
       p <- ggviolin(tmp.df, x = group.name, y="Y",
-                    color = shape.color.by.group, fill = fill.color.by.group,
+                    color = shape.color.by, fill = fill.color.by,
                     shape = group.name, add = add, add.params = list(fill = "white") )
     }else if(dotplot){
       if(is.null(add)){add="boxplot"}
       p <- ggdotplot(tmp.df, x = group.name, y="Y", add = add,
-                     color = shape.color.by.group, fill = fill.color.by.group,
-                     position = position_dodge(0.9))
+                     color = shape.color.by, fill = fill.color.by,
+                     position = group.position )
     }else{
       if(is.null(add)){add="jitter"}
       p <- ggboxplot(tmp.df, x=group.name, y="Y",
                      outlier.shape = outlier.shape, add = add,
-                     fill = fill.color.by.group, color = shape.color.by.group)
+                     fill = fill.color.by, color = shape.color.by)
     }
     p = ggpar(p, legend.title = "", legend = legend.pos, palette = color, ylim = ylim)
     p = p + rotate_x_text(angle = rotate.x)
@@ -377,24 +370,25 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
     if(barplot){
       if(is.null(add)){add="mean_se"}
       p <- ggbarplot(tmp.df, x="X", y="Y", add = add,
-                     color = shape.color.by.group, fill = group.name,
-                     position = position_dodge(0.9) )
+                     color = shape.color.by, fill = group.name,
+                     position = group.position )
 
     }else if(violin){
       if(is.null(add)){add="boxplot"}
       p <- ggviolin(tmp.df, x="X", y="Y",
-                    fill = fill.color.by.group, color = shape.color.by.group, shape = group.name,
+                    fill = fill.color.by, color = shape.color.by,
+                    shape = group.name,
                     add = add, add.params = list(fill = "white") )
     }else if(dotplot){
       if(is.null(add)){add="boxplot"}
       p <- ggdotplot(tmp.df, y="Y", x= "X", add = add,
-                     fill = fill.color.by.group, color = shape.color.by.group,
-                     short.panel.labs = FALSE)
+                     fill = fill.color.by, color = shape.color.by,
+                     short.panel.labs = FALSE, position = group.position )
     }else{
       if(is.null(add)){add="jitter"}
       p <- ggboxplot(tmp.df, x="X", y="Y",
                      outlier.shape = outlier.shape, add = add,
-                     fill = fill.color.by.group, color = shape.color.by.group)
+                     fill = fill.color.by, color = shape.color.by)
     }
     p = ggpar(p, legend.title = "", legend = legend.pos, palette = color, ylim = ylim )
     p = p + rotate_x_text(angle = rotate.x)
@@ -410,6 +404,9 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
   }
 
   p = ggpar(p, xlab = xlab, ylab = ylab, title = title)
+  if(!is.null(remove.element)){
+    p = p + rremove(remove.element)
+  }
   p
 
 
@@ -1353,6 +1350,7 @@ meltDataFrameByGroup <- function(d.frame, group, na.rm = TRUE, variable_name="Ge
 #' @param fill.color Default is FALSE, no fill color
 #' @param axistype Default 0. The type of axes, specified by any of 0:5. 0 means no axis label. 1 means center axis label only. 2 means around-the-chart label only. 3 means both center and around-the-chart (peripheral) labels. 4 is *.** format of 1, 5 is *.** format of 3. Default is 0.
 #' @param cglcol Default 'navy'. color of the net
+#' @param vlabels Character vector for the names for variables. If NULL, the names of the variables as colnames(df) are used. Default NULL.
 #'
 #' @return
 #' @export
@@ -1366,13 +1364,14 @@ meltDataFrameByGroup <- function(d.frame, group, na.rm = TRUE, variable_name="Ge
 #' rownames(df) <- paste("mister" , letters[1:3] , sep="-")
 #' loonR::radarSpiderPlot(df)
 #'
-radarSpiderPlot <- function(df, palette = "aaas", min = 0, max = NULL, fill.color=FALSE, axistype = 0, cglcol = "navy"){
+radarSpiderPlot <- function(df, palette = "aaas", min = 0, max = NULL, fill.color=FALSE, axistype = 0, cglcol = "navy", vlabels = NULL){
   # https://www.r-graph-gallery.com/143-spider-chart-with-saveral-individuals.html
   # Use ggradar
   # https://github.com/ricardo-bion/ggradar
 
   if(!require("fmsb")){
     BiocManager::install("fmsb")
+    library("fmsb")
   }
 
   df = as.data.frame(df)
@@ -1381,7 +1380,7 @@ radarSpiderPlot <- function(df, palette = "aaas", min = 0, max = NULL, fill.colo
     warning("Pls note the minimum tick for plot is 0")
   }
   if(is.null(max)){
-    max = max(df) + max(df)
+    max = max(df)
   }
 
 
@@ -1403,6 +1402,7 @@ radarSpiderPlot <- function(df, palette = "aaas", min = 0, max = NULL, fill.colo
     pfcol = colors_in , # fill color
     plwd = 4 ,
     plty = 1,
+    vlabels = vlabels,
     #custom the grid
     cglcol = "navy", # color of the net
     cglty = 3, # net line type # https://www.r-graph-gallery.com/6-graph-parameters-reminder.html
@@ -1414,7 +1414,7 @@ radarSpiderPlot <- function(df, palette = "aaas", min = 0, max = NULL, fill.colo
   )
 
   # Add a legend
-  legend(x=0.7, y=1.3, legend = rownames(df[-c(1,2),]), bty = "n", pch=20 , col=colors_border , text.col = "black", cex=1.2, pt.cex=3)
+  legend(x=0.7, y=1.4, legend = rownames(df[-c(1,2),]), bty = "n", pch=20 , col=colors_border , text.col = "black", cex=1.2, pt.cex=3)
 
 }
 

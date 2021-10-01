@@ -11,7 +11,7 @@ exportTable(df, file = "~/test.tsv", quote = F, sep = "\\t", row.names = F)
 
 \item{quote}{Default FALSE}
 
-\item{sep}{Default \t}
+\item{sep}{Default \\t}
 }
 \value{
 

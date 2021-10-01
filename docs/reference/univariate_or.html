@@ -89,7 +89,7 @@ score E.g.: Gene or miRNA expression, or risk score" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.596</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.620</span>
       </span>
     </div>
 
@@ -151,8 +151,17 @@ score E.g.: Gene or miRNA expression, or risk score</p>
     <p>c(OR, 2.5% CI, 97.5% CI)</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='fu'>univariate_or</span><span class='op'>(</span><span class='va'>risk.df</span>, <span class='va'>label</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in scale(d.frame, center = TRUE, scale = TRUE)</span> object 'risk.df' not found</span>
+    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='st'>"LIRI"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>univariate_or</span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>[</span>,<span class='fl'>3</span><span class='op'>:</span><span class='fl'>6</span><span class='op'>]</span>, <span class='va'>LIRI</span><span class='op'>$</span><span class='va'>status</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Waiting for profiling to be done...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Waiting for profiling to be done...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Waiting for profiling to be done...</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> Waiting for profiling to be done...</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>        Variate    OR  2.5% 97.5% Estimate    Pr</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> ANLN      ANLN 2.423 1.703 3.600    0.885 0.000</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> CENPA    CENPA 2.176 1.607 3.011    0.778 0.000</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> GPR182  GPR182 0.463 0.199 0.825   -0.770 0.032</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> BCO2      BCO2 0.395 0.186 0.704   -0.929 0.006</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

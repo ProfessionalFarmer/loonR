@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Title — splitGroupByCutoff • loonR</title>
+<title>Split group by various methods. Useful — splitGroupByCutoff • loonR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Title — splitGroupByCutoff" />
-<meta property="og:description" content="Title" />
+<meta property="og:title" content="Split group by various methods. Useful — splitGroupByCutoff" />
+<meta property="og:description" content="Split group by various methods. Useful" />
 
 
 
@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.596</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.620</span>
       </span>
     </div>
 
@@ -108,13 +108,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Title</h1>
+    <h1>Split group by various methods. Useful</h1>
     <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/Common.R'><code>R/Common.R</code></a></small>
     <div class="hidden name"><code>splitGroupByCutoff.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Title</p>
+    <p>Split group by various methods. Useful</p>
     </div>
 
     <pre class="usage"><span class='fu'>splitGroupByCutoff</span><span class='op'>(</span>
@@ -122,7 +122,7 @@
   values <span class='op'>=</span> <span class='cn'>NULL</span>,
   fun <span class='op'>=</span> <span class='cn'>NULL</span>,
   quantile.cutoff <span class='op'>=</span> <span class='cn'>NULL</span>,
-  sample.names <span class='op'>=</span> <span class='cn'>NA</span>,
+  sample.names <span class='op'>=</span> <span class='cn'>NULL</span>,
   cut.point <span class='op'>=</span> <span class='cn'>NULL</span>,
   cut.label <span class='op'>=</span> <span class='cn'>NULL</span>,
   specific.group <span class='op'>=</span> <span class='cn'>NULL</span>,
@@ -178,7 +178,8 @@
 <span class='r-out co'><span class='r-pr'>#&gt;</span>  1  2  3 </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> 38 30 32 </span>
 <span class='r-in'></span>
-<span class='r-in'><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'>splitGroupByCutoff</span><span class='op'>(</span><span class='va'>group</span>, <span class='va'>value</span>, fun<span class='op'>=</span><span class='st'>"mean"</span>, cut.label <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"L"</span>,<span class='st'>"H"</span><span class='op'>)</span>, group.prefix <span class='op'>=</span> <span class='st'>"G"</span>, specific.group <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>splitGroupByCutoff</span><span class='op'>(</span><span class='va'>group</span>, <span class='va'>value</span>, fun<span class='op'>=</span><span class='st'>"mean"</span>, cut.label <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"L"</span>,<span class='st'>"H"</span><span class='op'>)</span>, group.prefix <span class='op'>=</span> <span class='st'>"G"</span>, specific.group <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Cutpoint for  1  is  54.98498Cutpoint for  2  is  44.25116</span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>$</span><span class='va'>New.Label</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> G1-H G1-L G2-H G2-L   G3 </span>

@@ -4,7 +4,7 @@
 \alias{splitSampleByGroup}
 \title{Split sample by group into traning and validation set}
 \usage{
-splitSampleByGroup(sample = NA, group = NA, seed = 666, fraction = 0.5)
+splitSampleByGroup(sample = NULL, group = NULL, seed = 666, fraction = 0.5)
 }
 \arguments{
 \item{sample}{Vector}

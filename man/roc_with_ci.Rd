@@ -43,9 +43,9 @@ loonR::roc_with_ci(LIRI$status, LIRI$ANLN,
 
 
 roc_with_ci(labels, rs,
-font = "Arial",
-palette = "jama_classic",
-title = "HGD vs Healthy",
-panel = data.frame(Evebt=labels, data)
+            font = "Arial",
+            palette = "jama_classic",
+            title = "HGD vs Healthy",
+            panel = data.frame(Evebt=labels, data)
 )
 }

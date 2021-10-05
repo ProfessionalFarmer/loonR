@@ -443,13 +443,21 @@ DESeq2_differential <- function(rawcount, group, prop.expressed.sample = 0.5, pr
 
 #' Title Remove redundant gene expression data, and select the maximum one
 #'
-#' @param expression.df Please note the first column must be gene names
+#' @param expression.df Please note the first column must be gene names if gene = Null
 #'
 #' @return A clean expression data.frame
 #' @export
 #'
 #' @examples loonR::unique_gene_expression(normlized.exp.df)
-unique_gene_expression <- function(expression.df, f = "max"){
+unique_gene_expression <- function(expression.df, f = "max", gene = NULL){
+
+  if(!is.null(gene)){
+    expression.df = data.frame(
+      Gene = gene,
+      expression.df
+    )
+  }
+
 
   expression.df <- aggregate(expression.df[,-c(1)],
                              by = list(gene = expression.df[,c(1)]),
@@ -605,7 +613,7 @@ load.salmon.matrix <- function(dirPath, isoform = TRUE, countsFromAbundance = "n
 
 
   library(tximport)
-  sample.salmon.pathes <- list.files(path = dirPath, full.names = TRUE, pattern = "quant")
+  sample.salmon.pathes <- list.files(path = dirPath, full.names = TRUE)
   sample.names <- basename(sample.salmon.pathes)
   sample.names <- unlist(lapply( strsplit(sample.names,"_qua"), function(x) {x[1]} ))
 
@@ -872,6 +880,8 @@ microarray_limma_differential <- function(exp, group, check.log2=TRUE, normalize
   library(limma)
   library(umap)
 
+  group = factor(group, levels = unique(group), labels = c("Ctrl","Exp") )
+
   # load series and platform data from GEO
   # group membership for all samples
   sml <- group
@@ -880,8 +890,8 @@ microarray_limma_differential <- function(exp, group, check.log2=TRUE, normalize
   # box-and-whisker plot
   ord <- order(sml)  # order samples by group
   par(mar=c(7,4,2,1))
-  boxplot(gset[,ord], boxwex=0.6, notch=T, main="Expression before normalization", outline=FALSE, las=2, col=factor(sml, levels = unique(sml))[ord])
-  legend("topleft", unique(sml), fill=palette(), bty="n")
+  boxplot(gset[,ord], boxwex=0.6, notch=T, main="Expression before normalization", outline=FALSE, las=2, col=factor(sml, levels = unique(sml))[ord] )
+  legend("topleft", legend = unique(sml), fill=palette(), bty="n")
 
 
   # log2 transformation
@@ -919,7 +929,7 @@ microarray_limma_differential <- function(exp, group, check.log2=TRUE, normalize
   fit <- lmFit(gset, design)  # fit linear model
 
   # set up contrasts of interest and recalculate model coefficients
-  cts <- paste(unique(sml)[2], unique(sml)[1], sep="-")
+  cts <- paste(unique(sml)[2], "-", unique(sml)[1], sep= "")
   cont.matrix <- makeContrasts(contrasts=cts, levels=design)
   fit2 <- contrasts.fit(fit, cont.matrix)
 
@@ -967,7 +977,7 @@ microarray_limma_differential <- function(exp, group, check.log2=TRUE, normalize
   par(mar=c(7,4,2,1))
 
   boxplot(ex[,ord], boxwex=0.6, notch=T, main="Expression after log2 and normalization", outline=FALSE, las=2, col=gs[ord])
-  legend("topleft", unique(sml), fill=palette(), bty="n")
+  legend("topleft", legend = unique(sml), fill=palette(), bty="n")
 
   # expression value distribution
   par(mar=c(4,4,2,1))
@@ -991,7 +1001,6 @@ microarray_limma_differential <- function(exp, group, check.log2=TRUE, normalize
 
   list(expr.df = gset,
        diff.res = tT)
-
 
 }
 

@@ -47,7 +47,7 @@ remove.verylong.isoform.gff <- function(gff, interval.length = 1500000){
 #' @export
 #'
 #' @examples
-getGeneRelatedTranscripts.Gff <- function(gff.Path, gene.vector, max.transcript.length=1500000){
+getGeneRelatedTranscripts.Gff <- function(gff.Path, gene.vector = NULL, max.transcript.length=1500000){
 
 
   library(dplyr)
@@ -61,8 +61,12 @@ getGeneRelatedTranscripts.Gff <- function(gff.Path, gene.vector, max.transcript.
     gr <- gff.Path
   }
 
+  if(is.null(gene.vector)){
 
-  gr <- gr %>% filter(gene_id %in% gene.vector )
+  }else{
+    gr <- gr %>% filter(gene_id %in% gene.vector )
+  }
+
 
   # 查看是否有特别长的isoform
   gr <- loonR::remove.verylong.isoform.gff(gr, interval.length = max.transcript.length)

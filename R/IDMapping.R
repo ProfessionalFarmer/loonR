@@ -1,5 +1,3 @@
-
-
 #' Convert RefSeq ID to Ensembl ID by biomaRt
 #'
 #' RefSeq identifiers differ in format according to the type of record the identifiers are for as shown below:

@@ -19,3 +19,6 @@ list(expression, phenotype, probe.annotation)
 \description{
 Download dataset from GEO by accession ID and platform
 }
+\examples{
+
+}

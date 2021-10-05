@@ -6,7 +6,7 @@
 \usage{
 getGeneRelatedTranscripts.Gff(
   gff.Path,
-  gene.vector,
+  gene.vector = NULL,
   max.transcript.length = 1500000
 )
 }

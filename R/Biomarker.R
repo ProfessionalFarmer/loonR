@@ -271,12 +271,19 @@ build.randomforest.model <- function(df, group, seed = 666, scale=TRUE){
   rf.fit <- randomForest::randomForest(lg.df[,-c(1)], lg.df$label, importance=TRUE, proximity=TRUE)
 
   colnames(rf.fit$votes) = paste0("class",colnames(rf.fit$votes))
+  predicted.prob <- rf.fit$votes$class1
+  roc = loonR::roc_with_ci(lg.df$label, predicted.prob, ci=FALSE)
+  auc = loonR::get.AUC(predicted.prob, lg.df$label)
+
 
   list(model=rf.fit,
        predicted.label=rf.fit$predicted,
+       predicted.prob=predicted.prob,
        importance=rf.fit$importance,
        confusion=rf.fit$confusion,
-       votes=data.frame(rf.fit$votes, check.names = FALSE)
+       votes=data.frame(rf.fit$votes, check.names = FALSE),
+       ROC = roc,
+       AUC = auc
   )
 
 
@@ -1004,10 +1011,10 @@ plot_miRCorrelation <- function(df, title="miRs' correlation", cl.lim = c(-0.5,1
 #'
 #'
 #' roc_with_ci(labels, rs,
-#' font = "Arial",
-#' palette = "jama_classic",
-#' title = "HGD vs Healthy",
-#' panel = data.frame(Evebt=labels, data)
+#'             font = "Arial",
+#'             palette = "jama_classic",
+#'             title = "HGD vs Healthy",
+#'             panel = data.frame(Evebt=labels, data)
 #' )
 roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos = c(0.4, 0.2), title = NULL, fontsize = 16, panel = NULL, SE.SP = FALSE, ci = TRUE) {
 
@@ -1020,7 +1027,6 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
   library(doParallel)
   registerDoParallel(40)
   set.seed(100)
-
 
 
   if(ci){
@@ -1366,18 +1372,20 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
 #' @export
 #'
 #' @examples
+#'
 download.geo.dataset <- function(geo.accession.id, platform, destdir = "~/GSE"){
 
   if (missing("geo.accession.id") | missing("platform")){
     stop("Please provide both geo.accession.id and platform")
   }
 
-
   library(GEOquery)
 
   # load series and platform data from GEO
   gset <- getGEO(geo.accession.id, GSEMatrix =TRUE, AnnotGPL=TRUE, destdir = destdir)
+
   if (length(gset) > 1) idx <- grep(platform, attr(gset, "names")) else idx <- 1
+
   gset <- gset[[idx]]
   gpl.annotation <- fData(gset)
 
@@ -1413,10 +1421,6 @@ download.geo.dataset <- function(geo.accession.id, platform, destdir = "~/GSE"){
   return(result)
 
 }
-
-
-
-
 
 
 
@@ -1802,9 +1806,9 @@ get.AUC <- function(pred, label, raw=TRUE){
 #' @export
 #'
 #' @examples
-splitSampleByGroup <- function(sample=NA, group=NA, seed = 666, fraction = 0.5){
+splitSampleByGroup <- function(sample=NULL, group=NULL, seed = 666, fraction = 0.5){
 
-  if(is.na(sample) | is.na(group)){
+  if(is.null(sample) | is.null(group)){
     stop("Sample or group should not be NA")
   }else{
     df = data.frame(Sample= sample, Group = group)

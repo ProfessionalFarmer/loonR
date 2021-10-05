@@ -284,6 +284,7 @@ show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = 
 #' @export
 #'
 #' @examples
+#'
 #' data("LIRI")
 #'
 #' d.frame = LIRI[,3:6]
@@ -411,6 +412,8 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
 
 
 }
+
+
 
 
 
@@ -1320,6 +1323,8 @@ genereateLabelsByGroup <- function(label=NULL,...){
 #' @param d.frame Row is sample, column is feature.
 #' @param group
 #' @param na.rm Default TRUE. Should NA values be removed from the data set?
+#' @param variable_name Default "Gene"
+#' @param group2 The second group
 #'
 #' @return
 #' @export
@@ -1329,13 +1334,37 @@ genereateLabelsByGroup <- function(label=NULL,...){
 #' d.frame = LIRI[,3:6]
 #' group = LIRI$status
 #' head( loonR::meltDataFrameByGroup(d.frame, group) )
-meltDataFrameByGroup <- function(d.frame, group, na.rm = TRUE, variable_name="Gene"){
+meltDataFrameByGroup <- function(d.frame=NULL, group=NULL, na.rm = TRUE, variable_name="Gene", group2=NULL){
 
-  melt.df <- data.frame(d.frame, Group = group,
-                        check.names = F, stringsAsFactors = F)
+  if(is.null(d.frame)|is.null(group)){
+    stop("Please set data.frame and group")
+  }
 
-  melted.df <- reshape2::melt(melt.df, id.vars="Group", na.rm = na.rm, variable.name = variable_name )
+  if(!is.null(group2)){
+    if(length(group)!=length(group)) stop("Group 1 and 2 not the same length")
+    group = data.frame(
+      cond1=group,
+      cond2=group2
+    )
+  }
 
+  if(is.vector(group)){
+    melt.df <- data.frame(d.frame, Group = group,
+                          check.names = F, stringsAsFactors = F)
+
+    melted.df <- reshape2::melt(melt.df, id.vars="Group", na.rm = na.rm, variable.name = variable_name )
+
+  }else if(is.data.frame(group)|is.matrix(group)){
+     if(nrow(d.frame) != nrow(group)){
+       stop("Group number is not the same with data.frame")
+     }
+
+    melt.df <- data.frame(d.frame, group,
+                          check.names = F, stringsAsFactors = F)
+    melted.df <- reshape2::melt(melt.df, id.vars=colnames(group), na.rm = na.rm, variable.name = variable_name )
+
+  }
+  melted.df
 
 }
 
@@ -1515,6 +1544,30 @@ findMaxMinColumnNamesForEachRow <- function(df, max = FALSE, min = FALSE, ties.m
   res
 
 }
+
+
+#' Splite vector and return the specific element
+#'
+#' @param vector
+#' @param sep
+#' @param index
+#'
+#' @return
+#' @export
+#'
+#' @examples
+splitCharacter <- function(vector, sep = NULL, index = 1 ){
+
+  if(is.null(sep)){
+    stop("Pls set sep option")
+  }
+  res <- stringr::str_split(x, sep, simplify = TRUE)[,index]
+
+  res = list(res=as.vector( unlist(res) ), raw = data.frame(res))
+  res
+
+}
+
 
 
 

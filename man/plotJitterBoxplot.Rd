@@ -74,6 +74,7 @@ plotJitterBoxplot(
 Boxplot with jitter, barplot with mean_se, violin plot with box
 }
 \examples{
+
 data("LIRI")
 
 d.frame = LIRI[,3:6]

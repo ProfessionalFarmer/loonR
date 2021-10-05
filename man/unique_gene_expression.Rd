@@ -4,10 +4,10 @@
 \alias{unique_gene_expression}
 \title{Title Remove redundant gene expression data, and select the maximum one}
 \usage{
-unique_gene_expression(expression.df, f = "max")
+unique_gene_expression(expression.df, f = "max", gene = NULL)
 }
 \arguments{
-\item{expression.df}{Please note the first column must be gene names}
+\item{expression.df}{Please note the first column must be gene names if gene = Null}
 }
 \value{
 A clean expression data.frame

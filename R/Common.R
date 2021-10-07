@@ -1014,6 +1014,11 @@ splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.c
     stop("Please input labels after spliting")
   }
 
+  if( sum(is.null(group)|is.na(group))!=0 | sum(is.null(values)|is.na(values))!=0  ){
+    stop("group/values may have NA/NULL")
+  }
+
+
   data.df <- data.frame(Group = group, Value = values, Label = "",
                         check.names = F, stringsAsFactors = F)
 
@@ -1348,7 +1353,7 @@ meltDataFrameByGroup <- function(d.frame=NULL, group=NULL, na.rm = TRUE, variabl
     )
   }
 
-  if(is.vector(group)){
+  if(is.vector(group)|is.factor(group)){
     melt.df <- data.frame(d.frame, Group = group,
                           check.names = F, stringsAsFactors = F)
 

@@ -271,7 +271,7 @@ build.randomforest.model <- function(df, group, seed = 666, scale=TRUE){
   rf.fit <- randomForest::randomForest(lg.df[,-c(1)], lg.df$label, importance=TRUE, proximity=TRUE)
 
   colnames(rf.fit$votes) = paste0("class",colnames(rf.fit$votes))
-  predicted.prob <- rf.fit$votes$class1
+  predicted.prob <- as.vector(rf.fit$votes[,2])
   roc = loonR::roc_with_ci(lg.df$label, predicted.prob, ci=FALSE)
   auc = loonR::get.AUC(predicted.prob, lg.df$label)
 
@@ -1109,9 +1109,9 @@ roc_with_ci <- function(label, rs, font = "Arial", palette = "jama", legend.pos 
           stringr::str_split( perf[c("Specificity"),c("confidence")],"-")[[1]][1],
           perf[c("Specificity"),c("value")],
           stringr::str_split( perf[c("Specificity"),c("confidence")],"-")[[1]][2],
-          stringr::str_split( perf[c("Recall"),c("confidence")],"-")[[1]][1],
-          perf[c("Recall"),c("value")],
-          stringr::str_split( perf[c("Recall"),c("confidence")],"-")[[1]][2]
+          stringr::str_split( perf[c("Sensitivity"),c("confidence")],"-")[[1]][1],
+          perf[c("Sensitivity"),c("value")],
+          stringr::str_split( perf[c("Sensitivity"),c("confidence")],"-")[[1]][2]
         )
 
         as.numeric(tmp.res)
@@ -1315,9 +1315,9 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
           stringr::str_split( perf[c("Specificity"),c("confidence")],"-")[[1]][1],
           perf[c("Specificity"),c("value")],
           stringr::str_split( perf[c("Specificity"),c("confidence")],"-")[[1]][2],
-          stringr::str_split( perf[c("Recall"),c("confidence")],"-")[[1]][1],
-          perf[c("Recall"),c("value")],
-          stringr::str_split( perf[c("Recall"),c("confidence")],"-")[[1]][2]
+          stringr::str_split( perf[c("Sensitivity"),c("confidence")],"-")[[1]][1],
+          perf[c("Sensitivity"),c("value")],
+          stringr::str_split( perf[c("Sensitivity"),c("confidence")],"-")[[1]][2]
         )
 
         as.numeric(tmp.res)

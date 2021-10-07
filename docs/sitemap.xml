@@ -70,6 +70,9 @@
     <loc>/reference/build.randomforest.model.html</loc>
   </url>
   <url>
+    <loc>/reference/checkHousekeepingCombination.html</loc>
+  </url>
+  <url>
     <loc>/reference/compare.GSE.HTSAnalyzer.html</loc>
   </url>
   <url>
@@ -419,6 +422,9 @@
   </url>
   <url>
     <loc>/reference/show_hcluster.html</loc>
+  </url>
+  <url>
+    <loc>/reference/splitCharacter.html</loc>
   </url>
   <url>
     <loc>/reference/splitDataByGroup.html</loc>

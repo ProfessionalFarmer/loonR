@@ -19,6 +19,7 @@ checkHousekeepingCombination <- function(raw.ct.df, housekeeping.ct.df, group, a
   }
 
   library(foreach)
+  library(dplyr)
 
   normalized.ct.res = list()
   differential.res = list()

@@ -164,3 +164,46 @@ extractSignaturePercent <- function(chr=NULL, Start_Position = NULL, End_Positio
 }
 
 
+#' Convert MAF format to a binary matrix
+#'
+#' @param maf File path or data.frame
+#' @param geneLevel
+#'
+#' @return
+#' @export
+#'
+#' @examples
+maf2binaryTable <- function(maf){
+
+  uuid = uuid::UUIDgenerate(use.time = T, n = 1L)
+
+    # if(!require("SMDIC")){
+    #   install.packages("SMDIC")
+    #   library("SMDIC")
+    # }
+    # if(is.vector(maf)){
+    #    res = SMDIC::maf2matrix(maf, percent = 0.01, nonsynonymous = F) # 提取sysnonymous和nonsynonymous的突变
+    # }else if(is.matrix(maf) | is.data.frame(maf)){
+    #   write.table(maf, paste0(uuid,".tsv"), row.names = F, sep="\t", quote = F)
+    #   res = SMDIC::maf2matrix(paste0(uuid,".tsv"), percent = 0.01, nonsynonymous = F)
+    #   file.remove(paste0(uuid,".tsv"))
+    # }
+
+    # The following method is more flexible
+    if(!require("gnomeR")){
+      devtools::install_github("AxelitoMartin/gnomeR")
+      library("gnomeR")
+    }
+    if(is.vector(maf)){
+      maf = read.table(maf, header = T, row.names = F, sep = "\t", quote = "")
+    }
+    res <- gnomeR::binmat(
+      maf = maf, mut.type = "SOMATIC", SNP.only = FALSE,
+      include.silent = FALSE, specify.plat = FALSE, recode.aliases = FALSE
+    )
+
+  res
+
+}
+
+

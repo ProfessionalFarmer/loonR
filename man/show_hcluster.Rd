@@ -6,7 +6,7 @@
 \usage{
 show_hcluster(
   df,
-  group,
+  group = NULL,
   dist.method = "euclidean",
   hclust.method = "ward.D2",
   color.pla = "npg",

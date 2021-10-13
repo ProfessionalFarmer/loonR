@@ -21,11 +21,11 @@ checkHousekeepingCombination(
 
 \item{group}{Second shuld be TRUE}
 
-\item{alternative}{Default "less"}
+\item{alternative}{Default "less". One of c("less", "greater", "both")}
 
 \item{p.cutoff}{Default 0.05}
 
-\item{difference.cutoff}{Default 0}
+\item{difference.cutoff}{Default 0. Should be greater than 0. The direction of difference depends on alternative.}
 
 \item{sep}{Default ", "}
 }

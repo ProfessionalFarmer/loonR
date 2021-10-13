@@ -29,7 +29,7 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 #'
 #' @examples
 exportTable <- function(df, file="~/test.tsv", quote = F, sep = "\t", row.names = F){
-  write.table(df, file = file, quote = F, sep = "\t", row.names = F)
+  write.table(df, file = file, quote = F, sep = "\t", row.names = row.names)
 }
 
 
@@ -209,7 +209,7 @@ plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", borde
 #' @examples
 #' data(LIRI)
 #' loonR::show_hcluster(t(LIRI[,3:5]), LIRI$status)
-show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = "ward.D2", color.pla = "npg", main = "", cutree = 0){
+show_hcluster <- function(df, group=NULL, dist.method = "euclidean", hclust.method = "ward.D2", color.pla = "npg", main = "", cutree = 0){
 
   # https://www.datacamp.com/community/tutorials/hierarchical-clustering-R#howto
   # https://setscholars.net/wp-content/uploads/2019/06/How-to-visualise-Hierarchical-Clustering-agglomerative-in-R.html
@@ -217,6 +217,10 @@ show_hcluster <- function(df, group, dist.method = "euclidean", hclust.method = 
 
   sample.dist <- dist(t(df), method = dist.method )
   sample.dist_hc <- hclust(d = sample.dist, method =hclust.method )
+
+  if(is.null(group)){
+    group = rep(1, ncol(df))
+  }
 
   if(cutree==0){
     p <- fviz_dend(sample.dist_hc, cex = 0.6,
@@ -1004,7 +1008,7 @@ gapStat <- function(df, dist="spearman", method="average"){
 #'
 #' res <- loonR::splitGroupByCutoff(group, value, fun="mean", cut.label = c("L","H"), group.prefix = "G", specific.group = c(1,2))
 #' table(res$New.Label)
-splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.cutoff = NULL, sample.names = NULL,
+splitGroupByCutoff <- function(group = NULL, values = NULL, fun = NULL, quantile.cutoff = NULL, sample.names = NULL,
                                cut.point = NULL, cut.label = NULL, specific.group = NULL, group.prefix = NULL){
 
   if(is.null(values)){
@@ -1014,12 +1018,16 @@ splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.c
     stop("Please input labels after spliting")
   }
 
-  if( sum(is.null(group)|is.na(group))!=0 | sum(is.null(values)|is.na(values))!=0  ){
+  if(is.null(group) ){
+    group = rep("",length(values))
+  }else if(length(group)==1){
+    group = rep(group,length(values))
+  }else if( sum(is.null(group)|is.na(group))!=0 | sum(is.null(values)|is.na(values))!=0  ){
     stop("group/values may have NA/NULL")
   }
 
 
-  data.df <- data.frame(Group = group, Value = values, Label = "",
+  data.df <- data.frame(Group = group, Value = as.numeric(values), Label = "",
                         check.names = F, stringsAsFactors = F)
 
   if(!is.null(sample.names)){
@@ -1108,8 +1116,12 @@ splitGroupByCutoff <- function(group = "", values = NULL, fun = NULL, quantile.c
     data.df$Group = paste(group.prefix, data.df$Group, sep="")
   }
 
+  if(loonR::AllEqual(group)){ # if only one group
+    data.df$Label[data.df$Label!=""] = paste("", data.df$Label[data.df$Label!=""], sep="")
+  }else{
+    data.df$Label[data.df$Label!=""] = paste("-", data.df$Label[data.df$Label!=""], sep="")
+  }
 
-  data.df$Label[data.df$Label!=""] = paste("-", data.df$Label[data.df$Label!=""], sep="")
 
   data.df$New.Label = paste(data.df$Group, data.df$Label, sep="")
   data.df$Label = stringr::str_remove_all(data.df$Label, "^-")

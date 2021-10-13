@@ -5,7 +5,7 @@
 \title{Split group by various methods. Useful}
 \usage{
 splitGroupByCutoff(
-  group = "",
+  group = NULL,
   values = NULL,
   fun = NULL,
   quantile.cutoff = NULL,

@@ -1052,4 +1052,14 @@ compare.differential.analysis <- function(rna.df.log, group, prefix="Group", cal
 
 }
 
-
+#' QuantileNormalization
+#'
+#' @param df
+#'
+#' @return
+#' @export
+#'
+#' @examples
+log2dfQuantileNormalization <- function(df){
+  limma::normalizeBetweenArrays(df, method = "quantile")
+}

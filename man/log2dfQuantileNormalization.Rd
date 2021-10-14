@@ -5,13 +5,19 @@
 \title{Quantile normalization for log2 data frame}
 \usage{
 log2dfQuantileNormalization(df)
+
+log2dfQuantileNormalization(df)
 }
 \arguments{
 \item{df}{}
 }
 \value{
 
+
+
 }
 \description{
 Quantile normalization for log2 data frame
+
+QuantileNormalization
 }

@@ -730,9 +730,9 @@ plotUpset <- function(lt, mode = "intersect"){
 convertDfToNumeric <- function(df){
   row.n <- row.names(df)
   col.n <- colnames(df)
-  res <- data.frame(sapply(data.frame(df, check.names = F), function(x) as.numeric(as.character(x))), check.names = FALSE)
-  rownames(res) <- row.n
-  colnames(res) <- col.n
+  res <- data.frame(matrix(sapply(data.frame(df, check.names = F), function(x) as.numeric(as.character(x))), nrow = nrow(df)), check.names = FALSE)
+  rownames(res) <- as.character(row.n)
+  colnames(res) <- as.character(col.n)
   res
 
 }
@@ -1287,7 +1287,7 @@ generateCombinations <- function(panel=NULL, size = 0, repeats=FALSE, vector=FAL
       res <- apply(res, 1, function(x) paste0(sort(x), sep="", collapse = "-"))
     }
   }
-  res
+  data.frame(res)
 }
 
 

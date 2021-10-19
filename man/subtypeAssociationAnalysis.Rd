@@ -32,5 +32,5 @@ Subtype association: Calculate Jaccard similarity coefficient and perform hyperg
 \examples{
 data(Subtype.matrix)
 res <- loonR::subtypeAssociationAnalysis(Subtype.matrix)
-
+res$hyperGeoTest.Analysis
 }

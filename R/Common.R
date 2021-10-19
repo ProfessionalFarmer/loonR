@@ -17,6 +17,9 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 }
 
 
+
+
+
 #' Overwrite write.table with modified default option. Export data frame to file
 #'
 #' @param df

@@ -128,7 +128,7 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
                                  c("#FFFFFF", "#FFFFFF", "#0269A4")  )
 
   library(grid)
-  res$plot = ComplexHeatmap::Heatmap(tmpgeo.log,
+  res$plot = ComplexHeatmap::Heatmap(as.matrix(tmpgeo.log),
                                      cluster_rows = F,
                                      cluster_columns = F,
                                      col = col_fun,
@@ -171,7 +171,7 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
 #' @examples
 #' data(Subtype.matrix)
 #' res <- loonR::subtypeAssociationAnalysis(Subtype.matrix)
-#'
+#' res$hyperGeoTest.Analysis
 subtypeAssociationAnalysis <- function(df, concateStudy = F, adjusted.hypergeometrix.p = F, cut.edge.byPval = 0.05, print.message = T){
 
   # https://www.nature.com/articles/nm.3967#Sec9
@@ -363,7 +363,7 @@ subtypeAssociationAnalysis <- function(df, concateStudy = F, adjusted.hypergeome
 #' @param adjusted.hypergeometrix.p Default 0.05
 #' @param inflation Default 2
 #' @param proportion Default 0.8
-#' @param adjacencyMatrixCutoff Default 0.1. Cutoff for adjacenty matrix.
+#' @param adjacencyMatrixCutoff Default NULL. Cutoff for adjacenty matrix.
 #' @param subtype.prefix
 #'
 #' @return
@@ -371,8 +371,8 @@ subtypeAssociationAnalysis <- function(df, concateStudy = F, adjusted.hypergeome
 #'
 #' @examples
 #' data("Subtype.matrix")
-#' res = loonR::consensusSubtyping(df, replicate = 20)
-consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adjusted.hypergeometrix.p = F, inflation = 2, adjacencyMatrixCutoff = 0.1, subtype.prefix=""){
+#' res = loonR::consensusSubtyping(Subtype.matrix, replicate = 50)
+consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adjusted.hypergeometrix.p = F, inflation = 2, adjacencyMatrixCutoff = NULL, subtype.prefix=""){
 
   # https://www.nature.com/articles/nm.3967#Sec9
   # Identification of consensus subtypes. To identify consensus groups from the network of subtype association,
@@ -413,7 +413,8 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
 
     subtype.names <- colnames(new_df_analysis$cut.res$adjacencyMatrix)
 
-    inner.each.res <- foreach::foreach(cluster=unique(mcl.res$Cluster), .combine = rbind) %dopar% {
+    inner.each.res <- foreach::foreach(cluster=unique(mcl.res$Cluster[mcl.res$Cluster!=0]), .combine = rbind) %dopar% {
+        # 20211018: Cluster 0 is not right
         cluster.subtypes = subtype.names[mcl.res$Cluster==cluster]
         if(length(cluster.subtypes)==1){
           c(cluster.subtypes,cluster.subtypes,1)
@@ -429,7 +430,7 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
 
     setTxtProgressBar(pb, i/replicate)
 
-    inner.each.res
+    data.frame(inner.each.res)
   }
 
   close(pb)
@@ -445,8 +446,9 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
   rownames(consensusMatrix) = consensusMatrix$Subtype1
   consensusMatrix = consensusMatrix[,-c(1)]
 
-  consensusMatrix[is.na(consensusMatrix)] = 0
   consensusMatrix = loonR::fillSymmetricNATable(consensusMatrix)
+  consensusMatrix[is.na(consensusMatrix)] = 0
+
   res$consensusMatrix = consensusMatrix
 
 
@@ -457,11 +459,38 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
   res$adjacencyMatrix[consensusMatrix <= adjacencyMatrixCutoff] = 0
 
   # Identify consensus subtype
-  subtyping.res <- loonR::identifySubtypeFromMatrix(res$adjacencyMatrix, usingRawDf = T, adjacency.cutoff = adjacencyMatrixCutoff, clusterPrefix = subtype.prefix)
+  if(is.null(adjacencyMatrixCutoff)){
+    subtyping.res <- loonR::identifySubtypeFromMatrix(res$adjacencyMatrix, usingRawDf = T, adjacency.cutoff = adjacencyMatrixCutoff, clusterPrefix = subtype.prefix)
+  }else{
+    subtyping.res <- loonR::identifySubtypeFromMatrix(res$adjacencyMatrix, usingRawDf = F, adjacency.cutoff = adjacencyMatrixCutoff, clusterPrefix = subtype.prefix)
+  }
+
+
   res$ConsensusSubtype.res = subtyping.res
   res$ConsensusSubtype.clean = subtyping.res$cluster.df
 
+  # include study information
+  t.df = t(df)
+  t.df.melt = loonR::meltDataFrameByGroup(t.df,row.names(t.df))[,c(1,3)] %>% unique()
+  colnames(t.df.melt) = c("Study","Subtype")
+
+  res$ConsensusSubtype.clean = dplyr::full_join(res$ConsensusSubtype.clean, t.df.melt, by=c("Sample"="Subtype"))
+  rm(t.df, t.df.melt)
+
+  # 统计每个study的亚型的样本数目
+  subtype.count = loonR::countClassByColumn(df)
+  res$ConsensusSubtype.clean = dplyr::full_join(res$ConsensusSubtype.clean, subtype.count, by=c("Sample"="Class","Study"="Column"))
+  rm(subtype.count)
+
+
+  # 检查每个study的亚型是否分配的CMS，如果没有则报错终止
+  if(sum(is.na(res$ConsensusSubtype.clean$Cluster))!=0){
+    cat("Not found CMS subtype for the following type: ",res$ConsensusSubtype.clean$Sample[is.na(res$ConsensusSubtype.clean$Cluster)] )
+    stop("Please check the study and stype")
+  }
+
   res$CMSCount <- res$ConsensusSubtype.clean %>% dplyr::group_by(Cluster) %>% dplyr::summarise(SubtypeCount=n())
+
   res$CMSCount <- data.frame(res$CMSCount, row.names = res$CMSCount$Cluster) %>% dplyr::rename(Subtype=Cluster)
 
 
@@ -489,7 +518,7 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
     core.sample = FALSE
     cms.type = NA
 
-    uniq.cms = as.character(row.names(hyper.res$pval.df.notFormated))
+    uniq.cms = as.character(row.names(res$CMSCount))
 
     for(t.cms in uniq.cms){
 
@@ -498,8 +527,8 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
       # p = phyper(geomatrix[i,j]-1, sum(geomatrix[i,]), sum(geomatrix)-sum(geomatrix[i,]), sum(geomatrix[,j]), lower.tail = lower.tail   )
 
       t.pval = phyper(sum(sample.new.subtype==t.cms)-1,
-                      res$CMSCount[t.cms, c("SubtypeCount")],
-                      sum(res$CMSCount$SubtypeCount)-res$CMSCount[t.cms, c("SubtypeCount")],
+                      as.numeric(  unclass(res$CMSCount[t.cms, c("SubtypeCount")])  ),
+                      as.numeric(  unclass(sum(res$CMSCount$SubtypeCount)-res$CMSCount[t.cms, c("SubtypeCount")])  ),
                       length(sample.new.subtype), lower.tail = F   )
 
        if(t.pval <= 0.1){
@@ -516,25 +545,35 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
     # Count appreance frequency
     subtype.count = unlist(table(sample.new.subtype))
     if(sum(subtype.count == subtype.count[which.max(subtype.count)])!=1){
-      HighFrquencySubtype = "Confusing"
+      HighFrequencySubtype = "Confusing"
     }else{
-      HighFrquencySubtype = names(subtype.count)[which.max(subtype.count)]
+      HighFrequencySubtype = names(subtype.count)[which.max(subtype.count)]
     }
 
-    c(sample.new.subtype, core.sample, cms.type, HighFrquencySubtype)
+    c(sample.new.subtype, core.sample, cms.type, HighFrequencySubtype)
   }
 
 
   newlabels = data.frame(newlabels, row.names = rownames(df))
-  colnames(newlabels) <- paste0("New",colnames(df))
+  colnames(newlabels) <- c( paste0("New",colnames(df)), "CoreSample","CMSSubtype", "HighFrequencySubtype")
+
   newlabels = cbind(df, newlabels)
-  colnames(newlabels)[(ncol(newlabels)-2):ncol(newlabels)] = c("CoreSample","CMSSubtype", "HighFrquencySubtype")
   res$Samples <- newlabels
 
   ############################################# END
+  colnames(res$ConsensusSubtype.clean)[1] <- c("Subtype")
+
+  # 20211018 add plot
+  core.annotation.df = res$Samples %>% filter(HighFrequencySubtype!="Confusing")
+  core.annotation.df = core.annotation.df[,c(colnames(df),"HighFrequencySubtype")] # select by HighFrequencySubtype
+  colnames(core.annotation.df) = c(colnames(df),"CMS")
+
+  res$core.annotation.plot = loonR::heatmap.annotation(
+                                      group = core.annotation.df$CMS,
+                                      annotation.df = core.annotation.df[,colnames(df)],
+                                      sort.group = T)
 
   res
-
 
 }
 
@@ -627,5 +666,29 @@ identifySubtypeFromMatrix <- function(df, adjacency.cutoff = 0.5, inflation = 2,
 
 
 
+#' Count the class by each column
+#'
+#' @param df
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data(Subtype.matrix)
+#' loonR::countClassByColumn(Subtype.matrix)
+countClassByColumn <- function(df){
 
+  library(foreach)
+  res <- foreach(cname=colnames(df), .combine = rbind ) %do%{
+
+    c.count <- unclass(table(unlist(df[,cname])))
+    c.count = data.frame(c.count, Class = names(c.count), row.names = names(c.count))
+    colnames(c.count) = c("Count","Class")
+    c.count$Column = cname
+    c.count
+
+  }
+
+  res
+}
 

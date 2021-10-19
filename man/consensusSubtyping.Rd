@@ -11,7 +11,7 @@ consensusSubtyping(
   proportion = 0.8,
   adjusted.hypergeometrix.p = F,
   inflation = 2,
-  adjacencyMatrixCutoff = 0.1,
+  adjacencyMatrixCutoff = NULL,
   subtype.prefix = ""
 )
 }
@@ -28,7 +28,7 @@ consensusSubtyping(
 
 \item{inflation}{Default 2}
 
-\item{adjacencyMatrixCutoff}{Default 0.1. Cutoff for adjacenty matrix.}
+\item{adjacencyMatrixCutoff}{Default NULL. Cutoff for adjacenty matrix.}
 
 \item{subtype.prefix}{}
 }
@@ -40,5 +40,5 @@ Identification of consensus subtypes
 }
 \examples{
 data("Subtype.matrix")
-res = loonR::consensusSubtyping(df, replicate = 20)
+res = loonR::consensusSubtyping(Subtype.matrix, replicate = 50)
 }

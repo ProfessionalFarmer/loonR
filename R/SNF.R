@@ -323,5 +323,55 @@ run_SNF <- function(dataL = NULL, alpha = 0.5, K = 20, Iterations = 20, dist.met
 
 
 
+#' Ranks each features by NMI (normalized mutual information) based on their clustering assingments
+#'
+#' @param data.list A list, pls specify the name. Element is data.frame (Row is sample, column is feature.). dataL <- list( mRNA=t(mRNA.snf.df), miRNA=t(miRNA.snf.df), Met=t(methylation.snf.df), CNV=t(cnv.snf.df) ).
+
+#' @param wall
+#'
+#' @return
+#' @export
+#'
+#' @examples
+calculateNMI <- function(data.list, wall){
+
+  nmi.res <- rankFeaturesByNMI(data.list, wall)
+
+  if( is.null(names(nmi.res[[1]]) )  ){
+    stop("Pls specify names for the list")
+  }
+
+  names(data.list) = nmi.res[[1]]
+  names(data.list) = nmi.res[[2]]
+
+  res = list()
+  res$NMI.Raw = nmi.res
+
+  library(foreach)
+  omic.nmi.res <- foreach(omic.name = names(data.list), .combine = rbind) %do%{
+       omic.nmi  = nmi.res[[1]][[omic.name]]
+       omic.rank = nmi.res[[2]][[omic.name]]
+
+       omic.data.frame = data.frame(
+         Feature = colnames(data.list[[omic.name]]),
+         NMI = omic.nmi,
+         Omic = omic.name,
+         OmicLevelRank = omic.rank, stringsAsFactors = FALSE
+       )
+       omic.data.frame
+  }
+
+  omic.nmi.res$OverallRank = rank(-omic.nmi.res$NMI, ties.method = "first")
+  library(dplyr)
+  omic.nmi.res = arrange(omic.nmi.res,OverallRank)
+
+  res$Overall.NMI = omic.nmi.res
+
+  rm(omic.nmi.res)
+
+  res
+
+}
+
 
 

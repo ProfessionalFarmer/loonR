@@ -70,6 +70,9 @@
     <loc>/reference/build.randomforest.model.html</loc>
   </url>
   <url>
+    <loc>/reference/calculateNMI.html</loc>
+  </url>
+  <url>
     <loc>/reference/checkHousekeepingCombination.html</loc>
   </url>
   <url>
@@ -88,7 +91,13 @@
     <loc>/reference/confusion_matrix.html</loc>
   </url>
   <url>
+    <loc>/reference/consensusSubtyping.html</loc>
+  </url>
+  <url>
     <loc>/reference/convertDfToNumeric.html</loc>
+  </url>
+  <url>
+    <loc>/reference/countClassByColumn.html</loc>
   </url>
   <url>
     <loc>/reference/cross.validation.html</loc>
@@ -146,6 +155,9 @@
   </url>
   <url>
     <loc>/reference/feature.selection.boruta.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fillSymmetricNATable.html</loc>
   </url>
   <url>
     <loc>/reference/filterGenes.html</loc>
@@ -250,6 +262,9 @@
     <loc>/reference/id_mapping.html</loc>
   </url>
   <url>
+    <loc>/reference/identifySubtypeFromMatrix.html</loc>
+  </url>
+  <url>
     <loc>/reference/iflog2.html</loc>
   </url>
   <url>
@@ -302,6 +317,9 @@
   </url>
   <url>
     <loc>/reference/loo.cv.html</loc>
+  </url>
+  <url>
+    <loc>/reference/maf2binaryTable.html</loc>
   </url>
   <url>
     <loc>/reference/meltDataFrameByGroup.html</loc>
@@ -434,6 +452,9 @@
   </url>
   <url>
     <loc>/reference/splitSampleByGroup.html</loc>
+  </url>
+  <url>
+    <loc>/reference/subtypeAssociationAnalysis.html</loc>
   </url>
   <url>
     <loc>/reference/suppa.event.pie.html</loc>

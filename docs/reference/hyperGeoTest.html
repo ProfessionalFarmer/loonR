@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.635</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.668</span>
       </span>
     </div>
 
@@ -109,7 +109,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Perform hypergeometric test</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/Heatmap.R'><code>R/Heatmap.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/Subtyping.R'><code>R/Subtyping.R</code></a></small>
     <div class="hidden name"><code>hyperGeoTest.Rd</code></div>
     </div>
 
@@ -125,7 +125,8 @@
   lower.tail <span class='op'>=</span> <span class='cn'>FALSE</span>,
   title <span class='op'>=</span> <span class='st'>""</span>,
   log10.lowest <span class='op'>=</span> <span class='fl'>5</span>,
-  print.fig <span class='op'>=</span> <span class='cn'>TRUE</span>
+  print.fig <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  adjusted.p <span class='op'>=</span> <span class='cn'>NULL</span>
 <span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
@@ -143,6 +144,10 @@
       <th>print.fig</th>
       <td><p>Default print the figure</p></td>
     </tr>
+    <tr>
+      <th>adjusted.p</th>
+      <td><p>If to adjust P value c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -153,7 +158,6 @@
     <pre class="examples"><span class='r-in'><span class='va'>g1</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"G1"</span>,<span class='st'>"G2"</span>,<span class='st'>"G3"</span><span class='op'>)</span>,<span class='fl'>10</span>, replace <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>g2</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/sample.html'>sample</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"1"</span>,<span class='st'>"2"</span>,<span class='st'>"3"</span><span class='op'>)</span>,<span class='fl'>10</span>, replace <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span></span>
 <span class='r-in'><span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>hyperGeoTest</span><span class='op'>(</span><span class='va'>g1</span>, <span class='va'>g2</span>, col.prefix <span class='op'>=</span> <span class='st'>"E"</span><span class='op'>)</span></span>
-<span class='r-wrn co'><span class='r-pr'>#&gt;</span> <span class='warning'>Warning: </span>The input is a data frame, convert it to the matrix.</span>
 <span class='r-plt'><img src='hyperGeoTest-1.png' alt='' width='700' height='433' /></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> $pval.df.log</span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span>            E1        E2        E3</span>

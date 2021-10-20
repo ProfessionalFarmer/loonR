@@ -1107,7 +1107,7 @@ splitGroupByCutoff <- function(group = NULL, values = NULL, fun = NULL, quantile
 
       data.df$Label[g.index] = as.character(g.label)
 
-      cat("Cutpoint for ",g," is ", local.cut)
+      cat("Cutpoint for ",g," is ", local.cut, "\n")
     }
 
     data.df$Label <- as.character(data.df$Label)

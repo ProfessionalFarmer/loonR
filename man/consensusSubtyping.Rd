@@ -12,7 +12,7 @@ consensusSubtyping(
   adjusted.hypergeometrix.p = F,
   inflation = 2,
   adjacencyMatrixCutoff = NULL,
-  subtype.prefix = ""
+  subtype.prefix = "CMS"
 )
 }
 \arguments{

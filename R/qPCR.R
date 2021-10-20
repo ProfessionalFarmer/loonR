@@ -18,6 +18,7 @@ checkHousekeepingCombination <- function(raw.ct.df, housekeeping.ct.df, group, a
     stop("Pls set difference.cutoff greater or equal to 0. The direction depends on alternative")
   }
 
+
   library(foreach)
   library(dplyr)
 
@@ -33,13 +34,15 @@ checkHousekeepingCombination <- function(raw.ct.df, housekeeping.ct.df, group, a
 
     all.comb.res <- foreach(row.ind = 1:nrow(comb.df), .combine = rbind)%do% {
 
-      hk.combi = comb.df[row.ind,]
+      hk.combi = unlist(comb.df[row.ind,])
 
       if(length(hk.combi)!=1){
         hk.ave.value = rowMeans( housekeeping.ct.df[, hk.combi] )
       }else{
-        hk.ave.value = housekeeping.ct.df[,hk.combi ]
+        hk.ave.value = housekeeping.ct.df[,unclass(hk.combi) ]
       }
+
+      hk.ave.value = as.numeric(hk.ave.value)
 
       normalized.df <- sweep(raw.ct.df, 1, hk.ave.value)
 
@@ -104,6 +107,10 @@ checkHousekeepingCombination <- function(raw.ct.df, housekeeping.ct.df, group, a
     Normalized.CT = normalized.ct.res,
     Differential.Res = differential.res
   )
+
+  warning("Plsease note the hypothesis is : ", alternative, "\n")
+  warning("Plsease note the p.cutoff is : ", p.cutoff, "\n")
+  warning("Plsease note the difference.cutoff is : ", difference.cutoff, "\n---------\n")
   res
 
 }

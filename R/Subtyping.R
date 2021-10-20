@@ -372,7 +372,8 @@ subtypeAssociationAnalysis <- function(df, concateStudy = F, adjusted.hypergeome
 #' @examples
 #' data("Subtype.matrix")
 #' res = loonR::consensusSubtyping(Subtype.matrix, replicate = 50)
-consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adjusted.hypergeometrix.p = F, inflation = 2, adjacencyMatrixCutoff = NULL, subtype.prefix=""){
+#' res$consensus.map
+consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adjusted.hypergeometrix.p = F, inflation = 2, adjacencyMatrixCutoff = NULL, subtype.prefix="CMS"){
 
   # https://www.nature.com/articles/nm.3967#Sec9
   # Identification of consensus subtypes. To identify consensus groups from the network of subtype association,
@@ -563,7 +564,8 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
   ############################################# END
   colnames(res$ConsensusSubtype.clean)[1] <- c("Subtype")
 
-  # 20211018 add plot
+
+  ############################################## 20211018 add plot
   core.annotation.df = res$Samples %>% filter(HighFrequencySubtype!="Confusing")
   core.annotation.df = core.annotation.df[,c(colnames(df),"HighFrequencySubtype")] # select by HighFrequencySubtype
   colnames(core.annotation.df) = c(colnames(df),"CMS")
@@ -572,6 +574,57 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
                                       group = core.annotation.df$CMS,
                                       annotation.df = core.annotation.df[,colnames(df)],
                                       sort.group = T)
+  rm(core.annotation.df)
+
+  ############################################# 20211019 add igraph and consensus map
+  plotNetwork <- function(){
+
+    library(igraph)
+    cluster.info = res$ConsensusSubtype.clean
+
+    consensus.map = res$consensusMatrix
+    consensus.map[lower.tri(consensus.map,diag = T)] = NA
+    # filter by value control the edge
+    consensus.map.melt = loonR::meltDataFrameByGroup(consensus.map, rownames(consensus.map)) %>% filter(value>0.0)
+
+
+    net <- graph.data.frame(consensus.map.melt,
+                            directed=FALSE,
+                            vertices=cluster.info)
+
+    # set node color点颜色
+    # V(net)$color <- loonR::get.palette.color()[as.numeric(factor(V(net)$Study))]
+    V(net)$color <- loonR::get.palette.color("aaas")[as.numeric(stringr::str_remove_all(V(net)$Cluster, "ECMS" ) )]
+    # 点border颜色
+    V(net)$frame.color = loonR::get.palette.color("aaas")[as.numeric(stringr::str_remove_all(V(net)$Cluster, "ECMS" ) )]
+
+
+    # Set node size点大小
+    V(net)$size <- 25
+
+    # 字体颜色
+    V(net)$label.color <- "black"
+    # Setting them to NA will render no labels:
+    # V(net)$label <- NA
+
+    # Width
+    E(net)$width <- log10(E(net)$value * 500)
+
+    set.seed(1)
+    plot(net, e=TRUE, v=TRUE)
+
+  }
+  res$plotNetwork = plotNetwork
+
+  ######################################## Consensus map
+  sord.ind = order(res$ConsensusSubtype.clean$Cluster[ match(colnames(res$consensusMatrix), res$ConsensusSubtype.clean$Subtype)])
+
+  res$consensus.map = loonR::heatmap.with.lgfold.riskpro(
+    res$consensusMatrix[sord.ind,sord.ind],
+    res$ConsensusSubtype.clean$Cluster[ match(colnames(res$consensusMatrix), res$ConsensusSubtype.clean$Subtype)][sord.ind],
+    show.lgfold = F, show.risk.pro = F, scale = F,
+    specified.color = c("white","orange"), show_column_names = T, group.name = subtype.prefix
+  )
 
   res
 

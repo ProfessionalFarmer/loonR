@@ -4,7 +4,12 @@
 \alias{load.salmon.matrix}
 \title{Read Salmon output}
 \usage{
-load.salmon.matrix(dirPath, isoform = TRUE, countsFromAbundance = "no")
+load.salmon.matrix(
+  dirPath,
+  isoform = TRUE,
+  countsFromAbundance = "no",
+  dir.pattern = ""
+)
 }
 \arguments{
 \item{dirPath}{Simple set the directory which contains Salmon output folder}

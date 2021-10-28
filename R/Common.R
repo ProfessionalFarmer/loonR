@@ -26,13 +26,15 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 #' @param file file path
 #' @param quote Default FALSE
 #' @param sep Default \\t
+#' @param row.names F
+#' @param col.names T
 #'
 #' @return
 #' @export
 #'
 #' @examples
-exportTable <- function(df, file="~/test.tsv", quote = F, sep = "\t", row.names = F){
-  write.table(df, file = file, quote = F, sep = "\t", row.names = row.names)
+exportTable <- function(df, file="~/test.tsv", quote = F, sep = "\t", row.names = F, col.names = T){
+  write.table(df, file = file, quote = F, sep = "\t", row.names = row.names, col.names = col.names)
 }
 
 
@@ -1071,7 +1073,7 @@ splitGroupByCutoff <- function(group = NULL, values = NULL, fun = NULL, quantile
                          labels = cut.label )
 
     data.df$Label <- as.character(data.df$Label)
-    cat("Cutpoint for is ", global.cut)
+    cat("Global cutpoint for is ", global.cut)
 
     ######### if specify group
   }else{
@@ -1107,7 +1109,7 @@ splitGroupByCutoff <- function(group = NULL, values = NULL, fun = NULL, quantile
 
       data.df$Label[g.index] = as.character(g.label)
 
-      cat("Cutpoint for ",g," is ", local.cut, "\n")
+      cat("Local cutpoint for ", g, " is ", local.cut, "\n")
     }
 
     data.df$Label <- as.character(data.df$Label)

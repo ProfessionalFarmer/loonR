@@ -41,4 +41,5 @@ Identification of consensus subtypes
 \examples{
 data("Subtype.matrix")
 res = loonR::consensusSubtyping(Subtype.matrix, replicate = 50)
+res$consensus.map
 }

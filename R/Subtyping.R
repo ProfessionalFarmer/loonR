@@ -450,22 +450,25 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
   consensusMatrix = loonR::fillSymmetricNATable(consensusMatrix)
   consensusMatrix[is.na(consensusMatrix)] = 0
 
+  # set diag value, pls note this comment.这个地方决定在做MCL之前是否要设置对角线为1
+  # consensusMatrix = as.matrix(consensusMatrix)
+  # diag(consensusMatrix) = 1
+  consensusMatrix = data.frame( consensusMatrix, check.names = F )
   res$consensusMatrix = consensusMatrix
 
 
   ############################## adjacenty matrix
   res$adjacencyMatrix = consensusMatrix
 
-  res$adjacencyMatrix[consensusMatrix > adjacencyMatrixCutoff] = 1
-  res$adjacencyMatrix[consensusMatrix <= adjacencyMatrixCutoff] = 0
-
   # Identify consensus subtype
   if(is.null(adjacencyMatrixCutoff)){
-    subtyping.res <- loonR::identifySubtypeFromMatrix(res$adjacencyMatrix, usingRawDf = T, adjacency.cutoff = adjacencyMatrixCutoff, clusterPrefix = subtype.prefix)
+    subtyping.res <- loonR::identifySubtypeFromMatrix(consensusMatrix, usingRawDf = T, adjacency.cutoff = adjacencyMatrixCutoff, clusterPrefix = subtype.prefix)
+    res$adjacencyMatrix = consensusMatrix
   }else{
-    subtyping.res <- loonR::identifySubtypeFromMatrix(res$adjacencyMatrix, usingRawDf = F, adjacency.cutoff = adjacencyMatrixCutoff, clusterPrefix = subtype.prefix)
+    subtyping.res <- loonR::identifySubtypeFromMatrix(res$consensusMatrix, usingRawDf = F, adjacency.cutoff = adjacencyMatrixCutoff, clusterPrefix = subtype.prefix)
+    res$adjacencyMatrix[consensusMatrix > adjacencyMatrixCutoff] = 1
+    res$adjacencyMatrix[consensusMatrix <= adjacencyMatrixCutoff] = 0
   }
-
 
   res$ConsensusSubtype.res = subtyping.res
   res$ConsensusSubtype.clean = subtyping.res$cluster.df
@@ -561,8 +564,12 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
   newlabels = cbind(df, newlabels)
   res$Samples <- newlabels
 
-  ############################################# END
+  ############################################# END调整一下列名和其他地方
   colnames(res$ConsensusSubtype.clean)[1] <- c("Subtype")
+
+  # 此时对角线一定要为1，表示节点自己的关联
+  diag(res$consensusMatrix) = 1
+  res$consensusMatrix = data.frame( res$consensusMatrix, check.names = F )
 
 
   ############################################## 20211018 add plot
@@ -577,26 +584,28 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
   rm(core.annotation.df)
 
   ############################################# 20211019 add igraph and consensus map
+
+  cluster.info = res$ConsensusSubtype.clean
+
+  consensus.map = res$consensusMatrix
+  consensus.map[lower.tri(consensus.map,diag = T)] = NA
+  # filter by value control the edge
+  res$consensus.map.for.cytoscape = loonR::meltDataFrameByGroup(consensus.map, rownames(consensus.map)) %>% filter(value>0.0)
+
+
   plotNetwork <- function(){
 
     library(igraph)
-    cluster.info = res$ConsensusSubtype.clean
 
-    consensus.map = res$consensusMatrix
-    consensus.map[lower.tri(consensus.map,diag = T)] = NA
-    # filter by value control the edge
-    consensus.map.melt = loonR::meltDataFrameByGroup(consensus.map, rownames(consensus.map)) %>% filter(value>0.0)
-
-
-    net <- graph.data.frame(consensus.map.melt,
+    net <- graph.data.frame(res$consensus.map.for.cytoscape,
                             directed=FALSE,
                             vertices=cluster.info)
 
     # set node color点颜色
     # V(net)$color <- loonR::get.palette.color()[as.numeric(factor(V(net)$Study))]
-    V(net)$color <- loonR::get.palette.color("aaas")[as.numeric(stringr::str_remove_all(V(net)$Cluster, "ECMS" ) )]
+    V(net)$color <- loonR::get.palette.color("aaas")[as.numeric(stringr::str_remove_all(V(net)$Cluster, subtype.prefix ) )]
     # 点border颜色
-    V(net)$frame.color = loonR::get.palette.color("aaas")[as.numeric(stringr::str_remove_all(V(net)$Cluster, "ECMS" ) )]
+    V(net)$frame.color = loonR::get.palette.color("aaas")[as.numeric(stringr::str_remove_all(V(net)$Cluster, subtype.prefix ) )]
 
 
     # Set node size点大小
@@ -616,12 +625,12 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
   }
   res$plotNetwork = plotNetwork
 
-  ######################################## Consensus map
-  sord.ind = order(res$ConsensusSubtype.clean$Cluster[ match(colnames(res$consensusMatrix), res$ConsensusSubtype.clean$Subtype)])
+  ######################################## 20211019 Consensus map
+  sort.ind = order(res$ConsensusSubtype.clean$Cluster[ match(colnames(res$consensusMatrix), res$ConsensusSubtype.clean$Subtype)])
 
-  res$consensus.map = loonR::heatmap.with.lgfold.riskpro(
-    res$consensusMatrix[sord.ind,sord.ind],
-    res$ConsensusSubtype.clean$Cluster[ match(colnames(res$consensusMatrix), res$ConsensusSubtype.clean$Subtype)][sord.ind],
+  res$consensus.map.plot = loonR::heatmap.with.lgfold.riskpro(
+    res$consensusMatrix[sort.ind,sort.ind],
+    res$ConsensusSubtype.clean$Cluster[ match(colnames(res$consensusMatrix), res$ConsensusSubtype.clean$Subtype)][sort.ind],
     show.lgfold = F, show.risk.pro = F, scale = F,
     specified.color = c("white","orange"), show_column_names = T, group.name = subtype.prefix
   )
@@ -673,11 +682,11 @@ identifySubtypeFromMatrix <- function(df, adjacency.cutoff = 0.5, inflation = 2,
    if(!is.null(clusterPrefix)){
      cluster = paste0(clusterPrefix, cluster)
    }
+
    names(cluster) = sample
    rm(unique.cluster)
 
    cluster.df = data.frame(Sample = sample, row.names = sample, Cluster = cluster)
-
 
    ##################################### use cluster label instead of 0/1
    # cluster network is similar to adjacency matrix
@@ -695,8 +704,6 @@ identifySubtypeFromMatrix <- function(df, adjacency.cutoff = 0.5, inflation = 2,
           sample2 = sample.comb[i,2]
           cluster.network[sample1, sample2] = clu
           cluster.network[sample2, sample1] = clu
-
-
         }
       }
 

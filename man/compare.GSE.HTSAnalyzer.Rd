@@ -11,7 +11,8 @@ compare.GSE.HTSAnalyzer(
   customGS = NULL,
   exp.gene.type = "ENSEMBL",
   cutoff.log10 = 3,
-  cal.auc = FALSE
+  cal.auc = FALSE,
+  permutation = 1000
 )
 }
 \arguments{
@@ -24,6 +25,8 @@ compare.GSE.HTSAnalyzer(
 \item{cutoff.log10}{Default 3. Minimux or maximum log10 value. Useful when meet inf or draw heatmap}
 
 \item{cal.auc}{If calcuate AUC value}
+
+\item{permutation}{Number of permutation}
 }
 \value{
 

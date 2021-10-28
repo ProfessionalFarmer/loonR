@@ -525,13 +525,14 @@ ClusterProfiler.GSEA.ORA.customGS.Compare <- function(gene, customGS=NULL, minGS
 #' @param exp.gene.type RNA expression ID ENSEMBL. keytypes(org.Hs.eg.db)
 #' @param cutoff.log10 Default 3. Minimux or maximum log10 value. Useful when meet inf or draw heatmap
 #' @param cal.auc If calcuate AUC value
+#' @param permutation Number of permutation
 #'
 #' @return
 #' @export
 #'
 #' @examples
 #' This function will perform GSEA analysis. Default geneset: GOBP, C2, C5, KEGG, HALLMARK
-compare.GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=NULL, exp.gene.type="ENSEMBL", cutoff.log10 = 3, cal.auc = FALSE){
+compare.GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=NULL, exp.gene.type="ENSEMBL", cutoff.log10 = 3, cal.auc = FALSE, permutation=1000){
   library(HTSanalyzeR2)
   library(org.Hs.eg.db)
 
@@ -546,7 +547,7 @@ compare.GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=
      ListGSC <- list(GO_BP=GO_BP, PW_KEGG=PW_KEGG, MSig_C2=MSig_C2, MSig_C5=MSig_C5, MSig_H=MSig_H)
 
      # paramter
-     nPermutations = 1000
+     nPermutations = permutation
      minGeneSetSize = 10
    }else{
      # library(qusage)
@@ -561,7 +562,7 @@ compare.GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=
      ListGSC <- list(customGS=customGS)
 
      # parameter
-     nPermutations = 1000
+     nPermutations = permutation
      minGeneSetSize = 5
    }
 

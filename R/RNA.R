@@ -607,15 +607,15 @@ MA_plot <- function(M, A, p, m.cutoff=0, a.cutoff=0, p.cutoff=0.05,
 #'
 #' @examples
 #' Directory tree: dir/sample_quant/quant.sf
-load.salmon.matrix <- function(dirPath, isoform = TRUE, countsFromAbundance = "no"){
+load.salmon.matrix <- function(dirPath, isoform = TRUE, countsFromAbundance = "no", dir.pattern = ""){
 
   warning("Pls not isoform paramter: ", isoform)
 
 
   library(tximport)
-  sample.salmon.pathes <- list.files(path = dirPath, full.names = TRUE)
+  sample.salmon.pathes <- list.files(path = dirPath, full.names = TRUE, pattern = dir.pattern )
   sample.names <- basename(sample.salmon.pathes)
-  sample.names <- unlist(lapply( strsplit(sample.names,"_qua"), function(x) {x[1]} ))
+  sample.names <- unlist(lapply( strsplit(sample.names, dir.pattern), function(x) {x[1]} ))
 
   if(isoform){
     sample.salmon.pathes <- list.files(path = sample.salmon.pathes, full.names = TRUE, pattern = "quant.sf")

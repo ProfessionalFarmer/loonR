@@ -590,8 +590,9 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
   consensus.map = res$consensusMatrix
   consensus.map[lower.tri(consensus.map,diag = T)] = NA
   # filter by value control the edge
-  res$consensus.map.for.cytoscape = loonR::meltDataFrameByGroup(consensus.map, rownames(consensus.map)) %>% filter(value>0.0)
+  res$consensus.map.for.cytoscape = loonR::meltDataFrameByGroup(consensus.map, rownames(consensus.map),variable_name = "Subtype2") %>% filter(value>0.0)
 
+res$ConsensusSubtype.clean$Subtype
 
   plotNetwork <- function(){
 

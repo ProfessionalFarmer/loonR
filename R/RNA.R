@@ -1017,7 +1017,7 @@ microarray_limma_differential <- function(exp, group, check.log2=TRUE, normalize
 #' @export
 #'
 #' @examples
-compare.differential.analysis <- function(rna.df.log, group, prefix="Group", cal.auc=FALSE){
+compare_differential.analysis <- function(rna.df.log, group, prefix="Group", cal.auc=FALSE){
 
   function.analysis.res <- lapply(unique(group), function(x){
 

@@ -4,7 +4,14 @@
 \alias{exportTable}
 \title{Overwrite write.table with modified default option. Export data frame to file}
 \usage{
-exportTable(df, file = "~/test.tsv", quote = F, sep = "\\t", row.names = F)
+exportTable(
+  df,
+  file = "~/test.tsv",
+  quote = F,
+  sep = "\\t",
+  row.names = F,
+  col.names = T
+)
 }
 \arguments{
 \item{file}{file path}
@@ -12,6 +19,10 @@ exportTable(df, file = "~/test.tsv", quote = F, sep = "\\t", row.names = F)
 \item{quote}{Default FALSE}
 
 \item{sep}{Default \\t}
+
+\item{row.names}{F}
+
+\item{col.names}{T}
 }
 \value{
 

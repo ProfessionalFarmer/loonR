@@ -1583,9 +1583,11 @@ splitCharacter <- function(vector, sep = NULL, index = 1 ){
   if(is.null(sep)){
     stop("Pls set sep option")
   }
-  res <- stringr::str_split(x, sep, simplify = TRUE)[,index]
+  res <- stringr::str_split(vector, sep, simplify = TRUE)
 
-  res = list(res=as.vector( unlist(res) ), raw = data.frame(res))
+  res = list(index = as.vector( unlist(res[,index])),
+             raw = res)
+
   res
 
 }

@@ -11,7 +11,10 @@ checkHousekeepingCombination(
   alternative = "less",
   p.cutoff = 0.05,
   difference.cutoff = 0,
-  sep = ", "
+  sep = ", ",
+  logTen = FALSE,
+  expTwo = FALSE,
+  scale = TRUE
 )
 }
 \arguments{
@@ -28,6 +31,12 @@ checkHousekeepingCombination(
 \item{difference.cutoff}{Default 0. Should be greater than 0. The direction of difference depends on alternative.}
 
 \item{sep}{Default ", "}
+
+\item{logTen}{log10(2^(-ΔCT))}
+
+\item{expTwo}{2^(-ΔCT)}
+
+\item{scale}{}
 }
 \value{
 

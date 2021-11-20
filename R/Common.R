@@ -1594,4 +1594,70 @@ splitCharacter <- function(vector, sep = NULL, index = 1 ){
 
 
 
+#' Build Genomic Ranges from data.frame
+#'
+#' @param df
+#' @param keep.extra.columns Default TRUE
+#' @param seqnames.field Default "chr"
+#' @param end.field Default "end"
+#' @param starts.in.df.are.0based Default FALSE
+#' @param strand.field Default "strand"
+#' @param start.field  Default "start"
+#'
+#' @return
+#' @export
+#'
+#' @examples
+buildGRangesObj <- function(df, keep.extra.columns = T, seqnames.field = "chr", start.field = "start", end.field = "end", starts.in.df.are.0based = FALSE, strand.field = "strand"){
 
+  if(!require(GenomicRanges)){
+    BiocManager::install("GenomicRanges")
+  }
+
+  if(!require(plyranges)){
+    BiocManager::install("plyranges")
+  }
+
+  library(plyranges, quietly = TRUE)
+  library(GenomicRanges, quietly = TRUE)
+
+  gr.obj <- GenomicRanges::makeGRangesFromDataFrame(
+    df,
+    keep.extra.columns = keep.extra.columns,
+    start.field = start.field,
+    end.field = end.field,
+    seqnames.field = seqnames.field,
+    strand.field = strand.field,
+    starts.in.df.are.0based = starts.in.df.are.0based
+  )
+
+  gr.obj <- plyranges::as_granges(gr.obj)
+  gr.obj
+
+}
+
+
+#' Group a vector into list by group
+#'
+#' @param v vector
+#' @param g group
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' loonR::vector.group( v = 1:10, g = rep(c(FALSE,TRUE),c(5,5)) )
+vector.group <- function(v, g){
+
+  df = data.frame(v=v, g=g)
+
+  library(dplyr)
+  res = df %>%
+    group_by(g) %>%
+    summarize(Grouped = list(v))
+
+  names(res$Grouped) = res$g
+
+  res = res$Grouped
+  res
+}

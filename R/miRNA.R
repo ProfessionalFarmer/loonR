@@ -52,5 +52,41 @@ res
 }
 
 
+#' miRBase convert
+#'
+#' @param miR.IDs A character vector representing the source miRNA names needed to be convert.
+#' @param miRBase.IDs miRBase accessions. "MIMAT0000095"
+#' @param version A character value representing the target miRBase version corresponding the Accessions. Default "v22"
+#'
+#' @return
+#' @export
+#'
+#' @examples
+miRBaseConverter <- function(miR.IDs  =NULL, miRBase.IDs = NULL, version = NULL){
 
+  if(!require("miRBaseConverter")){
+    devtools::install_github("taoshengxu/miRBaseConverter")
+    library("miRBaseConverter")
+  }
+
+  if(is.null(miR.IDs) & is.null(miRBase.IDs) ){
+    stop("Pls specify miR or miRBase IDs")
+  }
+
+  if(is.null(miR.IDs)){
+    if(is.null(version)){version="v22"}
+
+    res = miRNA_AccessionToName(miRBase.IDs, targetVersion = version )
+    colnames(res) = c("miRBase", "miR")
+  }
+
+  if(is.null(miRBase.IDs)){
+    if(is.null(version)){version=checkMiRNAVersion(miR.IDs, verbose = TRUE)}
+    res = miRNA_NameToAccession(miR.IDs, version = version)
+    colnames(res) = c("miR", "miRBase")
+    res = res[,c(2,1)]
+  }
+  res
+
+}
 

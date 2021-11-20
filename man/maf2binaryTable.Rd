@@ -8,8 +8,6 @@ maf2binaryTable(maf)
 }
 \arguments{
 \item{maf}{File path or data.frame}
-
-\item{geneLevel}{}
 }
 \value{
 

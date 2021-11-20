@@ -7,12 +7,15 @@
 #' @param p.cutoff Default 0.05
 #' @param difference.cutoff Default 0. Should be greater than 0. The direction of difference depends on alternative.
 #' @param sep Default ", "
+#' @param logTen log10(2^(-ΔCT))
+#' @param expTwo 2^(-ΔCT)
+#' @param scale
 #'
 #' @return
 #' @export
 #'
 #' @examples
-checkHousekeepingCombination <- function(raw.ct.df, housekeeping.ct.df, group, alternative = "less", p.cutoff = 0.05, difference.cutoff = 0, sep = ", "){
+checkHousekeepingCombination <- function(raw.ct.df, housekeeping.ct.df, group, alternative = "less", p.cutoff = 0.05, difference.cutoff = 0, sep = ", ", logTen=FALSE, expTwo=FALSE, scale=TRUE){
 
   if(difference.cutoff<0){
     stop("Pls set difference.cutoff greater or equal to 0. The direction depends on alternative")
@@ -52,6 +55,7 @@ checkHousekeepingCombination <- function(raw.ct.df, housekeeping.ct.df, group, a
       normalized.ct.res[[paste0( comb.df[row.ind,], collapse = sep)]] = normalized.df
       differential.res[[paste0( comb.df[row.ind,], collapse = sep)]] = diff.res
 
+
       if(alternative=="less"){
         candidates.res <- diff.res %>% filter(P < p.cutoff & Difference < difference.cutoff)
       }else if (alternative=="greater"){
@@ -65,11 +69,22 @@ checkHousekeepingCombination <- function(raw.ct.df, housekeeping.ct.df, group, a
       # cat("# of candidates: ", nrow(candidates.res) , "\n" )
 
 
-      # normalized.df = log10( 2^(normalized.df*(-1) )  )
-      # normalized.df = 2^(normalized.df*(-1) )
+      if(logTen){
+        normalized.df = log10( 2^(normalized.df*(-1) )  )
+      }
+      if(expTwo){
+        normalized.df = 2^(normalized.df*(-1) )
+      }
+
+      if(nrow(candidates.res)==0){
+        lg.res = list()
+        lg.res$AUC = 0.5
+        lg.res$eliminationCandidates=NULL
+      }else{
+        lg.res <- loonR::build.logistic.model(normalized.df[,candidates.res$Name], group, scale = scale)
+      }
 
 
-      lg.res <- loonR::build.logistic.model(normalized.df[,candidates.res$Name], group)
 
       # backward eliminatio
       # lg.res <- loonR::build.logistic.model(normalized.df[,lg.res$eliminationCandidates], group)

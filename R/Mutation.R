@@ -167,7 +167,6 @@ extractSignaturePercent <- function(chr=NULL, Start_Position = NULL, End_Positio
 #' Convert MAF format to a binary matrix
 #'
 #' @param maf File path or data.frame
-#' @param geneLevel
 #'
 #' @return
 #' @export

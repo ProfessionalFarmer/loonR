@@ -565,6 +565,8 @@ MA_plot <- function(M, A, p, m.cutoff=0, a.cutoff=0, p.cutoff=0.05,
                     mlab="Log2 Fold Change", alab="Average Expression",
                     restrict.vector=NA, label = NA, col.pal=c("blue", "gray", "red") ){
 
+  library(ggpubr)
+
   df = data.frame(M=M, A=A, P = p, label = label, stringsAsFactors = FALSE)
 
   df$Significant <- "No"

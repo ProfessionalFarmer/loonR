@@ -282,7 +282,7 @@ lasso.cv.select.feature <- function(data.matrix, label, folds = 5, seed = 666, n
 #'
 #' Recursive feature elimnation (rfe) offers a rigorous way to determine the important variables before you even feed them into a ML algo.
 feature.selection.RFE <- function(feature.df, group, functions = "lrFuncs",
-        seed = 111, scale = TRUE, sizes = c(1:5),
+        seed = 111, scale = TRUE, sizes = c(1:10),
         repeats = 5, number = 5, method = "cv", cores = 50){
 
   subsets <- sizes

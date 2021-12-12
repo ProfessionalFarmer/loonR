@@ -10,7 +10,8 @@ scaleDF(
   byColumn = FALSE,
   center = TRUE,
   scale = TRUE,
-  maxUnit = 4
+  maxUnit = 4,
+  returnRaw = F
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ scaleDF(
 \item{scale}{Default TRUE. 0-1 scale}
 
 \item{maxUnit}{Default 4}
+
+\item{returnRaw}{if TRUE, return raw dataframe}
 }
 \value{
 

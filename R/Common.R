@@ -580,34 +580,40 @@ drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA,
 #' Check if all values in a vector are the same
 #'
 #' @param x
+#' @param y
 #'
 #' @return
 #' @export
 #'
 #' @examples
-#'
-AllEqual <- structure(function(
-  # from https://rdrr.io/rforge/greenbrown/src/R/AllEqual.R
-  ##title<<
-  ## Check if all values in a vector are the same
-  ##description<<
-  ## This function is used to check if all values in a vector are equal. It can be used for example to check if a time series contains only 0 or NA values.
+#' loonR::AllEqual(c(1,1,1,1,1))
+#' loonR::AllEqual(c(1,2,1,1,1))
+#' loonR::AllEqual(c(1,2,1)c(1,2,1))
+AllEqual <- function(x=NULL, y=NULL){
 
-  x
-  ### numeric, character vector, or time series of type ts
-) {
-  res <- FALSE
-  x <- na.omit(as.vector(x))
-  if (length(unique(x)) == 1 | length(x) == 0) res <- TRUE
-  return(res)
-  ### The function returns TRUE if all values are equal and FALSE if it contains different values.
-},ex=function(){
-  # check if all values are equal in the following vectors:
-  AllEqual(1:10)
-  AllEqual(rep(0, 10))
-  AllEqual(letters)
-  AllEqual(rep(NA, 10))
-})
+  # y is NA
+  if(is.null(y)){
+    element = x[1]
+    false.count = sum(x!=element)
+  }else{
+    if(length(x)!=length(y)){
+      false.count = 5
+      stop("length not equal")
+    }else{
+      false.count = sum(x!=y)
+    }
+
+  }
+
+  if(false.count==0){
+    res = TRUE
+  }else{
+    res = FALSE
+  }
+
+  res
+}
+
 
 
 
@@ -652,6 +658,7 @@ plotVennLegacy <- function(l.list, alpha = 0.5, palette = "aaas"){
 #' @param show_percentage Show percentage for each set.
 #' @param text_size Default 4, Text size for intersect contents.
 #' @param set_name_size Default 6, Text color for set names.
+#' @param title
 #'
 #' @return The ggplot object to print or save to file.
 #' @export
@@ -662,12 +669,12 @@ plotVennLegacy <- function(l.list, alpha = 0.5, palette = "aaas"){
 #' `Up in advanced HCC` = advanced.up.genes,
 #' `Down in advanced HCC` = advanced.down.genes)
 #' plotVenn(l.list)
-plotVenn <- function(l.list, alpha = 0.5, palette = "aaas", show_elements = FALSE, show_percentage = TRUE, text_size = 4, set_name_size = 6){
+plotVenn <- function(l.list, alpha = 0.5, palette = "aaas", show_elements = FALSE, show_percentage = TRUE, text_size = 4, set_name_size = 6, title=NULL){
 
   if(!require("ggvenn")){
     devtools::install_github("yanlinlin82/ggvenn")
   }
-  ggvenn(l.list, columns = names(l.list),
+  p = ggvenn(l.list, columns = names(l.list),
          show_elements = show_elements,
          show_percentage = show_percentage,
          digits = 2,
@@ -678,12 +685,18 @@ plotVenn <- function(l.list, alpha = 0.5, palette = "aaas", show_elements = FALS
          stroke_size = 0.5,
          stroke_linetype = "solid",
          set_name_color = "black",
-         set_name_size = 6,
+         set_name_size = set_name_size,
          text_color = "black",
          text_size = text_size,
          label_sep = ","
   )
 
+  if(!is.null(title)){
+    p.title <- cowplot::ggdraw() + cowplot::draw_label(title, fontface='bold')
+    p = cowplot::plot_grid(p.title, p, ncol=1, rel_heights=c(0.1, 1.2))
+  }
+
+  p
 
 }
 
@@ -751,13 +764,18 @@ convertDfToNumeric <- function(df){
 #' @param center Default TRUE. Mean = 0
 #' @param scale  Default TRUE. 0-1 scale
 #' @param maxUnit Default 4
+#' @param returnRaw if TRUE, return raw dataframe
 #'
 #' @return
 #' @export
 #'
 #' @examples
 #' Default by column
-scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRUE, maxUnit = 4){
+scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRUE, maxUnit = 4, returnRaw=F){
+  if(returnRaw){
+    return(df)
+  }
+
   if(byRow & byColumn){
     stop("Etheir by row or by column, can't both")
   }
@@ -1121,7 +1139,7 @@ splitGroupByCutoff <- function(group = NULL, values = NULL, fun = NULL, quantile
     data.df$Group = paste(group.prefix, data.df$Group, sep="")
   }
 
-  if(loonR::AllEqual(group)){ # if only one group
+  if(loonR::AllEqual.inner(group)){ # if only one group
     data.df$Label[data.df$Label!=""] = paste("", data.df$Label[data.df$Label!=""], sep="")
   }else{
     data.df$Label[data.df$Label!=""] = paste("-", data.df$Label[data.df$Label!=""], sep="")
@@ -1553,6 +1571,7 @@ findMaxMinColumnNamesForEachRow <- function(df, max = FALSE, min = FALSE, ties.m
 
     #use raw ID
     res$Max.ColID = specified.column[res$Max.ColID]
+    res$Max.Value = apply(tmp.df, 1, max)
   }
 
   if(min){
@@ -1561,6 +1580,7 @@ findMaxMinColumnNamesForEachRow <- function(df, max = FALSE, min = FALSE, ties.m
 
     #use raw ID
     res$Min.ColID = specified.column[res$Min.ColID]
+    res$Min.Value = apply(tmp.df, 1, min)
   }
 
   res
@@ -1661,3 +1681,54 @@ vector.group <- function(v, g){
   res = res$Grouped
   res
 }
+
+
+
+
+#' Fill NA by row or column
+#'
+#' @param df
+#' @param byRow
+#' @param byColumn
+#' @param f Default "mean"
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' set.seed(1)
+#' data.df = data.frame(
+#'   S1 = rnorm(5),
+#'   S2 = rnorm(5),
+#'   S3 = rnorm(5)
+#' )
+#' data.df[1,2] = NA
+#' data.df[3,3] = NA
+#' loonR::fillNADataframe(data.df)
+fillNADataframe <- function(df, byRow=FALSE, byColumn=FALSE, f = "mean"){
+  rnms = row.names(df)
+
+  if(byRow){
+    m = 1
+  }else if(byColumn){
+    m = 2
+  }else{
+    stop("Pls set row or column")
+  }
+
+  f = match.fun(f)
+  df <- apply(df, m, function(x){
+     fill.value = f(x, , na.rm = TRUE)
+     x[is.na(x)] = fill.value
+     x
+  })
+
+  if(byRow){
+    df = t(df)
+  }
+  df = data.frame(df, stringsAsFactors = F, check.names = F)
+  row.names(df) = rnms
+  df
+
+}
+

@@ -4,10 +4,10 @@
 \alias{AllEqual}
 \title{Check if all values in a vector are the same}
 \usage{
-AllEqual(x)
+AllEqual(x = NULL, y = NULL)
 }
 \arguments{
-\item{x}{}
+\item{y}{}
 }
 \value{
 
@@ -16,5 +16,7 @@ AllEqual(x)
 Check if all values in a vector are the same
 }
 \examples{
-
+loonR::AllEqual(c(1,1,1,1,1))
+loonR::AllEqual(c(1,2,1,1,1))
+loonR::AllEqual(c(1,2,1)c(1,2,1))
 }

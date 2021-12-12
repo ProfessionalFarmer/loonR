@@ -10,7 +10,7 @@ feature.selection.RFE(
   functions = "lrFuncs",
   seed = 111,
   scale = TRUE,
-  sizes = c(1:5),
+  sizes = c(1:10),
   repeats = 5,
   number = 5,
   method = "cv",

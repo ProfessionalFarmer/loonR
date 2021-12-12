@@ -70,6 +70,9 @@
     <loc>/reference/build.randomforest.model.html</loc>
   </url>
   <url>
+    <loc>/reference/buildGRangesObj.html</loc>
+  </url>
+  <url>
     <loc>/reference/calculateNMI.html</loc>
   </url>
   <url>
@@ -83,6 +86,12 @@
   </url>
   <url>
     <loc>/reference/compareROC.html</loc>
+  </url>
+  <url>
+    <loc>/reference/compare_GSE.HTSAnalyzer.html</loc>
+  </url>
+  <url>
+    <loc>/reference/compare_differential.analysis.html</loc>
   </url>
   <url>
     <loc>/reference/confidence_interval.html</loc>
@@ -148,6 +157,9 @@
     <loc>/reference/extractSignaturePercent.html</loc>
   </url>
   <url>
+    <loc>/reference/extractTCGASampleType.html</loc>
+  </url>
+  <url>
     <loc>/reference/feature.selection.4givenMLAlgorithm.html</loc>
   </url>
   <url>
@@ -155,6 +167,9 @@
   </url>
   <url>
     <loc>/reference/feature.selection.boruta.html</loc>
+  </url>
+  <url>
+    <loc>/reference/fillNADataframe.html</loc>
   </url>
   <url>
     <loc>/reference/fillSymmetricNATable.html</loc>
@@ -323,6 +338,9 @@
   </url>
   <url>
     <loc>/reference/meltDataFrameByGroup.html</loc>
+  </url>
+  <url>
+    <loc>/reference/miRBaseConverter.html</loc>
   </url>
   <url>
     <loc>/reference/microarray_limma_differential.html</loc>
@@ -503,6 +521,9 @@
   </url>
   <url>
     <loc>/reference/univariate_or.html</loc>
+  </url>
+  <url>
+    <loc>/reference/vector.group.html</loc>
   </url>
   <url>
     <loc>/reference/volcano_plot.html</loc>

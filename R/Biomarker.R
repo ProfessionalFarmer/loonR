@@ -178,6 +178,8 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = 
   }
 
   lg.df$risk.score <- predict(glm.fit, lg.df)
+  res$YoudenIndex <- loonR::get.YoudenIndex(lg.df$risk.score, lg.df$label)
+
   p <- loonR::roc_with_ci(lg.df$label, lg.df$risk.score, ci = FALSE)
 
   res$data = lg.df
@@ -288,12 +290,167 @@ build.randomforest.model <- function(df, group, seed = 666, scale=TRUE){
 
 
 }
-# todo elastic regression
-# https://www.pluralsight.com/guides/linear-lasso-and-ridge-regression-with-r
 
 
+#' Build elastic regression
+#'
+#' @param df
+#' @param group
+#' @param seed Default 666
+#' @param scale Default TRUE
+#' @param nfolds Default 10. number of folds
+#' @param summaryFunction Default twoClassSummary for computes sensitivity, specificity and the area under the ROC curve. Please refer https://www.rdocumentation.org/packages/caret/versions/6.0-90/topics/defaultSummary
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data("LIRI")
+#' reg.res <- loonR::build.elastic.regression(LIRI[,3:5],LIRI$status)
+#'
+build.elastic.regression <- function(df, group, seed = 666, scale=TRUE, nfolds = 10, summaryFunction = 'twoClassSummary'){
+  # https://www.pluralsight.com/guides/linear-lasso-and-ridge-regression-with-r
+
+  cat("Pls note: Second unique variable is defined as experiment group\n")
+
+  if(scale){df = scale(df, center = TRUE, scale = TRUE)}
+
+  lg.df <- data.frame(
+    label = factor(group == unique(group)[2],
+                   levels = c(FALSE,TRUE), labels = c("Control","Exp")
+    ),
+    df, check.names = FALSE
+  )
+
+  library(glmnet)
+  library(caret)
+  set.seed(seed)
+
+  # Set training control
+  train_cont <- trainControl(method = "repeatedcv",
+                             number = nfolds,
+                             repeats = 5,
+                             search = "random",
+                             classProbs = TRUE,
+                             summaryFunction = get(summaryFunction),
+                             verboseIter = FALSE)
 
 
+  # Train the model
+  elastic_reg <- train(label ~ .,
+                       data = lg.df,
+                       method = "glmnet", family = "binomial",
+                       tuneLength = 10,
+                       trControl = train_cont)
+
+  prob = predict(elastic_reg, df, type = "prob")$Exp
+  data = data.frame(
+    Prob = prob,
+    Group = group
+  )
+  youden.index = loonR::get.YoudenIndex(data$Group, data$Prob)
+
+
+  ################ new model by glm
+  modelByglmnet <- loonR::build.lassoOrRidge.regression(
+    df, group, scale = F, alpha = elastic_reg$bestTune$alpha, lambda = elastic_reg$bestTune$lambda
+  )
+
+
+  res = list(
+    model = elastic_reg,
+    modelByglmnet = modelByglmnet,
+    BestTuningParameter = elastic_reg$bestTune,
+    data = data,
+    youden.index = youden.index)
+
+  res
+
+}
+
+
+#' Build lasso or ridge regression
+#'
+#' @param df
+#' @param group
+#' @param seed Default 666
+#' @param scale Default TRUE
+#' @param alpha 1 for lasso, 0 for ridge
+#' @param nfolds Default 10, number of folds
+#' @param type.measure Default auc. Refer https://www.rdocumentation.org/packages/glmnet/versions/4.1-3/topics/cv.glmnet
+#' @param lambda
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data("LIRI")
+#' reg.res <- loonR::build.lassoOrRidge.regression(LIRI[,3:5],LIRI$status)
+#'
+build.lassoOrRidge.regression <- function(df, group, seed = 666, scale=TRUE, alpha=1, lambda = NA, nfolds = 10, type.measure = "auc"){
+
+  # https://bookdown.org/tpinto_home/Regularisation/ridge-regression.html#ride.prac
+  cat("Pls note: Second unique variable is defined as experiment group\n")
+
+  if(scale){df = scale(df, center = TRUE, scale = TRUE)}
+
+  df = as.matrix(df)
+
+  label = as.numeric(group == unique(group)[2])
+
+  if(alpha < 0 | alpha > 1){
+    stop("Alpha should be 0 or 1")
+  }else if(alpha==1){
+    print("Perform lasso")
+  }else if(alpha==0){
+    print("Perform ridge")
+  }else{
+    print("Perform elastic")
+  }
+
+  library(glmnet)
+  set.seed(seed)
+
+  # find lambda
+  if(is.na(lambda)){
+  # First we need to find the amount of penalty, λ by cross-validation. We will search for the
+  # λ that give the minimum MSE
+  #Penalty type (alpha=1 is lasso and alpha=0 is the ridge)
+  cv.lambda.lassoOrRidge <- cv.glmnet(x=df, y=label, family="binomial",
+                               alpha = alpha, type.measure = type.measure, nfolds = nfolds)
+  #MSE for several lambdas
+  plot(cv.lambda.lassoOrRidge)
+
+  #We can also see the impact of different λ s in the estimated coefficients. When λ is very high, all the coefficients are shrunk exactly to zero.
+  #Lasso path
+  plot(cv.lambda.lassoOrRidge$glmnet.fit,
+       "lambda", label=FALSE)
+
+  l.lasso.min <- cv.lambda.lassoOrRidge$lambda.min
+
+  }else{
+    l.lasso.min = lambda
+  }
+
+  lasso.model <- glmnet(x=df, y=label,
+                        alpha  = alpha, family="binomial",
+                        lambda = l.lasso.min)
+
+  prob = predict(lasso.model, df, type = "response")[,1]
+  data = data.frame(
+    Prob = prob,
+    Group = group
+  )
+  youden.index = loonR::get.YoudenIndex(data$Group, data$Prob)
+
+
+  res=list(model = lasso.model,
+           lambda.min = l.lasso.min,
+           data = data,
+           youden.index = youden.index)
+  res
+
+}
 
 #' Get confusion matrix
 #'

@@ -15,3 +15,7 @@ extractTCGASampleType(TCGA.ids)
 \description{
 Extract TCGA sample types
 }
+\examples{
+ids = c("TCGA-FV-A495-01", "TCGA-G3-A3CH-11", "TCGA-G3-A3CH-01", "TCGA-DD-A3A6-11", "TCGA-DD-A3A6-01", "TCGA-DD-A11A-11", "TCGA-DD-A11A-01", "TCGA-CC-A3MB-01", "TCGA-BC-A3KF-01")
+loonR::extractTCGASampleType(ids)
+}

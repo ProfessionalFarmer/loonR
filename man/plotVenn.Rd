@@ -11,7 +11,8 @@ plotVenn(
   show_elements = FALSE,
   show_percentage = TRUE,
   text_size = 4,
-  set_name_size = 6
+  set_name_size = 6,
+  title = NULL
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ plotVenn(
 \item{text_size}{Default 4, Text size for intersect contents.}
 
 \item{set_name_size}{Default 6, Text color for set names.}
+
+\item{title}{}
 }
 \value{
 The ggplot object to print or save to file.

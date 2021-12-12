@@ -1,6 +1,6 @@
 Package: loonR
 Title: Common function in bioinformatics analysis
-Version: 0.1.690
+Version: 0.1.718
 Authors@R: 
     person(given = "Zhongxu",
            family = " ",

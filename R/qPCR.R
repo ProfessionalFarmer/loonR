@@ -47,14 +47,21 @@ checkHousekeepingCombination <- function(raw.ct.df, housekeeping.ct.df, group, a
 
       hk.ave.value = as.numeric(hk.ave.value)
 
-      normalized.df <- sweep(raw.ct.df, 1, hk.ave.value)
+      normalized.df <- sweep(raw.ct.df, 1, hk.ave.value, FUN = "-")
+
+      # if log10(2^(-ΔCT)) or 2^(-ΔCT)
+      if(logTen){
+        normalized.df = log10( 2^(normalized.df*(-1) )  )
+      }
+      if(expTwo){
+        normalized.df = 2^(normalized.df*(-1) )
+      }
 
       diff.res <- loonR::ttest_differential(t(normalized.df), group, cores = 1, alternative = alternative)
 
       # store normalized value
       normalized.ct.res[[paste0( comb.df[row.ind,], collapse = sep)]] = normalized.df
       differential.res[[paste0( comb.df[row.ind,], collapse = sep)]] = diff.res
-
 
       if(alternative=="less"){
         candidates.res <- diff.res %>% filter(P < p.cutoff & Difference < difference.cutoff)
@@ -64,17 +71,8 @@ checkHousekeepingCombination <- function(raw.ct.df, housekeeping.ct.df, group, a
         candidates.res <- diff.res %>% filter(P < p.cutoff & abs(Difference) > difference.cutoff)
       }
 
-
       # cat("Combination size ", comb.size, ": ", hk.combi)
       # cat("# of candidates: ", nrow(candidates.res) , "\n" )
-
-
-      if(logTen){
-        normalized.df = log10( 2^(normalized.df*(-1) )  )
-      }
-      if(expTwo){
-        normalized.df = 2^(normalized.df*(-1) )
-      }
 
       if(nrow(candidates.res)==0){
         lg.res = list()
@@ -83,8 +81,6 @@ checkHousekeepingCombination <- function(raw.ct.df, housekeeping.ct.df, group, a
       }else{
         lg.res <- loonR::build.logistic.model(normalized.df[,candidates.res$Name], group, scale = scale)
       }
-
-
 
       # backward eliminatio
       # lg.res <- loonR::build.logistic.model(normalized.df[,lg.res$eliminationCandidates], group)

@@ -292,7 +292,7 @@ build.randomforest.model <- function(df, group, seed = 666, scale=TRUE){
 }
 
 
-#' Build elastic regression
+#' Build elastic net regression
 #'
 #' @param df
 #' @param group
@@ -306,9 +306,9 @@ build.randomforest.model <- function(df, group, seed = 666, scale=TRUE){
 #'
 #' @examples
 #' data("LIRI")
-#' reg.res <- loonR::build.elastic.regression(LIRI[,3:5],LIRI$status)
+#' reg.res <- loonR::build.elastic.net.regression(LIRI[,3:5],LIRI$status)
 #'
-build.elastic.regression <- function(df, group, seed = 666, scale=TRUE, nfolds = 10, summaryFunction = 'twoClassSummary'){
+build.elastic.net.regression <- function(df, group, seed = 666, scale=TRUE, nfolds = 10, summaryFunction = 'twoClassSummary'){
   # https://www.pluralsight.com/guides/linear-lasso-and-ridge-regression-with-r
 
   cat("Pls note: Second unique variable is defined as experiment group\n")
@@ -348,7 +348,7 @@ build.elastic.regression <- function(df, group, seed = 666, scale=TRUE, nfolds =
     Prob = prob,
     Group = group
   )
-  youden.index = loonR::get.YoudenIndex(data$Group, data$Prob)
+  youden.index = loonR::get.YoudenIndex(data$Prob, data$Group)
 
 
   ################ new model by glm
@@ -441,13 +441,25 @@ build.lassoOrRidge.regression <- function(df, group, seed = 666, scale=TRUE, alp
     Prob = prob,
     Group = group
   )
-  youden.index = loonR::get.YoudenIndex(data$Group, data$Prob)
+  youden.index = loonR::get.YoudenIndex(data$Prob, data$Group)
 
+  # elimination
+  candidates = as.matrix(lasso.model$beta)
+  candidates = rownames(candidates)[candidates!=0]
+
+  # ROC
+  p.roc = loonR::roc_with_ci(data$Prob, label = data$Group, ci = F)
+  auc = loonR::get.AUC(data$Prob, label = data$Group)
 
   res=list(model = lasso.model,
-           lambda.min = l.lasso.min,
+           alpha = alpha,
+           lambda = l.lasso.min,
            data = data,
-           youden.index = youden.index)
+           `beta(coef)`= data.frame( as.matrix( coef(lasso.model) ) ),
+           candidates = candidates,
+           youden.index = youden.index,
+           ROC = p.roc,
+           AUC = auc)
   res
 
 }

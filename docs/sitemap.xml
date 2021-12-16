@@ -61,6 +61,12 @@
     <loc>/reference/build.coxregression.model.html</loc>
   </url>
   <url>
+    <loc>/reference/build.elastic.net.regression.html</loc>
+  </url>
+  <url>
+    <loc>/reference/build.lassoOrRidge.regression.html</loc>
+  </url>
+  <url>
     <loc>/reference/build.logistic.model.html</loc>
   </url>
   <url>

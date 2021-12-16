@@ -54,7 +54,7 @@ get.ggsci.color <- function(palette="nrc", n = 7, alpha=1){
 #'
 #' @examples get.palette.color("npg", n = 2, alpha = 0.7)
 #' scales::show_col(colorBlindGrey8)
-#'
+#' get.palette.color("Degas", n = 2, alpha = 0.7)
 #'
 #' Default npg. The color palette to be used for coloring or filling by groups.
 #' Allowed values include "grey" for grey color palettes;
@@ -77,6 +77,10 @@ get.ggsci.color <- function(palette="nrc", n = 7, alpha=1){
 #' Fresh and bright, Subdued and proffesional, Dark and earthy, Crisp and dramatic, Cool blues, Outdoorsy and Natural, Watery blue-greens, Primary colors with a vibrant twist, Refreshing and pretty, Playful greens and blues, Fresh and energetic, Surf and turf, Autumn in vermont, Icy blues and grays, Birds and berries, Day and night, Stylish and retro, Shades of citrus, Sunset to dusk, Bright and tropical, Warm naturals, Bold berries, Summer sunflower, Modern and crisp, Timeless and nautical, Neutral and versatile, Cheerful brights, Garden fresh, Summer barbeque, Berry blues, Lemonade stand, Serene and spa like, Fun and tropical, Spicy neutrals, Pastels, Bold and cultured, Sunny citrus, Crisp complementary colors, Warm and rustic, Neon night, Jewel tones, Polished and inviting, Fresh greens, Wintery reds, Summer fiesta, Chocolaty browns, Naturally elegant, Cozy and warm, Violet sunset, Strawberries and cream, Grecian holiday, Bold and basic, Vineyard neutrals, Modern and urban, Misty greens, Sunkissed village, Sun and sky, Aqua blues, Urban oasis, Candy coated brights, Muted and antique, Classy and timeless, Cosmopolitan, Cheerful and friendly, Nightlife, Coastal, Maritime brights, Vintage charm, Understated and versatile, Artic sunrise, Mediterranean afternoon, Hazy grays, City sights, Retro and relaxing, Green fields, Distintive and unexpected, Sleek and modern, Orange accent, Beyond black and white, Shabby chic neutrals, Warm and cool, Industrial and in control, Autumn oranges and complemtentary neutrals, Pool party, Classic metallics, Subtle and versatile, Professional and traditional, Light and natural, Shadowy and dramatic, Golden afternoon, Dark and handsome, Technology meets nature, Cheerful blues and pink, Exotic and high impact, Back to school, Bright and painterly, Urban living, 1950s kitchen, Smoky purples, Trendy and metropolitan, Fun and professional, Art history inspired, Muted tones, Modern and clean, Neon tones and sharp contrast, Muted and minimal, Warm and bold, Clean and highlighted, Warm tones, Sharp and modern, Cool vs warm, Pretty pastels, Bold and punchy, Tints and tones, Splash of color, Elegant and sophisticated, Summer inspired, Professional and modern, Bold blacks and vibrand highlights, Clean gradient and fresh blues, Cheerful and sleek, Luxurious and modern, Unique and striking, Unexpected color combinations, Retro inspired, Antique and clean, Striking and energetic, Fresh and lively, Clean and crisp, Colorful without clashing, Cool and calm, Modern and muted, Earthy and fresh, High saturation and high energy, Warm and wonderful, Vintage charm 2, Cool jewel tones, Stormy hues, Clean and collegiate, Simple and fresh, Tropical tones, Bold feature colors, Antique tones, Neon and bold, Simple but bold, Corporate and sleek, Modern and minimal, Fun and cheerful, Sunny and calm, Pop art
 #'
 #' ggthemes color: https://yutannihilation.github.io/allYourFigureAreBelongToUs/ggthemes/
+#'
+#' MetBrewer: https://github.com/BlakeRMills/MetBrewer/tree/main
+#' Austria, Cassatt, Cross, Degas, Egypt, Gauguin, Greek, Hokusai, Ingres, Isfahan1, Isfahan2, Juarez, Klimt, Manet, Monet, Moreau, Morgenstern, Nattier, NewKingdom, Pillement, Pissaro, Redon, Renoir, Robert, Stevens, Tara, Thomas, Tiepolo, Troy, VanGogh1, VanGogh2, Veronese, Wissing
+#'
 get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE, show.color=FALSE){
 
   if(install){
@@ -90,6 +94,7 @@ get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE, show
     devtools::install_github(c("hadley/ggplot2", "jrnold/ggthemes"))
     # ggpubr
     BiocManager::install("ggpubr")
+    devtools::install_github("BlakeRMills/MetBrewer")
     return()
   }
 
@@ -125,6 +130,8 @@ get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE, show
   }else if (palette %in% names(ggthemes::canva_palettes)){
     colors = head(ggthemes::canva_palettes[[palette]], n)
 
+  }else if (palette %in% names(MetBrewer::MetPalettes)){
+    colors = head(MetBrewer::MetPalettes[[palette]][[1]], n)
   }else{# include ggsci
      colors = ggpubr::get_palette(palette = palette, k = n)
   }

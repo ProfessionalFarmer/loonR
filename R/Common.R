@@ -288,6 +288,7 @@ show_hcluster <- function(df, group=NULL, dist.method = "euclidean", hclust.meth
 #' @param legend.pos one of c("", "top", "bottom", "left", "right", "none")
 #' @param group.position Allowed values include "identity", "stack", "dodge", "position_dodge(0.9)", position_stack(). Position adjustment, either as a string, or the result of a call to a position adjustment function
 #' @param remove.element Please refer https://rpkgs.datanovia.com/ggpubr/reference/rremove.html
+#' @param element_text_size Facet title text size
 #'
 #' @return
 #' @export
@@ -312,7 +313,7 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
                               alternative = "two.sided", rotate.x = 0, outlier.shape = 19, ylim=NULL, stat = FALSE,
                               barplot = FALSE, violin = FALSE, facet=FALSE, dotplot=FALSE,
                               shape.color.by = "black", fill.color.by = NULL, legend.pos = "",
-                              group.position = ggplot2::position_dodge(0.9), remove.element = NULL){
+                              group.position = ggplot2::position_dodge(0.9), remove.element = NULL, element_text_size = 14){
 
   if(!is.numeric(rotate.x)){
     rotate.x = as.numeric(rotate.x)
@@ -373,7 +374,7 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
                                   label.y = label.y,
                                   method.args = list(alternative = alternative))
     }
-    p = p  + theme(strip.background = element_blank(), strip.text.x = element_text(size = 14) )
+    p = p  + theme(strip.background = element_blank(), strip.text.x = element_text(size = element_text_size) )
 
   }else{
 
@@ -1279,6 +1280,7 @@ is.nan.data.frame <- function(x) {
 #'
 #' @examples
 generateCombinations <- function(panel=NULL, size = 0, repeats=FALSE, vector=FALSE, sep ="-"){
+
   if(length(size)>1){
 
     res <- lapply(size, function(x){
@@ -1307,7 +1309,7 @@ generateCombinations <- function(panel=NULL, size = 0, repeats=FALSE, vector=FAL
     res <- gtools::combinations(length(panel), size, panel, repeats=repeats)
 
     if(vector==TRUE){
-      res <- apply(res, 1, function(x) paste0(sort(x), sep="", collapse = "-"))
+      res <- apply(res, 1, function(x) paste0(sort(x), sep="", collapse = sep))
     }
   }
   data.frame(res)

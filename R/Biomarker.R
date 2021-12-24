@@ -2337,8 +2337,133 @@ compareROC <- function(risk1, lab1, risk2, lab2, method = c("delong", "bootstrap
 
 
 
+#' Generate gene pair value
+#'
+#' @param value
+#' @param names
+#' @param sep Pair seperation
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+#' set.seed(111)
+#' v = rnorm(10)
+#' n = paste0("ID", 1:10)
+#' names(v) = n
+#' loonR::generatePairValue(v,n)
+#'
+generatePairValue <- function(value=NULL, names = NULL, sep ="_"){
+
+  if(is.null(value)){
+      stop("Pls set parameter value")
+  }
+  if(is.null(names)){
+    names = names(value)
+  }else{
+    if(sum(names(value) == names) != length(names) ){
+      stop("Names should be the same")
+    }
+  }
+
+  combs = loonR::generateCombinations(names, size = 2, vector = T, sep=sep)
+  combs = combs[,1]
+
+  value.rank = rank(-1*value)
+
+  library(foreach)
+
+  # based on value
+  diff = foreach(comb = combs, .combine = rbind) %do%{
+    gene1 = stringr::str_split(comb,sep)[[1]][1]
+    gene2 = stringr::str_split(comb,sep)[[1]][2]
+
+    c(gene1, gene2,
+      as.numeric(c(
+      value[gene1], value[gene2], value.rank[gene1], value.rank[gene2],
+      value[gene1] - value[gene2],
+      value.rank[gene2] - value.rank[gene1],
+      value.rank[gene2] > value.rank[gene1]))
+      )
+  }
+  colnames(diff) = c("G1","G2","Value1","Value2","Rank1","Rank2",
+                           "Value.diff",
+                           "Rank.diff",
+                           "Binary")
+  rownames(diff) = combs
+  diff = data.frame(diff, stringsAsFactors = F, check.names = F)
+
+  diff[,3:ncol(diff)] = loonR::convertDfToNumeric(diff[,3:ncol(diff)])
+  diff = data.frame(diff, stringsAsFactors = F, check.names = F)
+
+  diff
+}
+
+#' Generate gene pair value data.frame
+#'
+#' @param df row is gene, column is sample
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+#' set.seed(1)
+#' df = matrix(rnorm(100*10, 1, .5), ncol=10)
+#' colnames(df) = paste0("ID",1:10)
+#' rownames(df) = paste0("Gene",1:100)
+#' res = generateGenePairValueDf(df)
+#' head(res$Binary.res)
+generateGenePairValueDf <- function(df){
 
 
+  sample.gene.pair.value.list = list()
+
+  for(sample in colnames(df)){
+    sample.value = df[,sample]
+    sample.paired.value = loonR::generatePairValue(sample.value)
+    sample.gene.pair.value.list[[sample]]=sample.paired.value
+  }
+  names(sample.gene.pair.value.list) = colnames(df)
+
+  # make sure row names is the same
+  rname = rownames(sample.gene.pair.value.list[[1]])
+
+  library(foreach)
+  value.diff.res = foreach(sample=colnames(df), .combine = 'cbind') %do%{
+     t = sample.gene.pair.value.list[[sample]][rname,"Value.diff"]
+     as.vector(t)
+  }
+  colnames(value.diff.res) = colnames(df)
+  value.diff.res = loonR::convertDfToNumeric(value.diff.res)
+
+
+  rank.diff.res = foreach(sample=colnames(df), .combine = cbind) %do%{
+    t = sample.gene.pair.value.list[sample][rname,"Rank.diff"]
+    as.vector(t)
+  }
+  colnames(rank.diff.res) = colnames(df)
+  rank.diff.res = loonR::convertDfToNumeric(rank.diff.res)
+
+
+  binary.res = foreach(sample=colnames(df), .combine = cbind) %do%{
+    t = sample.gene.pair.value.list[sample][rname,"Binary"]
+    as.vector(t)
+  }
+  colnames(binary.res) = colnames(df)
+  binary.res = loonR::convertDfToNumeric(binary.res)
+
+  res = list(
+    RawSampleDataList=sample.gene.pair.value.list,
+    Binary.res = binary.res,
+    Value.diff.res = value.diff.res,
+    Rank.diff.res = rank.diff.res
+  )
+
+  res
+
+}
 
 
 

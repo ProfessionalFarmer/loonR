@@ -32,7 +32,7 @@ RColorBrewer, ggsci, hue or grey/gray color palettes
 \examples{
 get.palette.color("npg", n = 2, alpha = 0.7)
 scales::show_col(colorBlindGrey8)
-
+get.palette.color("Degas", n = 5, show.color = TRUE)
 
 Default npg. The color palette to be used for coloring or filling by groups.
 Allowed values include "grey" for grey color palettes;

@@ -31,7 +31,8 @@ plotJitterBoxplot(
   fill.color.by = NULL,
   legend.pos = "",
   group.position = ggplot2::position_dodge(0.9),
-  remove.element = NULL
+  remove.element = NULL,
+  element_text_size = 14
 )
 }
 \arguments{
@@ -66,6 +67,8 @@ plotJitterBoxplot(
 \item{group.position}{Allowed values include "identity", "stack", "dodge", "position_dodge(0.9)", position_stack(). Position adjustment, either as a string, or the result of a call to a position adjustment function}
 
 \item{remove.element}{Please refer https://rpkgs.datanovia.com/ggpubr/reference/rremove.html}
+
+\item{element_text_size}{Facet title text size}
 }
 \value{
 

@@ -658,7 +658,7 @@ load.salmon.matrix <- function(dirPath, isoform = TRUE, countsFromAbundance = "n
 #' Directory tree subdirs = FALSE: dir/sample.prefix.isoforms.results
 load.rsem.matrix <- function(dirpath, isoform = FALSE, subdirs = TRUE){
 
-  warning("Pls not isoform paramter: ", isoform)
+  warning("Pls note isoform paramter: ", isoform)
 
   library(tximport)
 

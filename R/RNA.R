@@ -1065,3 +1065,125 @@ compare_differential.analysis <- function(rna.df.log, group, prefix="Group", cal
 log2dfQuantileNormalization <- function(df){
   limma::normalizeBetweenArrays(df, method = "quantile")
 }
+
+
+#' RTN Transcriptional regulatory Networks analysis
+#'
+#' @param TFs transcription factors. vector
+#' @param expData row is gene
+#' @param group
+#' @param cores Default 1
+#' @param nPermutations Default 1000
+#'
+#' @return
+#' @export
+#'
+#' @examples
+RTN.analysis <- function(TFs = NULL, expData = NULL, group = NULL, cores=1, nPermutations = 1000){
+  # https://www.bioconductor.org/packages/release/bioc/vignettes/RTN/inst/doc/RTN.html#overview
+
+  if(!require(RTN)){
+    BiocManager::install("RTN")
+    library(RTN)
+  }
+  library(parallel)
+
+  if(is.null(TFs) | is.null(expData) | is.null(group) ){
+    stop("Pls specify all required option")
+  }
+
+  rowAnnotation = data.frame(
+    ID = row.names(expData),
+    GENEID = rownames(expData),
+    SYMBOL = rownames(expData),
+    stringsAsFactors = F
+  )
+
+  colAnnotation = data.frame(
+    row.names = colnames(expData),
+    IDs = colnames(expData),
+    Group = group
+  )
+
+  rtni <- tni.constructor(expData = as.matrix(expData),
+                          regulatoryElements = TFs,
+                          rowAnnotation = rowAnnotation,
+                          colAnnotation = colAnnotation)
+
+
+
+  registerDoParallel(cores=cores)
+  parallel::mcaffinity(c(1:cores))
+  ################################## run
+  rtni <- tni.permutation(rtni, nPermutations = nPermutations, pValueCutoff = 0.05)
+  #Unstable interactions are subsequently removed by bootstrap analysis
+  parallel::mcaffinity(c(1:cores))
+  rtni <- tni.bootstrap(rtni)
+  #scans all triplets formed by two regulators and one target and removes the edge with the smallest MI value of each triplet, which is regarded as a redundant association.
+  rtni <- tni.dpi.filter(rtni)
+  ############################# stop
+
+  # a list with regulons, including the weight assigned for each interaction
+  regulons <- tni.get(rtni, what = "regulons.and.mode", idkey = "SYMBOL")
+
+
+  # Compute regulon activity for individual samples
+  rtni1st <- tni.gsea2(rtni, regulatoryElements = TFs)
+  regact <- tni.get(rtni1st, what = "regulonActivity")
+
+  # Get sample attributes from the 'rtni1st' dataset
+  col_annot <- tni.get(rtni1st, "colAnnotation")
+  # Get ER+/- and PAM50 attributes for pheatmap
+  col_annot <- data.frame(
+    Group = as.factor( col_annot[,c("Group")] ),
+    row.names = col_annot$IDs
+  )
+
+  regact$differential = as.data.frame(lapply(regact$differential,
+                        function(x) as.numeric(as.character(x))))
+
+  # Plot regulon activity profiles
+  regulon.activity.profiles =
+  pheatmap::pheatmap(
+      data.frame( t(regact$differential) ),
+      main="",
+      annotation_col = col_annot,
+      show_colnames = FALSE, annotation_legend = F,
+      clustering_method = "ward.D2", fontsize_row = 6,
+      clustering_distance_rows = "correlation",
+      clustering_distance_cols = "correlation")
+
+  res = list(
+    rtni = rtni,
+    regulons = regulons,
+    regact = regact,
+    regulon.activity.profiles
+  )
+
+  res
+}
+
+#' Plot RTN network
+#'
+#' @param rtni.obj
+#' @param TFs
+#'
+#' @return
+#' @export
+#'
+#' @examples
+RTN.network.plot <- function(rtni.obj, TFs){
+
+  g <- tni.graph(rtni.obj, regulatoryElements = TFs )
+  # The next chunk shows how to plot the igraph-class object using RedeR (Figure 1).
+
+  library(RedeR)
+  rdp <- RedPort()
+  calld(rdp)
+  addGraph(rdp, g, layout=NULL)
+  addLegend.color(rdp, g, type="edge")
+  addLegend.shape(rdp, g)
+  relax(rdp, ps = TRUE)
+
+}
+

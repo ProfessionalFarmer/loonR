@@ -20,6 +20,7 @@ heatmap.with.lgfold.riskpro(
   show_row_names = TRUE,
   cluster_rows = FALSE,
   cluster_columns = FALSE,
+  cluster_within_group = FALSE,
   z.score.cutoff = 2,
   specified.color = c("#0c3e74", "#77a8cd", "white", "#d86652", "#7e0821"),
   palette = "jama_classic"
@@ -43,6 +44,8 @@ heatmap.with.lgfold.riskpro(
 \item{show_column_names}{Default False}
 
 \item{show_row_names}{Defaut TRUE}
+
+\item{cluster_within_group}{Cluster within group}
 
 \item{z.score.cutoff}{Default 2}
 

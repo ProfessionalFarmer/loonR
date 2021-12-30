@@ -1067,19 +1067,21 @@ log2dfQuantileNormalization <- function(df){
 }
 
 
-#' RTN Transcriptional regulatory Networks analysis
+#' RTN Reconstruction of Transcriptional regulatory Networks analysis
 #'
 #' @param TFs transcription factors. vector
 #' @param expData row is gene
 #' @param group
 #' @param cores Default 1
 #' @param nPermutations Default 1000
+#' @param phenotype A named vector
+#' @param hits
 #'
 #' @return
 #' @export
 #'
 #' @examples
-RTN.analysis <- function(TFs = NULL, expData = NULL, group = NULL, cores=1, nPermutations = 1000){
+RTN.analysis <- function(TFs = NULL, expData = NULL, group = NULL, cores=1, nPermutations = 1000, phenotype = NULL, hits = NULL){
   # https://www.bioconductor.org/packages/release/bioc/vignettes/RTN/inst/doc/RTN.html#overview
 
   if(!require(RTN)){
@@ -1087,8 +1089,10 @@ RTN.analysis <- function(TFs = NULL, expData = NULL, group = NULL, cores=1, nPer
     library(RTN)
   }
   library(parallel)
+  library(doParallel)
 
-  if(is.null(TFs) | is.null(expData) | is.null(group) ){
+  if(is.null(TFs) | is.null(expData) | is.null(group) |
+     is.null(phenotype) | is.null(hits) ){
     stop("Pls specify all required option")
   }
 
@@ -1105,6 +1109,8 @@ RTN.analysis <- function(TFs = NULL, expData = NULL, group = NULL, cores=1, nPer
     Group = group
   )
 
+  ####################### Transcriptional Network Inference (TNI)
+  ####################### Transcriptional Network Inference (TNI)
   rtni <- tni.constructor(expData = as.matrix(expData),
                           regulatoryElements = TFs,
                           rowAnnotation = rowAnnotation,
@@ -1128,7 +1134,7 @@ RTN.analysis <- function(TFs = NULL, expData = NULL, group = NULL, cores=1, nPer
 
 
   # Compute regulon activity for individual samples
-  rtni1st <- tni.gsea2(rtni, regulatoryElements = TFs)
+  rtni1st <- tni.gsea2(rtni, regulatoryElements = TFs, minRegulonSize = 5)
   regact <- tni.get(rtni1st, what = "regulonActivity")
 
   # Get sample attributes from the 'rtni1st' dataset
@@ -1142,22 +1148,55 @@ RTN.analysis <- function(TFs = NULL, expData = NULL, group = NULL, cores=1, nPer
   regact$differential = as.data.frame(lapply(regact$differential,
                         function(x) as.numeric(as.character(x))))
 
-  # Plot regulon activity profiles
-  regulon.activity.profiles =
-  pheatmap::pheatmap(
-      data.frame( t(regact$differential) ),
-      main="",
-      annotation_col = col_annot,
-      show_colnames = FALSE, annotation_legend = F,
-      clustering_method = "ward.D2", fontsize_row = 6,
-      clustering_distance_rows = "correlation",
-      clustering_distance_cols = "correlation")
+  # # Plot regulon activity profiles
+  # regulon.activity.profiles =
+  # pheatmap::pheatmap(
+  #     data.frame( t(regact$differential) ),
+  #     main="",
+  #     annotation_col = col_annot,
+  #     show_colnames = FALSE, annotation_legend = F,
+  #     clustering_method = "ward.D2", fontsize_row = 6,
+  #     clustering_distance_rows = "correlation",
+  #     clustering_distance_cols = "correlation")
+
+
+  ##################### Transcriptional Network Analysis (TNA)
+  ##################### Transcriptional Network Analysis (TNA)
+  # Input 1: 'object', a TNI object with regulons
+  # Input 2: 'phenotype', a named numeric vector, usually log2 differential expression levels
+  # Input 3: 'hits', a character vector, usually a set of differentially expressed genes
+  # Input 4: 'phenoIDs', an optional data frame with gene anottation mapped to the phenotype
+
+  phenoIDs = data.frame(
+    PROBEID = names(phenotype),
+    ENTREZ  = names(phenotype),
+    SYMBOL  = names(phenotype),
+    stringsAsFactors = FALSE
+  )
+
+  rtna <- tni2tna.preprocess(object = rtni,
+                             phenotype = phenotype,
+                             hits = hits,
+                             phenoIDs = phenoIDs)
+
+  # Run the MRA method
+  rtna <- tna.mra(rtna)
+  #..setting 'ntop = -1' will return all results, regardless of a threshold
+  mra <- tna.get(rtna, what="mra", ntop = -1)
+
+  # Run the GSEA-2T method
+  rtna <- tna.gsea2(rtna, nPermutations = nPermutations, minRegulonSize = 5)
+
+  # Get GSEA-2T results
+  gsea2 <- tna.get(rtna, what = "gsea2", ntop = -1)
 
   res = list(
     rtni = rtni,
     regulons = regulons,
-    regact = regact,
-    regulon.activity.profiles
+    rtna = rtna,
+    mra = mra,
+    gsea2 = gsea2,
+    regact = regact
   )
 
   res

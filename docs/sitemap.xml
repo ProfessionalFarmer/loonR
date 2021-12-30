@@ -52,6 +52,12 @@
     <loc>/reference/MannWhitneyU_WilcoxonRankSumTest_differential.html</loc>
   </url>
   <url>
+    <loc>/reference/RTN.analysis.html</loc>
+  </url>
+  <url>
+    <loc>/reference/RTN.network.plot.html</loc>
+  </url>
+  <url>
     <loc>/reference/SNF_Similairity_Hist.html</loc>
   </url>
   <url>
@@ -203,6 +209,12 @@
   </url>
   <url>
     <loc>/reference/generateCombinations.html</loc>
+  </url>
+  <url>
+    <loc>/reference/generateGenePairValueDf.html</loc>
+  </url>
+  <url>
+    <loc>/reference/generatePairValue.html</loc>
   </url>
   <url>
     <loc>/reference/genereateLabelsByGroup.html</loc>

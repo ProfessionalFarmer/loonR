@@ -2,14 +2,16 @@
 % Please edit documentation in R/RNA.R
 \name{RTN.analysis}
 \alias{RTN.analysis}
-\title{RTN Transcriptional regulatory Networks analysis}
+\title{RTN Reconstruction of Transcriptional regulatory Networks analysis}
 \usage{
 RTN.analysis(
   TFs = NULL,
   expData = NULL,
   group = NULL,
   cores = 1,
-  nPermutations = 1000
+  nPermutations = 1000,
+  phenotype = NULL,
+  hits = NULL
 )
 }
 \arguments{
@@ -20,10 +22,14 @@ RTN.analysis(
 \item{cores}{Default 1}
 
 \item{nPermutations}{Default 1000}
+
+\item{phenotype}{A named vector}
+
+\item{hits}{}
 }
 \value{
 
 }
 \description{
-RTN Transcriptional regulatory Networks analysis
+RTN Reconstruction of Transcriptional regulatory Networks analysis
 }

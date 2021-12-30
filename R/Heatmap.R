@@ -19,6 +19,7 @@
 #' @param specified.color Default c("#0c3e74","#77a8cd","white","#d86652","#7e0821") or colorRampPalette(c("navy", "white", "firebrick3"))(50)
 #' @param palette Color palette for group. Default "jama_classic"
 #' @param show_row_names Defaut TRUE
+#' @param cluster_within_group Cluster within group
 #'
 #' @return A heatmap plot by complex heatmap
 #' @export
@@ -26,7 +27,7 @@
 #' @examples heatmap.with.lgfold.riskpro(data.tmp[candi,],label, logfd,  risk.pro)
 heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=NA, scale=TRUE, group.name="Cancer", bar.name = "Log2FC", ylim = c(0, 1),
                                         show.lgfold = TRUE, show.risk.pro = TRUE, height = 5, show_column_names = FALSE, show_row_names = TRUE, cluster_rows = FALSE,
-                                        cluster_columns = FALSE, z.score.cutoff = 2, specified.color = c("#0c3e74","#77a8cd","white","#d86652","#7e0821"), palette = "jama_classic" ){
+                                        cluster_columns = FALSE, cluster_within_group = FALSE, z.score.cutoff = 2, specified.color = c("#0c3e74","#77a8cd","white","#d86652","#7e0821"), palette = "jama_classic" ){
 
   if (!require(ComplexHeatmap)) {
     BiocManager::install("ComplexHeatmap")
@@ -112,6 +113,11 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=N
       col = ann_colors
     )
   }
+
+  if(cluster_within_group){
+    cluster_columns = cluster_within_group(heatmap.df, label)
+  }
+
 
   #
   if (show.lgfold) {

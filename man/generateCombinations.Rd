@@ -27,3 +27,6 @@ generateCombinations(
 \description{
 Gnenerate combinations with specified size
 }
+\examples{
+loonR::generateCombinations(c("a","b","c"), size = 1:2)
+}

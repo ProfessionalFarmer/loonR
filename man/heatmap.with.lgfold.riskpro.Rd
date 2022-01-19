@@ -16,6 +16,7 @@ heatmap.with.lgfold.riskpro(
   show.lgfold = TRUE,
   show.risk.pro = TRUE,
   height = 5,
+  annotation.df = NULL,
   show_column_names = FALSE,
   show_row_names = TRUE,
   cluster_rows = FALSE,
@@ -40,6 +41,8 @@ heatmap.with.lgfold.riskpro(
 \item{ylim}{= c(0, 1), risk score range.}
 
 \item{show.lgfold}{= TRUE. Whether to show right panel.}
+
+\item{annotation.df}{Annotation data.frame}
 
 \item{show_column_names}{Default False}
 

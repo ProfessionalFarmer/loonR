@@ -2436,22 +2436,25 @@ generateGenePairValueDf <- function(df){
      as.vector(t)
   }
   colnames(value.diff.res) = colnames(df)
+  rownames(value.diff.res) = rname
   value.diff.res = loonR::convertDfToNumeric(value.diff.res)
 
 
-  rank.diff.res = foreach(sample=colnames(df), .combine = cbind) %do%{
-    t = sample.gene.pair.value.list[sample][rname,"Rank.diff"]
+  rank.diff.res = foreach(sample=colnames(df), .combine = 'cbind') %do%{
+    t = sample.gene.pair.value.list[[sample]][rname,"Rank.diff"]
     as.vector(t)
   }
   colnames(rank.diff.res) = colnames(df)
+  rownames(rank.diff.res) = rname
   rank.diff.res = loonR::convertDfToNumeric(rank.diff.res)
 
 
   binary.res = foreach(sample=colnames(df), .combine = cbind) %do%{
-    t = sample.gene.pair.value.list[sample][rname,"Binary"]
+    t = sample.gene.pair.value.list[[sample]][rname,"Binary"]
     as.vector(t)
   }
   colnames(binary.res) = colnames(df)
+  rownames(binary.res) = rname
   binary.res = loonR::convertDfToNumeric(binary.res)
 
   res = list(

@@ -1279,7 +1279,9 @@ is.nan.data.frame <- function(x) {
 #' @export
 #'
 #' @examples
+#' loonR::generateCombinations(c("a","b","c"), size = 1:2)
 generateCombinations <- function(panel=NULL, size = 0, repeats=FALSE, vector=FALSE, sep ="-"){
+
 
   if(length(size)>1){
 
@@ -1292,9 +1294,12 @@ generateCombinations <- function(panel=NULL, size = 0, repeats=FALSE, vector=FAL
           combs = apply(combs, 1, function(x) paste0(sort(x), sep="", collapse = sep ))
         }
         combs
+      }else{
+        combs
       }
     })
-    names(res) <- size
+    names(res) <- paste("Size-", size, sep = "")
+    res
 
   }else{
     if(is.null(panel)){
@@ -1311,8 +1316,9 @@ generateCombinations <- function(panel=NULL, size = 0, repeats=FALSE, vector=FAL
     if(vector==TRUE){
       res <- apply(res, 1, function(x) paste0(sort(x), sep="", collapse = sep))
     }
+    data.frame(res)
   }
-  data.frame(res)
+
 }
 
 
@@ -1733,4 +1739,45 @@ fillNADataframe <- function(df, byRow=FALSE, byColumn=FALSE, f = "mean"){
   df
 
 }
+
+
+#' Randomly place the sample within group
+#'
+#' @param group
+#' @param ids
+#' @param seed
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' group = rep(c("G1","G2"),c(10,10))
+#' ids = 1:20
+#' loonR::randomOrderWithinGroup(group, ids)
+randomOrderWithinGroup <- function(group = NULL, ids = NULL, seed=666){
+
+  if(is.null(group)){
+    stop("Pls set group")
+  }
+  if(is.null(ids)){
+    ids = 1:length(group)
+  }
+
+  df = data.frame(
+    Group = group,
+    Order = ids
+  )
+
+  library(dplyr)
+  set.seed(seed)
+  df1 = df %>%  group_by(Group) %>% mutate(Order=sample(Order))
+
+  if(length(setdiff(df1$Order, df$Order))!=0){
+    stop("Pls check error while new orders were found")
+  }else{
+    df1
+  }
+
+}
+
 

@@ -20,13 +20,15 @@
 #' @param palette Color palette for group. Default "jama_classic"
 #' @param show_row_names Defaut TRUE
 #' @param cluster_within_group Cluster within group
+#' @param annotation.df Annotation data.frame
 #'
 #' @return A heatmap plot by complex heatmap
 #' @export
 #'
 #' @examples heatmap.with.lgfold.riskpro(data.tmp[candi,],label, logfd,  risk.pro)
 heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=NA, scale=TRUE, group.name="Cancer", bar.name = "Log2FC", ylim = c(0, 1),
-                                        show.lgfold = TRUE, show.risk.pro = TRUE, height = 5, show_column_names = FALSE, show_row_names = TRUE, cluster_rows = FALSE,
+                                        show.lgfold = TRUE, show.risk.pro = TRUE, height = 5, annotation.df = NULL,
+                                        show_column_names = FALSE, show_row_names = TRUE, cluster_rows = FALSE,
                                         cluster_columns = FALSE, cluster_within_group = FALSE, z.score.cutoff = 2, specified.color = c("#0c3e74","#77a8cd","white","#d86652","#7e0821"), palette = "jama_classic" ){
 
   if (!require(ComplexHeatmap)) {
@@ -48,6 +50,9 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=N
     risk.pro = risk.pro,
     index = (1:length(label))
   )
+  if (!is.null(annotation.df)){ # if annotation variable is null
+    label.risk.df = data.frame(label.risk.df, annotation.df)
+  }
 
 
   if (scale) {
@@ -86,14 +91,19 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=N
   names(Tumor) <- levels(label)
 
 
-
-
   # rename annotation names
   annotation <- data.frame(Tmp = label.risk.df$label)
   colnames(annotation) <- group.name
 
   ann_colors <- list(Tmp = Tumor)
   names(ann_colors) <- group.name
+
+  ## add new annotation,不能直接用annotation.df，因为已经排序了,要用label.risk.df
+  if(!is.null(annotation.df)){
+    annotation = data.frame(annotation,
+                            label.risk.df[,4:ncol(label.risk.df)],
+                            check.names = FALSE)
+  }
 
 
   if (show.risk.pro) {

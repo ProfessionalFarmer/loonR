@@ -7,7 +7,11 @@
 randomOrderWithinGroup(group = NULL, ids = NULL, seed = 666)
 }
 \arguments{
-\item{seed}{}
+\item{group}{Group label}
+
+\item{ids}{Sample names}
+
+\item{seed}{Default 666}
 }
 \value{
 

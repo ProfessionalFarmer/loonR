@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Count each event type and draw pie chart — plotPie • loonR</title>
+<title>Randomly place the sample within group — randomOrderWithinGroup • loonR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Count each event type and draw pie chart — plotPie" />
-<meta property="og:description" content="Count each event type and draw pie chart" />
+<meta property="og:title" content="Randomly place the sample within group — randomOrderWithinGroup" />
+<meta property="og:description" content="Randomly place the sample within group" />
 
 
 
@@ -57,6 +57,8 @@
 <![endif]-->
 
 
+
+<!-- dependencies from examples -->
 
 
   
@@ -106,60 +108,31 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Count each event type and draw pie chart</h1>
+    <h1>Randomly place the sample within group</h1>
     <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/Common.R'><code>R/Common.R</code></a></small>
-    <div class="hidden name"><code>plotPie.Rd</code></div>
+    <div class="hidden name"><code>randomOrderWithinGroup.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Count each event type and draw pie chart</p>
+    <p>Randomly place the sample within group</p>
     </div>
 
-    <pre class="usage"><span class='fu'>plotPie</span><span class='op'>(</span>
-  <span class='va'>data</span>,
-  color <span class='op'>=</span> <span class='st'>"jco"</span>,
-  colid <span class='op'>=</span> <span class='fl'>2</span>,
-  alpha <span class='op'>=</span> <span class='fl'>1</span>,
-  title <span class='op'>=</span> <span class='st'>""</span>,
-  border <span class='op'>=</span> <span class='st'>"white"</span>,
-  label <span class='op'>=</span> <span class='cn'>FALSE</span>,
-  show.total.inTitle <span class='op'>=</span> <span class='cn'>FALSE</span>
-<span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>randomOrderWithinGroup</span><span class='op'>(</span>group <span class='op'>=</span> <span class='cn'>NULL</span>, ids <span class='op'>=</span> <span class='cn'>NULL</span>, seed <span class='op'>=</span> <span class='fl'>666</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>data</th>
-      <td><p>A data.frame or list object.</p></td>
+      <th>group</th>
+      <td><p>Group label</p></td>
     </tr>
     <tr>
-      <th>color</th>
-      <td><p>ggsci color palette</p></td>
+      <th>ids</th>
+      <td><p>Sample names</p></td>
     </tr>
     <tr>
-      <th>colid</th>
-      <td><p>If provide data.frame, column id need to be set</p></td>
-    </tr>
-    <tr>
-      <th>alpha</th>
-      <td><p>Alpha value in plot</p></td>
-    </tr>
-    <tr>
-      <th>title</th>
-      <td><p>Pie title</p></td>
-    </tr>
-    <tr>
-      <th>border</th>
-      <td><p>Border color</p></td>
-    </tr>
-    <tr>
-      <th>label</th>
-      <td><p>Whether to show labels</p></td>
-    </tr>
-    <tr>
-      <th>show.total.inTitle</th>
-      <td><p>If to show the total number in title</p></td>
+      <th>seed</th>
+      <td><p>Default 666</p></td>
     </tr>
     </table>
 
@@ -170,7 +143,34 @@
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"></pre>
+    <pre class="examples"><span class='r-in'><span class='va'>group</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/rep.html'>rep</a></span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"G1"</span>,<span class='st'>"G2"</span><span class='op'>)</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>10</span>,<span class='fl'>10</span><span class='op'>)</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>ids</span> <span class='op'>=</span> <span class='fl'>1</span><span class='op'>:</span><span class='fl'>20</span></span>
+<span class='r-in'><span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>randomOrderWithinGroup</span><span class='op'>(</span><span class='va'>group</span>, <span class='va'>ids</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># A tibble: 20 x 2</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #949494;'># Groups:   Group [2]</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    Group Order</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>    <span style='color: #949494;font-style: italic;'>&lt;chr&gt;</span><span> </span><span style='color: #949494;font-style: italic;'>&lt;int&gt;</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 1</span><span> G1        5</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 2</span><span> G1        9</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 3</span><span> G1        4</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 4</span><span> G1        1</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 5</span><span> G1        2</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 6</span><span> G1        3</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 7</span><span> G1        7</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 8</span><span> G1        8</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'> 9</span><span> G1       10</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>10</span><span> G1        6</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>11</span><span> G2       13</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>12</span><span> G2       16</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>13</span><span> G2       18</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>14</span><span> G2       17</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>15</span><span> G2       12</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>16</span><span> G2       11</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>17</span><span> G2       19</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>18</span><span> G2       14</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>19</span><span> G2       15</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> <span style='color: #BCBCBC;'>20</span><span> G2       20</span></span>
+</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

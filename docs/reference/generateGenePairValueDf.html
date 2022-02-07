@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.736</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.751</span>
       </span>
     </div>
 
@@ -141,9 +141,14 @@
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>colnames</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"ID"</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>10</span><span class='op'>)</span></span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/colnames.html'>rownames</a></span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"Gene"</span>,<span class='fl'>1</span><span class='op'>:</span><span class='fl'>100</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>res</span> <span class='op'>=</span> <span class='fu'>generateGenePairValueDf</span><span class='op'>(</span><span class='va'>df</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in `.rowNamesDF&lt;-`(x, value = value)</span> invalid 'row.names' length</span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>$</span><span class='va'>Binary.res</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in h(simpleError(msg, call))</span> error in evaluating the argument 'x' in selecting a method for function 'head': object 'res' not found</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>               ID1 ID2 ID3 ID4 ID5 ID6 ID7 ID8 ID9 ID10</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Gene1_Gene10    0   0   0   1   1   1   0   0   1    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Gene1_Gene100   0   0   1   1   1   1   0   0   0    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Gene1_Gene11    0   1   1   0   1   1   0   0   0    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Gene1_Gene12    0   0   0   1   1   1   0   0   0    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Gene1_Gene13    0   0   1   1   0   1   1   0   0    0</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> Gene1_Gene14    1   1   1   1   1   1   1   1   1    0</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.736</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.751</span>
       </span>
     </div>
 
@@ -129,10 +129,12 @@
   show.lgfold <span class='op'>=</span> <span class='cn'>TRUE</span>,
   show.risk.pro <span class='op'>=</span> <span class='cn'>TRUE</span>,
   height <span class='op'>=</span> <span class='fl'>5</span>,
+  annotation.df <span class='op'>=</span> <span class='cn'>NULL</span>,
   show_column_names <span class='op'>=</span> <span class='cn'>FALSE</span>,
   show_row_names <span class='op'>=</span> <span class='cn'>TRUE</span>,
   cluster_rows <span class='op'>=</span> <span class='cn'>FALSE</span>,
   cluster_columns <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  cluster_within_group <span class='op'>=</span> <span class='cn'>FALSE</span>,
   z.score.cutoff <span class='op'>=</span> <span class='fl'>2</span>,
   specified.color <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"#0c3e74"</span>, <span class='st'>"#77a8cd"</span>, <span class='st'>"white"</span>, <span class='st'>"#d86652"</span>, <span class='st'>"#7e0821"</span><span class='op'>)</span>,
   palette <span class='op'>=</span> <span class='st'>"jama_classic"</span>
@@ -170,12 +172,20 @@
       <td><p>= TRUE. Whether to show right panel.</p></td>
     </tr>
     <tr>
+      <th>annotation.df</th>
+      <td><p>Annotation data.frame</p></td>
+    </tr>
+    <tr>
       <th>show_column_names</th>
       <td><p>Default False</p></td>
     </tr>
     <tr>
       <th>show_row_names</th>
       <td><p>Defaut TRUE</p></td>
+    </tr>
+    <tr>
+      <th>cluster_within_group</th>
+      <td><p>Cluster within group</p></td>
     </tr>
     <tr>
       <th>z.score.cutoff</th>

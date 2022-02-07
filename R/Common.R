@@ -1743,9 +1743,9 @@ fillNADataframe <- function(df, byRow=FALSE, byColumn=FALSE, f = "mean"){
 
 #' Randomly place the sample within group
 #'
-#' @param group
-#' @param ids
-#' @param seed
+#' @param group Group label
+#' @param ids Sample names
+#' @param seed Default 666
 #'
 #' @return
 #' @export

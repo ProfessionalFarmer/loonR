@@ -66,6 +66,9 @@ fpkm2tpm <- function(fpkm.exp.df){
 #' @examples
 tcgabiolinks.get.RNA.expression.log2tpm <- function(project, remove.Raw = FALSE, dir="~/rspace/GDCdata"){
 
+  library(TCGAbiolinks)
+  library(SummarizedExperiment)
+
   fpkm2tpm <- function(fpkm){
     tpm <- exp(log(fpkm) - log(sum(fpkm,na.rm=T)) + log(1e6))
     tpm[which(is.na(tpm))] <- 0
@@ -87,7 +90,7 @@ tcgabiolinks.get.RNA.expression.log2tpm <- function(project, remove.Raw = FALSE,
 
   # Expression
   expression.df <- SummarizedExperiment::assay(project.data)
-  gene.information <- rowRanges(data)
+  gene.information <- SummarizedExperiment::rowRanges(project.data)
   rm(project.data)
   # convert to tpm
   expression.df <- apply(expression.df, 2, fpkm2tpm)

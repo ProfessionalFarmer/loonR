@@ -1140,7 +1140,7 @@ splitGroupByCutoff <- function(group = NULL, values = NULL, fun = NULL, quantile
     data.df$Group = paste(group.prefix, data.df$Group, sep="")
   }
 
-  if(loonR::AllEqual.inner(group)){ # if only one group
+  if(loonR::AllEqual(group)){ # if only one group
     data.df$Label[data.df$Label!=""] = paste("", data.df$Label[data.df$Label!=""], sep="")
   }else{
     data.df$Label[data.df$Label!=""] = paste("-", data.df$Label[data.df$Label!=""], sep="")
@@ -1682,7 +1682,7 @@ vector.group <- function(v, g){
   library(dplyr)
   res = df %>%
     group_by(g) %>%
-    summarize(Grouped = list(v))
+    dplyr::summarize(Grouped = list(v))
 
   names(res$Grouped) = res$g
 

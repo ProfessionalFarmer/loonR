@@ -774,7 +774,7 @@ convertDfToNumeric <- function(df){
 #' Default by column
 scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRUE, maxUnit = 4, returnRaw=F){
   if(returnRaw){
-    return(df)
+    return(data.frame(df, check.names = F, stringsAsFactors = F) )
   }
 
   if(byRow & byColumn){
@@ -1363,6 +1363,20 @@ genereateLabelsByGroup <- function(label=NULL,...){
   return( unlist(label.list) )
 
 }
+
+#' Multiple intersction
+#'
+#' @param ... one or more group vector
+#'
+#' @return
+#' @export
+#'
+#' @examples
+multiIntersection <- function(...){
+  l = list(...)
+  Reduce(intersect, l)
+}
+
 
 
 

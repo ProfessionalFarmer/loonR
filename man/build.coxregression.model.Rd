@@ -12,6 +12,8 @@ build.coxregression.model(d.frame, status, time, seed = 666, scale = TRUE)
 \item{time}{OS, DFS, RFS et al.....}
 
 \item{seed}{Default 666}
+
+\item{scale}{}
 }
 \value{
 
@@ -24,5 +26,5 @@ Build cox regression model
 # cph (Cox Proportional Hazards Model and Extensions) is using the cox model (and the Anderson-Gill model) which is based on the hazard functions.
 
 data(LIRI)
-res = build.coxregression.model(LIRI[,3:5],LIRI$status, LIRI$time)
+res = loonR::build.coxregression.model(LIRI[,3:5],LIRI$status, LIRI$time)
 }

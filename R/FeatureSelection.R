@@ -187,6 +187,59 @@ lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
 
 }
 
+#' LASSO Cox selection
+#'
+#' @param d.frame Data.frame --- Row: sample, Column: gene expression
+#' @param status
+#' @param time OS, DFS, RFS et al.....
+#' @param seed Default 666
+#' @param scale
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data(LIRI)
+#' loonR::lasso.cox.selection(LIRI[,3:5],LIRI$status, LIRI$time)
+lasso.cox.selection <- function(d.frame, status, time, seed=666, scale = TRUE){
+
+  library("survival")
+  library("survminer")
+  library(glmnet)
+
+  if(scale){
+    d.frame = scale(d.frame, center = TRUE, scale = TRUE)
+    d.frame = data.frame(d.frame, stringsAsFactors = FALSE, check.names = F)
+  }
+
+
+  set.seed(seed )   #设定随机种子
+  x = as.matrix(d.frame)
+  y = data.matrix(Surv(time, status))
+  fit = glmnet(x, y, family = "cox")
+  plot(fit, xvar = "lambda", label = TRUE)
+
+
+  cvfit = cv.glmnet(x, y, family="cox", maxit = 1000)
+  plot(cvfit)
+  #其中两条虚线分别指示了两个特殊的λ值
+  abline(v = log(c(cvfit$lambda.min,cvfit$lambda.1se)),lty="dashed")
+
+  coef = coef(fit, s = cvfit$lambda.min)
+  coef = as.matrix(coef)
+
+
+  index = which(coef != 0)
+  actCoef = coef[index]
+  lassoGene = row.names(coef)[index]
+  geneCoef = cbind(Gene=lassoGene,Coef=actCoef)
+  geneCoef = data.frame(geneCoef)
+  geneCoef$Coef = as.numeric(geneCoef$Coef)
+  rownames(geneCoef) = geneCoef$Gene
+
+  geneCoef
+
+}
 
 #' Perform multiple round lasso to select stable feature
 #'

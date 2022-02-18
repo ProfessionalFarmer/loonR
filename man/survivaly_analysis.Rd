@@ -16,6 +16,7 @@ survivaly_analysis(
   legend.position = "none",
   linetype = 1,
   calculate.pval = FALSE,
+  remove.na = FALSE,
   only.consider.group = NULL,
   not.consider.group = NULL,
   risk.table = TRUE
@@ -41,6 +42,8 @@ survivaly_analysis(
 \item{linetype}{line types. Allowed values includes i) "strata" for changing linetypes by strata (i.e. groups); ii) a numeric vector (e.g., c(1, 2)) or a character vector c("solid", "dashed").}
 
 \item{calculate.pval}{If TRUE, just reture p value data.frame.}
+
+\item{remove.na}{If remove NA samples}
 
 \item{only.consider.group}{Groups to consider}
 

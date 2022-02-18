@@ -58,6 +58,8 @@ runEstimate <- function(expression.df, platform = c("affymetrix", "agilent", "il
   estimate.scores = estimate.scores[-c(1,2),]
 
   rownames(estimate.scores) = colnames(expression.df)
+  estimate.scores = data.frame(estimate.scores, check.names = F, stringsAsFactors = F)
+
 
   # StromalScorenumeric scalar specifying the presence of stromal cells in tumor tissue
   # ImmuneScorenumeric scalar specifying the level of infiltrating immune cells in tumor tissue
@@ -120,6 +122,8 @@ runImmunedeconv <- function(expression.df, method = c("quantiseq", "timer", "cib
   res = t(res)
   colnames(res) = res[c(1),]
   res = res[-c(1),]
+
+  res = data.frame(res, check.names = F, stringsAsFactors = F)
 
   res
 

@@ -199,6 +199,7 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = 
 #' @param status
 #' @param time OS, DFS, RFS et al.....
 #' @param seed Default 666
+#' @param scale
 #'
 #' @return
 #' @export
@@ -208,7 +209,7 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = 
 #' # cph (Cox Proportional Hazards Model and Extensions) is using the cox model (and the Anderson-Gill model) which is based on the hazard functions.
 #'
 #' data(LIRI)
-#' res = build.coxregression.model(LIRI[,3:5],LIRI$status, LIRI$time)
+#' res = loonR::build.coxregression.model(LIRI[,3:5],LIRI$status, LIRI$time)
 build.coxregression.model <- function(d.frame, status, time, seed=666, scale = TRUE){
 
   library("survival")

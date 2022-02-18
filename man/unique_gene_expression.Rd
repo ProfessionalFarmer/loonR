@@ -4,10 +4,16 @@
 \alias{unique_gene_expression}
 \title{Title Remove redundant gene expression data, and select the maximum one}
 \usage{
-unique_gene_expression(expression.df, f = "max", gene = NULL)
+unique_gene_expression(expression.df, f = "max", gene = NULL, method = 2)
 }
 \arguments{
 \item{expression.df}{Please note the first column must be gene names if gene = Null}
+
+\item{f}{Default "max"}
+
+\item{gene}{If the first columnn is not gene name, input gene name here}
+
+\item{method}{Default 2. 1 for aggragate, 2 for dplyr}
 }
 \value{
 A clean expression data.frame
@@ -16,5 +22,17 @@ A clean expression data.frame
 Title Remove redundant gene expression data, and select the maximum one
 }
 \examples{
-loonR::unique_gene_expression(normlized.exp.df)
+d <- read.table(text=
+'Name     Month  Rate1     Rate2
+Aira       1      12        23
+Aira       2      18        73
+Aira       3      19        45
+Ben        1      53        19
+Ben        2      22        87
+Ben        3      19        45
+Cat        1      22        87
+Cat        2      67        43
+Cat        3      45        32', header=TRUE)
+loonR::unique_gene_expression(d)
+
 }

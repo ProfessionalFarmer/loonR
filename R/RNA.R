@@ -444,25 +444,64 @@ DESeq2_differential <- function(rawcount, group, prop.expressed.sample = 0.5, pr
 #' Title Remove redundant gene expression data, and select the maximum one
 #'
 #' @param expression.df Please note the first column must be gene names if gene = Null
+#' @param f Default "max"
+#' @param gene If the first columnn is not gene name, input gene name here
+#' @param method Default 2. 1 for aggragate, 2 for dplyr
 #'
 #' @return A clean expression data.frame
 #' @export
 #'
-#' @examples loonR::unique_gene_expression(normlized.exp.df)
-unique_gene_expression <- function(expression.df, f = "max", gene = NULL){
+#' @examples
+#' d <- read.table(text=
+#' 'Name     Month  Rate1     Rate2
+#' Aira       1      12        23
+#' Aira       2      18        73
+#' Aira       3      19        45
+#' Ben        1      53        19
+#' Ben        2      22        87
+#' Ben        3      19        45
+#' Cat        1      22        87
+#' Cat        2      67        43
+#' Cat        3      45        32', header=TRUE)
+#' loonR::unique_gene_expression(d)
+#'
+unique_gene_expression <- function(expression.df, f = "max", gene = NULL, method=2){
 
   if(!is.null(gene)){
     expression.df = data.frame(
       Gene = gene,
       expression.df
     )
+  }else{
+    expression.df = data.frame(expression.df, check.names = F, stringsAsFactors = F)
+    colnames(expression.df)[1] = c("Gene")
   }
 
+  expression.df = switch(method,
+         "1" = {
+           # Method 1 Slow, So I used dplyr method
+           # https://stackoverflow.com/questions/21982987/mean-per-group-in-a-data-frame
+           expression.df <- aggregate(expression.df[,-c(1)],
+                                      by = list(gene = expression.df[,c(1)]),
+                                      FUN = eval(f),
+                                      na.rm = TRUE)
+           expression.df
+         },
+         "2" = {
+           # Method 2
+           # https://stackoverflow.com/questions/21644848/summarizing-multiple-columns-with-dplyr
+           library(dplyr)
+           expression.df <- expression.df  %>%
+                            group_by(Gene) %>%
+                            summarise(across(everything(), list(getFunction(f)), na.rm = TRUE ))
+           expression.df = data.frame(expression.df, check.names = F, stringsAsFactors = F)
+           colnames(expression.df) = stringr::str_remove_all(colnames(expression.df),"_1$")
 
-  expression.df <- aggregate(expression.df[,-c(1)],
-                             by = list(gene = expression.df[,c(1)]),
-                             FUN = eval(f),
-                             na.rm = TRUE)
+           expression.df
+         },
+         stop(paste0("No handler for method ", id))
+  )
+
 
   row.names(expression.df) <- expression.df[,c(1)]
   expression.df <- expression.df[, -c(1)]

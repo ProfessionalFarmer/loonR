@@ -57,3 +57,7 @@ survivaly_analysis(
 \description{
 Survival analysis
 }
+\examples{
+data(LIRI)
+loonR::survivaly_analysis(LIRI$status, LIRI$time, LIRI$ANLN > mean(LIRI$ANLN), legend.position="right", risk.table = F )
+}

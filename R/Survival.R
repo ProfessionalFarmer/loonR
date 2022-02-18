@@ -20,6 +20,8 @@
 #' @export
 #'
 #' @examples
+#' data(LIRI)
+#' loonR::survivaly_analysis(LIRI$status, LIRI$time, LIRI$ANLN > mean(LIRI$ANLN), legend.position="right", risk.table = F )
 survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.prefix = NA, ylab = "Survival probability",
                                title = "", palette = "lancet", conf.int = FALSE, legend.position="none",
                                linetype = 1, calculate.pval = FALSE, remove.na = FALSE,
@@ -73,7 +75,7 @@ survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.pr
              risk.table.y.text.col = TRUE,
              risk.table.height = 0.4, legend.title = "",
              pval = TRUE, conf.int = conf.int, risk.table.y.text = TRUE,
-             tables.y.text = FALSE, legend = "none",
+             tables.y.text = FALSE, legend = legend.position,
              palette = palette, title = title)
   rm(surv.analysis.df, surv.fit)
 
@@ -103,7 +105,7 @@ findSurvivalCutPoint <- function(values = NULL, event = NULL, time = NULL){
     stop("Pls input value, event and time")
   }
   library(dplyr)
-  if(sum( unique(event) %in% c(1,0,TRUE,FALSE)  ) != length(event)){
+  if(sum( ! unique(event) %in% c(1,0,TRUE,FALSE)  ) != 0 ){
     stop("pls input 0, 1, TRUE, FALSE in event variable")
   }
   df = data.frame(Variable = values,

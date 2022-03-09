@@ -4,7 +4,12 @@
 \alias{findSurvivalCutPoint}
 \title{Determine the Optimal Cutpoint for Continuous Variables}
 \usage{
-findSurvivalCutPoint(values = NULL, event = NULL, time = NULL)
+findSurvivalCutPoint(
+  values = NULL,
+  event = NULL,
+  time = NULL,
+  plot.Surv = FALSE
+)
 }
 \arguments{
 \item{time}{}

@@ -4,7 +4,14 @@
 \alias{lasso.cox.selection}
 \title{LASSO Cox selection}
 \usage{
-lasso.cox.selection(d.frame, status, time, seed = 666, scale = TRUE)
+lasso.cox.selection(
+  d.frame,
+  status,
+  time,
+  seed = 666,
+  scale = TRUE,
+  nfolds = 10
+)
 }
 \arguments{
 \item{d.frame}{Data.frame --- Row: sample, Column: gene expression}
@@ -13,7 +20,7 @@ lasso.cox.selection(d.frame, status, time, seed = 666, scale = TRUE)
 
 \item{seed}{Default 666}
 
-\item{scale}{}
+\item{nfolds}{Default 10}
 }
 \value{
 

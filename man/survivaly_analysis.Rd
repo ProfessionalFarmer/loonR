@@ -19,7 +19,13 @@ survivaly_analysis(
   remove.na = FALSE,
   only.consider.group = NULL,
   not.consider.group = NULL,
-  risk.table = TRUE
+  risk.table = TRUE,
+  best.point = F,
+  cut.quantile = NULL,
+  cut.label = NULL,
+  surv.median.line = "none",
+  pval = TRUE,
+  returnSurv.fit = FALSE
 )
 }
 \arguments{
@@ -50,6 +56,16 @@ survivaly_analysis(
 \item{not.consider.group}{Groups to exclude}
 
 \item{risk.table}{Default TRUE. Show the strata Table}
+
+\item{best.point}{If best cut point wanted, pls input values by Group variable}
+
+\item{cut.quantile}{Love this paramter, hansome}
+
+\item{surv.median.line}{character vector for drawing a horizontal/vertical line at median survival. Allowed values include one of c("none", "hv", "h", "v"). v: vertical, h:horizontal.}
+
+\item{pval}{logical value, a numeric or a string or show "HR" or "PHR" or "HRCI" or "PHRCI"}
+
+\item{returnSurv.fit}{If TRUE, reture the fit object. Easy to check median survival time}
 }
 \value{
 
@@ -60,4 +76,5 @@ Survival analysis
 \examples{
 data(LIRI)
 loonR::survivaly_analysis(LIRI$status, LIRI$time, LIRI$ANLN > mean(LIRI$ANLN), legend.position="right", risk.table = F )
+loonR::survivaly_analysis(LIRI$status, LIRI$time, LIRI$ANLN, best.point = T)
 }

@@ -1,4 +1,3 @@
-
 # This script mainly refered the following link
 # https://www.machinelearningplus.com/machine-learning/feature-selection/#2variableimportancefrommachinelearningalgorithms
 
@@ -194,6 +193,7 @@ lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
 #' @param time OS, DFS, RFS et al.....
 #' @param seed Default 666
 #' @param scale
+#' @param nfolds Default 10
 #'
 #' @return
 #' @export
@@ -201,7 +201,7 @@ lasso.select.feature <- function(data.matrix, label, folds = 5, seed = 666,
 #' @examples
 #' data(LIRI)
 #' loonR::lasso.cox.selection(LIRI[,3:5],LIRI$status, LIRI$time)
-lasso.cox.selection <- function(d.frame, status, time, seed=666, scale = TRUE){
+lasso.cox.selection <- function(d.frame, status, time, seed=666, scale = TRUE, nfolds = 10){
 
   library("survival")
   library("survminer")
@@ -213,14 +213,14 @@ lasso.cox.selection <- function(d.frame, status, time, seed=666, scale = TRUE){
   }
 
 
-  set.seed(seed )   #设定随机种子
+  set.seed(seed)   #设定随机种子
   x = as.matrix(d.frame)
   y = data.matrix(Surv(time, status))
   fit = glmnet(x, y, family = "cox")
   plot(fit, xvar = "lambda", label = TRUE)
 
-
-  cvfit = cv.glmnet(x, y, family="cox", maxit = 1000)
+  set.seed(seed)
+  cvfit = cv.glmnet(x, y, family="cox", nfolds = nfolds )
   plot(cvfit)
   #其中两条虚线分别指示了两个特殊的λ值
   abline(v = log(c(cvfit$lambda.min,cvfit$lambda.1se)),lty="dashed")

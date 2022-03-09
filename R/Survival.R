@@ -15,6 +15,12 @@
 #' @param not.consider.group Groups to exclude
 #' @param risk.table Default TRUE. Show the strata Table
 #' @param remove.na If remove NA samples
+#' @param best.point If best cut point wanted, pls input values by Group variable
+#' @param cut.quantile Love this paramter, hansome
+#' @param cut.label
+#' @param surv.median.line character vector for drawing a horizontal/vertical line at median survival. Allowed values include one of c("none", "hv", "h", "v"). v: vertical, h:horizontal.
+#' @param pval logical value, a numeric or a string or show "HR" or "PHR" or "HRCI" or "PHRCI"
+#' @param returnSurv.fit If TRUE, reture the fit object. Easy to check median survival time
 #'
 #' @return
 #' @export
@@ -22,10 +28,13 @@
 #' @examples
 #' data(LIRI)
 #' loonR::survivaly_analysis(LIRI$status, LIRI$time, LIRI$ANLN > mean(LIRI$ANLN), legend.position="right", risk.table = F )
+#' loonR::survivaly_analysis(LIRI$status, LIRI$time, LIRI$ANLN, best.point = T)
 survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.prefix = NA, ylab = "Survival probability",
                                title = "", palette = "lancet", conf.int = FALSE, legend.position="none",
                                linetype = 1, calculate.pval = FALSE, remove.na = FALSE,
-                               only.consider.group = NULL, not.consider.group = NULL, risk.table = TRUE){
+                               only.consider.group = NULL, not.consider.group = NULL, risk.table = TRUE,
+                               best.point = F, cut.quantile = NULL, cut.label = NULL,
+                               surv.median.line = "none", pval = TRUE, returnSurv.fit = FALSE){
 
   if(!require(survminer) | !require(survival)){BiocManager::install(c("survminer","survival"))}
   library(magrittr)
@@ -34,7 +43,8 @@ survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.pr
     stop("Please set Event and Time")
   }
 
-  surv.analysis.df <- data.frame(Event=Event, Time=Time, Group = Group, stringsAsFactors = F)
+  surv.analysis.df <- data.frame(Event=Event, Time=as.numeric(Time), Group = Group, stringsAsFactors = F)
+
 
   if(sum(is.na(surv.analysis.df)) != 0){
     if(remove.na){
@@ -42,6 +52,45 @@ survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.pr
     }else{
       stop("Pls set remove NA: TRUE")
     }
+  }
+
+
+  # try to find best point
+  if(best.point){
+
+    best.cut = survminer::surv_cutpoint(
+      surv.analysis.df,
+      time = "Time",
+      event = "Event",
+      variables = c("Group"),
+      minprop = 0.1,
+      progressbar = TRUE
+    )$cutpoint$cutpoint
+
+    cat("Best cut point is ", best.cut, "\n")
+
+    surv.analysis.df$Variable = surv.analysis.df$Group
+    surv.analysis.df$Group = loonR::splitGroupByCutoff(
+      values = surv.analysis.df$Variable,
+      cut.point = best.cut, cut.label = c("Low","High")
+    )$New.Label
+
+  }
+
+  # if user specify
+  if(!is.null(cut.quantile) & !is.null(cut.label) ){
+    if(best.point){
+        stop("Pls unselect best point")
+    }
+    surv.analysis.df$Variable = surv.analysis.df$Group
+    surv.analysis.df$Group = loonR::splitGroupByCutoff(
+      values = surv.analysis.df$Variable,
+      quantile.cutoff = cut.quantile, cut.label = cut.label
+    )$New.Label
+  }else if(is.null(cut.quantile) & is.null(cut.label) ){
+
+  }else{
+    stop("Error, pls input cut point and cut label together")
   }
 
   surv.analysis.df$Event <- as.numeric(surv.analysis.df$Event)
@@ -70,13 +119,47 @@ survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.pr
     return(surv_pvalue(surv.fit))
   }
 
+  if(TRUE){ # always TRUE, 20220309, calculate p and HR
+    if(!require(gtsummary)){
+      BiocManager::install("gtsummary")
+      require(gtsummary)
+    }
+    coxph.fit = coxph(Surv(Time, Event) ~ Group, data = surv.analysis.df)
+
+    gtsummary::tbl_regression(coxph.fit, exp = TRUE)
+    hazard.ratio = round( exp(coef(coxph.fit)), 2)
+    hazard.ratio.ci = round( confint(coxph.fit,level = 0.95), 2 )
+    ptext = surv_pvalue(surv.fit)$pval.txt
+
+    cat(ptext)
+  }
+  if(pval=="HR"){
+    ptext = paste("HR = ",hazard.ratio, sep ="")
+  }else if(pval=="HRCI"){
+    ptext = paste("HR = ",hazard.ratio, " (",hazard.ratio.ci[1],"-",hazard.ratio.ci[2],")", sep ="")
+  }else if(pval=="PHRCI"){
+    ptext = paste(ptext,"\nHR = ",hazard.ratio, " (",hazard.ratio.ci[1],"-",hazard.ratio.ci[2],")", sep ="")
+  }else if(pval=="PHR"){
+    ptext = paste(ptext,"\nHR = ",hazard.ratio, sep ="")
+  }
+  if(pval %in% c("HR","HRCI","PHR", "PHRCI")){
+    cat(ptext)
+    pval = ptext
+  }
+
+
+  if(returnSurv.fit){
+    return(surv.fit)
+  }
+
   p = ggsurvplot(surv.fit,
              risk.table = risk.table, ylab = ylab,
              risk.table.y.text.col = TRUE,
              risk.table.height = 0.4, legend.title = "",
-             pval = TRUE, conf.int = conf.int, risk.table.y.text = TRUE,
+             pval = pval, conf.int = conf.int, risk.table.y.text = TRUE,
              tables.y.text = FALSE, legend = legend.position,
-             palette = palette, title = title)
+             palette = palette, title = title,
+             surv.median.line = surv.median.line)
   rm(surv.analysis.df, surv.fit)
 
   p
@@ -100,7 +183,7 @@ survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.pr
 #' res$pval
 #' res$surv.plot
 #' res$estimated.point
-findSurvivalCutPoint <- function(values = NULL, event = NULL, time = NULL){
+findSurvivalCutPoint <- function(values = NULL, event = NULL, time = NULL, plot.Surv = FALSE){
   if(is.null(values) | is.null(event) | is.null(time) ) {
     stop("Pls input value, event and time")
   }
@@ -110,7 +193,8 @@ findSurvivalCutPoint <- function(values = NULL, event = NULL, time = NULL){
   }
   df = data.frame(Variable = values,
                   Event = event,
-                  Time = time, stringsAsFactors = F)
+                  Time = as.numeric(time),
+                  stringsAsFactors = F)
 
   df$Time = as.numeric(df$Time)
   df$Variable = as.numeric(df$Variable)
@@ -131,17 +215,19 @@ findSurvivalCutPoint <- function(values = NULL, event = NULL, time = NULL){
   )
   res$rawData = df
 
-  res$estimated.point = res$survminer.res$Variable$estimate
+  res$estimated.point = res$survminer.res$cutpoint$cutpoint
 
-  surv.plot = loonR::survivaly_analysis(
+  if(plot.Surv){
+    surv.plot = loonR::survivaly_analysis(
       Event = df$Event, Time = df$Time,
       Group = loonR::splitGroupByCutoff(
         values = df$Variable,
         cut.point = res$estimated.point, cut.label = c("L","H")
-      )$New.Label, remove.na = T
-  )
+      )$New.Label, remove.na = T, best.point = FALSE # here make sure best.point is FALSE
+    )
+    res$surv.plot = surv.plot
+  }
 
-  res$surv.plot = surv.plot
 
   p.val = loonR::survivaly_analysis(
     Event = df$Event, Time = df$Time,

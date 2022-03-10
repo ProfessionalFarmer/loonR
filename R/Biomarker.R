@@ -717,12 +717,17 @@ loo.cv.cox <- function(df, status, time,  seed=999, label=NA, scale =TRUE){
 #' @param best.cutoff
 #' @param digit 2 for 0.01, 3 for 0.001
 #' @param boot.n Default 2000
+#' @param specify.sen User can input one or more specific sensitivity
+#' @param specify.spe User can input one or more specific specificity
 #'
 #' @return
 #' @export
 #'
-#' @examples loonR::get_performance(risk.probability, label)
-get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2000){  #  x="best", input = "threshold"
+#' @examples
+#' risk.probability = c(1:10)
+#' label = rep(c(1,0,1),c(2,6,2))
+#' loonR::get_performance(risk.probability, label)
+get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2000, specify.sen = NULL, specify.spe = NULL){  #  x="best", input = "threshold"
 
   labels = factor(labels)
 
@@ -811,6 +816,33 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2
   #recall = sensititivity, precision=PPV
   names(res) <- c("Ncount", "Tcount", "AUC (CI)",  "Accuracy",  "PPV", "Sensitivity", "Specificity", "NPV","Odds Ratio")
 
+  # 20220310 update. Get specific sensitivity and specificity
+  if(! is.null(specify.sen) ){
+    specify.sen = as.numeric(specify.sen)
+
+    library(foreach)
+    updated.20220310 = foreach(x=specify.sen, .combine = c) %do%{
+      single.point.res = ci.coords(roc.obj, x, input = "sensitivity", ret = "specificity", boot.n = boot.n)
+      sprintf(string.format, single.point.res$specificity[1,c("50%")],  single.point.res$specificity[1,c("2.5%")],  single.point.res$specificity[1,c("97.5%")])
+    }
+    names(updated.20220310) = paste("Sp @ ", specify.sen, " Sn", sep = "")
+
+    res = c(res, updated.20220310)
+  }
+  if(! is.null(specify.spe) ){
+    specify.spe = as.numeric(specify.spe)
+
+    library(foreach)
+    updated.20220310 = foreach(x=specify.spe, .combine = c) %do%{
+      single.point.res = ci.coords(roc.obj, x, input = "specificity", ret = "sensitivity", boot.n = boot.n)
+      sprintf(string.format, single.point.res$sensitivity[1,c("50%")],  single.point.res$sensitivity[1,c("2.5%")],  single.point.res$sensitivity[1,c("97.5%")])
+    }
+    names(updated.20220310) = paste("Sn @ ", specify.spe, " Sp", sep = "")
+
+    res = c(res, updated.20220310)
+  }
+
+
   # value (conf) -> value  conf
   rname <- names(res)
   value <- sapply(strsplit(res," \\("), function(x) paste(x[1]) )
@@ -840,12 +872,14 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2
 #' @param labels Vector or list
 #' @param best.cutoff
 #' @param digit 2 for 0.01, 3 for 0.001
+#' @param specify.sen User can input one or more specific sensitivity
+#' @param specify.spe User can input one or more specific specificity
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_individual_candidates_performance <- function(scores, labels, best.cutoff =NA, digit = 2){
+get_individual_candidates_performance <- function(scores, labels, best.cutoff =NA, digit = 2, specify.sen = NULL, specify.spe = NULL){
 
   oldw <- getOption("warn")
   options(warn = -1)
@@ -857,13 +891,13 @@ get_individual_candidates_performance <- function(scores, labels, best.cutoff =N
   if(inherits(scores, "list") ) {
     performance.list <- lapply(1:length(scores), function(i){
       index <- !is.na(scores[[i]])
-      loonR::get_performance(scores[[i]][index], labels[[i]][index], best.cutoff = best.cutoff, digit = 2)
+      loonR::get_performance(scores[[i]][index], labels[[i]][index], best.cutoff = best.cutoff, digit = digit, specify.sen = specify.sen, specify.spe = specify.spe)
 
     })
     names(performance.list) <- names(scores)
 
   }else{
-    performance.list <- apply(scores, 2, function(x) loonR::get_performance(x, labels, best.cutoff = best.cutoff, digit = 2) )
+    performance.list <- apply(scores, 2, function(x) loonR::get_performance(x, labels, best.cutoff = best.cutoff, digit = digit, specify.sen = specify.sen, specify.spe = specify.spe) )
     # https://stackoverflow.com/questions/57608056/how-to-change-legend-description-on-ggroc-function
   }
 

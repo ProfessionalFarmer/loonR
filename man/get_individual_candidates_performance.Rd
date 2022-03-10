@@ -8,7 +8,9 @@ get_individual_candidates_performance(
   scores,
   labels,
   best.cutoff = NA,
-  digit = 2
+  digit = 2,
+  specify.sen = NULL,
+  specify.spe = NULL
 )
 }
 \arguments{
@@ -17,6 +19,10 @@ get_individual_candidates_performance(
 \item{labels}{Vector or list}
 
 \item{digit}{2 for 0.01, 3 for 0.001}
+
+\item{specify.sen}{User can input one or more specific sensitivity}
+
+\item{specify.spe}{User can input one or more specific specificity}
 }
 \value{
 

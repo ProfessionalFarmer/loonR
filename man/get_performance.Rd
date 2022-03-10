@@ -4,7 +4,15 @@
 \alias{get_performance}
 \title{Get model performace, sensitivity, sepcificity and others}
 \usage{
-get_performance(pred, labels, best.cutoff = NA, digit = 2, boot.n = 2000)
+get_performance(
+  pred,
+  labels,
+  best.cutoff = NA,
+  digit = 2,
+  boot.n = 2000,
+  specify.sen = NULL,
+  specify.spe = NULL
+)
 }
 \arguments{
 \item{pred}{Predicted score}
@@ -14,6 +22,10 @@ get_performance(pred, labels, best.cutoff = NA, digit = 2, boot.n = 2000)
 \item{digit}{2 for 0.01, 3 for 0.001}
 
 \item{boot.n}{Default 2000}
+
+\item{specify.sen}{User can input one or more specific sensitivity}
+
+\item{specify.spe}{User can input one or more specific specificity}
 }
 \value{
 
@@ -22,5 +34,7 @@ get_performance(pred, labels, best.cutoff = NA, digit = 2, boot.n = 2000)
 Get model performace, sensitivity, sepcificity and others
 }
 \examples{
+risk.probability = c(1:10)
+label = rep(c(1,0,1),c(2,6,2))
 loonR::get_performance(risk.probability, label)
 }

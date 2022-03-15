@@ -109,7 +109,32 @@ get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE, show
     # color blind by Okabe https://clauswilke.com/dataviz/color-pitfalls.html
     `cbOkabe` = c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#000000"),
     # selected from public
-    `sp1` = c("#00AFBB", "#E7B800", "#0392cf", "#7570B3", "#FC4E07", "#BB3099", "#ADC252", "#be9b7b", "#75A3BA", "#bbbbbb", "#4F7175", "#173F5F"  )
+    `sp1` = c("#00AFBB", "#E7B800", "#0392cf", "#7570B3", "#FC4E07", "#BB3099", "#ADC252", "#be9b7b", "#75A3BA", "#bbbbbb", "#4F7175", "#173F5F"  ),
+    ### From https://emitanaka.org/posts/2022-02-20-color-considerations/
+    `High contrast` = c("#FFFFFF", "#DDAA33", "#BB5566", "#004488", "#000000"),
+    ### https://emitanaka.org/posts/2022-02-20-color-considerations/
+    `Pale` = c("#BBCCEE", "#CCEEFF", "#CCDDAA", "#EEEEBB", "#FFCCCC", "#DDDDDD"),
+    ### https://emitanaka.org/posts/2022-02-20-color-considerations/
+    `Dark` = c("#222255", "#225555", "#225522", "#666633", "#663333", "#555555"),
+    ### https://emitanaka.org/posts/2022-02-20-color-considerations/
+    `Bright` = c("#4477AA", "#66CCEE", "#228833", "#CCBB44", "#EE6677", "#AA3377", "#BBBBBB"),
+    ### https://emitanaka.org/posts/2022-02-20-color-considerations/
+    `Vibrant` = c("#0077BB", "#33BBEE", "#009988", "#EE7733", "#CC3311", "#EE3377", "#BBBBBB"),
+    ### https://emitanaka.org/posts/2022-02-20-color-considerations/
+    `Medium constrast` =
+    c("#FFFFFF", "#EECC66", "#EE99AA", "#6699CC", "#997700", "#994455", "#004488", "#000000"),
+    ### https://emitanaka.org/posts/2022-02-20-color-considerations/
+    `Okabe Ito` = c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#000000"),
+    ### https://emitanaka.org/posts/2022-02-20-color-considerations/
+    `Light` = c("#77AADD", "#99DDFF", "#44BB99", "#BBCC33", "#AAAA00", "#EEDD88", "#EE8866", "#FFAABB", "#DDDDDD"),
+    ### https://emitanaka.org/posts/2022-02-20-color-considerations/
+    `Muted` = c("#332288", "#88CCEE", "#44AA99", "#117733", "#999933", "#DDCC77", "#CC6677", "#882255", "#AA4499", "#DDDDDD"),
+    ### https://emitanaka.org/posts/2022-02-20-color-considerations/
+    `Safe` = c("#88CCEE", "#CC6677", "#DDCC77", "#117733", "#332288", "#AA4499", "#44AA99", "#999933", "#882255", "#661100", "#6699CC", "#888888"),
+    ### https://emitanaka.org/posts/2022-02-20-color-considerations/
+    `Monash primary` = c(blue = "#006DAE", black = "#000000", white = "#FFFFFF", gray80 = "#5A5A5A", gray50 = "#969696", gray10 = "#E6E6E6"),
+    ### https://emitanaka.org/posts/2022-02-20-color-considerations/
+    `Monash secondary` =c(blue = "#027EB6", purple = "#746FB2", fuchsia = "#9651A0", ruby = "#C8008F", pink = "#ee64a4", red = "#EE0220", orange = "#D93F00", umber = "#795549", olive = "#6F7C4D", green = "#008A25")
   )
 
   # if length is greater than 2, we suppose it is color code

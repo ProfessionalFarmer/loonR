@@ -32,7 +32,8 @@ plotJitterBoxplot(
   legend.pos = "",
   group.position = ggplot2::position_dodge(0.9),
   remove.element = NULL,
-  element_text_size = 14
+  element_text_size = 14,
+  facet.n.row = 1
 )
 }
 \arguments{
@@ -69,6 +70,8 @@ plotJitterBoxplot(
 \item{remove.element}{Please refer https://rpkgs.datanovia.com/ggpubr/reference/rremove.html}
 
 \item{element_text_size}{Facet title text size}
+
+\item{facet.n.row}{}
 }
 \value{
 

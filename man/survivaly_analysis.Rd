@@ -25,7 +25,8 @@ survivaly_analysis(
   cut.label = NULL,
   surv.median.line = "none",
   pval = TRUE,
-  returnSurv.fit = FALSE
+  returnSurv.fit = FALSE,
+  maximum.days = NULL
 )
 }
 \arguments{
@@ -66,6 +67,8 @@ survivaly_analysis(
 \item{pval}{logical value, a numeric or a string or show "HR" or "PHR" or "HRCI" or "PHRCI"}
 
 \item{returnSurv.fit}{If TRUE, reture the fit object. Easy to check median survival time}
+
+\item{maximum.days}{The maximum days or months}
 }
 \value{
 

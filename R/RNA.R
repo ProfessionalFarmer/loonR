@@ -446,7 +446,7 @@ DESeq2_differential <- function(rawcount, group, prop.expressed.sample = 0.5, pr
 #' @param expression.df Please note the first column must be gene names if gene = Null
 #' @param f Default "max"
 #' @param gene If the first columnn is not gene name, input gene name here
-#' @param method Default 2. 1 for aggragate, 2 for dplyr
+#' @param method Default 1. 1 for aggragate, 2 for dplyr
 #'
 #' @return A clean expression data.frame
 #' @export
@@ -465,7 +465,7 @@ DESeq2_differential <- function(rawcount, group, prop.expressed.sample = 0.5, pr
 #' Cat        3      45        32', header=TRUE)
 #' loonR::unique_gene_expression(d)
 #'
-unique_gene_expression <- function(expression.df, f = "max", gene = NULL, method=2){
+unique_gene_expression <- function(expression.df, f = "max", gene = NULL, method=1){
 
   if(!is.null(gene)){
     expression.df = data.frame(

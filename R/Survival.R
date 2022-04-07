@@ -21,6 +21,7 @@
 #' @param surv.median.line character vector for drawing a horizontal/vertical line at median survival. Allowed values include one of c("none", "hv", "h", "v"). v: vertical, h:horizontal.
 #' @param pval logical value, a numeric or a string or show "HR" or "PHR" or "HRCI" or "PHRCI"
 #' @param returnSurv.fit If TRUE, reture the fit object. Easy to check median survival time
+#' @param maximum.days The maximum days or months
 #'
 #' @return
 #' @export
@@ -34,13 +35,21 @@ survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.pr
                                linetype = 1, calculate.pval = FALSE, remove.na = FALSE,
                                only.consider.group = NULL, not.consider.group = NULL, risk.table = TRUE,
                                best.point = F, cut.quantile = NULL, cut.label = NULL,
-                               surv.median.line = "none", pval = TRUE, returnSurv.fit = FALSE){
+                               surv.median.line = "none", pval = TRUE, returnSurv.fit = FALSE,
+                               maximum.days=NULL){
 
   if(!require(survminer) | !require(survival)){BiocManager::install(c("survminer","survival"))}
   library(magrittr)
 
   if(is.null(Event) | is.null(Time) | is.null(Group)){
     stop("Please set Event and Time")
+  }
+
+  if(!is.null(maximum.days)){
+    if(!is.numeric(maximum.days)){stop("Pls input days or months for maximum.days")}
+    # There not event in the maximum point.
+    event[Time >= maximum.days & event] = 0
+    Time[Time >= maximum.days] = maximum.days
   }
 
   surv.analysis.df <- data.frame(Event=Event, Time=as.numeric(Time), Group = Group, stringsAsFactors = F)

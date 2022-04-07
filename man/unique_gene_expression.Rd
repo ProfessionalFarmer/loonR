@@ -4,7 +4,7 @@
 \alias{unique_gene_expression}
 \title{Title Remove redundant gene expression data, and select the maximum one}
 \usage{
-unique_gene_expression(expression.df, f = "max", gene = NULL, method = 2)
+unique_gene_expression(expression.df, f = "max", gene = NULL, method = 1)
 }
 \arguments{
 \item{expression.df}{Please note the first column must be gene names if gene = Null}
@@ -13,7 +13,7 @@ unique_gene_expression(expression.df, f = "max", gene = NULL, method = 2)
 
 \item{gene}{If the first columnn is not gene name, input gene name here}
 
-\item{method}{Default 2. 1 for aggragate, 2 for dplyr}
+\item{method}{Default 1. 1 for aggragate, 2 for dplyr}
 }
 \value{
 A clean expression data.frame

@@ -12,14 +12,14 @@ extractSignaturePercent(
   alt_base = NULL,
   Sample_Barcode = NULL,
   signatures.ref = NULL,
-  ref.genome = "hg38",
+  ref.genome = 38,
   tri.counts.method = "genome"
 )
 }
 \arguments{
 \item{signatures.ref}{注意列名Default is deconstructSigs::signatures.cosmic  Signature * 96 context, colnames should be the same as signatures.nature2013 dataset or signatures.cosmic}
 
-\item{ref.genome}{Default is hg38}
+\item{ref.genome}{Default is 38}
 
 \item{tri.counts.method}{'default', 'genome' or 'exome' or 'exome2genome'. Default is does not result in further normalization. genome is : the input data frame is normalized by number of times each trinucleotide context is observed in the genome}
 }

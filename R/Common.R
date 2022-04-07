@@ -1796,3 +1796,77 @@ randomOrderWithinGroup <- function(group = NULL, ids = NULL, seed=666){
 }
 
 
+
+
+#' SVA combatc remove batch effect
+#'
+#' @param df row is gene, col is sample
+#' @param batch
+#' @param group
+#' @param consider.group Model matrix for outcome of interest and other covariates besides batch
+#'
+#' @return
+#' @export
+#'
+#' @examples
+removeBatchEffect <- function(df =NULL, batch = NULL, group = NULL, consider.group = T){
+
+  if(is.null(df) | is.null(batch)){
+    stop("pls set df and batch")
+  }
+  if(is.null(group)){
+    group = batch
+  }
+
+
+  Raw.PCA = loonR::plotPCA(
+    t(df), group, point.size = 4, show.sample.name = T
+  )
+
+  Raw.Cluster = loonR::show_hcluster(
+    df, group
+  )
+
+
+  phen.df = data.frame(
+      batch = batch,
+      phenotype = group, check.names = F, stringsAsFactors = F
+  )
+
+  modcombat <- model.matrix(~phenotype, data=phen.df)
+
+  if(consider.group){
+    combat_mydata <- sva::ComBat(
+      dat=df, batch=batch,
+      mod=modcombat, par.prior=TRUE,
+      prior.plots=FALSE)
+  }else{
+    combat_mydata <- sva::ComBat(
+      dat = df, batch = batch,
+      mod = NULL, par.prior = TRUE,
+      prior.plots = FALSE)
+  }
+
+  After.PCA = loonR::plotPCA(
+    t(combat_mydata), group, point.size = 4, show.sample.name = T
+  )
+  After.Cluster = loonR::show_hcluster(
+    combat_mydata, group
+  )
+
+  res = list(
+    After.PCA = After.PCA,
+    After.Cluster = After.Cluster,
+    removed.batcheffect = combat_mydata,
+    Raw.PCA = Raw.PCA,
+    Raw.Cluster = Raw.PCA
+  )
+
+  res
+
+}
+
+
+
+
+

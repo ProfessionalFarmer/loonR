@@ -1563,6 +1563,57 @@ multi_roc_with_ci <- function(scores, labels, font = "Arial", palette = "jama", 
 
 }
 
+library(pROC)
+data(aSAH)
+roc_obj <- roc(aSAH$outcome, aSAH$s100b, percent = TRUE)
+
+
+#' Get all point if you want to draw yourself
+#'
+#' @param pred
+#' @param label
+#' @param ci if CI
+#' @param boot.n 2000
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get.all.point.ROC <- function(pred, label, ci=FALSE, boot.n = 2000){
+
+  res = list()
+
+  library(pROC)
+  roc_obj <- roc(label, pred, quiet=TRUE)
+
+  all.points = coords(roc = roc_obj, transpose = T, ret = c("all") )
+  all.points = data.frame(t(all.points), check.names = F)
+  res$all.points = all.points
+
+  if(ci){
+
+    all.points.CI.raw = ci.coords(roc = roc_obj, x = all.points$threshold, input = "threshold", transpose = T, ret = c("all") , boot.n = boot.n)
+    tmp = lapply(names(all.points.CI.raw), function(x){
+
+        tmp.df = all.points.CI.raw[[x]]
+        colnames(tmp.df) = paste(x, " (", colnames(tmp.df), ")", sep ="" )
+        colnames(tmp.df) = stringr::str_remove_all(colnames(tmp.df), " \\(50%\\)")
+
+        tmp.df
+
+    })
+    names(tmp) = names(all.points.CI.raw)
+    all.points.CI.raw = tmp
+    rm(tmp)
+
+    res$all.points.CI.raw = all.points.CI.raw
+
+    # merge all the tables
+    res$all.points.CI.merged =  do.call("cbind",all.points.CI.raw)
+  }
+  res
+
+}
 
 
 
@@ -2502,6 +2553,9 @@ generateGenePairValueDf <- function(df){
   res
 
 }
+
+
+
 
 
 

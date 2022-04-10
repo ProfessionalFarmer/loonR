@@ -1,9 +1,9 @@
-#' Decision curve analysis
+#' Decision curve analysis. Similar with plot.ntbft
 #'
 #' @param data.frame.list row is sample. List should inlcude names
 #' @param label
 #' @param rms Default FALSE
-#' @param validation.df shold include all variable in data.frame.list
+#' @param validation.df should include all variable in data.frame.list
 #' @param palette
 #'
 #' @return
@@ -12,7 +12,7 @@
 #' @examples
 #' data(LIRI)
 #'
-#' d1 <- LIRI[,c(3)]
+#' d1 <- data.frame( LIRI[,c(3)])
 #' d2 <- LIRI[,c(3,4)]
 #' d3 <- LIRI[,c(3,4,5)]
 #' data.frame.list = list(d1=d1,d2=d2,d3=d3)
@@ -36,7 +36,8 @@ decisionCurveAnalysis <- function(data.frame.list=NULL, label = NULL, rms=FALSE,
 
   new.df.list = sapply(data.frame.list, function(x){
     d = data.frame(x, label=label)
-    #colnames(d) = c(colnames(x),"label")
+    colnames(d) = c(colnames(x),"label")
+    d
   })
 
 
@@ -205,7 +206,7 @@ ntbft.boot <- function(outcome, pred, boots = 500, xstart=0.01, xstop=0.99, step
 }
 
 
-#' Plotting the Net benefit function
+#' Plotting the Net benefit function. Coule be multiple curves
 #'
 #' @param nb Object from
 #' @param nolines the number of the columns of nb which should be plotted using lines. The default is to plot all columns (except the first one containing the threshold).
@@ -218,11 +219,22 @@ ntbft.boot <- function(outcome, pred, boots = 500, xstart=0.01, xstop=0.99, step
 #' @return
 #'
 #' @examples
-#' data(LIRI)
+#' p = loonR::decisionCurveAnalysisSimple(label, risk)
+#' p$Plot
+#' v.netbenefit = p$NetBenefit
 #'
-#' pred <- as.vector( unlist( LIRI[,c(3)] ) )
-#' ntbft.boot(LIRI$status, pred)
-#' plot.ntbft(ntbft.boot)
+#' # similar to getr.netbenefit
+#'
+#' nb <- data.frame(threshold = v.netbenefit$threshold,
+#'                  All = v.netbenefit$All,
+#'                  None = v.netbenefit$None,
+#'                  `Transcriptomic panel` = v.netbenefit$Model,
+#'                  `Risk-stratification model` = r.netbenefit$Model,
+#'                  stringsAsFactors = F,
+#'                  check.names = F)
+#'
+#' p = loonR:::plot.ntbft(nb, 2:5)
+#' p
 #'
 plot.ntbft <- function(nb, nolines = 2:dim(nb)[2], nobands = NULL, ymin = -0.1, ymax = max(nb[, c(nolines, nobands)], na.rm = T), legpos = c(0.9, 0.8), palette="aaas"){
   # https://atm.amegroups.com/article/view/20389/pdf
@@ -523,6 +535,41 @@ riskCalibrationPlot.default <- function(group, pred, rms.method = FALSE, title =
 }
 
 
+#' Plot clinical impact: detail number of patients
+#'
+#' @param risk.score
+#' @param label
+#' @param name Default "Study"
+#' @param palette Default "aaas"
+#'
+#' @return
+#' @export
+#'
+#' @examples
+clincial_impact <- function(risk.score, label, name="Study", palette = "aaas"){
+
+    if(!require(rmda)){
+      BiocManager::install("rmda")
+      require(rmad)
+    }
+
+    df = data.frame(Risk = risk.score, Label =label, stringsAsFactors = F, check.names = F)
+    # https://blog.csdn.net/fjsd155/article/details/88951676
+    simple<- decision_curve(Label~Risk, data = df, family = binomial(link ='logit'),
+                            thresholds= seq(0,1, by = 0.01),
+                            confidence.intervals =0.95,study.design = 'case-control',
+                            population.prevalence = 0.3)
+
+    plot_decision_curve(list(Study=simple),curve.names= name,
+                        cost.benefit.axis =FALSE,col = c('red','blue'),
+                        confidence.intervals =FALSE,standardize = FALSE)
+
+    plot_clinical_impact(simple, population.size = 1000,cost.benefit.axis = T,
+                         n.cost.benefits= 8,col = loonR::get.palette.color(palette)[1:2],
+                         confidence.intervals= T)
+
+
+}
 
 
 

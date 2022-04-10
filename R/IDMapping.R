@@ -130,3 +130,34 @@ get_full_mapping_table <- function(){
 }
 
 
+
+#' Convert Ensembl data frame to gene symbol dataframe
+#'
+#' @param ensembl.df Row is ENSG gene, col is sample
+#'
+#' @return
+#' @export
+#'
+#' @examples
+convertEnsemblDF2SymbolDF <- function(ensembl.df){
+
+  tmp.df = ensembl.df
+
+  library(dplyr)
+
+  idmapping.res = loonR::id_mapping(rownames(tmp.df), key = "ENSEMBL", column  = "SYMBOL")
+
+  # filter NA
+  idmapping.res = idmapping.res %>% filter(!is.na(ENSEMBL)) %>% unique()
+  # filter duplicate
+  idmapping.res = idmapping.res[!duplicated(idmapping.res$SYMBOL),]
+
+  # select
+  tmp.df = tmp.df[idmapping.res$ENSEMBL,]
+  rownames(tmp.df) = idmapping.res$SYMBOL
+
+  tmp.df
+
+}
+
+

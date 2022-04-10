@@ -45,6 +45,10 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=N
     label <- factor(label, levels = unique(label))
   }
 
+  if(length(label)!=ncol(heatmap.df)){
+    stop("Label number not the same as data.frame col length")
+  }
+
   label.risk.df <- data.frame(
     label = label,
     risk.pro = risk.pro,

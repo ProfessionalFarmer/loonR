@@ -2,7 +2,7 @@
 % Please edit documentation in R/DCA.R
 \name{decisionCurveAnalysis}
 \alias{decisionCurveAnalysis}
-\title{Decision curve analysis}
+\title{Decision curve analysis. Similar with plot.ntbft}
 \usage{
 decisionCurveAnalysis(
   data.frame.list = NULL,
@@ -17,7 +17,7 @@ decisionCurveAnalysis(
 
 \item{rms}{Default FALSE}
 
-\item{validation.df}{shold include all variable in data.frame.list}
+\item{validation.df}{should include all variable in data.frame.list}
 
 \item{palette}{}
 }
@@ -25,12 +25,12 @@ decisionCurveAnalysis(
 
 }
 \description{
-Decision curve analysis
+Decision curve analysis. Similar with plot.ntbft
 }
 \examples{
 data(LIRI)
 
-d1 <- LIRI[,c(3)]
+d1 <- data.frame( LIRI[,c(3)])
 d2 <- LIRI[,c(3,4)]
 d3 <- LIRI[,c(3,4,5)]
 data.frame.list = list(d1=d1,d2=d2,d3=d3)

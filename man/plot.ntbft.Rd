@@ -2,7 +2,7 @@
 % Please edit documentation in R/DCA.R
 \name{plot.ntbft}
 \alias{plot.ntbft}
-\title{Plotting the Net benefit function}
+\title{Plotting the Net benefit function. Coule be multiple curves}
 \usage{
 \method{plot}{ntbft}(
   nb,
@@ -29,13 +29,24 @@
 
 }
 \description{
-Plotting the Net benefit function
+Plotting the Net benefit function. Coule be multiple curves
 }
 \examples{
-data(LIRI)
+p = loonR::decisionCurveAnalysisSimple(label, risk)
+p$Plot
+v.netbenefit = p$NetBenefit
 
-pred <- as.vector( unlist( LIRI[,c(3)] ) )
-ntbft.boot(LIRI$status, pred)
-plot.ntbft(ntbft.boot)
+# similar to getr.netbenefit
+
+nb <- data.frame(threshold = v.netbenefit$threshold,
+                 All = v.netbenefit$All,
+                 None = v.netbenefit$None,
+                 `Transcriptomic panel` = v.netbenefit$Model,
+                 `Risk-stratification model` = r.netbenefit$Model,
+                 stringsAsFactors = F,
+                 check.names = F)
+
+p = loonR:::plot.ntbft(nb, 2:5)
+p
 
 }

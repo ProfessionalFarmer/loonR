@@ -48,7 +48,7 @@ survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.pr
   if(!is.null(maximum.days)){
     if(!is.numeric(maximum.days)){stop("Pls input days or months for maximum.days")}
     # There not event in the maximum point.
-    event[Time >= maximum.days & event] = 0
+    Event[Time >= maximum.days & Event] = 0
     Time[Time >= maximum.days] = maximum.days
   }
 

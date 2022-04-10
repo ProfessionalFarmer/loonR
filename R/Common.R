@@ -34,7 +34,16 @@ export2ppt <- function(obj,file="~/test.pptx", append=TRUE){
 #'
 #' @examples
 exportTable <- function(df, file="~/test.tsv", quote = F, sep = "\t", row.names = F, col.names = T){
-  write.table(df, file = file, quote = F, sep = "\t", row.names = row.names, col.names = col.names)
+
+  if(row.names){
+    df = data.frame(
+      Rownames = rownames(df),
+      df, check.names = F, stringsAsFactors = F)
+  }
+
+  write.table(df, file = file, quote = F, sep = "\t", row.names = F, col.names = col.names)
+
+
 }
 
 

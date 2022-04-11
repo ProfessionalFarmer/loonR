@@ -535,6 +535,125 @@ riskCalibrationPlot.default <- function(group, pred, rms.method = FALSE, title =
 }
 
 
+
+
+#' Plot multiple calibration plot by riskRegression
+#'
+#' @param risk.list Data.frame with column risk or a named list
+#' @param label a vector
+#' @param palette
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+#' data("LIRI")
+#' risk.list = list(ANLN  = LIRI$ANLN,
+#'                  CENPA = LIRI$CENPA)
+#' label = LIRI$status
+#'
+#' risk.list = LIRI[,c(3,4)]
+#'
+riskCalibrationPlotMultiple <- function(risk.list = NULL, label = NULL, palette = "aaas"){
+
+  if(!require(riskRegression)){
+    devtools::install_github("tagteam/riskRegression")
+    require(riskRegression)
+  }
+
+  if(is.null(risk.list)|is.null(label)){
+    stop("Pls input risk and label list")
+  }
+
+  # if is a data frame
+  if(is.data.frame(risk.list) | is.matrix(risk.list)){
+    t = lapply(colnames(risk.list), function(x){ risk.list[[x]]})
+    names(t) = colnames(risk.list)
+    risk.list = t
+    rm(t)
+  }
+
+  fit.res = lapply(names(risk.list), function(x){
+
+    if(length(risk.list[[x]])!=length(label)){
+      stop("Risk length should be the same as label length")
+    }
+
+    model.formula <- as.formula(paste('Label ~',x))
+
+    df = data.frame(Risk  =  risk.list[[x]],
+                    Label = label, check.names = F, stringsAsFactors = F)
+    colnames(df)[1] = x
+
+    fit <- glm(model.formula, data = df, family = binomial(link=logit) )
+    fit
+  })
+
+  names(fit.res) = names(risk.list)
+
+
+  ## merge list to data.frame
+  risk.df = data.frame( do.call(cbind, risk.list), check.names = F)
+  risk.df$Label = label
+
+  xb <- Score(fit.res,
+              formula = Label~1,
+              null.model = FALSE,
+              conf.int = TRUE,
+              plots = c("calibration","ROC"),
+              metrics = c("auc","brier"),
+              B=1000, M=50,
+              data = risk.df)  # risk df column names should be included all the variables and label
+
+  plotCalibration(xb, rug = F, show.frequencies	= T,
+                  col = loonR::get.palette.color(palette)[1:length(fit.res)],
+                  )
+
+
+}
+
+
+
+
+#' Calibration plot
+#'
+#' @param risk Should be risk probability
+#' @param label
+#' @param color
+#' @param bins Default 10
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data("LIRI")
+#' risk = LIRI$ANLN
+#' risk = loonR::logit2prob(scale(risk))
+#' label = LIRI$status
+#' loonR::riskCalibrationPlotSingleComplex(risk, label)
+#'
+riskCalibrationPlotSingleComplex <- function(risk, label, color = "#4682B4", bins = 10){
+  # inherite from rms.val
+  if(!require(CalibrationCurves)){
+    remotes::install_github("BavoDC/CalibrationCurves")
+    require(CalibrationCurves)
+  }
+
+
+  val.prob.ci.2(risk, label,
+                col.smooth = color,
+                col.ideal = "gray",
+                smooth ="loess", CL.smooth="fill",
+                # col.smooth = scales::alpha(color, 0.5),
+                lty.log=9, lwd.log=1.5, lwd.ideal = 0.5,
+                g = bins
+                )
+
+}
+
+
+
 #' Plot clinical impact: detail number of patients
 #'
 #' @param risk.score
@@ -552,7 +671,7 @@ clincial_impact <- function(risk.score, label, name="Study", palette = "aaas"){
       BiocManager::install("rmda")
       require(rmad)
     }
-
+    # https://mdbrown.github.io/rmda/
     df = data.frame(Risk = risk.score, Label =label, stringsAsFactors = F, check.names = F)
     # https://blog.csdn.net/fjsd155/article/details/88951676
     simple<- decision_curve(Label~Risk, data = df, family = binomial(link ='logit'),

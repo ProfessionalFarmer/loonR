@@ -28,9 +28,9 @@ runWGCNA <- function(datExpr, datTraits, traitColumnIndex = 1,power=NULL, minMod
     BiocManager::install("WGCNA")
     require(WGCNA)
   }
-  ####################################
+  #################################### 1
   # Step-by-step network construction and module detection
-  ####################################
+  #################################### 1
   # Choose a set of soft-thresholding powers
   powers = c(c(1:10), seq(from = 12, to=20, by=2))
   # Call the network topology analysis function
@@ -150,9 +150,9 @@ runWGCNA <- function(datExpr, datTraits, traitColumnIndex = 1,power=NULL, minMod
 
 
 
-  #########################################################
+  ######################################################### 2
   # Relating modules to external clinical traits and identifying important genes
-  ########################################################
+  ######################################################### 2
   # 3.a Quantifying module–trait associations
   # we simply correlate eigengenes with external traits and look for the most significant associations
   # Define numbers of genes and samples
@@ -235,9 +235,9 @@ runWGCNA <- function(datExpr, datTraits, traitColumnIndex = 1,power=NULL, minMod
   names(GSvsMM.list) = modNames
   res$GSvsMM.list = GSvsMM.list
 
-  ###############################################
+  ############################################### 3
   ## Visualization of networks within R
-  ###############################################
+  ############################################### 3
   # 5.a Visualizing the gene network by heatmap
   nSelect = nSelectHeatmap
   # For reproducibility, we set the random seed
@@ -442,25 +442,80 @@ RTN.analysis <- function(TFs = NULL, expData = NULL, group = NULL, cores=1, nPer
 
 #' Plot RTN network
 #'
+#' @param target.TFs which TFs to show. A vector
+#' @param TF.fc named vector with TF fold change. Signaficantly differential expression
+#' @param gene.fc named vector with gene fold change. Signaficantly differential expression
 #' @param rtni.obj
-#' @param TFs
+#' @param hits Gene of interest, E.g. EMT gene
 #'
 #' @return
 #' @export
 #'
 #' @examples
-RTN.network.plot <- function(rtni.obj, TFs){
+RTN.network.plot <- function(rtni.obj, target.TFs, TF.fc, gene.fc, hits, font.size=20){
 
-  g <- tni.graph(rtni.obj, regulatoryElements = TFs )
-  # The next chunk shows how to plot the igraph-class object using RedeR (Figure 1).
+  # https://www.bioconductor.org/packages/devel/bioc/vignettes/RTN/inst/doc/RTN.html#regulon-activity-profiles
+
+  if(missing(rtni.obj) | missing(target.TFs) | missing(TF.fc) | missing(gene.fc) |  missing(hits) ) {
+    stop("All options required")
+  }
 
   library(RedeR)
+  library(igraph)
+  library(RTN)
+
+  g <- tni.graph(rtni.obj, regulatoryElements = target.TFs )
+  # The next chunk shows how to plot the igraph-class object using RedeR (Figure 1).
+
+  ######################################### Start modification
+  TF.fc <- TF.fc[intersect(V(g)$name, target.TFs)] # only show target.TFs
+  TF.cols <- c(colorRampPalette(c("mediumseagreen", "white", "OrangeRed"))(10))
+  names(TF.cols) <- c(1:10)
+
+  TF.fc[TF.fc > 1] = 0.9999
+  TF.fc[TF.fc < -1] = -0.9999
+
+  TF.labs <- cut(TF.fc, breaks= seq(-1,1,0.2), labels=1:10)
+  V(g)$nodeColor[match(names(TF.fc), V(g)$name)] <- TF.cols[TF.labs]
+
+  ### gene color
+  gene.fc <- gene.fc[intersect(V(g)$name, names(gene.fc))]
+  gene.cols <- c(colorRampPalette(c("DeepSkyBlue", "white", "Orange"))(10))
+  names(gene.cols) <- c(1:10)
+
+  gene.fc[gene.fc > 1] = 0.9999
+  gene.fc[gene.fc < -1] = -0.9999
+
+  gene.col.labs <- cut(gene.fc,
+                     breaks = seq(-1,1,0.2),
+                     labels = 1:10)
+  V(g)$nodeColor[match(names(gene.fc), V(g)$name)] <- gene.cols[gene.col.labs]
+
+  ### node size
+  V(g)$nodeSize <- rep(20, length(V(g)$name))
+  V(g)$nodeSize[which(V(g)$name %in% target.TFs)] <- 56
+  V(g)$nodeSize[which(V(g)$name %in% hits)] <- 40
+
+  ### node shape
+  V(g)$nodeShape[which(V(g)$name %in% hits)] <- "TRIANGLE"
+  V(g)$nodeShape[which(V(g)$name %in% target.TFs)] <- "DIAMOND"
+
+
+  ### only show hits and TF node name
+  V(g)$nodeFontSize[! V(g)$name %in% c(target.TFs, hits)] = 0
+  V(g)$nodeFontSize[  V(g)$name %in% c(hits)] = font.size
+  V(g)$nodeFontSize[  V(g)$name %in% c(target.TFs)] = font.size * 2
+
+
+  ################################### End modification
+
   rdp <- RedPort()
   calld(rdp)
   addGraph(rdp, g, layout=NULL)
   addLegend.color(rdp, g, type="edge")
   addLegend.shape(rdp, g)
   relax(rdp, ps = TRUE)
+
 
 }
 

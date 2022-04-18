@@ -4,10 +4,16 @@
 \alias{RTN.network.plot}
 \title{Plot RTN network}
 \usage{
-RTN.network.plot(rtni.obj, TFs)
+RTN.network.plot(rtni.obj, target.TFs, TF.fc, gene.fc, hits, font.size = 20)
 }
 \arguments{
-\item{TFs}{}
+\item{target.TFs}{which TFs to show. A vector}
+
+\item{TF.fc}{named vector with TF fold change. Signaficantly differential expression}
+
+\item{gene.fc}{named vector with gene fold change. Signaficantly differential expression}
+
+\item{hits}{Gene of interest, E.g. EMT gene}
 }
 \value{
 

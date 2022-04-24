@@ -1027,7 +1027,9 @@ univariate_cox <- function(d.frame, status, time, scale=TRUE){
   all.res <- foreach(i=1:ncol(d.frame), .combine = rbind) %do%{
 
 
-    res <- coxph( Surv(time, status) ~ Score , data = data.frame(Score = d.frame[,i], Time=time, Status =status, check.names = F ) )
+    res <- coxph( Surv(time, status) ~ Score ,
+                  data = data.frame(Score = d.frame[,i],
+                                    Time=time, Status =status, check.names = F ) )
     #exp( coef(res) )
     #summary(res)
 
@@ -1038,12 +1040,13 @@ univariate_cox <- function(d.frame, status, time, scale=TRUE){
     i.hr.upper = summary(res)$conf.int[4]
     i.hr.lower = summary(res)$conf.int[3]
     i.pvalue = summary(res)$waldtest[3]
+    i.SE <- sqrt( diag( res$var ))
 
     res <- c( i.coef, # coef
               i.hazzardRation, # HR
               i.hr.lower, # lower
               i.hr.upper, # upper
-              i.pvalue
+              i.pvalue, i.SE
     )
     c( Name=c.name, round(res,3))
 
@@ -1051,7 +1054,7 @@ univariate_cox <- function(d.frame, status, time, scale=TRUE){
 
   all.res <- data.frame(all.res, stringsAsFactors = F)
   row.names(all.res) <- all.res$Name
-  colnames(all.res) <- c("Variate", "coefficient" , "HR", "lower 95%", "upper 95%", "Pr")
+  colnames(all.res) <- c("Variate", "coefficient" , "HR", "lower 95%", "upper 95%", "Pr", "SE")
 
   all.res[,2:ncol(all.res)] <- data.frame(lapply(all.res[,2:ncol(all.res)],as.numeric))
   all.res
@@ -2343,10 +2346,6 @@ build.psm.regression.model <- function(d.frame, status, time, seed=666, scale = 
 
 
 
-
-
-
-
 #' Nomogram plot by rms
 #'
 #' @param fit rms model
@@ -2411,13 +2410,17 @@ nomogram.plot <- function(fit=NULL, data = NULL, fun.list = NA, lp =F){
 #' @export
 #'
 #' @examples
-compareROC <- function(risk1, lab1, risk2, lab2, method = c("delong", "bootstrap", "venkatraman") ){
+compareROC <- function(risk1, lab1, risk2, lab2, method = c("delong", "bootstrap", "venkatraman") , alternative = c("two.sided", "less", "greater")){
 
   method  = match.arg(method)
+  alternative = match.arg(alternative)
+
+  cat("Used method: ",method,"\n Used alternative: ",alternative, "\n")
 
   pROC::roc.test( pROC::roc(lab1, risk1),
                   pROC::roc(lab2, risk2),
-                  method=method)
+                  method=method,
+                  alternative = alternative)
 
 }
 

@@ -395,7 +395,7 @@ decisionCurve.diff.pvalue <- function(outcome, pred1, pred2, boots = 100, xstart
 #' @export
 #'
 #' @examples
-riskCalibrationPlot<-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, smooth.method = "loess", ...) {
+riskCalibrationPlot<-function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg",ticks.unit=0.25, full.range=TRUE, smooth.method = "loess", ...) {
   # Generics function
   UseMethod('riskCalibrationPlot')
 }
@@ -410,7 +410,6 @@ riskCalibrationPlot<-function(group, pred, rms.method = FALSE, title = "Calibrat
 #' @param show.oberved.ci
 #' @param bins Number of bins. Default 20
 #' @param color Default npg
-#' @param show.group whether to plot histogram by group
 #' @param ticks.unit 0.25 seq(0, 1, by = 0.25)
 #' @param full.range Default TRUE. loess smoothing between 0-1 or first bin to last bin
 #' @param smooth.method Smoothing method (function) to use, accepts either NULL or a character vector, e.g. "lm", "glm", "gam", "loess" or a function, e.g. MASS::rlm or mgcv::gam, stats::lm, or stats::loess. "auto" is also accepted for backwards compatibility.
@@ -433,8 +432,11 @@ riskCalibrationPlot<-function(group, pred, rms.method = FALSE, title = "Calibrat
 #' m <- glm(status ~ ., data = d1, family = binomial(logit))
 #' d1$pred <- predict(m, type = "response")
 #' loonR::riskCalibrationPlot(factor(LIRI$status), d1$pred)
-riskCalibrationPlot.default <- function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", show.group = FALSE, ticks.unit=0.25, full.range=TRUE, smooth.method = "loess"){
+riskCalibrationPlot.default <- function(group, pred, rms.method = FALSE, title = "Calibration plot", show.oberved.ci = FALSE,  bins = 10, color="npg", ticks.unit=0.25, full.range=TRUE, smooth.method = "loess"){
 
+  if(sum(pred > 1)!=0){
+    stop("Pls set pred ranges from 0 to 1")
+  }
   # Thanks reference: https://darrendahly.github.io/post/homr/
   # 公众号《绘制预测模型的校准曲线》用的riskRegression包（https://cran.r-project.org/web/packages/riskRegression/）也不错
 
@@ -486,7 +488,7 @@ riskCalibrationPlot.default <- function(group, pred, rms.method = FALSE, title =
 
 
   p1 = ggscatter(df.cal.grouped, x="bin_pred", y ="bin_prob" ) +
-    geom_abline(intercept = 0, slope = 1)
+    geom_abline(intercept = 0, slope = 1, linetype="dotted", color="gray")
   # loess fit through estimates，并且显示标准差
   if(full.range){
     # This plot the full range 0-1
@@ -504,15 +506,17 @@ riskCalibrationPlot.default <- function(group, pred, rms.method = FALSE, title =
 
 
   # The distribution plot
-  if(show.group){
-    p2 <- gghistogram(df, x="pred", fill = "RawClass", bins = bins, rug = TRUE,
-                      palette = color, position = "stack") +
-      xlab("Predicted probability") + ylab("Count")
-  }else{
-    p2 <- gghistogram(df, x="pred", fill = "black", bins = bins, rug = TRUE,
-                      palette = "black", color="black") +
-      xlab("Predicted probability") +  ylab("Count")
-  }
+    library(ggplot2)
+  # p2 <- ggplot(df, aes(x=pred, color=RawClass, fill = RawClass)) +
+  #     geom_histogram( position = "stack", color="#e9ecef", bins=bins, breaks = seq(0,1,1/bins) ) +
+  #     scale_fill_manual(values=loonR::get.palette.color(color)) +
+  #     theme_pubr()
+
+    p2 <- ggdensity(df, x="pred", fill = "RawClass", bins = bins, rug = TRUE,
+                      palette = color, position = "stack" )
+
+  p2 =  p2 + xlab("Predicted probability") +  ylab("\nDensity")
+  #p2 = p2 + scale_x_continuous(breaks = seq(0, 1, by=1/(bins)))
   p2 <- ggpar(p2, legend = "none", xlim = c(0,1), xticks.by = ticks.unit)
 
 

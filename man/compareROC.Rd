@@ -9,11 +9,14 @@ compareROC(
   lab1,
   risk2,
   lab2,
-  method = c("delong", "bootstrap", "venkatraman")
+  method = c("delong", "bootstrap", "venkatraman"),
+  alternative = c("two.sided", "less", "greater")
 )
 }
 \arguments{
 \item{method}{the method to use, either “delong”, “bootstrap” or “venkatraman”. The first letter is sufficient.}
+
+\item{alternative}{"two.sided", "less", "greater"}
 }
 \value{
 

@@ -12,7 +12,6 @@
   show.oberved.ci = FALSE,
   bins = 10,
   color = "npg",
-  show.group = FALSE,
   ticks.unit = 0.25,
   full.range = TRUE,
   smooth.method = "loess"
@@ -28,8 +27,6 @@
 \item{bins}{Number of bins. Default 20}
 
 \item{color}{Default npg}
-
-\item{show.group}{whether to plot histogram by group}
 
 \item{ticks.unit}{0.25 seq(0, 1, by = 0.25)}
 

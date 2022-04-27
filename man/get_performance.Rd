@@ -35,6 +35,6 @@ Get model performace, sensitivity, sepcificity and others
 }
 \examples{
 risk.probability = c(1:10)
-label = rep(c(1,0,1),c(2,6,2))
-loonR::get_performance(risk.probability, label)
+labels = rep(c(1,0,1),c(2,6,2))
+loonR::get_performance(risk.probability, labels)
 }

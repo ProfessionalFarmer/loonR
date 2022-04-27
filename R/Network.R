@@ -68,6 +68,7 @@ runWGCNA <- function(datExpr, datTraits, traitColumnIndex = 1,power=NULL, minMod
   }else{
     softPower = power
   }
+  res$softPower = softPower
   adjacency = adjacency(datExpr, power = softPower);
 
   # 2.b.3

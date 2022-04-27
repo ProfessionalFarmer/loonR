@@ -12,7 +12,6 @@ riskCalibrationPlot(
   show.oberved.ci = FALSE,
   bins = 10,
   color = "npg",
-  show.group = FALSE,
   ticks.unit = 0.25,
   full.range = TRUE,
   smooth.method = "loess",

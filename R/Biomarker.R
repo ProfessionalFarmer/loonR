@@ -725,8 +725,8 @@ loo.cv.cox <- function(df, status, time,  seed=999, label=NA, scale =TRUE){
 #'
 #' @examples
 #' risk.probability = c(1:10)
-#' label = rep(c(1,0,1),c(2,6,2))
-#' loonR::get_performance(risk.probability, label)
+#' labels = rep(c(1,0,1),c(2,6,2))
+#' loonR::get_performance(risk.probability, labels)
 get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2000, specify.sen = NULL, specify.spe = NULL){  #  x="best", input = "threshold"
 
   labels = factor(labels)
@@ -769,6 +769,11 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2
   # remove NA. some risk score may have NA value
   ind <- which(!is.na(pred))
 
+  # 20220427  confusion matrix
+  confusion.matrix = loonR::confusion_matrix(labels,pred)
+  true.cancer = as.integer(confusion.matrix[2,2])
+  true.healthy = as.integer(confusion.matrix[1,1])
+
   # calculate OR
   results <- caret::confusionMatrix( factor(pred[ind] > best.cutoff), factor(labels[ind]) , positive = "TRUE" )
   results.tl <- as.table(results)
@@ -801,8 +806,8 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2
   #f1.score <- round(f1.score,2)
 
   res <- c(
-    n.c,
-    t.c,
+    paste0(n.c, " [", true.healthy,"]"),
+    paste0(t.c, " [", true.cancer,"]"),
     auc[1], # AUC
     sprintf(string.format, others$accuracy[1,c("50%")],  others$accuracy[1,c("2.5%")],  others$accuracy[1,c("97.5%")]), # accuracy
     sprintf(string.format, others$precision[1,c("50%")], others$precision[1,c("2.5%")], others$precision[1,c("97.5%")]),# precision
@@ -814,7 +819,7 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2
 
   #names(res) <- c("Ncount", "Tcount", "AUC (CI)",  "Accuracy", "Precision", "Recall", "Specificity", "NPV","Odds Ratio")
   #recall = sensititivity, precision=PPV
-  names(res) <- c("Ncount", "Tcount", "AUC (CI)",  "Accuracy",  "PPV", "Sensitivity", "Specificity", "NPV","Odds Ratio")
+  names(res) <- c("Ncount [Truly Predicted]", "Tcount [Truly Predicted]", "AUC (CI)",  "Accuracy",  "PPV", "Sensitivity", "Specificity", "NPV","Odds Ratio")
 
   # 20220310 update. Get specific sensitivity and specificity
   if(! is.null(specify.sen) ){
@@ -841,6 +846,8 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2
 
     res = c(res, updated.20220310)
   }
+
+
 
 
   # value (conf) -> value  conf
@@ -1727,7 +1734,7 @@ prob2logit <- function(x) {
 #' @export
 #'
 #' @examples loonR::plot_waterfall(average.riskscore$Mean, average.riskscore$Label, xlab = "Risk probability")
-plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette = "jco", title = "", yticks.labl = c(0,0.25,0.5,0.75,1), sample = NA, rotate.x = 90){
+plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette = "jco", title = "", yticks.labl = c(0,0.25,0.5,0.75,1), sample = NA, rotate.x = 90 ){
 
     if( ( max(risk.score)>1|min(risk.score)<(-1) ) & xlab == "Risk probability")  {
       xlab = "Risk score"
@@ -1749,6 +1756,9 @@ plot_waterfall <- function(risk.score, label, xlab = "Risk probability", palette
     }
 
     colnames(tmp.df)[1] <- xlab
+
+
+
     p <- ggbarplot(tmp.df, x = "ID", y = xlab, xlab = "",
                    color = "Class", fill = "Class",
                    palette = palette, legend = "right", title = title)
@@ -2405,6 +2415,7 @@ nomogram.plot <- function(fit=NULL, data = NULL, fun.list = NA, lp =F){
 #' @param risk2
 #' @param lab2
 #' @param method the method to use, either “delong”, “bootstrap” or “venkatraman”. The first letter is sufficient.
+#' @param alternative "two.sided", "less", "greater"
 #'
 #' @return
 #' @export
@@ -2415,12 +2426,14 @@ compareROC <- function(risk1, lab1, risk2, lab2, method = c("delong", "bootstrap
   method  = match.arg(method)
   alternative = match.arg(alternative)
 
-  cat("Used method: ",method,"\n Used alternative: ",alternative, "\n")
+  cat("\n===============\n\nUsed method: ",method,"\n Used alternative: ",alternative, "\n\n\n")
 
   pROC::roc.test( pROC::roc(lab1, risk1),
                   pROC::roc(lab2, risk2),
                   method=method,
                   alternative = alternative)
+
+
 
 }
 

@@ -4,7 +4,7 @@
 \alias{get.AUC}
 \title{Obtain AUC value}
 \usage{
-get.AUC(pred, label, raw = TRUE)
+get.AUC(pred, label, raw = TRUE, direction = "auto")
 }
 \arguments{
 \item{pred}{Predicted score or probability}
@@ -12,6 +12,8 @@ get.AUC(pred, label, raw = TRUE)
 \item{label}{label/class/group}
 
 \item{raw}{Default TRUE, return raw auc result with description}
+
+\item{direction}{<: (controls < t <= cases) ######  >: (controls > t >= cases)}
 }
 \value{
 

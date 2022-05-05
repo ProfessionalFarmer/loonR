@@ -4,10 +4,10 @@
 \alias{id_mapping}
 \title{Title}
 \usage{
-id_mapping(IDS, key = "ENSEMBL", column = c("SYMBOL"))
+id_mapping(IDS, key = "ENSEMBL", column = c("SYMBOL"), clean = FALSE)
 }
 \arguments{
-\item{column}{}
+\item{clean}{If set TRUE, will only return mapped ID without duplicates}
 }
 \value{
 

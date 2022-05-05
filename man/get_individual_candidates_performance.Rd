@@ -10,7 +10,8 @@ get_individual_candidates_performance(
   best.cutoff = NA,
   digit = 2,
   specify.sen = NULL,
-  specify.spe = NULL
+  specify.spe = NULL,
+  OR = F
 )
 }
 \arguments{
@@ -23,6 +24,8 @@ get_individual_candidates_performance(
 \item{specify.sen}{User can input one or more specific sensitivity}
 
 \item{specify.spe}{User can input one or more specific specificity}
+
+\item{OR}{Default F. If calculate OR or not}
 }
 \value{
 

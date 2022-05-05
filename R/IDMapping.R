@@ -60,6 +60,7 @@ ensembl_EntrezID <- function(ensembl.ids){
 #' @param IDS
 #' @param key
 #' @param column
+#' @param clean If set TRUE, will only return mapped ID without duplicates
 #'
 #' @return
 #' @export
@@ -71,7 +72,7 @@ ensembl_EntrezID <- function(ensembl.ids){
 #'  [13] "IPI"          "MAP"          "OMIM"         "ONTOLOGY"     "ONTOLOGYALL"  "PATH"
 #'  [19] "PFAM"         "PMID"         "PROSITE"      "REFSEQ"       "SYMBOL"       "UCSCKG"
 #'  [25] "UNIGENE"      "UNIPROT"
-id_mapping <- function(IDS, key = "ENSEMBL", column = c("SYMBOL") ){
+id_mapping <- function(IDS, key = "ENSEMBL", column = c("SYMBOL"), clean = FALSE ){
 
   library("org.Hs.eg.db")
 
@@ -80,7 +81,14 @@ id_mapping <- function(IDS, key = "ENSEMBL", column = c("SYMBOL") ){
                     res[match(IDS, res[,1]),]
   )
 
-  res
+  if(clean){
+    # remove NA
+    res = res[,!is.na(idmapp.res[,3])]
+    # remove duplicates
+    res = res[,!duplicated(idmapp.res[,3])]
+  }else{
+    res
+  }
 
 }
 

@@ -11,7 +11,8 @@ get_performance(
   digit = 2,
   boot.n = 2000,
   specify.sen = NULL,
-  specify.spe = NULL
+  specify.spe = NULL,
+  OR = F
 )
 }
 \arguments{
@@ -26,6 +27,8 @@ get_performance(
 \item{specify.sen}{User can input one or more specific sensitivity}
 
 \item{specify.spe}{User can input one or more specific specificity}
+
+\item{OR}{Default F. If calculate OR or not}
 }
 \value{
 

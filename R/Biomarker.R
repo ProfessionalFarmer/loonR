@@ -719,6 +719,7 @@ loo.cv.cox <- function(df, status, time,  seed=999, label=NA, scale =TRUE){
 #' @param boot.n Default 2000
 #' @param specify.sen User can input one or more specific sensitivity
 #' @param specify.spe User can input one or more specific specificity
+#' @param OR Default F. If calculate OR or not
 #'
 #' @return
 #' @export
@@ -727,7 +728,7 @@ loo.cv.cox <- function(df, status, time,  seed=999, label=NA, scale =TRUE){
 #' risk.probability = c(1:10)
 #' labels = rep(c(1,0,1),c(2,6,2))
 #' loonR::get_performance(risk.probability, labels)
-get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2000, specify.sen = NULL, specify.spe = NULL){  #  x="best", input = "threshold"
+get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2000, specify.sen = NULL, specify.spe = NULL, OR = F){  #  x="best", input = "threshold"
 
   labels = factor(labels)
 
@@ -819,7 +820,14 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2
 
   #names(res) <- c("Ncount", "Tcount", "AUC (CI)",  "Accuracy", "Precision", "Recall", "Specificity", "NPV","Odds Ratio")
   #recall = sensititivity, precision=PPV
-  names(res) <- c("Ncount [Truly Predicted]", "Tcount [Truly Predicted]", "AUC (CI)",  "Accuracy",  "PPV", "Sensitivity", "Specificity", "NPV","Odds Ratio")
+  names(res) <- c("Ncount [TN]", "Tcount [TP]", "AUC (CI)",  "Accuracy",  "PPV", "Sensitivity", "Specificity", "NPV","Odds Ratio")
+
+  # decide whether to show OR
+  if(!OR){
+    res = res[-c(length(res))] # the last one is OR ratio
+  }
+
+
 
   # 20220310 update. Get specific sensitivity and specificity
   if(! is.null(specify.sen) ){
@@ -868,6 +876,7 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2
   df$Formated <- stringr::str_remove_all(df$Formated, " \\(\\)")
 
 
+
   df
 
 }
@@ -881,12 +890,13 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2
 #' @param digit 2 for 0.01, 3 for 0.001
 #' @param specify.sen User can input one or more specific sensitivity
 #' @param specify.spe User can input one or more specific specificity
+#' @param OR Default F. If calculate OR or not
 #'
 #' @return
 #' @export
 #'
 #' @examples
-get_individual_candidates_performance <- function(scores, labels, best.cutoff =NA, digit = 2, specify.sen = NULL, specify.spe = NULL){
+get_individual_candidates_performance <- function(scores, labels, best.cutoff =NA, digit = 2, specify.sen = NULL, specify.spe = NULL, OR=F){
 
   oldw <- getOption("warn")
   options(warn = -1)
@@ -904,7 +914,7 @@ get_individual_candidates_performance <- function(scores, labels, best.cutoff =N
     names(performance.list) <- names(scores)
 
   }else{
-    performance.list <- apply(scores, 2, function(x) loonR::get_performance(x, labels, best.cutoff = best.cutoff, digit = digit, specify.sen = specify.sen, specify.spe = specify.spe) )
+    performance.list <- apply(scores, 2, function(x) loonR::get_performance(x, labels, best.cutoff = best.cutoff, digit = digit, specify.sen = specify.sen, specify.spe = specify.spe, OR = OR) )
     # https://stackoverflow.com/questions/57608056/how-to-change-legend-description-on-ggroc-function
   }
 
@@ -2037,7 +2047,7 @@ get.YoudenIndex <- function(pred, label){
 #' @param pred Predicted score or probability
 #' @param label label/class/group
 #' @param raw Default TRUE, return raw auc result with description
-#'
+#' @param direction <: (controls < t <= cases) ######  >: (controls > t >= cases)
 #' @return
 #' @export
 #'
@@ -2045,12 +2055,12 @@ get.YoudenIndex <- function(pred, label){
 #' data("LIRI")
 #' loonR::get.AUC(LIRI$ANLN, LIRI$status)
 #'
-get.AUC <- function(pred, label, raw=TRUE){
+get.AUC <- function(pred, label, raw=TRUE, direction = "auto"){
 
   library(pROC)
   library(caret)
 
-  roc_obj <- roc(label, pred, quiet=TRUE)
+  roc_obj <- roc(label, pred, quiet=TRUE, direction = direction)
   if(raw){
     auc(roc_obj)
   }else{

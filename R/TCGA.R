@@ -539,5 +539,15 @@ extractTCGASampleType <- function(TCGA.ids){
 
 }
 
-
+#' Get shorter TCGA ID
+#'
+#' @param ids
+#'
+#' @return
+#' @export
+#'
+#' @examples
+tcgaShorterBarcode <- function(ids){
+  substr(ids, 1, 16)
+}
 

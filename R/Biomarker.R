@@ -1650,18 +1650,22 @@ get.all.point.ROC <- function(pred, label, ci=FALSE, boot.n = 2000){
 #'
 download.geo.dataset <- function(geo.accession.id, platform, destdir = "~/GSE"){
 
-  if (missing("geo.accession.id") | missing("platform")){
-    stop("Please provide both geo.accession.id and platform")
+  if (missing("geo.accession.id") ){
+    stop("Please provide geo.accession.id")
   }
 
   library(GEOquery)
 
+
   # load series and platform data from GEO
-  gset <- getGEO(geo.accession.id, GSEMatrix =TRUE, AnnotGPL=TRUE, destdir = destdir)
-
-  if (length(gset) > 1) idx <- grep(platform, attr(gset, "names")) else idx <- 1
-
+  gset <- getGEO(geo.accession.id, GSEMatrix =TRUE, AnnotGPL=platform.available, destdir = destdir)
+  if(length(gset) > 1){
+    stop("More than one dataset in the GSE data")
+  }
+  # if (length(gset) > 1) idx <- grep(platform, attr(gset, "names")) else idx <- 1
+  idx <- 1
   gset <- gset[[idx]]
+
   gpl.annotation <- fData(gset)
 
   # show(gset)
@@ -1688,10 +1692,11 @@ download.geo.dataset <- function(geo.accession.id, platform, destdir = "~/GSE"){
   }
   rm(qx, LogC)
 
+
   result <- list(expression = exp.df,
-                 rawExpression = exprs(gset),
-                 phenotype  = phenotype,
-                 probe.annotation = gpl.annotation)
+                   rawExpression = exprs(gset),
+                   phenotype  = phenotype,
+                   probe.annotation = gpl.annotation)
 
   return(result)
 

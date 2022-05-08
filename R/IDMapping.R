@@ -81,14 +81,14 @@ id_mapping <- function(IDS, key = "ENSEMBL", column = c("SYMBOL"), clean = FALSE
                     res[match(IDS, res[,1]),]
   )
 
+  library(dplyr)
   if(clean){
     # remove NA
-    res = res[,!is.na(idmapp.res[,3])]
+    res = res[!is.na(as.character(unlist(res[,3]))),]
     # remove duplicates
-    res = res[,!duplicated(idmapp.res[,3])]
-  }else{
-    res
+    res = res[!duplicated(unlist(res[,3])),]
   }
+  res
 
 }
 

@@ -441,6 +441,77 @@ DESeq2_differential <- function(rawcount, group, prop.expressed.sample = 0.5, pr
 
 
 
+#' Download dataset from GEO by accession ID and platform
+#'
+#' @param geo.accession.id GEO Accession ID
+#' @param platform Platform
+#' @param destdir Default tempdir()
+#' @param platform.available If GLP platform not available
+#'
+#' @return list(expression, phenotype, probe.annotation)
+#' @export
+#'
+#' @examples
+#'
+download.geo.dataset <- function(geo.accession.id, platform=NULL, destdir = "~/GSE", platform.available = TRUE){
+
+  if (missing("geo.accession.id") ){
+    stop("Please provide geo.accession.id")
+  }
+
+  library(GEOquery)
+
+
+  # load series and platform data from GEO
+  gset <- getGEO(geo.accession.id, GSEMatrix =TRUE, AnnotGPL = platform.available, getGPL = TRUE,destdir = destdir)
+
+  if(!is.null(platform)){
+    if (length(gset) > 1) idx <- grep(platform, attr(gset, "names")) else idx <- 1
+  }else{
+    if(length(gset) > 1 ) stop("More than 1 dataset in this GSE")
+    idx <- 1
+  }
+
+  gset <- gset[[idx]]
+
+  gpl.annotation <- fData(gset)
+
+  # show(gset)
+
+  # make proper column names to match toptable
+  fvarLabels(gset) <- make.names(fvarLabels(gset))
+
+  phenotype <- pData(gset)
+
+  # eliminate samples
+  exp.df <- exprs(gset)
+
+  # if log2 transform.    VALUE	Normalized log2 data represent microRNA expression levels
+  qx <- as.numeric(quantile(exp.df, c(0., 0.25, 0.5, 0.75, 0.99, 1.0), na.rm=T))
+  LogC <- (qx[5] > 100) ||
+    (qx[6]-qx[1] > 50 && qx[2] > 0) ||
+    (qx[2] > 0 && qx[2] < 1 && qx[4] > 1 && qx[4] < 2)
+  if (LogC) {
+    exp.df[which(exp.df <= 0)] <- NaN
+    exp.df <- log2(exp.df)
+    print("Perform log2 transformation")
+  }else{
+    print("Note: here not perform log2 transformation")
+  }
+  rm(qx, LogC)
+
+
+  result <- list(expression = exp.df,
+                 rawExpression = exprs(gset),
+                 phenotype  = phenotype,
+                 probe.annotation = gpl.annotation)
+
+  return(result)
+
+}
+
+
+
 #' Title Remove redundant gene expression data, and select the maximum one
 #'
 #' @param expression.df Please note the first column must be gene names if gene = Null
@@ -1104,3 +1175,117 @@ compare_differential.analysis <- function(rna.df.log, group, prefix="Group", cal
 log2dfQuantileNormalization <- function(df){
   limma::normalizeBetweenArrays(df, method = "quantile")
 }
+
+
+#' Download dataset from ArrayExpress
+#'
+#' @param accession_id
+#' @param Processed.data processed.1.zip
+#' @param relationship sdrf.txt
+#' @param Array.design adf.txt
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' # https://www.ebi.ac.uk/arrayexpress/experiments/E-MTAB-6134/
+#' accession_id = "E-MTAB-6134"
+#' Processed.data = "E-MTAB-6134.processed.1.zip"
+#' relationship = "E-MTAB-6134.sdrf.txt"
+#' Array.design = "A-GEOD-13667.adf.txt"
+#'
+#' loonR::downloadArrayExpressDataset(accession_id)
+#'
+loadArrayExpressDataset <- function(accession_id = NULL, Processed.data=NULL, relationship = NULL, Array.design=NULL){
+
+  if(missing(accession_id)|missing(Processed.data)|missing(relationship)|missing(Array.design)){
+    stop("Pls set all the paramemters")
+  }
+
+  ############## read expression
+  cat("Load processed data\n")
+  tmp_dir = tempdir()
+  dir.create(tmp_dir)
+
+
+  oldw <- getOption("warn")
+  options(warn = -1)
+
+
+
+  if(endsWith(Processed.data,"zip")){
+    # just a list of files inside master.zip
+    tsvfile <- as.character(unzip(Processed.data, list = TRUE)$Name)
+
+    unzip(Processed.data, exdir=tmp_dir)
+
+    tsvfile = file.path(tmp_dir, tsvfile)
+
+    # load the first file "file1.csv"
+    processed.df = data.table::fread(tsvfile, data.table = F)
+
+  }else{
+    processed.df = data.table::fread(Processed.data, data.table = F)
+  }
+  options(warn = oldw)
+
+  rownames(processed.df) = processed.df$V1
+  processed.df = processed.df[,-c(1)]
+
+  cat("Load Sample and data relationship data\n")
+  ############## relationship
+  if(endsWith(relationship,"zip")){
+    # just a list of files inside master.zip
+    tsvfile <- as.character(unzip(relationship, list = TRUE)$Name)
+
+    # load the first file "file1.csv"
+    unzip(relationship, exdir=tmp_dir)
+
+    tsvfile = file.path(tmp_dir, tsvfile)
+
+    relationship.df = data.table::fread(tsvfile, sep="\t")
+
+  }else{
+    relationship.df = data.table::fread(relationship, sep="\t")
+  }
+  rownames(relationship.df) = relationship.df$`Source Name`
+
+
+  cat("Load Array design data\n")
+  ################ read array design
+  if(endsWith(Array.design,"zip")){
+    # just a list of files inside master.zip
+    tsvfile <- as.character(unzip(Array.design, list = TRUE)$Name)
+    # load the first file "file1.csv"
+    unzip(Array.design, exdir=tmp_dir)
+
+    tsvfile = file.path(tmp_dir, tsvfile)
+    tmp_tsv = file.path(tmp_dir, "probe.annotation.tsv")
+
+    system( paste0("awk '/^$/ { getline; while (getline > 0) print }' ", Array.design, " > ", tmp_tsv) )
+
+    probe.annotation.df = data.table::fread(tmp_tsv, sep="\t")
+  }else{
+    tmp_tsv = file.path(tmp_dir, "probe.annotation.tsv")
+
+    system( paste0("awk '/^$/ { getline; while (getline > 0) print }' ", Array.design, " > ", tmp_tsv) )
+
+    probe.annotation.df = data.table::fread(tmp_tsv, sep="\t")
+  }
+
+  unlink(tmp_dir, recursive = T)
+
+  res = list(
+    Accession = accession_id,
+    Expression = processed.df,
+    Phenotype = relationship.df,
+    ProbeAnnotation = probe.annotation.df
+  )
+  res
+
+}
+
+
+
+
+

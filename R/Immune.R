@@ -37,7 +37,7 @@ runEstimate <- function(expression.df, platform = c("affymetrix", "agilent", "il
     input.f = raw.file.path,
     output.f= filter.file.path,
     id="GeneSymbol"
-    )
+  )
   file.remove(raw.file.path)
 
 

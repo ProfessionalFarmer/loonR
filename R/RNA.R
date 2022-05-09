@@ -1262,6 +1262,7 @@ loadArrayExpressDataset <- function(accession_id = NULL, Processed.data=NULL, re
     tsvfile = file.path(tmp_dir, tsvfile)
     tmp_tsv = file.path(tmp_dir, "probe.annotation.tsv")
 
+    # in order to skip comment lines
     system( paste0("awk '/^$/ { getline; while (getline > 0) print }' ", Array.design, " > ", tmp_tsv) )
 
     probe.annotation.df = data.table::fread(tmp_tsv, sep="\t")

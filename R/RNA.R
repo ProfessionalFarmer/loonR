@@ -1260,19 +1260,16 @@ loadArrayExpressDataset <- function(accession_id = NULL, Processed.data=NULL, re
     unzip(Array.design, exdir=tmp_dir)
 
     tsvfile = file.path(tmp_dir, tsvfile)
-    tmp_tsv = file.path(tmp_dir, "probe.annotation.tsv")
 
-    # in order to skip comment lines
-    system( paste0("awk '/^$/ { getline; while (getline > 0) print }' ", Array.design, " > ", tmp_tsv) )
-
-    probe.annotation.df = data.table::fread(tmp_tsv, sep="\t")
+    probe.annotation.df = data.table::fread(tmp_tsv, sep="\t", fill= TRUE, blank.lines.skip = TRUE)
   }else{
-    tmp_tsv = file.path(tmp_dir, "probe.annotation.tsv")
 
-    system( paste0("awk '/^$/ { getline; while (getline > 0) print }' ", Array.design, " > ", tmp_tsv) )
-
-    probe.annotation.df = data.table::fread(tmp_tsv, sep="\t")
+    probe.annotation.df = data.table::fread(Array.design, sep="\t", fill= TRUE, blank.lines.skip = TRUE )
   }
+  name.ind = match("Reporter Name",probe.annotation.df$V1)
+  probe.annotation.df = probe.annotation.df[-c(1:name.ind),c(1,2)]
+  colnames(probe.annotation.df) = c("Reporter Name", "Reporter Database Entry [genbank]")
+
 
   unlink(tmp_dir, recursive = T)
 

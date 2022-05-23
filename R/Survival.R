@@ -152,7 +152,7 @@ survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.pr
     ptext = paste(ptext,"\nHR = ",hazard.ratio, sep ="")
   }
   if(pval %in% c("HR","HRCI","PHR", "PHRCI")){
-    cat(ptext)
+    cat("\n", ptext)
     pval = ptext
   }
 
@@ -232,11 +232,15 @@ findSurvivalCutPoint <- function(values = NULL, event = NULL, time = NULL, plot.
       Group = loonR::splitGroupByCutoff(
         values = df$Variable,
         cut.point = res$estimated.point, cut.label = c("L","H")
-      )$New.Label, remove.na = T, best.point = FALSE # here make sure best.point is FALSE
+      )$New.Label, remove.na = T, best.point = FALSE, palette = c("#ED0000", "#00468B") # here make sure best.point is FALSE
     )
     res$surv.plot = surv.plot
   }
 
+  res$rawData$group = loonR::splitGroupByCutoff(
+    values = df$Variable,
+    cut.point = res$estimated.point, cut.label = c("L","H")
+  )$New.Label
 
   p.val = loonR::survivaly_analysis(
     Event = df$Event, Time = df$Time,

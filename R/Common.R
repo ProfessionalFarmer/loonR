@@ -1374,6 +1374,43 @@ genereateLabelsByGroup <- function(label=NULL,...){
 
 }
 
+
+
+#' Return a vector indicate gene overlapping count
+#'
+#' @param geneColumnName colunm name for find overlapping genes
+#' @param pColumnName column name of p value
+#' @param p.cutoff p value cutoff, default 0.05
+#' @param ...
+#'
+#' @return
+#' @export
+#'
+#' @examples
+findRepeatedGenes <- function(geneColumnName=NULL, pColumnName=NULL, p.cutoff = 0.05, ...){
+
+  library(dplyr)
+  tmp = list(...)
+
+  rawListForVennPlot = lapply(tmp, function(x){
+
+    x = x %>% filter( get(pColumnName) < p.cutoff) %>% pull(geneColumnName)
+    x
+  })
+
+
+  count = Reduce(c, rawListForVennPlot) # merge
+  count = table(count)
+  count = as.data.frame.array(count)
+
+
+  res = list(result = count, rawListForVennPlot = rawListForVennPlot)
+  res
+}
+
+
+
+
 #' Multiple intersction
 #'
 #' @param ... one or more group vector

@@ -52,7 +52,7 @@ celline_drug_target_auc_analysis <- function(drug.sen.df=NULL, gene.df = NULL, c
   rownames(gene.auc.analysis.res) = gene.auc.analysis.res$Drug
   gene.auc.analysis.res = gene.auc.analysis.res[,-c(1)]
 
-  #####################################
+  ##################################### a
 
   cat("Start significance analysis\n")
 
@@ -185,7 +185,7 @@ celline_drug_group_auc_analysis <- function(drug.sen.df=NULL, group = NULL, grou
 
   close(pb)
 
-  #####################################
+  ##################################### a
 
   cat("Start significance analysis\n")
 
@@ -273,6 +273,11 @@ oncoPredict <- function(train.df=NULL, train.res = NULL, predict.df = NULL, minN
                 printOutput = TRUE,
                 removeLowVaringGenesFrom = 'rawData' )
 
+
+  drug.predict.res = read.csv("./calcPhenotype_Output/DrugPredictions.csv")
+  rownames(drug.predict.res) = drug.predict.res$X
+  drug.predict.res = drug.predict.res[,-c(1)]
+  drug.predict.res
 }
 
 

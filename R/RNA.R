@@ -463,7 +463,7 @@ download.geo.dataset <- function(geo.accession.id, platform=NULL, destdir = "~/G
 
 
   # load series and platform data from GEO
-  gset <- getGEO(geo.accession.id, GSEMatrix =TRUE, AnnotGPL = platform.available, getGPL = TRUE,destdir = destdir)
+  gset <- getGEO(geo.accession.id, GSEMatrix =TRUE, AnnotGPL = platform.available, getGPL = TRUE, destdir = destdir)
 
   if(!is.null(platform)){
     if (length(gset) > 1) idx <- grep(platform, attr(gset, "names")) else idx <- 1
@@ -1266,12 +1266,12 @@ loadArrayExpressDataset <- function(accession_id = NULL, Processed.data=NULL, re
 
     probe.annotation.df = data.table::fread(Array.design, sep="\t", fill= TRUE, blank.lines.skip = TRUE )
   }
-  name.ind = match("Reporter Name",probe.annotation.df$V1)
-  probe.annotation.df = probe.annotation.df[-c(1:name.ind),c(1,2)]
-  colnames(probe.annotation.df) = c("Reporter Name", "Reporter Database Entry [genbank]")
 
+  row_start_ind = which(probe.annotation.df == "Reporter Name", arr.ind = TRUE)[1,1]
+  probe.annotation.df = probe.annotation.df[-c(1:(row_start_ind-1)),]
 
-  unlink(tmp_dir, recursive = T)
+  colnames(probe.annotation.df) = as.character(unlist(unclass(probe.annotation.df[1,])))
+  probe.annotation.df = probe.annotation.df[-c(1),]
 
   res = list(
     Accession = accession_id,

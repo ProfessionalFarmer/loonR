@@ -1078,7 +1078,7 @@ univariate_cox <- function(d.frame, status, time, scale=TRUE){
 
 }
 
-#' Title
+#' Univariate Cox analysis
 #'
 #' Copy http://www.sthda.com/english/wiki/cox-proportional-hazards-model
 #'

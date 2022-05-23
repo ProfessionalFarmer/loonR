@@ -2,7 +2,7 @@
 % Please edit documentation in R/Biomarker.R
 \name{univariate_cox_sthda}
 \alias{univariate_cox_sthda}
-\title{Title}
+\title{Univariate Cox analysis}
 \usage{
 univariate_cox_sthda(d.frame, status, time, scale = TRUE)
 }

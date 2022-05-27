@@ -140,7 +140,7 @@ survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.pr
     hazard.ratio.ci = round( confint(coxph.fit,level = 0.95), 2 )
     ptext = surv_pvalue(surv.fit)$pval.txt
 
-    cat(ptext)
+    cat("\n", ptext)
   }
   if(pval=="HR"){
     ptext = paste("HR = ",hazard.ratio, sep ="")

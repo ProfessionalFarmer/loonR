@@ -236,7 +236,7 @@ celline_drug_group_auc_analysis <- function(drug.sen.df=NULL, group = NULL, grou
 
 
 
-#' Calculate IC50 based on oncoPredict
+#' Calculate drug sensitivity based on oncoPredict
 #'
 #' @param train.df path or readRDS("DataFiles/Training Data/CTRP2_Expr (TPM, not log transformed).rds")
 #' @param train.res readRDS("DataFiles/Training Data/CTRP2_Res.rds")

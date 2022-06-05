@@ -2121,6 +2121,7 @@ confidence_interval <- function(vector, interval) {
 #' @param xlab xlab
 #' @param xlog If in log-format. If TRUE, vectical line in 0, otherwise a vectical line at 0
 #' @param xticks Default c(0.1, 0.5, 1, 2, 3, 4)
+#' @param x.font.size x-axis label font size.
 #'
 #' @return
 #' @export
@@ -2134,7 +2135,8 @@ confidence_interval <- function(vector, interval) {
 #'
 #' loonR::forest_plot(text.data, estimate.data, graph.pos = 2, specify.summary = 1)
 forest_plot <- function(tabletext, estimate.data, appendHeader = NULL, specify.summary = NULL,
-                        clipping = c(0.1, 4), graph.pos = "right", xlab = "", xlog = TRUE, xticks = c( 0.1, 0.5, seq(1,4,1) ) ){
+                        clipping = c(0.1, 4), graph.pos = "right", xlab = "", xlog = TRUE,
+                        xticks = c( 0.1, 0.5, seq(1,4,1) ), x.font.size = 1  ){
 
   if(!require(forestplot)){
     BiocManager::install("forestplot")
@@ -2190,7 +2192,8 @@ forest_plot <- function(tabletext, estimate.data, appendHeader = NULL, specify.s
                             line      = "black",
                             summary   = "black",
                             hrz_lines = "black"),
-             xlab = xlab
+             xlab = xlab,
+             txt_gp = fpTxtGp(ticks=gpar(cex = x.font.size))
              )
 
 

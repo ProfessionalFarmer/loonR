@@ -13,7 +13,8 @@ hyperGeoTest(
   title = "",
   log10.lowest = 5,
   print.fig = TRUE,
-  adjusted.p = NULL
+  adjusted.p = NULL,
+  remove.na = FALSE
 )
 }
 \arguments{
@@ -24,6 +25,8 @@ hyperGeoTest(
 \item{print.fig}{Default print the figure}
 
 \item{adjusted.p}{If to adjust P value c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")}
+
+\item{remove.na}{If to remove NA}
 }
 \value{
 list(pval.df.log, pval.df, plot)

@@ -46,6 +46,7 @@ fillSymmetricNATable <- function(symmetric.df){
 #' @param log10.lowest Default 3. Minimux or maximum log10 value. Useful when meet inf or draw heatmap
 #' @param print.fig Default print the figure
 #' @param adjusted.p If to adjust P value c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
+#' @param remove.na If to remove NA
 #'
 #' @return list(pval.df.log, pval.df, plot)
 #' @export
@@ -54,12 +55,19 @@ fillSymmetricNATable <- function(symmetric.df){
 #' g1 = sample(c("G1","G2","G3"),10, replace = T)
 #' g2 = sample(c("1","2","3"),10, replace = T)
 #' loonR::hyperGeoTest(g1, g2, col.prefix = "E")
-hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "", lower.tail = FALSE, title = "", log10.lowest = 5, print.fig = TRUE, adjusted.p=NULL){
+hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "", lower.tail = FALSE, title = "", log10.lowest = 5, print.fig = TRUE, adjusted.p=NULL, remove.na=FALSE){
 
   # https://www.omicsclass.com/article/324
   # 1-phyper(抽取样本中属于“特定类别”的数量-1,总样本中“特定类别”的数量, 总样本数-总样本中“特定类别”的数量, 从总样本中随机抽取的数量,)
   # 也是直接用黑白球的思路来说的：“袋子里有黑球n个和白球m个，不放回的取出k个球，其中有白球q个”
   # phyper(q,m,n,k)
+
+  if(remove.na){
+      na.index = is.na(row.group) | is.null(row.group) | row.group == "" | is.na(col.group) | is.null(col.group) | col.group == ""
+      row.group = row.group[!na.index]
+      col.group = col.group[!na.index]
+      rm(na.index)
+  }
 
   # 超几何检验，与原来的分组比较
   geomatrix  = unclass(table(row.group, col.group))

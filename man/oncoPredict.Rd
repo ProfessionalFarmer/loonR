@@ -2,7 +2,7 @@
 % Please edit documentation in R/Drug.R
 \name{oncoPredict}
 \alias{oncoPredict}
-\title{Calculate IC50 based on oncoPredict}
+\title{Calculate drug sensitivity based on oncoPredict}
 \usage{
 oncoPredict(
   train.df = NULL,
@@ -22,5 +22,5 @@ oncoPredict(
 
 }
 \description{
-Calculate IC50 based on oncoPredict
+Calculate drug sensitivity based on oncoPredict
 }

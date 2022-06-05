@@ -1913,6 +1913,14 @@ removeBatchEffect <- function(df =NULL, batch = NULL, group = NULL, consider.gro
 }
 
 
+convert2Scientific <- function(numb = NULL, digits = 2, format = "e"){
+
+  if(is.null(numb)){
+    stop("Pls input a numeric vector")
+  }
+  formatC(numb, format = format, digits = digits)
+
+}
 
 
 

@@ -13,7 +13,8 @@ forest_plot(
   graph.pos = "right",
   xlab = "",
   xlog = TRUE,
-  xticks = c(0.1, 0.5, seq(1, 4, 1))
+  xticks = c(0.1, 0.5, seq(1, 4, 1)),
+  x.font.size = 1
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ forest_plot(
 \item{xlog}{If in log-format. If TRUE, vectical line in 0, otherwise a vectical line at 0}
 
 \item{xticks}{Default c(0.1, 0.5, 1, 2, 3, 4)}
+
+\item{x.font.size}{x-axis label font size.}
 }
 \value{
 

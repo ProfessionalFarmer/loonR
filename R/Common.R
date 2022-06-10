@@ -783,6 +783,7 @@ convertDfToNumeric <- function(df){
 #' @examples
 #' Default by column
 scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRUE, maxUnit = 4, returnRaw=F){
+
   if(returnRaw){
     return(data.frame(df, check.names = F, stringsAsFactors = F) )
   }
@@ -1394,7 +1395,9 @@ findRepeatedGenes <- function(geneColumnName=NULL, pColumnName=NULL, p.cutoff = 
 
   rawListForVennPlot = lapply(tmp, function(x){
 
-    x = x %>% filter( get(pColumnName) < p.cutoff) %>% pull(geneColumnName)
+    x = x[ x[[pColumnName]] < p.cutoff, ]
+    x = x[[geneColumnName]]
+    # %>% dplyr::pull(get(geneColumnName))
     x
   })
 

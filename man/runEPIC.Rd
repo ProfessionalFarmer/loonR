@@ -10,7 +10,7 @@ runEPIC(expression.df)
 \item{expression.df}{a matrix of the TPM (or RPKM) gene expression from the samples for which to estimate cell proportions}
 }
 \value{
-
+Data frame with immune infiltration information
 }
 \description{
 run EPIC

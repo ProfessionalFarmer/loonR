@@ -12,7 +12,7 @@ runEstimate(expression.df, platform = c("affymetrix", "agilent", "illumina"))
 \item{platform}{c("affymetrix", "agilent", "illumina")}
 }
 \value{
-
+Data frame with immune infiltration information
 }
 \description{
 Run estiamte

@@ -1065,7 +1065,8 @@ univariate_cox <- function(d.frame, status, time, scale=TRUE){
               i.hr.upper, # upper
               i.pvalue, i.SE
     )
-    c( Name=c.name, round(res,3))
+    c( Name=c.name, formatC(res, format = "e", digits = 2) )
+    #c( Name=c.name, res )
 
   }
 

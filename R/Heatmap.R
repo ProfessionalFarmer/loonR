@@ -133,13 +133,19 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=N
   }
 
 
+  # 2022-06-15
+  row_names_side = "left"
+  if(cluster_rows | show.lgfold){
+    row_names_side = "right"
+  }
+
   #
   if (show.lgfold) {
     Heatmap(heatmap.df,
       col = specified.color,
       name = " ", cluster_rows = cluster_rows, cluster_columns = cluster_columns,
       show_row_names = show_row_names, show_column_names = show_column_names, height = unit(height, "cm"),
-      top_annotation = ha,
+      top_annotation = ha, row_names_side = row_names_side,
       right_annotation = row_ha
     )
   } else {
@@ -147,7 +153,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=N
       col = specified.color,
       name = " ", cluster_rows = cluster_rows, cluster_columns = cluster_columns,
       show_row_names = show_row_names, show_column_names = show_column_names, height = unit(height, "cm"),
-      top_annotation = ha
+      top_annotation = ha, row_names_side = row_names_side,
     )
   }
 

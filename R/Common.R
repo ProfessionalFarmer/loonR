@@ -230,7 +230,7 @@ show_hcluster <- function(df, group=NULL, dist.method = "euclidean", hclust.meth
   library(factoextra)
 
   sample.dist <- dist(t(df), method = dist.method )
-  sample.dist_hc <- hclust(d = sample.dist, method =hclust.method )
+  sample.dist_hc <- hclust(d = sample.dist, method = hclust.method )
 
   if(is.null(group)){
     group = rep(1, ncol(df))
@@ -540,7 +540,7 @@ drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA,
 
 
   if(show.sample.name){
-    label = row.names(df_pcs)
+    label = row.names(df)
   }
 
   # Main plot
@@ -1103,7 +1103,7 @@ splitGroupByCutoff <- function(group = NULL, values = NULL, fun = NULL, quantile
                          labels = cut.label )
 
     data.df$Label <- as.character(data.df$Label)
-    cat("Global cutpoint for is ", global.cut)
+    cat("Global cutpoint for is ", global.cut,"\n")
 
     ######### if specify group
   }else{

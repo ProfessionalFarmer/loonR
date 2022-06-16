@@ -283,4 +283,3 @@ maf2binaryTable <- function(maf){
 }
 
 
-

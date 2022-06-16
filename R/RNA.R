@@ -1060,5 +1060,74 @@ loadArrayExpressDataset <- function(accession_id = NULL, Processed.data=NULL, re
 
 
 
+#' Check gene expression
+#'
+#' @param gene
+#' @param genes_expr
+#' @param group_list
+#' @param color
+#' @param stat stat method
+#' @param comparisions list(c("A","B"))
+#' @param outlier.shape Default 19. To hide outlier, specify outlier.shape = NA. When jitter is added, then outliers will be automatically hidden.
+#' @param add Default is jitter
+#'
+#' @return
+#' @export
+#'
+#' @examples
+check_diff_gene <- function (gene, genes_expr, group_list, color ="aaas", stat = NULL, comparisions = NULL, outlier.shape = 19, add = "jitter")
+{
+
+  library(ggpubr)
+  if (length(gene) == 1) {
+    if (!gene %in% rownames(genes_expr)) {
+      stop(paste0(gene, " in not in your expression matrix"))
+    }
+    df = data.frame(value = as.numeric(genes_expr[gene,]),
+                    group = group_list)
+    p = ggpubr::ggboxplot(df, x = "group", y = "value", color = "group", group = "group",
+                      palette = color, add = add,
+                      shape = "group", outlier.shape = 19)
+
+    if(!is.null(stat)){
+      p = p + stat_compare_means(
+        comparisons = comparisions
+      )
+    }
+    p
+
+
+
+  }
+  else {
+    cg = gene
+    cg = cg[cg %in% rownames(genes_expr)]
+    warning(paste0("Only ", length(cg), " in ", length(gene),
+                   " genes are in your expression matrix"))
+    if (length(cg) < 1) {
+      stop("None of the gene in your expression matrix")
+    }
+
+    df = tibble::as_tibble( t(genes_expr[cg,])  )
+    df$group = group_list
+
+    df.melt = reshape2::melt(df, id.vars= "group", na.rm = T, variable.name = "gene" )
+
+    p = ggpubr::ggboxplot(df.melt, x = "group", y = "value", color = "group", group = "group",
+                          palette = color, add = add,
+                          shape = "group", outlier.shape = 19)
+
+    p = facet(p, facet.by = "gene", nrow = 1)
+
+    if(!is.null(stat)){
+      p = p + stat_compare_means(
+        comparisons = comparisions
+      )
+    }
+    p
+
+
+  }
+}
 
 

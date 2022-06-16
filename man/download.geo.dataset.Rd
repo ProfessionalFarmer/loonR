@@ -22,7 +22,7 @@ download.geo.dataset(
 
 \item{platform.available}{If GLP platform not available}
 
-\item{normalizeBetweenArrays}{If perform normlize between arrays. Check boxplot first}
+\item{normalizeBetweenArrays}{Default FALSE. If perform normlize between arrays. Check boxplot first}
 
 \item{id.mapping}{Default TRUE in order to select the maximum expression value if a gene has muiltiple probes}
 }

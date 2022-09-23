@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.751</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.86</span>
       </span>
     </div>
 
@@ -181,9 +181,10 @@
 <span class='r-in'><span class='va'>res</span> <span class='op'>&lt;-</span> <span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>splitGroupByCutoff</span><span class='op'>(</span><span class='va'>group</span>, <span class='va'>value</span>, fun<span class='op'>=</span><span class='st'>"mean"</span>, cut.label <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"L"</span>,<span class='st'>"H"</span><span class='op'>)</span>, group.prefix <span class='op'>=</span> <span class='st'>"G"</span>, specific.group <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>1</span>,<span class='fl'>2</span><span class='op'>)</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Local cutpoint for  1  is  54.98498 </span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Local cutpoint for  2  is  44.25116 </span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error:</span> 'AllEqual.inner' is not an exported object from 'namespace:loonR'</span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/table.html'>table</a></span><span class='op'>(</span><span class='va'>res</span><span class='op'>$</span><span class='va'>New.Label</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in eval(quote(list(...)), env)</span> object 'res' not found</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> G1-H G1-L G2-H G2-L   G3 </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>   21   17   17   13   32 </span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

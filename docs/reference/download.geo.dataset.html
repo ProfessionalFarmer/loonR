@@ -58,8 +58,6 @@
 
 
 
-<!-- dependencies from examples -->
-
 
   
 
@@ -83,7 +81,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.751</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.86</span>
       </span>
     </div>
 
@@ -109,7 +107,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Download dataset from GEO by accession ID and platform</h1>
-    <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/Biomarker.R'><code>R/Biomarker.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/GEO.R'><code>R/GEO.R</code></a></small>
     <div class="hidden name"><code>download.geo.dataset.Rd</code></div>
     </div>
 
@@ -117,7 +115,14 @@
     <p>Download dataset from GEO by accession ID and platform</p>
     </div>
 
-    <pre class="usage"><span class='fu'>download.geo.dataset</span><span class='op'>(</span><span class='va'>geo.accession.id</span>, <span class='va'>platform</span>, destdir <span class='op'>=</span> <span class='st'>"~/GSE"</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>download.geo.dataset</span><span class='op'>(</span>
+  <span class='va'>geo.accession.id</span>,
+  platform <span class='op'>=</span> <span class='cn'>NULL</span>,
+  destdir <span class='op'>=</span> <span class='st'>"~/GSE"</span>,
+  platform.available <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  normalizeBetweenArrays <span class='op'>=</span> <span class='cn'>FALSE</span>,
+  id.mapping <span class='op'>=</span> <span class='cn'>TRUE</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -134,16 +139,24 @@
       <th>destdir</th>
       <td><p>Default tempdir()</p></td>
     </tr>
+    <tr>
+      <th>platform.available</th>
+      <td><p>If GLP platform not available</p></td>
+    </tr>
+    <tr>
+      <th>normalizeBetweenArrays</th>
+      <td><p>Default FALSE. If perform normlize between arrays. Check boxplot first</p></td>
+    </tr>
+    <tr>
+      <th>id.mapping</th>
+      <td><p>Default TRUE in order to select the maximum expression value if a gene has muiltiple probes</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>list(expression, phenotype, probe.annotation)</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'></span>
-<span class='r-in'></span>
-</pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

@@ -40,6 +40,9 @@
     <loc>/reference/ClusterProfiler.OverRepresentationTest.html</loc>
   </url>
   <url>
+    <loc>/reference/CorrelationHeatmapTwoDf.html</loc>
+  </url>
+  <url>
     <loc>/reference/DESeq2_differential.html</loc>
   </url>
   <url>
@@ -88,7 +91,22 @@
     <loc>/reference/calculateNMI.html</loc>
   </url>
   <url>
+    <loc>/reference/celline_drug_group_auc_analysis.html</loc>
+  </url>
+  <url>
+    <loc>/reference/celline_drug_target_auc_analysis.html</loc>
+  </url>
+  <url>
+    <loc>/reference/cellline_drug_gene_correlation.html</loc>
+  </url>
+  <url>
     <loc>/reference/checkHousekeepingCombination.html</loc>
+  </url>
+  <url>
+    <loc>/reference/check_diff_gene.html</loc>
+  </url>
+  <url>
+    <loc>/reference/clincial_impact.html</loc>
   </url>
   <url>
     <loc>/reference/compare.GSE.HTSAnalyzer.html</loc>
@@ -118,10 +136,16 @@
     <loc>/reference/convertDfToNumeric.html</loc>
   </url>
   <url>
+    <loc>/reference/convertEnsemblDF2SymbolDF.html</loc>
+  </url>
+  <url>
     <loc>/reference/countClassByColumn.html</loc>
   </url>
   <url>
     <loc>/reference/cross.validation.html</loc>
+  </url>
+  <url>
+    <loc>/reference/dataframe2gct_file.html</loc>
   </url>
   <url>
     <loc>/reference/decisionCurve.diff.pvalue.html</loc>
@@ -193,7 +217,13 @@
     <loc>/reference/findMaxMinColumnNamesForEachRow.html</loc>
   </url>
   <url>
+    <loc>/reference/findRepeatedGenes.html</loc>
+  </url>
+  <url>
     <loc>/reference/findSomaticSignature.html</loc>
+  </url>
+  <url>
+    <loc>/reference/findSurvivalCutPoint.html</loc>
   </url>
   <url>
     <loc>/reference/forest_plot.html</loc>
@@ -238,6 +268,9 @@
     <loc>/reference/get.YoudenIndex.html</loc>
   </url>
   <url>
+    <loc>/reference/get.all.point.ROC.html</loc>
+  </url>
+  <url>
     <loc>/reference/get.ggsci.color.html</loc>
   </url>
   <url>
@@ -280,6 +313,9 @@
     <loc>/reference/get_performance.html</loc>
   </url>
   <url>
+    <loc>/reference/group2class_file.html</loc>
+  </url>
+  <url>
     <loc>/reference/heatmap.annotation.html</loc>
   </url>
   <url>
@@ -307,6 +343,9 @@
     <loc>/reference/is.nan.data.frame.html</loc>
   </url>
   <url>
+    <loc>/reference/lasso.cox.selection.html</loc>
+  </url>
+  <url>
     <loc>/reference/lasso.cv.select.feature.html</loc>
   </url>
   <url>
@@ -329,6 +368,9 @@
   </url>
   <url>
     <loc>/reference/load.salmon.matrix.html</loc>
+  </url>
+  <url>
+    <loc>/reference/loadArrayExpressDataset.html</loc>
   </url>
   <url>
     <loc>/reference/loadGff.html</loc>
@@ -364,6 +406,9 @@
     <loc>/reference/microarray_limma_differential.html</loc>
   </url>
   <url>
+    <loc>/reference/multiIntersection.html</loc>
+  </url>
+  <url>
     <loc>/reference/multi_roc_with_ci.html</loc>
   </url>
   <url>
@@ -386,6 +431,9 @@
   </url>
   <url>
     <loc>/reference/ntbft.html</loc>
+  </url>
+  <url>
+    <loc>/reference/oncoPredict.html</loc>
   </url>
   <url>
     <loc>/reference/oneway.anova.html</loc>
@@ -445,6 +493,9 @@
     <loc>/reference/randomOrderWithinGroup.html</loc>
   </url>
   <url>
+    <loc>/reference/readICGCExpFile.html</loc>
+  </url>
+  <url>
     <loc>/reference/read_mirdeep2_result.html</loc>
   </url>
   <url>
@@ -457,6 +508,12 @@
     <loc>/reference/remove.verylong.isoform.gff.html</loc>
   </url>
   <url>
+    <loc>/reference/removeBatchEffect.html</loc>
+  </url>
+  <url>
+    <loc>/reference/return_immune_genes.html</loc>
+  </url>
+  <url>
     <loc>/reference/riskCalibrationPlot.default.html</loc>
   </url>
   <url>
@@ -466,10 +523,28 @@
     <loc>/reference/riskCalibrationPlot.lrm.html</loc>
   </url>
   <url>
+    <loc>/reference/riskCalibrationPlotMultiple.html</loc>
+  </url>
+  <url>
+    <loc>/reference/riskCalibrationPlotSingleComplex.html</loc>
+  </url>
+  <url>
     <loc>/reference/rms_validate.html</loc>
   </url>
   <url>
     <loc>/reference/roc_with_ci.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runEPIC.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runEstimate.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runImmunedeconv.html</loc>
+  </url>
+  <url>
+    <loc>/reference/runWGCNA.html</loc>
   </url>
   <url>
     <loc>/reference/run_SNF.html</loc>
@@ -493,6 +568,9 @@
     <loc>/reference/splitSampleByGroup.html</loc>
   </url>
   <url>
+    <loc>/reference/ssGSEA.html</loc>
+  </url>
+  <url>
     <loc>/reference/subtypeAssociationAnalysis.html</loc>
   </url>
   <url>
@@ -512,6 +590,9 @@
   </url>
   <url>
     <loc>/reference/tanimoto_distance.html</loc>
+  </url>
+  <url>
+    <loc>/reference/tcgaShorterBarcode.html</loc>
   </url>
   <url>
     <loc>/reference/tcgabiolinks.get.450k.methylation.html</loc>

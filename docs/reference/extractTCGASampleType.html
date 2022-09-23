@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.751</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.86</span>
       </span>
     </div>
 
@@ -137,7 +137,59 @@
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='r-in'><span class='va'>ids</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"TCGA-FV-A495-01"</span>, <span class='st'>"TCGA-G3-A3CH-11"</span>, <span class='st'>"TCGA-G3-A3CH-01"</span>, <span class='st'>"TCGA-DD-A3A6-11"</span>, <span class='st'>"TCGA-DD-A3A6-01"</span>, <span class='st'>"TCGA-DD-A11A-11"</span>, <span class='st'>"TCGA-DD-A11A-01"</span>, <span class='st'>"TCGA-CC-A3MB-01"</span>, <span class='st'>"TCGA-BC-A3KF-01"</span><span class='op'>)</span></span>
 <span class='r-in'><span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>extractTCGASampleType</span><span class='op'>(</span><span class='va'>ids</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in summarize(., Grouped = list(v))</span> argument "by" is missing, with no default</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $Sample.table</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>                ID        Short Code</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1 TCGA-FV-A495-01 TCGA-FV-A495   01</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2 TCGA-G3-A3CH-11 TCGA-G3-A3CH   11</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3 TCGA-G3-A3CH-01 TCGA-G3-A3CH   01</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 4 TCGA-DD-A3A6-11 TCGA-DD-A3A6   11</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 5 TCGA-DD-A3A6-01 TCGA-DD-A3A6   01</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 6 TCGA-DD-A11A-11 TCGA-DD-A11A   11</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 7 TCGA-DD-A11A-01 TCGA-DD-A11A   01</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 8 TCGA-CC-A3MB-01 TCGA-CC-A3MB   01</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 9 TCGA-BC-A3KF-01 TCGA-BC-A3KF   01</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $Grouped</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $Grouped$`Primary Solid Tumor`</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "TCGA-FV-A495-01" "TCGA-G3-A3CH-01" "TCGA-DD-A3A6-01" "TCGA-DD-A11A-01"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [5] "TCGA-CC-A3MB-01" "TCGA-BC-A3KF-01"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $Grouped$`Solid Tissue Normal`</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "TCGA-G3-A3CH-11" "TCGA-DD-A3A6-11" "TCGA-DD-A11A-11"</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $Code.description</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     Code                                        Definition Short.Letter.Code</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  1:   01                               Primary Solid Tumor                TP</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  2:   02                             Recurrent Solid Tumor                TR</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  3:   03   Primary Blood Derived Cancer - Peripheral Blood                TB</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  4:   04      Recurrent Blood Derived Cancer - Bone Marrow              TRBM</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  5:   05                          Additional - New Primary               TAP</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  6:   06                                        Metastatic                TM</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  7:   07                             Additional Metastatic               TAM</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  8:   08                        Human Tumor Original Cells              THOC</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>  9:   09        Primary Blood Derived Cancer - Bone Marrow               TBM</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 10:   10                              Blood Derived Normal                NB</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 11:   11                               Solid Tissue Normal                NT</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 12:   12                                Buccal Cell Normal               NBC</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 13:   13                           EBV Immortalized Normal              NEBV</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 14:   14                                Bone Marrow Normal               NBM</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 15:   15                                    sample type 15              15SH</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 16:   16                                    sample type 16              16SH</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 17:   20                                   Control Analyte             CELLC</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 18:   40 Recurrent Blood Derived Cancer - Peripheral Blood               TRB</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 19:   50                                        Cell Lines              CELL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 20:   60                          Primary Xenograft Tissue                XP</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 21:   61                Cell Line Derived Xenograft Tissue               XCL</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 22:   99                                    sample type 99              99SH</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>     Code                                        Definition Short.Letter.Code</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> $Paired.samples</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span>            Normal           Tumor        Short</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 1 TCGA-G3-A3CH-11 TCGA-G3-A3CH-01 TCGA-G3-A3CH</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 2 TCGA-DD-A3A6-11 TCGA-DD-A3A6-01 TCGA-DD-A3A6</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> 3 TCGA-DD-A11A-11 TCGA-DD-A11A-01 TCGA-DD-A11A</span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

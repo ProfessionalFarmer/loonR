@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plotting the Net benefit function — plot.ntbft • loonR</title>
+<title>Plotting the Net benefit function. Coule be multiple curves — plot.ntbft • loonR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Plotting the Net benefit function — plot.ntbft" />
-<meta property="og:description" content="Plotting the Net benefit function" />
+<meta property="og:title" content="Plotting the Net benefit function. Coule be multiple curves — plot.ntbft" />
+<meta property="og:description" content="Plotting the Net benefit function. Coule be multiple curves" />
 
 
 
@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.751</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.86</span>
       </span>
     </div>
 
@@ -108,13 +108,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plotting the Net benefit function</h1>
+    <h1>Plotting the Net benefit function. Coule be multiple curves</h1>
     <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/DCA.R'><code>R/DCA.R</code></a></small>
     <div class="hidden name"><code>plot.ntbft.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Plotting the Net benefit function</p>
+    <p>Plotting the Net benefit function. Coule be multiple curves</p>
     </div>
 
     <pre class="usage"><span class='co'># S3 method for ntbft</span>
@@ -160,122 +160,28 @@
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>)</span></span>
+    <pre class="examples"><span class='r-in'><span class='va'>p</span> <span class='op'>=</span> <span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'><a href='decisionCurveAnalysisSimple.html'>decisionCurveAnalysisSimple</a></span><span class='op'>(</span><span class='va'>label</span>, <span class='va'>risk</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in unique.default(response)</span> unique() applies only to vectors</span>
+<span class='r-in'><span class='va'>p</span><span class='op'>$</span><span class='va'>Plot</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in eval(expr, envir, enclos)</span> object 'p' not found</span>
+<span class='r-in'><span class='va'>v.netbenefit</span> <span class='op'>=</span> <span class='va'>p</span><span class='op'>$</span><span class='va'>NetBenefit</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in eval(expr, envir, enclos)</span> object 'p' not found</span>
 <span class='r-in'></span>
-<span class='r-in'><span class='va'>pred</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/vector.html'>as.vector</a></span><span class='op'>(</span> <span class='fu'><a href='https://rdrr.io/r/base/unlist.html'>unlist</a></span><span class='op'>(</span> <span class='va'>LIRI</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>]</span> <span class='op'>)</span> <span class='op'>)</span></span>
-<span class='r-in'><span class='fu'><a href='ntbft.boot.html'>ntbft.boot</a></span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>$</span><span class='va'>status</span>, <span class='va'>pred</span><span class='op'>)</span></span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> .....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> ORDINARY NONPARAMETRIC BOOTSTRAP</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Call:</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> boot(data = pred, statistic = diffnet, R = boots, outcome = outcome)</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> </span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> Bootstrap Statistics :</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span>      original        bias    std. error</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t1*         0 -0.0012713340  0.02601793</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t2*         0 -0.0012843068  0.02628342</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t3*         0 -0.0012996801  0.02653991</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t4*         0 -0.0013139368  0.02681162</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t5*         0 -0.0013284936  0.02708912</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t6*         0 -0.0013433602  0.02737260</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t7*         0 -0.0013585465  0.02766224</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t8*         0 -0.0013740630  0.02795824</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t9*         0 -0.0013899204  0.02826083</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t10*        0 -0.0014061303  0.02857020</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t11*        0 -0.0014227044  0.02888660</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t12*        0 -0.0014396552  0.02921027</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t13*        0 -0.0014569956  0.02954144</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t14*        0 -0.0014747394  0.02988040</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t15*        0 -0.0014929006  0.03022740</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t16*        0 -0.0015114943  0.03058275</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t17*        0 -0.0015270046  0.03092101</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t18*        0 -0.0013652229  0.03104914</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t19*        0 -0.0013849510  0.03142710</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t20*        0 -0.0014051724  0.03181473</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t21*        0 -0.0014144478  0.03220073</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t22*        0 -0.0014350133  0.03260911</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t23*        0 -0.0014561129  0.03302841</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t24*        0 -0.0013797641  0.03340320</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t25*        0 -0.0013965517  0.03384385</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t26*        0 -0.0014137931  0.03429685</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t27*        0 -0.0014857109  0.03478683</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t28*        0 -0.0015067050  0.03526849</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t29*        0 -0.0014754735  0.03587198</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t30*        0 -0.0014950739  0.03639111</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t31*        0 -0.0016353073  0.03689128</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t32*        0 -0.0016617647  0.03744348</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t33*        0 -0.0017059959  0.03808113</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t34*        0 -0.0017348485  0.03867372</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t35*        0 -0.0017970822  0.03912911</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t36*        0 -0.0018292026  0.03975649</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t37*        0 -0.0018623426  0.04040502</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t38*        0 -0.0018648498  0.04108026</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t39*        0 -0.0018051159  0.04177206</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t40*        0 -0.0017442529  0.04245700</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t41*        0 -0.0017725015  0.04320685</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t42*        0 -0.0018017241  0.04398423</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t43*        0 -0.0018319722  0.04496831</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t44*        0 -0.0017955665  0.04606810</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t45*        0 -0.0018252351  0.04695941</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t46*        0 -0.0018560026  0.04788567</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t47*        0 -0.0018879310  0.04884885</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t48*        0 -0.0021518568  0.04979467</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t49*        0 -0.0021957404  0.05083922</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t50*        0 -0.0022413793  0.05192774</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t51*        0 -0.0022888811  0.05306292</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t52*        0 -0.0023103448  0.05448384</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t53*        0 -0.0023607850  0.05573441</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t54*        0 -0.0020086207  0.05724145</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t55*        0 -0.0016465517  0.05886348</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t56*        0 -0.0009678683  0.06002253</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t57*        0 -0.0008718925  0.06199349</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t58*        0 -0.0008633005  0.06361079</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t59*        0 -0.0007674516  0.06585350</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t60*        0 -0.0011939655  0.06792869</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t61*        0 -0.0011989390  0.06985504</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t62*        0 -0.0012041742  0.07188624</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t63*        0 -0.0012096925  0.07403076</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t64*        0 -0.0012155172  0.07629801</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t65*        0 -0.0012216749  0.07872109</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t66*        0 -0.0004584178  0.08168408</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t67*        0 -0.0004299896  0.08443210</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t68*        0 -0.0003997845  0.08735636</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t69*        0  0.0002463849  0.09013311</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t70*        0  0.0013764368  0.09438725</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t71*        0  0.0010963139  0.09874891</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t72*        0  0.0017955665  0.10293673</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t73*        0  0.0019591315  0.10773842</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t74*        0  0.0021114058  0.11234011</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t75*        0  0.0022758621  0.11731574</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t76*        0  0.0024540230  0.12271199</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t77*        0  0.0026476762  0.12858364</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t78*        0  0.0028589342  0.13499545</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t79*        0  0.0030903120  0.14202449</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t80*        0  0.0033448276  0.14976326</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t81*        0  0.0036261343  0.15832373</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t82*        0  0.0027605364  0.16875179</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t83*        0  0.0024934077  0.17784138</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t84*        0  0.0026659483  0.19004070</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t85*        0  0.0029568966  0.20367004</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t86*        0  0.0044544335  0.22030557</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t87*        0  0.0049423077  0.23841059</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t88*        0  0.0055114943  0.25954404</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t89*        0  0.0085556426  0.28523447</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t90*        0  0.0086982759  0.31387263</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t91*        0  0.0137308429  0.34985884</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t92*        0  0.0147629310  0.39780583</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t93*        0  0.0133165025  0.45772378</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t94*        0  0.0158821839  0.53679281</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t95*        0  0.0194741379  0.64751440</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t96*        0  0.0248620690  0.81362748</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t97*        0  0.0380229885  1.08642420</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t98*        0  0.0433534483  1.64621817</span>
-<span class='r-out co'><span class='r-pr'>#&gt;</span> t99*        0  0.0886120690  3.31015737</span>
-<span class='r-in'><span class='fu'>plot.ntbft</span><span class='op'>(</span><span class='va'>ntbft.boot</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in plot.ntbft(ntbft.boot)</span> could not find function "plot.ntbft"</span>
+<span class='r-in'><span class='co'># similar to getr.netbenefit</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>nb</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span>threshold <span class='op'>=</span> <span class='va'>v.netbenefit</span><span class='op'>$</span><span class='va'>threshold</span>,</span>
+<span class='r-in'>                 All <span class='op'>=</span> <span class='va'>v.netbenefit</span><span class='op'>$</span><span class='va'>All</span>,</span>
+<span class='r-in'>                 None <span class='op'>=</span> <span class='va'>v.netbenefit</span><span class='op'>$</span><span class='va'>None</span>,</span>
+<span class='r-in'>                 `Transcriptomic panel` <span class='op'>=</span> <span class='va'>v.netbenefit</span><span class='op'>$</span><span class='va'>Model</span>,</span>
+<span class='r-in'>                 `Risk-stratification model` <span class='op'>=</span> <span class='va'>r.netbenefit</span><span class='op'>$</span><span class='va'>Model</span>,</span>
+<span class='r-in'>                 stringsAsFactors <span class='op'>=</span> <span class='cn'>F</span>,</span>
+<span class='r-in'>                 check.names <span class='op'>=</span> <span class='cn'>F</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in data.frame(threshold = v.netbenefit$threshold, All = v.netbenefit$All,     None = v.netbenefit$None, `Transcriptomic panel` = v.netbenefit$Model,     `Risk-stratification model` = r.netbenefit$Model, stringsAsFactors = F,     check.names = F)</span> object 'v.netbenefit' not found</span>
+<span class='r-in'></span>
+<span class='r-in'><span class='va'>p</span> <span class='op'>=</span> <span class='fu'>loonR</span><span class='fu'>:::</span><span class='fu'>plot.ntbft</span><span class='op'>(</span><span class='va'>nb</span>, <span class='fl'>2</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>)</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loonR:::plot.ntbft(nb, 2:5)</span> object 'nb' not found</span>
+<span class='r-in'><span class='va'>p</span></span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in eval(expr, envir, enclos)</span> object 'p' not found</span>
 <span class='r-in'></span>
 </pre>
   </div>

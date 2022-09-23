@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.751</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.86</span>
       </span>
     </div>
 
@@ -136,7 +136,7 @@
     </tr>
     <tr>
       <th>lp</th>
-      <td><p>If fun.list is NA, lp will be TRUE. Set to FALSE to suppress creation of an axis for scoring X beta</p></td>
+      <td><p>线性预测If fun.list is NA, lp will be TRUE. Set to FALSE to suppress creation of an axis for scoring X beta</p></td>
     </tr>
     </table>
 
@@ -151,27 +151,30 @@
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>res</span> <span class='op'>=</span> <span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'><a href='build.logistic.model.html'>build.logistic.model</a></span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>[</span>,<span class='fl'>3</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>, <span class='va'>LIRI</span><span class='op'>$</span><span class='va'>status</span>, rms <span class='op'>=</span> <span class='cn'>T</span>, scale <span class='op'>=</span> <span class='cn'>F</span><span class='op'>)</span></span>
 <span class='r-out co'><span class='r-pr'>#&gt;</span> Pls note: Second unique variable is defined as experiment group</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Setting levels: control = 0, case = 1</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Setting direction: controls &lt; cases</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Setting levels: control = 0, case = 1</span>
-<span class='r-msg co'><span class='r-pr'>#&gt;</span> Setting direction: controls &lt; cases</span>
-<span class='r-in'><span class='va'>f1</span> <span class='op'>=</span> <span class='fu'>loonR</span><span class='fu'>::</span><span class='va'><a href='logit2prob.html'>logit2prob</a></span></span>
-<span class='r-in'><span class='fu'>nomogram.plot</span><span class='op'>(</span><span class='va'>res</span><span class='op'>$</span><span class='va'>model</span>, <span class='va'>res</span><span class='op'>$</span><span class='va'>data</span>, lp <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in value.chk(at, i, NA, -nint, Limval, type.range = "full")</span> variable ANLN does not have limits defined by datadist</span>
-<span class='r-in'><span class='fu'>nomogram.plot</span><span class='op'>(</span><span class='va'>res</span><span class='op'>$</span><span class='va'>model</span>, <span class='va'>res</span><span class='op'>$</span><span class='va'>data</span>, <span class='va'>f1</span>, lp <span class='op'>=</span><span class='cn'>F</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in value.chk(at, i, NA, -nint, Limval, type.range = "full")</span> variable ANLN does not have limits defined by datadist</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in Design(data, formula = formula, specials = "strat")</span> dataset dd not found for options(datadist=)</span>
+<span class='r-in'><span class='va'>f1</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>Risk <span class='op'>=</span> <span class='fu'>loonR</span><span class='fu'>::</span><span class='va'><a href='logit2prob.html'>logit2prob</a></span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>nomogram.plot</span><span class='op'>(</span><span class='va'>res</span><span class='op'>$</span><span class='va'>model</span>, <span class='va'>res</span><span class='op'>$</span><span class='va'>data</span>, lp <span class='op'>=</span> <span class='cn'>T</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> If the warining raise: Pls run manualy outsite the function:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   ddist &lt;- datadist(res$data)</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   options(datadist = "ddist")  </span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loonR::nomogram.plot(res$model, res$data, lp = T)</span> object 'res' not found</span>
+<span class='r-in'><span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>nomogram.plot</span><span class='op'>(</span><span class='va'>res</span><span class='op'>$</span><span class='va'>model</span>, <span class='va'>res</span><span class='op'>$</span><span class='va'>data</span>, <span class='va'>f1</span>, lp <span class='op'>=</span><span class='cn'>F</span><span class='op'>)</span></span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> If the warining raise: Pls run manualy outsite the function:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   ddist &lt;- datadist(res$data)</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   options(datadist = "ddist")  </span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in loonR::nomogram.plot(res$model, res$data, f1, lp = F)</span> object 'res' not found</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='co'># Survial model</span></span>
 <span class='r-in'><span class='va'>res</span> <span class='op'>=</span> <span class='fu'><a href='build.psm.regression.model.html'>build.psm.regression.model</a></span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>[</span>,<span class='fl'>3</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>,<span class='va'>LIRI</span><span class='op'>$</span><span class='va'>status</span>, <span class='va'>LIRI</span><span class='op'>$</span><span class='va'>time</span>, scale <span class='op'>=</span> <span class='cn'>F</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in Design(m, formula = formula, specials = c("strata", "cluster"))</span> dataset ddist not found for options(datadist=)</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in Design(m, formula = formula, specials = c("strata", "cluster"))</span> dataset dd not found for options(datadist=)</span>
 <span class='r-in'></span>
 <span class='r-in'><span class='va'>surv</span> <span class='op'>&lt;-</span> <span class='fu'>Survival</span><span class='op'>(</span><span class='va'>res</span><span class='op'>$</span><span class='va'>model</span><span class='op'>)</span> <span class='co'># This would also work if f was from cph</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in UseMethod("Survival")</span> no applicable method for 'Survival' applied to an object of class "c('lrm', 'rms', 'glm')"</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in Survival(res$model)</span> object 'res' not found</span>
 <span class='r-in'><span class='va'>surv_100</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='fu'>surv</span><span class='op'>(</span><span class='fl'>100</span>, lp <span class='op'>=</span> <span class='va'>x</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>surv_300</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='fu'>surv</span><span class='op'>(</span><span class='fl'>300</span>, lp <span class='op'>=</span> <span class='va'>x</span><span class='op'>)</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='va'>med</span> <span class='op'>&lt;-</span> <span class='fu'>Quantile</span><span class='op'>(</span><span class='va'>res</span><span class='op'>$</span><span class='va'>model</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in UseMethod("Quantile")</span> no applicable method for 'Quantile' applied to an object of class "c('lrm', 'rms', 'glm')"</span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in Quantile(res$model)</span> object 'res' not found</span>
 <span class='r-in'><span class='va'>med_f</span> <span class='op'>&lt;-</span> <span class='kw'>function</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='fu'>med</span><span class='op'>(</span>lp<span class='op'>=</span><span class='va'>x</span><span class='op'>)</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='va'>f.list</span><span class='op'>=</span><span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span></span>
@@ -180,7 +183,10 @@
 <span class='r-in'>  `Probability of 300-day Survival`<span class='op'>=</span><span class='va'>surv_300</span></span>
 <span class='r-in'><span class='op'>)</span></span>
 <span class='r-in'><span class='fu'>nomogram.plot</span><span class='op'>(</span><span class='va'>res</span><span class='op'>$</span><span class='va'>model</span>, <span class='va'>res</span><span class='op'>$</span><span class='va'>data</span>, fun.list <span class='op'>=</span> <span class='va'>f.list</span>, lp <span class='op'>=</span><span class='cn'>F</span><span class='op'>)</span></span>
-<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in value.chk(at, i, NA, -nint, Limval, type.range = "full")</span> variable ANLN does not have limits defined by datadist</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span> If the warining raise: Pls run manualy outsite the function:</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   ddist &lt;- datadist(res$data)</span>
+<span class='r-msg co'><span class='r-pr'>#&gt;</span>   options(datadist = "ddist")  </span>
+<span class='r-err co'><span class='r-pr'>#&gt;</span> <span class='error'>Error in nomogram.plot(res$model, res$data, fun.list = f.list, lp = F)</span> object 'res' not found</span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.751</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.86</span>
       </span>
     </div>
 
@@ -134,6 +134,10 @@
       <th>seed</th>
       <td><p>Default 666</p></td>
     </tr>
+    <tr>
+      <th>scale</th>
+      <td></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
@@ -147,7 +151,7 @@
 <span class='r-in'><span class='co'># cph (Cox Proportional Hazards Model and Extensions) is using the cox model (and the Anderson-Gill model) which is based on the hazard functions.</span></span>
 <span class='r-in'></span>
 <span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>)</span></span>
-<span class='r-in'><span class='va'>res</span> <span class='op'>=</span> <span class='fu'>build.coxregression.model</span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>[</span>,<span class='fl'>3</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>,<span class='va'>LIRI</span><span class='op'>$</span><span class='va'>status</span>, <span class='va'>LIRI</span><span class='op'>$</span><span class='va'>time</span><span class='op'>)</span></span>
+<span class='r-in'><span class='va'>res</span> <span class='op'>=</span> <span class='fu'>loonR</span><span class='fu'>::</span><span class='fu'>build.coxregression.model</span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>[</span>,<span class='fl'>3</span><span class='op'>:</span><span class='fl'>5</span><span class='op'>]</span>,<span class='va'>LIRI</span><span class='op'>$</span><span class='va'>status</span>, <span class='va'>LIRI</span><span class='op'>$</span><span class='va'>time</span><span class='op'>)</span></span>
 </pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

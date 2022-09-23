@@ -875,3 +875,4 @@ group2class_file = function(group, file = "./class.cls"){
   close(OUT)
 
 }
+

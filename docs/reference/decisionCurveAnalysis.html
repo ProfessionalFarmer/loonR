@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Decision curve analysis — decisionCurveAnalysis • loonR</title>
+<title>Decision curve analysis. Similar with plot.ntbft — decisionCurveAnalysis • loonR</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Decision curve analysis — decisionCurveAnalysis" />
-<meta property="og:description" content="Decision curve analysis" />
+<meta property="og:title" content="Decision curve analysis. Similar with plot.ntbft — decisionCurveAnalysis" />
+<meta property="og:description" content="Decision curve analysis. Similar with plot.ntbft" />
 
 
 
@@ -83,7 +83,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.751</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.1.86</span>
       </span>
     </div>
 
@@ -108,13 +108,13 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Decision curve analysis</h1>
+    <h1>Decision curve analysis. Similar with plot.ntbft</h1>
     <small class="dont-index">Source: <a href='https://github.com/ProfessionalFarmer/loonR/blob/master/R/DCA.R'><code>R/DCA.R</code></a></small>
     <div class="hidden name"><code>decisionCurveAnalysis.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Decision curve analysis</p>
+    <p>Decision curve analysis. Similar with plot.ntbft</p>
     </div>
 
     <pre class="usage"><span class='fu'>decisionCurveAnalysis</span><span class='op'>(</span>
@@ -138,7 +138,7 @@
     </tr>
     <tr>
       <th>validation.df</th>
-      <td><p>shold include all variable in data.frame.list</p></td>
+      <td><p>should include all variable in data.frame.list</p></td>
     </tr>
     <tr>
       <th>palette</th>
@@ -155,7 +155,7 @@
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='r-in'><span class='fu'><a href='https://rdrr.io/r/utils/data.html'>data</a></span><span class='op'>(</span><span class='va'>LIRI</span><span class='op'>)</span></span>
 <span class='r-in'></span>
-<span class='r-in'><span class='va'>d1</span> <span class='op'>&lt;-</span> <span class='va'>LIRI</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>]</span></span>
+<span class='r-in'><span class='va'>d1</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/data.frame.html'>data.frame</a></span><span class='op'>(</span> <span class='va'>LIRI</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span><span class='op'>)</span><span class='op'>]</span><span class='op'>)</span></span>
 <span class='r-in'><span class='va'>d2</span> <span class='op'>&lt;-</span> <span class='va'>LIRI</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>4</span><span class='op'>)</span><span class='op'>]</span></span>
 <span class='r-in'><span class='va'>d3</span> <span class='op'>&lt;-</span> <span class='va'>LIRI</span><span class='op'>[</span>,<span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>,<span class='fl'>4</span>,<span class='fl'>5</span><span class='op'>)</span><span class='op'>]</span></span>
 <span class='r-in'><span class='va'>data.frame.list</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>d1<span class='op'>=</span><span class='va'>d1</span>,d2<span class='op'>=</span><span class='va'>d2</span>,d3<span class='op'>=</span><span class='va'>d3</span><span class='op'>)</span></span>

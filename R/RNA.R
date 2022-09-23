@@ -1103,7 +1103,11 @@ check_diff_gene <- function (gene, genes_expr, group_list, color ="aaas", stat =
     cg = gene
     cg = cg[cg %in% rownames(genes_expr)]
     warning(paste0("Only ", length(cg), " in ", length(gene),
-                   " genes are in your expression matrix"))
+                   " genes are in your expression matrix\n"),
+            "The following not found: ",
+            paste0( setdiff(gene,cg),collapse = ", " ) ,
+            "\n" )
+
     if (length(cg) < 1) {
       stop("None of the gene in your expression matrix")
     }
@@ -1131,3 +1135,81 @@ check_diff_gene <- function (gene, genes_expr, group_list, color ="aaas", stat =
 }
 
 
+
+
+
+#' Format ICGC dataframe
+#'
+#' @param filepath
+#'
+#' @return
+#' @export
+#'
+#' @examples
+readICGCExpFile = function(filepath){
+
+  # https://zhuanlan.zhihu.com/p/544873240
+  # https://zhuanlan.zhihu.com/p/545361642
+
+  library(tidyverse)
+  library(data.table)
+  exp_seq <- read_delim(filepath, "\t", escape_double = FALSE, trim_ws = TRUE)
+
+  clin = unique(exp_seq[,1:7])
+
+  ########### raw count
+  exp <- unique(exp_seq[,c("icgc_specimen_id","gene_id","raw_read_count")])
+
+  colnames(exp) <- c("icgc_specimen_id","gene_id","raw_read_count")
+
+  dat <- dcast(data.table(exp), gene_id~icgc_specimen_id,
+               value.var="raw_read_count", fun.aggregate = max)
+
+
+  ######## normalized
+  exp <- unique(exp_seq[,c("icgc_specimen_id","gene_id","normalized_read_count")])
+
+  colnames(exp) <- c("icgc_specimen_id","gene_id","normalized_read_count")
+
+  normalized.dat <- dcast(data.table(exp), gene_id~icgc_specimen_id,
+                          value.var="normalized_read_count", fun.aggregate = max)
+
+
+  ########### convert to TPM
+  ###### get gene length
+  library(GenomicFeatures)
+  txdb <- GenomicFeatures::makeTxDbFromEnsembl(organism = "Homo sapiens",
+                                               server = "ensembldb.ensembl.org")
+
+  exons_gene <- exonsBy(txdb, by = "gene")
+  # https://www.biostars.org/p/83901/
+  red.exonic <- reduce(exons_gene)
+  exons_gene_lens <- vapply(width(red.exonic), sum, numeric(1))
+
+  gene <- as.matrix(exons_gene_lens) %>% as.data.frame() %>% rownames_to_column()
+  colnames(gene)<-c('gene_id','length')
+  gene$gene_id <- str_split(gene$gene,"[.]",simplify = T)[,1] # 删除版本的“.”和后的数字
+  gene$length <- as.numeric(gene$length)
+  gene <- unique(gene) # 去重
+
+  # tmp <- inner_join(dat,  gene, by = 'gene_id') # 匹配gene_count与gene_length
+
+
+  ## colunmn to rownames
+  counts = tibble::column_to_rownames(dat, var = "gene_id")
+  normalized.dat = tibble::column_to_rownames(normalized.dat, var = "gene_id")
+
+  ###### convert to tpm
+  # https://support.bioconductor.org/p/91218/
+  x <- counts/gene[match(rownames(counts),gene$gene_id),]$length
+  x = na.omit(x)
+
+  tpm = t(t(x)*1e6/colSums(x))
+
+
+
+  res = list(clin = clin, rawCount = counts, normalized.data = normalized.dat, TPM = tpm)
+  res
+
+
+}

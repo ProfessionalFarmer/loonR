@@ -147,7 +147,7 @@ writeGff <- function(x, gff.path){
 getTranscriptLength <- function(gff, returnTranscriptLength=FALSE, returnEndStartLength=FALSE){
 
   if(returnTranscriptLength & returnEndStartLength){
-    stop("Ccan't both")
+    stop("Can't both")
   }
   if(!returnTranscriptLength & !returnEndStartLength){
     warning("Set default by column")

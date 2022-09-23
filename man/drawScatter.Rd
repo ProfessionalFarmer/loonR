@@ -17,7 +17,6 @@ drawScatter(
   xlim = NULL,
   ylim = NULL,
   add = "none",
-  show.sample.name = FALSE,
   label = NULL,
   cor.coef = F,
   cor.method = "pearson"
@@ -36,13 +35,13 @@ drawScatter(
 
 \item{add}{c("none", "reg.line", "loess")}
 
-\item{show.sample.name}{Default FALSE}
-
 \item{label}{Default NULL}
 
 \item{cor.coef}{TRUE/FALSE to show coefficient}
 
 \item{cor.method}{method for computing correlation coefficient. Allowed values are one of "pearson", "kendall", or "spearman"}
+
+\item{show.sample.name}{Default FALSE}
 }
 \value{
 ggplot2 object

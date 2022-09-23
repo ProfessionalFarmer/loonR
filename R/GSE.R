@@ -698,3 +698,46 @@ load.gmt <- function(gmt.path){
 }
 
 
+
+#' ssGSEA
+#'
+#' @param expr column is sample
+#' @param geneset gmt path or a vector
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#'
+ssGSEA <- function(expr, geneset){
+
+  if(file.exists(geneset)){
+    gene.set <- loonR::load.gmt(geneset)
+  }else{
+    gene.set = list(GeneSet = geneset)
+  }
+
+  library(GSVA)
+  library(GSEABase)
+
+  res.ssgsea <- gsva(
+    as.matrix(expr),
+    gene.set,
+    method = "ssgsea",
+    kcdf = "Poisson", min.sz = 10)
+
+  normalize=function(x){
+    return((x-min(x))/(max(x)-min(x)))}
+  #定义ssGSEA_Score矫正函数
+  res.ssgsea = normalize(res.ssgsea)#对ssGSEA_Score进行矫正
+  res.ssgsea
+
+}
+
+
+
+
+
+
+
+

@@ -14,7 +14,6 @@ plotPCA(
   main.title = "",
   alpha = 1,
   return.percentage = FALSE,
-  pre.filter = 0.01,
   label = NULL,
   plot3D = FALSE,
   show.sample.name = FALSE,
@@ -36,8 +35,6 @@ and scientific journal palettes from ggsci R package, e.g.: "npg", "aaas", "lanc
 \item{main.title}{main title}
 
 \item{return.percentage}{If TRUE, reture PCA percentage instead of PCA lot}
-
-\item{pre.filter}{}
 
 \item{point.size}{Default 2}
 }

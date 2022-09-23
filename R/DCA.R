@@ -442,7 +442,7 @@ riskCalibrationPlot.default <- function(group, pred, rms.method = FALSE, title =
 
   df <- data.frame(pred=pred, RawClass=group)
   if(!is.factor(group)){
-    warning("group Must be a TRUE/FALSE factor")
+    stop("group Must be a TRUE/FALSE factor")
     group = factor(group==unique(group)[2], levels = c(FALSE,TRUE))
   }
   df$Class=group
@@ -584,7 +584,7 @@ riskCalibrationPlotMultiple <- function(risk.list = NULL, label = NULL, palette 
       stop("Risk length should be the same as label length")
     }
 
-    model.formula <- as.formula(paste('Label ~',x))
+    model.formula <- as.formula(paste('Label ~ ', x))
 
     df = data.frame(Risk  =  risk.list[[x]],
                     Label = label, check.names = F, stringsAsFactors = F)
@@ -610,7 +610,7 @@ riskCalibrationPlotMultiple <- function(risk.list = NULL, label = NULL, palette 
               B=1000, M=50,
               data = risk.df)  # risk df column names should be included all the variables and label
 
-  plotCalibration(xb, rug = F, show.frequencies	= T,
+  plotCalibration(xb, rug = F, show.frequencies	= T, auc.in.legend = T,
                   col = loonR::get.palette.color(palette)[1:length(fit.res)],
                   )
 

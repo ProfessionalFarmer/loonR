@@ -14,7 +14,10 @@ hyperGeoTest(
   log10.lowest = 5,
   print.fig = TRUE,
   adjusted.p = NULL,
-  remove.na = FALSE
+  remove.na = FALSE,
+  bar.color = "npg",
+  chiq.square.test = T,
+  not.consider = NA
 )
 }
 \arguments{
@@ -27,9 +30,13 @@ hyperGeoTest(
 \item{adjusted.p}{If to adjust P value c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")}
 
 \item{remove.na}{If to remove NA}
+
+\item{bar.color}{palatte for barplot}
+
+\item{not.consider}{A vector that not consider the inside element}
 }
 \value{
-list(pval.df.log, pval.df, plot)
+list(barplot, pval.df.log, pval.df, plot)
 }
 \description{
 Perform hypergeometric test

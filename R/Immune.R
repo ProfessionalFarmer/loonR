@@ -224,10 +224,14 @@ CorrelationHeatmapTwoDf <- function(x.axis.df, y.axis.df, cor.method = "spearman
 #' @export
 #'
 #' @examples loonR::return_immune_genes()
-return_immune_genes <- function(){
+return_immune_genes <- function(type=c("default", "checkpoint") ){
 
-   message("Collected from: ")
-   message("https://www.cell.com/immunity/fulltext/S1074-7613(18)30121-3?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS1074761318301213%3Fshowall%3Dtrue#supplementaryMaterial")
+  if(length(type)>1){
+     type = "default"
+  } else{
+    type = match.arg(type)
+  }
+
 
   immune.related.genes = tibble::tribble(
     ~HGNC.Symbol,        ~Super.Category, ~Entrez.ID,    ~Symbol, ~Immune.Checkpoint,
@@ -311,6 +315,20 @@ return_immune_genes <- function(){
     "VTCN1",         "Co-inhibitor",     79679L,    "VTCN1",       "Inhibitory"
   )
 
-  immune.related.genes
+
+
+
+  message("Collected from: ")
+  if(type=="default"){
+    message("https://www.cell.com/immunity/fulltext/S1074-7613(18)30121-3?_returnURL=https%3A%2F%2Flinkinghub.elsevier.com%2Fretrieve%2Fpii%2FS1074761318301213%3Fshowall%3Dtrue#supplementaryMaterial")
+    res = immune.related.genes
+  }else if(type=="checkpoint"){
+    message("https://www.sciencedirect.com/science/article/pii/S1936523319303389#:~:text=These%20include%20the%20coinhibitory%20molecules,and%20VISTA%20and%20CD277%2C%20the")
+    message("Table 1. A List of All Potential Checkpoints on the Cancer/APC Side if the Immunological Synapse.")
+
+  }
+
+
+  res
 
 }

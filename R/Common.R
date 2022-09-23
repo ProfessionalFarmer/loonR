@@ -67,7 +67,6 @@ exportTable <- function(df, file="~/test.tsv", quote = F, sep = "\t", row.names 
 #' @param plot3D
 #' @param show.sample.name
 #' @param point.size Default 2
-#' @param pre.filter
 #'
 #' @return
 #' @export
@@ -75,10 +74,13 @@ exportTable <- function(df, file="~/test.tsv", quote = F, sep = "\t", row.names 
 #' @examples plotPCA(df, group, "aaas")
 plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = "Group",
                     main.title = "", alpha=1, return.percentage = FALSE,
-                    pre.filter = 0.01, label = NULL, plot3D = FALSE,
+                    label = NULL, plot3D = FALSE,
                     show.sample.name = FALSE, point.size = 2){
 
-  df <- df[, colMeans(df) > pre.filter]
+  df <- df[, colMeans(df) != 0 & apply(df, 2, sd) !=0 ]
+
+  message("Note: mean and std 0 will be filtered")
+
 
   # Compute PCA
   df_pca <- prcomp(df, scale = TRUE) #计算主成分,强制scale
@@ -109,7 +111,11 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
     library(ggplot2)
     library(ggpubr)
     if(show.sample.name){
-      label = row.names(df_pcs)
+
+      if(is.null(label)){
+        label = rownames(df)
+      }
+
     }
     p <- ggscatter(df_pcs, x="PC1", y="PC2", color="Class",
                    palette = loonR::get.palette.color(palette, n=length( levels(factor(group)) ), alpha=alpha),
@@ -510,7 +516,7 @@ plotSilhouette <- function(df, group, color = "aaas", class = "Class", label=FAL
 drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA,
                         color = "jco", title = "", remove.legend = FALSE,
                         margin = TRUE, xlim = NULL, ylim = NULL, add = "none",
-                        show.sample.name = FALSE, label = NULL, cor.coef = F, cor.method = "pearson" ){
+                        label = NULL, cor.coef = F, cor.method = "pearson" ){
 
   # http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/78-perfect-scatter-plots-with-correlation-and-marginal-histograms/
 
@@ -539,9 +545,11 @@ drawScatter <- function(xvalue, yvalue, xlab = "X", ylab = "Y", group = NA,
   #         panel.background = element_blank(), axis.line = element_line(colour = "black"))
 
 
-  if(show.sample.name){
-    label = row.names(df)
-  }
+
+    if(is.null(label)){
+      show.sample.name = TRUE
+    }
+
 
   # Main plot
   pmain <- ggpubr::ggscatter(df, x="x", y="y", color = "Type",

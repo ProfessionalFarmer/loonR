@@ -13,7 +13,7 @@ nomogram.plot(fit = NULL, data = NULL, fun.list = NA, lp = F)
 
 \item{fun.list}{an optional function to transform the linear predictors, and to plot on another axis. If more than one transformation is plotted, put them in a list, e.g. list(function(x) x/2, function(x) 2*x). Any function values equal to NA will be ignored.}
 
-\item{lp}{If fun.list is NA, lp will be TRUE. Set to FALSE to suppress creation of an axis for scoring X beta}
+\item{lp}{线性预测If fun.list is NA, lp will be TRUE. Set to FALSE to suppress creation of an axis for scoring X beta}
 }
 \value{
 
@@ -25,9 +25,9 @@ Nomogram plot by rms
 # Logistic model
 data(LIRI)
 res = loonR::build.logistic.model(LIRI[,3:5], LIRI$status, rms = T, scale = F)
-f1 = loonR::logit2prob
-nomogram.plot(res$model, res$data, lp = T)
-nomogram.plot(res$model, res$data, f1, lp =F)
+f1 = list(Risk = loonR::logit2prob)
+loonR::nomogram.plot(res$model, res$data, lp = T)
+loonR::nomogram.plot(res$model, res$data, f1, lp =F)
 
 # Survial model
 res = build.psm.regression.model(LIRI[,3:5],LIRI$status, LIRI$time, scale = F)

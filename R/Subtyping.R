@@ -47,32 +47,73 @@ fillSymmetricNATable <- function(symmetric.df){
 #' @param print.fig Default print the figure
 #' @param adjusted.p If to adjust P value c("holm", "hochberg", "hommel", "bonferroni", "BH", "BY", "fdr", "none")
 #' @param remove.na If to remove NA
+#' @param bar.color palatte for barplot
+#' @param chiq.square.test
+#' @param not.consider A vector that not consider the inside element
 #'
-#' @return list(pval.df.log, pval.df, plot)
+#' @return list(barplot, pval.df.log, pval.df, plot)
 #' @export
 #'
 #' @examples
 #' g1 = sample(c("G1","G2","G3"),10, replace = T)
 #' g2 = sample(c("1","2","3"),10, replace = T)
 #' loonR::hyperGeoTest(g1, g2, col.prefix = "E")
-hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "", lower.tail = FALSE, title = "", log10.lowest = 5, print.fig = TRUE, adjusted.p=NULL, remove.na=FALSE){
+hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "", lower.tail = FALSE, title = "", log10.lowest = 5,
+                         print.fig = TRUE, adjusted.p=NULL, remove.na=FALSE, bar.color="npg", chiq.square.test = T, not.consider = NA){
 
   # https://www.omicsclass.com/article/324
   # 1-phyper(抽取样本中属于“特定类别”的数量-1,总样本中“特定类别”的数量, 总样本数-总样本中“特定类别”的数量, 从总样本中随机抽取的数量,)
   # 也是直接用黑白球的思路来说的：“袋子里有黑球n个和白球m个，不放回的取出k个球，其中有白球q个”
   # phyper(q,m,n,k)
 
+  library(dplyr)
+
   if(remove.na){
       na.index = is.na(row.group) | is.null(row.group) | row.group == "" | is.na(col.group) | is.null(col.group) | col.group == ""
+      na.index = na.index | row.group %in% not.consider | col.group %in% not.consider
+
       row.group = row.group[!na.index]
       col.group = col.group[!na.index]
       rm(na.index)
   }
 
+  message("Total samples: ", length(col.group))
+
   # 超几何检验，与原来的分组比较
   geomatrix  = unclass(table(row.group, col.group))
   colnames(geomatrix) = as.character(paste(col.prefix, colnames(geomatrix),sep="" ))
   rownames(geomatrix) = as.character(paste(row.prefix, rownames(geomatrix),sep="" ))
+
+
+  # 20220616 add barplot
+  geomatrix.melted = geomatrix
+  # chisq test
+  geomatrix.melted.chiq.res = chisq.test(geomatrix.melted)
+  if(chiq.square.test){
+    main = paste0(geomatrix.melted.chiq.res$method,": ",
+           formatC(geomatrix.melted.chiq.res$p.value,digits = 2, format = "E") )
+    message(main)
+  }else{
+    main = ""
+  }
+  # covert proportion
+  geomatrix.melted = prop.table(geomatrix.melted, margin = 2)
+  # melt
+  geomatrix.melted = reshape2::melt(geomatrix.melted)
+
+  library(ggplot2)
+  library(ggpubr)
+
+  barplot = ggbarplot(geomatrix.melted, x = "col.group", y = "value",  # color = "row.group",
+                      fill = "row.group", position = position_stack(),
+                      palette = loonR::get.palette.color(bar.color, alpha = 0.7 ), legend = "right"  ) +
+    ylab("Proportion")
+
+  barplot = ggpar(barplot, legend.title = row.prefix, xlab = col.prefix,
+                  main = main,
+                  font.main = c(8, "plain", "black")
+  )
+
 
   # perform geometrix,把p值放在相同矩阵的数据框中
   tmpgeo = matrix(nrow=length(row.names(geomatrix)),ncol=length(colnames(geomatrix)))
@@ -90,6 +131,8 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
   tmpgeo = as.data.frame(tmpgeo)
 
   res <- list()
+  res$barplot = barplot
+
 
   if(!is.null(adjusted.p)){
     res$raw.pval.df = tmpgeo
@@ -761,3 +804,74 @@ countClassByColumn <- function(df){
   res
 }
 
+
+
+#' Convert data frame to GenePattern gct file
+#'
+#' @param df Row is gene
+#' @param file Default ./expression.gcf
+#'
+#' @return
+#' @export
+#'
+#' @examples
+dataframe2gct_file = function(df, file = "./expression.gcf", description = NULL, version = "#1.2" ){
+
+  # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3893799/
+
+  # https://github.com/drmjc/metaGSEA/blob/master/DESCRIPTION
+  # https://rdrr.io/github/drmjc/metaGSEA/src/R/export.gsea.gct.R
+  message("Pls note, the output gct file path is ", file)
+
+  if(is.null(description)){
+    gct <- data.frame(Name=rownames(df), Description=rownames(df), df, stringsAsFactors=FALSE, check.names=FALSE)
+  }else{
+    gct <- data.frame(Name=rownames(df), Description=description, df, stringsAsFactors=FALSE, check.names=FALSE)
+  }
+
+
+  OUT <- file(file, "w")
+  writeLines(version, OUT)
+  writeLines(paste(nrow(df), ncol(df), sep="\t"), OUT)
+  close(OUT)
+  readr::write_delim(gct, file, delim = "\t", col_names = T, append = T)
+
+  invisible( gct )
+
+}
+
+
+#' Convert a vector to GenePattern class file
+#'
+#' @param group A vector
+#' @param file Default ./class.cls
+#'
+#' @return
+#' @export
+#'
+#' @examples
+group2class_file = function(group, file = "./class.cls"){
+
+# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3893799/
+# https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2065909/
+
+# The first line of the CLS file contains three values: the number of samples,
+# the number of classes, and the version number of file format (always 1).
+# The second line begins with a pound sign (#) followed by a name for each class.
+# The last line contains a class label for each sample. The number and order
+# of the labels must match the number and order of the samples in the expression dataset.
+# The class labels are sequential numbers (0, 1, . . .)
+# assigned to each class listed in the second line.
+
+  message("Pls note, the output class file path is ", file)
+
+  version = 1
+
+  OUT <- file(file, "w")
+  writeLines( stringr::str_c( length(group), length(unique(group)), version, sep =" "), OUT)
+  writeLines( stringr::str_c( "#", paste0( unique(group), collapse = " " ), sep = " "), OUT)
+  writeLines( stringr::str_c( paste0(  as.numeric(as.factor(group)) - 1 , collapse = " " ) , sep = " "), OUT)
+
+  close(OUT)
+
+}

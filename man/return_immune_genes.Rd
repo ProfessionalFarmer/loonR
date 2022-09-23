@@ -4,7 +4,7 @@
 \alias{return_immune_genes}
 \title{Immune related gene}
 \usage{
-return_immune_genes()
+return_immune_genes(type = c("default", "checkpoint"))
 }
 \value{
 A tibble object

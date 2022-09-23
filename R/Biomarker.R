@@ -173,6 +173,11 @@ build.logistic.model <- function(df, group, seed = 666, scale=TRUE, direction = 
 
 
   }else{
+
+    library(rms)
+    dd <- rms::datadist(lg.df)
+    options(datadist="dd")
+
     glm.fit <- rms::lrm(label ~ .,lg.df, x = TRUE, y = TRUE)
     res <- list(model=glm.fit)
   }
@@ -2289,8 +2294,7 @@ build.psm.regression.model <- function(d.frame, status, time, seed=666, scale = 
   formula <- as.formula( paste0("Surv(time, status) ~ `",
                                 paste0(covariates, sep='', collapse = '` + `'),
                                 '`',
-                                sep='', collapse = ""
-  )
+                                sep='', collapse = "")
   )
 
 
@@ -2313,7 +2317,7 @@ build.psm.regression.model <- function(d.frame, status, time, seed=666, scale = 
 #' @param fit rms model
 #' @param data The data used to build the model
 #' @param fun.list an optional function to transform the linear predictors, and to plot on another axis. If more than one transformation is plotted, put them in a list, e.g. list(function(x) x/2, function(x) 2*x). Any function values equal to NA will be ignored.
-#' @param lp If fun.list is NA, lp will be TRUE. Set to FALSE to suppress creation of an axis for scoring X beta
+#' @param lp 线性预测If fun.list is NA, lp will be TRUE. Set to FALSE to suppress creation of an axis for scoring X beta
 #'
 #' @return
 #' @export
@@ -2322,9 +2326,9 @@ build.psm.regression.model <- function(d.frame, status, time, seed=666, scale = 
 #' # Logistic model
 #' data(LIRI)
 #' res = loonR::build.logistic.model(LIRI[,3:5], LIRI$status, rms = T, scale = F)
-#' f1 = loonR::logit2prob
-#' nomogram.plot(res$model, res$data, lp = T)
-#' nomogram.plot(res$model, res$data, f1, lp =F)
+#' f1 = list(Risk = loonR::logit2prob)
+#' loonR::nomogram.plot(res$model, res$data, lp = T)
+#' loonR::nomogram.plot(res$model, res$data, f1, lp =F)
 #'
 #' # Survial model
 #' res = build.psm.regression.model(LIRI[,3:5],LIRI$status, LIRI$time, scale = F)
@@ -2344,17 +2348,28 @@ build.psm.regression.model <- function(d.frame, status, time, seed=666, scale = 
 #' nomogram.plot(res$model, res$data, fun.list = f.list, lp =F)
 nomogram.plot <- function(fit=NULL, data = NULL, fun.list = NA, lp =F){
 
+  message("If the warining raise: ",
+          "Pls run manualy outsite the function:
+  ddist <- datadist(res$data)
+  options(datadist = \"ddist\")  ")
+
   if( is.null(fit) | is.null(data) ){
     stop("Please set all the parameter correctly")
   }
-  if(is.na(fun.list)){lp=T}
 
+  library(rms)
   # 转化为datadist
   ddist <- datadist(data)
   options(datadist = "ddist")
 
-  nomo <- rms::nomogram(fit, fun = fun.list, lp = lp)
-  plot(nomo)
+  if(is.na(fun.list)){
+    nomo <- rms::nomogram(fit, lp = lp)
+  }else{
+    nomo <- rms::nomogram(fit, fun = fun.list, lp = lp)
+  }
+
+
+  plot(nomo, col.grid =c("tomato", "darkcyan"))
 
 }
 

@@ -8,9 +8,16 @@
 #'
 #' @examples
 get.mostDistint.color.palette <- function(n=20, seed=123){
-  library(RColorBrewer)
-  qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
-  col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
+  # library(RColorBrewer)
+  # qual_col_pals = brewer.pal.info[brewer.pal.info$category == 'qual',]
+  # col_vector = unlist(mapply(brewer.pal, qual_col_pals$maxcolors, rownames(qual_col_pals)))
+
+  # https://en.wikipedia.org/wiki/List_of_Crayola_crayon_colors
+  col_vector = c("#FDD9B5", "#1F75FE", "#0D98BA", "#7366BD", "#B4674D", "#FFAACC",
+                 "#1DACD6", "#FDDB6D", "#95918C", "#1CAC78", "#5D76CB", "#FF7538",
+                 "#EE204D", "#FF5349", "#C0448F", "#FC2847", "#926EAE", "#F75394",
+                 "#FCE883", "#C5E384", "#FFAE42")
+
 
   set.seed(seed)
   col = sample(col_vector, n)

@@ -117,6 +117,8 @@ get.palette.color <- function(palette="npg", n = 7, alpha=1, install=FALSE, show
     `cbOkabe` = c("#E69F00", "#56B4E9", "#009E73", "#F0E442", "#0072B2", "#D55E00", "#CC79A7", "#000000"),
     # selected from public
     `sp1` = c("#00AFBB", "#E7B800", "#0392cf", "#7570B3", "#FC4E07", "#BB3099", "#ADC252", "#be9b7b", "#75A3BA", "#bbbbbb", "#4F7175", "#173F5F"  ),
+    # https://www.zhihu.com/question/49375540
+    `sp2` = c("#8ECFC9", "#FFBE7A", "#FA7F6F", "#82B0D2", "#BEB8DC", "#E7DAD2", "#999999", "#FEA3A2"),
     ### From https://emitanaka.org/posts/2022-02-20-color-considerations/
     `High contrast` = c("#FFFFFF", "#DDAA33", "#BB5566", "#004488", "#000000"),
     ### https://emitanaka.org/posts/2022-02-20-color-considerations/

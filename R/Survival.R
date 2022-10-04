@@ -255,3 +255,44 @@ findSurvivalCutPoint <- function(values = NULL, event = NULL, time = NULL, plot.
 
 }
 
+
+#' Time depend ROC and AUC
+#'
+#' @param risk
+#' @param event
+#' @param time
+#' @param timePoint
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' data(mayo, package = "survivalROC")
+#' res = loonR::surv_ROC_DCA(mayo$mayoscore5, mayo$censor, mayo$time/30, timePoint = 24)
+#' res$ROC
+surv_ROC_DCA <- function(risk = NULL, event = NULL, time = NULL, timePoint = 12){
+
+  if(is.null(risk) | is.null(event) | is.null(time)){
+     stop("Pls set risk or event or time at once")
+  }
+
+  label = as.numeric(event)
+  label[time > timePoint] = 0
+
+  roc = loonR::roc_with_ci(label, risk, ci=FALSE)
+  auc = loonR::get.AUC(risk, label, raw = FALSE)
+  dca = loonR::decisionCurveAnalysisSimple(label, risk)
+  list(ROC = roc, AUC = auc, DAC = dca)
+}
+
+
+
+
+
+
+
+
+
+
+
+

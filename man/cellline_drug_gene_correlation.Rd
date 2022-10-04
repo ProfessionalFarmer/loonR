@@ -4,16 +4,31 @@
 \alias{cellline_drug_gene_correlation}
 \title{Drug and gene correlation analysis}
 \usage{
-cellline_drug_gene_correlation(drug.sen.df = NULL, gene.expr = NULL)
+cellline_drug_gene_correlation(
+  drug.sen.df = NULL,
+  gene.expr = NULL,
+  p.cutoff = 0.01,
+  cor.cutoff = 0.3,
+  p.variable = "P"
+)
 }
 \arguments{
 \item{drug.sen.df}{A data.frame. Row is drug, col is cell line}
 
 \item{gene.expr}{A vector with name. Name is cell line}
+
+\item{p.cutoff}{Default 0.01}
+
+\item{cor.cutoff}{rho 0.3}
+
+\item{p.variable}{column name of P value. Default P}
 }
 \value{
 
 }
 \description{
 Drug and gene correlation analysis
+}
+\examples{
+
 }

@@ -2266,6 +2266,8 @@ build.best.random.forest <- function(rf.df, group, ntree = 500, seed=111, scale 
 #' @param status
 #' @param time OS, DFS, RFS et al.....
 #' @param seed Default 666
+#' @param scale
+#' @param time.point Default 36.  Calculate the prob at a specific time point
 #'
 #' @return
 #' @export
@@ -2276,7 +2278,7 @@ build.best.random.forest <- function(rf.df, group, ntree = 500, seed=111, scale 
 #'
 #' data(LIRI)
 #' res = build.psm.regression.model(LIRI[,3:5],LIRI$status, LIRI$time)
-build.psm.regression.model <- function(d.frame, status, time, seed=666, scale = TRUE){
+build.psm.regression.model <- function(d.frame, status, time, seed=666, scale = TRUE, time.point = 36){
 
   if(scale){
     d.frame = scale(d.frame, center = TRUE, scale = TRUE)
@@ -2306,7 +2308,9 @@ build.psm.regression.model <- function(d.frame, status, time, seed=666, scale = 
                    data = df,
                    dist = "weibull") # weibull分布
 
-  res = list(model = sur_model, data = df)
+  timepoint.prob = surv(time.point, lp = sur_model$linear.predictors)
+
+  res = list(model = sur_model, data = df, timepoint.prob = timepoint.prob)
   res
 }
 

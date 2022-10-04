@@ -4,7 +4,14 @@
 \alias{build.psm.regression.model}
 \title{Build parametric survival model}
 \usage{
-build.psm.regression.model(d.frame, status, time, seed = 666, scale = TRUE)
+build.psm.regression.model(
+  d.frame,
+  status,
+  time,
+  seed = 666,
+  scale = TRUE,
+  time.point = 36
+)
 }
 \arguments{
 \item{d.frame}{Data.frame --- Row: sample, Column: gene expression}
@@ -12,6 +19,8 @@ build.psm.regression.model(d.frame, status, time, seed = 666, scale = TRUE)
 \item{time}{OS, DFS, RFS et al.....}
 
 \item{seed}{Default 666}
+
+\item{time.point}{Default 36.  Calculate the prob at a specific time point}
 }
 \value{
 

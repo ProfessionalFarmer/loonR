@@ -23,7 +23,7 @@ decisionCurveAnalysis <- function(data.frame.list=NULL, label = NULL, rms=FALSE,
   # https://atm.amegroups.com/article/view/20389/pdf
 
   # 除了ggDCA dcurves 也可以
-  # http://www.danieldsjoberg.com/dcurves/articles/dca.html  http://www.danieldsjoberg.com/dcurves/articles/dca.html
+  # http://www.danieldsjoberg.com/dcurves/articles/dca.html
 
   if(!require(ggDCA)){
     install.packages('ggDCA')
@@ -91,6 +91,17 @@ decisionCurveAnalysis <- function(data.frame.list=NULL, label = NULL, rms=FALSE,
          lwd = 1.2,
          color = c(loonR::get.ggsci.color(palette,n=length(new.df.list)),'black', 'gray')
   )
+  # DCA cox model analysis
+  # devtools::install_github('yikeshu0611/ggDCA')
+  # library(rms)
+  # library(ggDCA)
+  #
+  # bb<-datadist(train.cox.df)
+  # options(datadist='bb')
+  #
+  # f1 <- cph(Surv(time,OS)~ADAMTS12 + CHST11 + DCBLD2 + FN1 + FRMD6 + KRT17 + LOXL2 + MMP14 + NRP2 + PPFIBP1 + TGFBI + VCL,train.cox.df)
+  # dca.res <- dca(f1, times = c(12,36,60))
+  # ggplot(dca.res)
 
 }
 

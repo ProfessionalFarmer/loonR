@@ -283,6 +283,29 @@ surv_ROC_DCA <- function(risk = NULL, event = NULL, time = NULL, timePoint = 12)
   auc = loonR::get.AUC(risk, label, raw = FALSE)
   dca = loonR::decisionCurveAnalysisSimple(label, risk)
   list(ROC = roc, AUC = auc, DAC = dca)
+
+
+  # library(timeROC)
+  # library(survivalROC)
+  # library(survival)
+  #
+  # time_roc_res <- timeROC(
+  #   T = combined.survival.time,
+  #   delta = combined.label,
+  #   marker = combined.risk,
+  #   cause = 1,
+  #   weighting="marginal",
+  #   times = c(12, 36, 60),
+  #   ROC = TRUE,
+  #   iid = TRUE
+  # )
+  #
+  # plot(time_roc_res, time= 12, col = "red", title = FALSE)
+  # plot(time_roc_res, time= 36, add=TRUE, col="blue")
+  # plot(time_roc_res, time= 60, add=TRUE, col="green")
+  # legend("bottomright",c("1 Year" ,"3 Years", "5 Years"),
+  #        col=c("red", "blue", "green"), lty=1, lwd=2)
+
 }
 
 

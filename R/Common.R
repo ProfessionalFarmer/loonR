@@ -1936,6 +1936,17 @@ convert2Scientific <- function(numb = NULL, digits = 2, format = "e"){
 
 
 
+#' Scale the value to 0-1
+#'
+#' @param x
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' s = sort(rexp(100))
+#' loonR::range01(s)
+rangeScale01 <- function(x){(x-min(x))/(max(x)-min(x))}
 
 
 

@@ -2001,14 +2001,11 @@ get.YoudenIndex <- function(pred, label){
 #'
 get.AUC <- function(pred, label, raw=TRUE, direction = "auto"){
 
-  library(pROC)
-  library(caret)
-
-  roc_obj <- roc(label, pred, quiet=TRUE, direction = direction)
+  roc_obj <- pROC::roc(label, pred, quiet=TRUE, direction = direction)
   if(raw){
-    auc(roc_obj)
+    pROC::auc(roc_obj)
   }else{
-    auc = stringr::str_remove( auc(roc_obj), "Area under the curve: " )
+    auc = stringr::str_remove( pROC::auc(roc_obj), "Area under the curve: " )
     round( as.numeric(auc), digits = 3)
   }
 

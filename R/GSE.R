@@ -711,7 +711,7 @@ load.gmt <- function(gmt.path){
 #'
 ssGSEA <- function(expr, geneset){
 
-  if(file.exists(geneset) & length(geneset) == 1){
+  if(length(geneset) == 1 & is.character(geneset)){
     gene.set <- loonR::load.gmt(geneset)
   }else if(is.vector(geneset)){
     gene.set = list(GeneSet = geneset)

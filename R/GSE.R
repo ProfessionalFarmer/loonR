@@ -711,10 +711,14 @@ load.gmt <- function(gmt.path){
 #'
 ssGSEA <- function(expr, geneset){
 
-  if(file.exists(geneset)){
+  if(file.exists(geneset) & length(geneset) == 1){
     gene.set <- loonR::load.gmt(geneset)
-  }else{
+  }else if(is.vector(geneset)){
     gene.set = list(GeneSet = geneset)
+  }else if(is.list(geneset)){
+    geneset = geneset
+  }else{
+    stop("Gene set not right")
   }
 
   library(GSVA)

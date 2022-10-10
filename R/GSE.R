@@ -724,7 +724,10 @@ ssGSEA <- function(expr, geneset){
     as.matrix(expr),
     gene.set,
     method = "ssgsea",
-    kcdf = "Poisson", min.sz = 10)
+    # By default, kcdf="Gaussian" which is suitable when input expression values are continuous, such as microarray fluorescent units in logarithmic scale, RNA-seq log-CPMs, log-RPKMs or log-TPMs.
+    # When input expression values are integer counts, such as those derived from RNA-seq experiments, then this argument should be set to kcdf="Poisson".
+    kcdf = "Gaussian",
+    min.sz = 10)
 
   normalize=function(x){
     return((x-min(x))/(max(x)-min(x)))}

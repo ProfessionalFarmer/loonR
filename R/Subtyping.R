@@ -416,7 +416,8 @@ subtypeAssociationAnalysis <- function(df, concateStudy = F, adjusted.hypergeome
 #' @param proportion Default 0.8
 #' @param adjacencyMatrixCutoff Default NULL. Cutoff for adjacenty matrix.
 #' @param subtype.prefix
-#' @param pOradjacent Default "adjacent.". Could be p or adjacent. Using p or adjacent to perform mcl cluster
+#' @param pOradjacent Default "adjacent". Could be p or adjacent. Using p or adjacent to perform mcl cluster
+#' @param inflationConsensus Default equal to inflation. inflation is for one boot while inflationConsensus is for subtyping
 #'
 #' @return
 #' @export
@@ -425,7 +426,7 @@ subtypeAssociationAnalysis <- function(df, concateStudy = F, adjusted.hypergeome
 #' data("Subtype.matrix")
 #' res = loonR::consensusSubtyping(Subtype.matrix, replicate = 50)
 #' res$consensus.map
-consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adjusted.hypergeometrix.p = F, inflation = 2, adjacencyMatrixCutoff = NULL, subtype.prefix="CMS", pOradjacent = "adjacent."){
+consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adjusted.hypergeometrix.p = F, inflation = 2, adjacencyMatrixCutoff = NULL, subtype.prefix="CMS", pOradjacent = "adjacent", inflationConsensus = 0){
 
   # https://www.nature.com/articles/nm.3967#Sec9
   # Identification of consensus subtypes. To identify consensus groups from the network of subtype association,
@@ -457,7 +458,7 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
   pb <- utils::txtProgressBar(style = 3)
 
   ########################################## a) --> b) --> c)
-  outter.each.res <- foreach::foreach(i=1:replicate, .combine = rbind) %do% {
+  outter.each.res <- foreach::foreach(i=1:replicate, .combine = rbind) %dopar% {
     set.seed(seed+i)
     new_df <- df %>% sample_n(  as.integer( nrow(df) * proportion)  )
     new_df_analysis <- loonR::subtypeAssociationAnalysis(new_df, adjusted.hypergeometrix.p = adjusted.hypergeometrix.p, print.message = F)
@@ -468,6 +469,8 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
       t = -1 * log10(t)
     }else if(pOradjacent=="adjacent"){
       t = new_df_analysis$cut.res$adjacencyMatrix
+    }else{
+      stop("Can not find ", pOradjacent)
     }
 
 
@@ -475,7 +478,7 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
 
     subtype.names <- colnames(t)
 
-    inner.each.res <- foreach::foreach(cluster=unique(mcl.res$Cluster[mcl.res$Cluster!=0]), .combine = rbind) %dopar% {
+    inner.each.res <- foreach::foreach(cluster=unique(mcl.res$Cluster[mcl.res$Cluster!=0]), .combine = rbind) %do% {
         # 20211018: Cluster 0 is not right
         cluster.subtypes = subtype.names[mcl.res$Cluster==cluster]
         if(length(cluster.subtypes)==1){
@@ -521,12 +524,17 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
   ############################## adjacenty matrix
   res$adjacencyMatrix = consensusMatrix
 
+  if(inflationConsensus == 0){ # default to inflation
+    inflationConsensus = inflation
+  }
+
+
   # Identify consensus subtype
   if(is.null(adjacencyMatrixCutoff)){
-    subtyping.res <- loonR::identifySubtypeFromMatrix(consensusMatrix, usingRawDf = T, adjacency.cutoff = adjacencyMatrixCutoff, clusterPrefix = subtype.prefix, inflation = inflation)
+    subtyping.res <- loonR::identifySubtypeFromMatrix(consensusMatrix, usingRawDf = T, adjacency.cutoff = adjacencyMatrixCutoff, clusterPrefix = subtype.prefix, inflation = inflationConsensus)
     res$adjacencyMatrix = consensusMatrix
   }else{
-    subtyping.res <- loonR::identifySubtypeFromMatrix(res$consensusMatrix, usingRawDf = F, adjacency.cutoff = adjacencyMatrixCutoff, clusterPrefix = subtype.prefix, inflation = inflation)
+    subtyping.res <- loonR::identifySubtypeFromMatrix(res$consensusMatrix, usingRawDf = F, adjacency.cutoff = adjacencyMatrixCutoff, clusterPrefix = subtype.prefix, inflation = inflationConsensus)
     res$adjacencyMatrix[consensusMatrix > adjacencyMatrixCutoff] = 1
     res$adjacencyMatrix[consensusMatrix <= adjacencyMatrixCutoff] = 0
   }
@@ -550,7 +558,7 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
 
   # 检查每个study的亚型是否分配的CMS，如果没有则报错终止
   if(sum(is.na(res$ConsensusSubtype.clean$Cluster))!=0){
-    cat("Not found CMS subtype for the following type: ",res$ConsensusSubtype.clean$Sample[is.na(res$ConsensusSubtype.clean$Cluster)] )
+    warning("Not found CMS subtype for the following type: ",res$ConsensusSubtype.clean$Sample[is.na(res$ConsensusSubtype.clean$Cluster)] )
     stop("Please check the study and stype")
   }
 
@@ -728,12 +736,6 @@ identifySubtypeFromMatrix <- function(df, adjacency.cutoff = 0.5, inflation = 2,
   }
 
    mcl.res <- MCL::mcl(adjacency.matrix, addLoops = F, inflation = inflation)
-
-   ##########
-   a = mcl.res$Cluster
-   names(a) = colnames(adjacency.matrix)
-   ###########
-
 
    cluster = mcl.res$Cluster
    sample = row.names(adjacency.matrix)

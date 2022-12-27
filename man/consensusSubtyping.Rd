@@ -12,7 +12,9 @@ consensusSubtyping(
   adjusted.hypergeometrix.p = F,
   inflation = 2,
   adjacencyMatrixCutoff = NULL,
-  subtype.prefix = "CMS"
+  subtype.prefix = "CMS",
+  pOradjacent = "adjacent",
+  inflationConsensus = 0
 )
 }
 \arguments{
@@ -30,7 +32,9 @@ consensusSubtyping(
 
 \item{adjacencyMatrixCutoff}{Default NULL. Cutoff for adjacenty matrix.}
 
-\item{subtype.prefix}{}
+\item{pOradjacent}{Default "adjacent". Could be p or adjacent. Using p or adjacent to perform mcl cluster}
+
+\item{inflationConsensus}{Default equal to inflation. inflation is for one boot while inflationConsensus is for subtyping}
 }
 \value{
 

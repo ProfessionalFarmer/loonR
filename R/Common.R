@@ -1222,7 +1222,6 @@ reduce_join_list <- function(list.df, sfx=NULL, by = NULL, full = FALSE, inner =
 
     res <- eval(f)(
       res, list.df[[i+1]],
-      all = TRUE,
       suffix = c(paste0('.',sfx[i]), paste0('.',sfx[i+1])),
       by = by
     )

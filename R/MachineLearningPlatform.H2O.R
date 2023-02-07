@@ -313,7 +313,6 @@ buildEnsembleModel <- function(train.df = NULL, train.group = NULL,
     }
   }
 
-
   res = list(fits = models, seed = seed,
              train.aucs = train.aucs, val.aucs = val.aucs,
              performance.objects = perf_list,

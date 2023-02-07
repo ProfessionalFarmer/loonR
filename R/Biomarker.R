@@ -66,7 +66,7 @@ getOneRoundCVRes <- function(df, label, k, seed = 1, times = 1, type = "response
 #' cv.res <- loonR::cross.validation(miR.df[, cf.candidates],
 #'             group == "Cancer",
 #'             k = 10, n = 100)
-cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE, type = "response"){
+cross.validation <- function(df = NULL, label = NULL, k = 5, n = 100, scale=TRUE, type = "response"){
 
   # df = up.mirs.exp
   # label = mir.sample.group
@@ -74,7 +74,7 @@ cross.validation <- function(df = '', label = '', k = 5, n = 100, scale=TRUE, ty
   # n = 100
   # type <- match.arg(type)
 
-  if(df == '' | label == ''){
+  if(is.null(df) | is.null(label) ){
     stop("provide a datafram or lables")
   }
 

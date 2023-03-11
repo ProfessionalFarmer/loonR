@@ -5,8 +5,8 @@
 \title{k fold n times cross validation}
 \usage{
 cross.validation(
-  df = "",
-  label = "",
+  df = NULL,
+  label = NULL,
   k = 5,
   n = 100,
   scale = TRUE,

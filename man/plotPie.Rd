@@ -12,7 +12,8 @@ plotPie(
   title = "",
   border = "white",
   label = FALSE,
-  show.total.inTitle = FALSE
+  show.total.inTitle = FALSE,
+  DonutChart = FALSE
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ plotPie(
 \item{label}{Whether to show labels}
 
 \item{show.total.inTitle}{If to show the total number in title}
+
+\item{DonutChart}{If plot based on donut chart. More beautiful.}
 }
 \value{
 
@@ -41,4 +44,8 @@ Count each event type and draw pie chart
 \examples{
 plotPie(ioe.events.df$Type, title = "# of events")
 or plotPie(ioe.events.df, col = 2, title = "# of events")
+
+plotPie( rep(c("A", "B", "C"), c(10, 60, 30)) )
+
+
 }

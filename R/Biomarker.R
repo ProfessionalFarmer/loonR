@@ -825,7 +825,7 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2
 
   #names(res) <- c("Ncount", "Tcount", "AUC (CI)",  "Accuracy", "Precision", "Recall", "Specificity", "NPV","Odds Ratio")
   #recall = sensititivity, precision=PPV
-  names(res) <- c("Ncount [TN]", "Tcount [TP]", "AUC (CI)",  "Accuracy",  "PPV", "Sensitivity", "Specificity", "NPV","Odds Ratio")
+  names(res) <- c("Ncount [TN]", "Tcount [TP]", "AUC",  "Accuracy",  "PPV", "Sensitivity", "Specificity", "NPV","Odds Ratio")
 
   # decide whether to show OR
   if(!OR){

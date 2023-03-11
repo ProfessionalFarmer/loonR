@@ -341,6 +341,14 @@ get.TCGA.miRNAExpression <- function(tcga.project=NULL, rawCount=FALSE, CPM=FALS
 
   patient_ids -> rownames(expression.df)
 
+  library(dplyr)
+  if(any( ! substr(patient_ids,14,15) %in% c("01","11")  )){
+    warning("It seems some samples are not primary tumor or normal samples\nWe have removed\n")
+    patient_ids = patient_ids[ substr(patient_ids,14,15) %in% c("01","11") ]
+    expression.df = expression.df[patient_ids,]
+  }
+
+
   if(log2){
     expression.df = t(log2(expression.df+1))
   }else{
@@ -353,11 +361,10 @@ get.TCGA.miRNAExpression <- function(tcga.project=NULL, rawCount=FALSE, CPM=FALS
   # https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/sample-type-codes
   group_list <- ifelse(substr(patient_ids,14,15)=='01','Tumor','Normal')
 
-  library(dplyr)
-  if(any( ! substr(patient_ids,14,15) %in% c(01,11)  )){
-    stop("It seems some samples are not primary tumor or normal samples")
-  }
-
+  ind = order(group_list)
+  group_list = group_list[ind]
+  expression.df = expression.df[,ind]
+  rm(ind)
 
   meta <- get( paste0(tcga.project,".clinical") )
   meta$patient.bcr_patient_barcode <- stringr::str_to_upper( meta$patient.bcr_patient_barcode )

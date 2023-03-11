@@ -151,6 +151,7 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
 #' @param border Border color
 #' @param label Whether to show labels
 #' @param show.total.inTitle If to show the total number in title
+#' @param DonutChart If plot based on donut chart. More beautiful.
 #'
 #' @return
 #' @export
@@ -158,7 +159,13 @@ plotPCA <- function(df, group, palette = 'npg', ellipse = FALSE, legend.title = 
 #' @examples
 #' plotPie(ioe.events.df$Type, title = "# of events")
 #' or plotPie(ioe.events.df, col = 2, title = "# of events")
-plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", border="white" , label = FALSE, show.total.inTitle = FALSE){
+#'
+#' plotPie( rep(c("A", "B", "C"), c(10, 60, 30)) )
+#'
+#'
+plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "",
+                    border="white" , label = FALSE,
+                    show.total.inTitle = FALSE, DonutChart = FALSE){
 
   if( inherits(data, "data.frame")  ){
     data <- unique(data)
@@ -202,14 +209,20 @@ plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "", borde
                            Label = lbls.bak,
                            stringsAsFactors = F)
 
-  p <- ggpie(tmp.pie.df, "Prop", fill = "Type", label = "Label",
-             color = border, palette = unname(myPalette), title = title,
-             legend = "right" , legend.title = "",
-             font.family = "Arial")
+  if(DonutChart){
+    p <- ggdonutchart(tmp.pie.df, "Prop", fill = "Type", label = "Label",
+                      color = border, palette = unname(myPalette), title = title,
+                      legend = "right" , legend.title = "",
+                      font.family = "Arial") + theme(legend.position = "right")
 
+  }else{
+    p <- ggpie(tmp.pie.df, "Prop", fill = "Type", label = "Label",
+               color = border, palette = unname(myPalette), title = title,
+               legend = "right" , legend.title = "",
+               font.family = "Arial")
+  }
   p
 }
-
 
 
 
@@ -1948,4 +1961,30 @@ convert2Scientific <- function(numb = NULL, digits = 2, format = "e"){
 rangeScale01 <- function(x){(x-min(x))/(max(x)-min(x))}
 
 
+#' Format by digit
+#'
+#' @param df numeric data.frame
+#' @param digit default = 2
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' If you want to format by column respectively
+#' tab_test <- structure(list(col1 = c(2e-05, 0.001, 0.568978554112256), col2 = c(3.5,45.6546548788, 12585.5663), col3 = c(200, 34.52, NA)), class = "data.frame", row.names = c(NA,-3L))
+#' as.data.frame(Map(loonR::formatTable, tab_test, c(3L, 2L, 2L)))
+formatTable <- function(df, digit = 2) {
+
+  innerFunction = function(x, d){
+    tt <- (abs(x) < 0.01) + 1L
+    tt[is.na(tt) | x == 0] <- 1L
+    res = mapply(formatC, x, format=c('f', 'e')[tt], digits=c(d, 0L)[tt], big.mark=',',
+                 drop0trailing=TRUE)
+    as.data.frame(res)
+  }
+  res = as.data.frame(Map(innerFunction, df, digit))
+  colnames(res) = colnames(df)
+  rownames(res) = rownames(df)
+  res
+}
 

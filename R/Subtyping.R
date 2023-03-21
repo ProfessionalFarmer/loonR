@@ -532,11 +532,13 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
   # Identify consensus subtype
   if(is.null(adjacencyMatrixCutoff)){
     subtyping.res <- loonR::identifySubtypeFromMatrix(consensusMatrix, usingRawDf = T, adjacency.cutoff = adjacencyMatrixCutoff, clusterPrefix = subtype.prefix, inflation = inflationConsensus)
-    res$adjacencyMatrix = consensusMatrix
+    res$adjacencyMatrix.proceed = consensusMatrix
   }else{
-    subtyping.res <- loonR::identifySubtypeFromMatrix(res$consensusMatrix, usingRawDf = F, adjacency.cutoff = adjacencyMatrixCutoff, clusterPrefix = subtype.prefix, inflation = inflationConsensus)
-    res$adjacencyMatrix[consensusMatrix > adjacencyMatrixCutoff] = 1
-    res$adjacencyMatrix[consensusMatrix <= adjacencyMatrixCutoff] = 0
+    subtyping.res <- loonR::identifySubtypeFromMatrix(consensusMatrix, usingRawDf = F, adjacency.cutoff = adjacencyMatrixCutoff, clusterPrefix = subtype.prefix, inflation = inflationConsensus)
+    res$adjacencyMatrix.proceed = consensusMatrix
+    res$adjacencyMatrix.proceed[consensusMatrix > adjacencyMatrixCutoff] = 1
+    res$adjacencyMatrix.proceed[consensusMatrix <= adjacencyMatrixCutoff] = 0
+
   }
 
   res$ConsensusSubtype.res = subtyping.res
@@ -592,6 +594,8 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
     cms.type = NA
 
     uniq.cms = as.character(row.names(res$CMSCount))
+    # 20230321 add p value for each CMS
+    p.cms = c()
 
     for(t.cms in uniq.cms){
 
@@ -604,11 +608,15 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
                       as.numeric(  unclass(sum(res$CMSCount$SubtypeCount)-res$CMSCount[t.cms, c("SubtypeCount")])  ),
                       length(sample.new.subtype), lower.tail = F   )
 
-       if(t.pval <= 0.1){
+      if(t.pval <= 0.1){
          sig.count = sig.count + 1
          core.sample = TRUE
          cms.type = t.cms
-       }
+      }
+
+      # 20230321 add p value for each CMS
+      p.cms = c(p.cms, t.pval)
+
     }
     if(sig.count>1){
       cms.type = "Confusing"
@@ -622,16 +630,29 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
     }else{
       HighFrequencySubtype = names(subtype.count)[which.max(subtype.count)]
     }
-
-    c(sample.new.subtype, core.sample, cms.type, HighFrequencySubtype)
+    p.cms = as.numeric( format(p.cms, digits = 3) )
+    c(sample.new.subtype, core.sample, cms.type, HighFrequencySubtype, p.cms)
   }
 
 
   newlabels = data.frame(newlabels, row.names = rownames(df))
-  colnames(newlabels) <- c( paste0("New",colnames(df)), "CoreSample","CMSSubtype", "HighFrequencySubtype")
+  colnames(newlabels) <- c( paste0("New",colnames(df)),
+                            "CoreSample","CMSSubtype", "HighFrequencySubtype",
+                            paste0("P.", uniq.cms) )
+
+  # Select CMS subtype based on p value
+  ttt = loonR::findMaxMinColumnNamesForEachRow(newlabels, ties.method = "first",
+                                               min = T, specified.column = seq(ncol(newlabels)-3, ncol(newlabels) )  )
+  newlabels$CMS.minP = stringr::str_remove_all(ttt$Min.ColName, "P.")
+  newlabels$CMS.minP.value = ttt$Min.Value
+  rm(ttt)
 
   newlabels = cbind(df, newlabels)
   res$Samples <- newlabels
+
+
+
+
 
   ############################################# END调整一下列名和其他地方
   colnames(res$ConsensusSubtype.clean)[1] <- c("Subtype")

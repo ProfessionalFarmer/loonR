@@ -1649,6 +1649,8 @@ findMaxMinColumnNamesForEachRow <- function(df, max = FALSE, min = FALSE, ties.m
   tmp.df = df
 
   ties.method = match.arg(ties.method)
+  cat("Ties method is ", ties.method, "\n" )
+
   res <- data.frame(tmp.df, stringsAsFactors = FALSE, check.names = FALSE)
 
   if(!is.null(specified.column)){
@@ -1656,6 +1658,7 @@ findMaxMinColumnNamesForEachRow <- function(df, max = FALSE, min = FALSE, ties.m
   }else{
     specified.column = 1:ncol(tmp.df)
   }
+  tmp.df = loonR::convertDfToNumeric(tmp.df)
 
   if(max){
     res$Max.ColID = max.col(tmp.df, ties.method = ties.method )

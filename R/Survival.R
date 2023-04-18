@@ -16,7 +16,7 @@
 #' @param risk.table Default TRUE. Show the strata Table
 #' @param remove.na If remove NA samples
 #' @param best.point If best cut point wanted, pls input values by Group variable
-#' @param cut.quantile Love this paramter, hansome
+#' @param cut.quantile Love this paramter, handsome
 #' @param cut.label
 #' @param surv.median.line character vector for drawing a horizontal/vertical line at median survival. Allowed values include one of c("none", "hv", "h", "v"). v: vertical, h:horizontal.
 #' @param pval logical value, a numeric or a string or show "HR" or "PHR" or "HRCI" or "PHRCI"

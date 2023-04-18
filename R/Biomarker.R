@@ -1101,7 +1101,7 @@ univariate_cox_sthda <- function(d.frame, status, time, scale=TRUE){
 
   if(scale){d.frame = scale(d.frame, center = TRUE, scale = TRUE)}
 
-
+  library(survival)
   # Clone frome http://www.sthda.com/english/wiki/cox-proportional-hazards-model
   covariates <- colnames(d.frame)
 
@@ -2483,10 +2483,11 @@ generatePairValue <- function(value=NULL, names = NULL, sep ="_"){
 #' df = matrix(rnorm(100*10, 1, .5), ncol=10)
 #' colnames(df) = paste0("ID",1:10)
 #' rownames(df) = paste0("Gene",1:100)
-#' res = generateGenePairValueDf(df)
+#' res = loonR::generateGenePairValueDf(df)
 #' head(res$Binary.res)
 generateGenePairValueDf <- function(df){
 
+  df = as.matrix(df)
 
   sample.gene.pair.value.list = list()
 

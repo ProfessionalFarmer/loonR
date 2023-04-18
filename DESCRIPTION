@@ -1,6 +1,6 @@
 Package: loonR
 Title: Common function in bioinformatics analysis
-Version: 0.2.13
+Version: 0.2.15
 Authors@R: 
     person(given = "Zhongxu",
            family = " ",
@@ -12,7 +12,7 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.3
 Depends: 
   R (>= 4.0.2),
   ggpubr,
@@ -24,5 +24,3 @@ Remotes:
     bioc::release/plyranges,
     bioc::release/tximport
 URL: https://md.zxzyl.com/loonR
-
-

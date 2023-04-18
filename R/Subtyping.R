@@ -501,6 +501,12 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
   close(pb)
 
   res = list()
+  # 20230322 save parameter
+  res$input = list(data.frame = df, replicate = replicate, seed = seed, proportion = proportion,
+                   adjusted.hypergeometrix.p = adjusted.hypergeometrix.p,
+                   inflation = inflation, adjacencyMatrixCutoff = adjacencyMatrixCutoff,
+                   subtype.prefix = subtype.prefix, pOradjacent = pOradjacent, inflationConsensus = 0)
+
   res$raw = outter.each.res
 
   res$group.df = outter.each.res %>% dplyr::group_by(Subtype1,Subtype2) %>% dplyr::summarise( Freq= (n()/replicate) )
@@ -640,7 +646,7 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
                             "CoreSample","CMSSubtype", "HighFrequencySubtype",
                             paste0("P.", uniq.cms) )
 
-  # Select CMS subtype based on p value
+  # Select CMS subtype based on p value 20230321
   ttt = loonR::findMaxMinColumnNamesForEachRow(newlabels, ties.method = "first",
                                                min = T, specified.column = seq(ncol(newlabels)-3, ncol(newlabels) )  )
   newlabels$CMS.minP = stringr::str_remove_all(ttt$Min.ColName, "P.")

@@ -278,13 +278,14 @@ oncoPredict <- function(train.df=NULL, train.res = NULL, predict.df = NULL, minN
 #' @param p.cutoff Default 0.01
 #' @param cor.cutoff rho 0.3
 #' @param p.variable column name of P value. Default P
+#' @param auc.cutoff Default 0.8
 #'
 #' @return
 #' @export
 #'
 #' @examples
 #'
-cellline_drug_gene_correlation <- function(drug.sen.df=NULL, gene.expr=NULL, p.cutoff = 0.01, cor.cutoff = 0.3, p.variable = "P"){
+cellline_drug_gene_correlation <- function(drug.sen.df=NULL, gene.expr=NULL, p.cutoff = 0.01, cor.cutoff = 0.3, p.variable = "P", auc.cutoff = 0.8){
 
   # 看IC50或者AUC与基因表达之间的关系，负相关的为潜在的药物
   warning("Before input the drug sensitivity value, pls filter NA. In the following analysis we will not consider NA samples")
@@ -373,14 +374,14 @@ cellline_drug_gene_correlation <- function(drug.sen.df=NULL, gene.expr=NULL, p.c
   library(dplyr)
   # sig
   drug.auc.analysis.res = drug.auc.analysis.res %>%
-    mutate(Sig = case_when(
+    mutate(Cor.Sig = case_when(
       logP  < -1 * log10(p.cutoff) | abs(Estimate) <  cor.cutoff ~ "not sig",
       is.na(CLINICAL.STATUS) ~ "Under investigation",
       TRUE ~ CLINICAL.STATUS
     ))
   # label
-  drug.auc.analysis.res$label = drug.auc.analysis.res$Drug
-  drug.auc.analysis.res$label[drug.auc.analysis.res$Sig=="not sig"] = NA
+  drug.auc.analysis.res$Cor.label = drug.auc.analysis.res$Drug
+  drug.auc.analysis.res$Cor.label[drug.auc.analysis.res$Cor.Sig=="not sig"] = NA
 
 
   ### vocalno plot
@@ -388,39 +389,47 @@ cellline_drug_gene_correlation <- function(drug.sen.df=NULL, gene.expr=NULL, p.c
   library(ggrepel)
   options(ggrepel.max.overlaps = Inf)
 
-  p.correlation = ggscatter(drug.auc.analysis.res, x = "Estimate", y = "logP", xlim = c(-0.5,0.5),
+  p.correlation = ggscatter(drug.auc.analysis.res, x = "Estimate", y = "logP",
+                            xlim = c(-1*abs(max(drug.auc.analysis.res$Estimate)) - 0.05,abs(max(drug.auc.analysis.res$Estimate)) + 0.05),
                 ylab = "-log(P)", xlab = "Sensitive <-- correlation coefficient --> Resistant",
-                label =  "label", color = "Sig",
+                label =  "Cor.label", color = "Cor.Sig",
                 palette = c("FDA approved" = "#FC4E07",
                             "Clinical trial" = '#00AFBB',
                             "not sig" = 'gray',
                             "Under investigation" = "#E7B800"),
-                font.label = c(14, "bold", "black"), repel = T, xticks.by = 0.2)  +
+                font.label = c(14, "bold", "black"), repel = T)  +
     geom_vline(xintercept=cor.cutoff, col="gray", linetype="dotted") +
     geom_vline(xintercept=-1*cor.cutoff, col="gray", linetype="dotted") +
     geom_hline(yintercept=-log10(p.cutoff), col="gray", linetype="dotted")
 
   # for auc plot
   drug.auc.analysis.res$logANOVA.P = -1 * log10(drug.auc.analysis.res$ANOVA.P)
-  tmp.drug.auc.analysis.res = drug.auc.analysis.res
-  tmp.drug.auc.analysis.res$Sig[tmp.drug.auc.analysis.res$ANOVA.P > 0.05 |
-                                  abs(tmp.drug.auc.analysis.res$AUC - 0.5) < 0.3 ] = "not sig"
 
-  tmp.drug.auc.analysis.res$label[tmp.drug.auc.analysis.res$Sig=="not sig"] = NA
+  # sig
+  drug.auc.analysis.res = drug.auc.analysis.res %>%
+    mutate(AUC.sig = case_when(
+      as.numeric(ANOVA.P) > p.cutoff | abs(as.numeric(AUC) - 0.5) < auc.cutoff - 0.5 ~ "not sig",
+      is.na(CLINICAL.STATUS) ~ "Under investigation",
+      TRUE ~ CLINICAL.STATUS
+    ))
 
-  p.auc = ggscatter(tmp.drug.auc.analysis.res, x = "AUC",
+  # label
+  drug.auc.analysis.res$AUC.label = drug.auc.analysis.res$Drug
+  drug.auc.analysis.res$AUC.label[drug.auc.analysis.res$AUC.sig=="not sig"] = NA
+
+  p.auc = ggscatter(drug.auc.analysis.res, x = "AUC",
                     y = "logANOVA.P",
                     xlim = c(0,1),
                    ylab = "-log(P)", xlab = "Resistant <-- AUC --> Sensitive",
-                   label =  "label", color = "Sig",
+                   label =  "AUC.label", color = "AUC.sig",
                    palette = c("FDA approved" = "#FC4E07",
                                "Clinical trial" = '#00AFBB',
                                "not sig" = 'gray',
                                "Under investigation" = "#E7B800"),
-                   font.label = c(14, "bold", "black"), repel = T, xticks.by = 0.2)  +
-    geom_vline(xintercept= 0.8, col="gray", linetype="dotted") +
-    geom_vline(xintercept= 0.2, col="gray", linetype="dotted") +
-    geom_hline(yintercept=-log10(0.05), col="gray", linetype="dotted")
+                   font.label = c(14, "bold", "black"), repel = T)  +
+    geom_vline(xintercept= auc.cutoff, col="gray", linetype="dotted") +
+    geom_vline(xintercept= 1-auc.cutoff, col="gray", linetype="dotted") +
+    geom_hline(yintercept= -log10(p.cutoff), col="gray", linetype="dotted")
 
 
 

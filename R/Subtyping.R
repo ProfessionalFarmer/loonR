@@ -33,6 +33,40 @@ fillSymmetricNATable <- function(symmetric.df){
 
 }
 
+#' Hyper geometrix test for contigency table
+#'
+#' @param df data.frame with row and col names, and numeric value
+#' @param lower.tail
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' df = data.frame(a=c(1,4),b=c(2,19))
+#' rownames(df) = c("c","d")
+#' loonR::hyperGeoTest4ContingencyTable(df)
+hyperGeoTest4ContingencyTable <- function(df, lower.tail = FALSE){
+
+  geomatrix = loonR::convertDfToNumeric(df)
+  # perform geometrix,把p值放在相同矩阵的数据框中
+  tmpgeo = matrix(nrow=length(row.names(geomatrix)),ncol=length(colnames(geomatrix)))
+  colnames(tmpgeo) = colnames(geomatrix)
+  rownames(tmpgeo) = rownames(geomatrix)
+
+
+  for(i in row.names(tmpgeo)  ){ # row
+    for(j in colnames(tmpgeo) ){  # column
+      # 白球的个数，白球的总个数，黑球的总个数，抽的球（不是黑球，是球）个数
+      p = phyper(geomatrix[i,j]-1, sum(geomatrix[i,]), sum(geomatrix)-sum(geomatrix[i,]), sum(geomatrix[,j]), lower.tail = lower.tail   )
+      tmpgeo[i,j] = p
+    }
+  }
+  tmpgeo = as.data.frame(tmpgeo)
+
+  tmpgeo
+
+}
+
 
 
 #' Perform hypergeometric test
@@ -115,20 +149,25 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
   )
 
 
-  # perform geometrix,把p值放在相同矩阵的数据框中
-  tmpgeo = matrix(nrow=length(row.names(geomatrix)),ncol=length(colnames(geomatrix)))
-  colnames(tmpgeo) = colnames(geomatrix)
-  rownames(tmpgeo) = rownames(geomatrix)
+  #用在这个函数替代 reduce wheel, cheers
+  tmpgeo = loonR::hyperGeoTest4ContingencyTable(geomatrix)
+  # # perform geometrix,把p值放在相同矩阵的数据框中
+  # tmpgeo = matrix(nrow=length(row.names(geomatrix)),ncol=length(colnames(geomatrix)))
+  # colnames(tmpgeo) = colnames(geomatrix)
+  # rownames(tmpgeo) = rownames(geomatrix)
+  #
+  #
+  # for(i in row.names(tmpgeo)  ){ # row
+  #   for(j in colnames(tmpgeo) ){  # column
+  #     # 白球的个数，白球的总个数，黑球的总个数，抽的球（不是黑球，是球）个数
+  #     p = phyper(geomatrix[i,j]-1, sum(geomatrix[i,]), sum(geomatrix)-sum(geomatrix[i,]), sum(geomatrix[,j]), lower.tail = lower.tail   )
+  #     tmpgeo[i,j] = p
+  #   }
+  # }
+  # tmpgeo = as.data.frame(tmpgeo)
 
 
-  for(i in row.names(tmpgeo)  ){ # row
-    for(j in colnames(tmpgeo) ){  # column
-      # 白球的个数，白球的总个数，黑球的总个数，抽的球（不是黑球，是球）个数
-      p = phyper(geomatrix[i,j]-1, sum(geomatrix[i,]), sum(geomatrix)-sum(geomatrix[i,]), sum(geomatrix[,j]), lower.tail = lower.tail   )
-      tmpgeo[i,j] = p
-    }
-  }
-  tmpgeo = as.data.frame(tmpgeo)
+
 
   res <- list()
   res$barplot = barplot
@@ -163,6 +202,7 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
 
   res$pval.df <- format(tmpgeo, trim = TRUE, digits = 3, scientific = 3)
   res$table <- geomatrix
+
 
   # # # # # # # # # # # # # # # # # # Option 1
   # pheatmap::pheatmap(tmpgeo.log,
@@ -205,6 +245,88 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
   res
 
 }
+
+
+#' Multiple hyper geomatrix test, include 2xn, 2x2
+#'
+#' @param main.row.group
+#' @param minor.col.group
+#' @param row.prefix
+#' @param col.prefix
+#' @param lower.tail
+#' @param title
+#' @param log10.lowest
+#' @param print.fig
+#' @param adjusted.p
+#' @param remove.na
+#' @param bar.color
+#' @param chiq.square.test
+#' @param not.consider
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' g1 = sample(c("G1","G2","G3"),10, replace = T)
+#' g2 = sample(c("1","2","3"),10, replace = T)
+#' res = loonR::hyperGeoTest(g1, g2, col.prefix = "E")
+multipleHyperGeoTest <- function(main.row.group, minor.col.group, row.prefix = "", col.prefix = "", lower.tail = FALSE, title = "", log10.lowest = 5,
+                                print.fig = FALSE, adjusted.p=NULL, remove.na=FALSE, bar.color="npg", chiq.square.test = T, not.consider = NA){
+
+  twoXtwo = list()
+  twoXN = list()
+
+  #  main is the group you want to test
+  main.row.group = paste0(row.prefix,main.row.group)
+  minor.col.group = paste0(col.prefix,minor.col.group)
+
+  # obtain class level
+  main.groups = unique(main.row.group)
+  minor.groups = unique(minor.col.group)
+
+
+
+
+  # 2023-04-28 convert to 2x2 matrix
+  for (main.group in main.groups) {
+     for(minor.group in minor.groups){
+          row.group = rep(paste0("non-",main.group), length(main.groups))
+          col.group = rep(paste0("non-",minor.group),length(minor.groups))
+
+          row.group[main.groups  == main.group ] = main.group
+          col.group[minor.groups == minor.group] = minor.group
+
+          tmp.res = loonR::hyperGeoTest(row.group, col.group,
+                              lower.tail = lower.tail, title = title, log10.lowest = 5,
+                              print.fig = print.fig, adjusted.p=adjusted.p, remove.na=remove.na,
+                              bar.color=bar.color, chiq.square.test = chiq.square.test, not.consider = not.consider)
+          tmp.name = paste0(main.group, "--", minor.group)
+          twoXtwo[[tmp.name]] <- tmp.res
+     }
+  }
+
+  # convert to 2xn
+  for (main.group in main.groups) {
+      row.group = rep(paste0("non-",main.group), length(main.groups))
+      col.group = minor.groups
+
+      row.group[main.groups  == main.group ] = main.group
+
+      tmp.res = loonR::hyperGeoTest(row.group, col.group,
+                                    lower.tail = lower.tail, title = title, log10.lowest = 5,
+                                    print.fig = print.fig, adjusted.p=adjusted.p, remove.na=remove.na,
+                                    bar.color=bar.color, chiq.square.test = chiq.square.test, not.consider = not.consider)
+      tmp.name = paste0(main.group)
+      twoXN[[tmp.name]] <- tmp.res
+
+  }
+
+
+  res = list(twoXtwo = twoXtwo,
+             twoXN = twoXN)
+  res
+}
+
 
 
 

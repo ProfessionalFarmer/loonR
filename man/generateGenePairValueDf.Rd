@@ -21,6 +21,6 @@ set.seed(1)
 df = matrix(rnorm(100*10, 1, .5), ncol=10)
 colnames(df) = paste0("ID",1:10)
 rownames(df) = paste0("Gene",1:100)
-res = generateGenePairValueDf(df)
+res = loonR::generateGenePairValueDf(df)
 head(res$Binary.res)
 }

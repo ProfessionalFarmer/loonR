@@ -60,7 +60,7 @@ survivaly_analysis(
 
 \item{best.point}{If best cut point wanted, pls input values by Group variable}
 
-\item{cut.quantile}{Love this paramter, hansome}
+\item{cut.quantile}{Love this paramter, handsome}
 
 \item{surv.median.line}{character vector for drawing a horizontal/vertical line at median survival. Allowed values include one of c("none", "hv", "h", "v"). v: vertical, h:horizontal.}
 

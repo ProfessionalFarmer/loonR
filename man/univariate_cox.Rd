@@ -4,14 +4,14 @@
 \alias{univariate_cox}
 \title{Univariate Cox analysis}
 \usage{
-univariate_cox(d.frame, status, time, scale = TRUE)
+univariate_cox(d.frame, status, time, scale = TRUE, max.time = NA)
 }
 \arguments{
 \item{d.frame}{Data.frame --- Row: sample, Column: gene expression}
 
 \item{time}{OS, DFS, RFS et al.....}
 
-\item{scale}{}
+\item{max.time}{NA}
 }
 \value{
 

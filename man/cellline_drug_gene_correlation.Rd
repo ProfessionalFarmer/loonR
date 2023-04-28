@@ -9,7 +9,8 @@ cellline_drug_gene_correlation(
   gene.expr = NULL,
   p.cutoff = 0.01,
   cor.cutoff = 0.3,
-  p.variable = "P"
+  p.variable = "P",
+  auc.cutoff = 0.8
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ cellline_drug_gene_correlation(
 \item{cor.cutoff}{rho 0.3}
 
 \item{p.variable}{column name of P value. Default P}
+
+\item{auc.cutoff}{Default 0.8}
 }
 \value{
 

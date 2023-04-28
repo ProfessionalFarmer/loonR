@@ -952,7 +952,7 @@ multivariate_or <- function(d.frame, label, scale=TRUE){
 
   if(scale){df = scale(d.frame, center = TRUE, scale = TRUE)}
 
-  res <- glm(Event ~ . , data = data.frame(d.frame, Event=label, check.names = FALSE), family=binomial(logit))
+  res <- glm(status ~ . , data = data.frame(d.frame, Event=label, check.names = FALSE), family=binomial(logit))
   #exp( coef(res) )
   #summary(res)
 
@@ -996,7 +996,7 @@ univariate_or <- function(d.frame, label, scale=TRUE){
 
   all.res <- foreach(i=1:ncol(d.frame), .combine = rbind) %do%{
     #   for(i in 1:ncol(d.frame) ){
-    res <- glm(Event ~ . , data = data.frame(Score = d.frame[,i], Event=label), family=binomial(logit))
+    res <- glm(status ~ . , data = data.frame(Score = d.frame[,i], Event=label), family=binomial(logit))
     #exp( coef(res) )
     #summary(res)
 
@@ -1032,12 +1032,13 @@ univariate_or <- function(d.frame, label, scale=TRUE){
 #' @param status
 #' @param time OS, DFS, RFS et al.....
 #' @param scale
+#' @param max.time NA
 #'
 #' @return
 #' @export
 #'
 #' @examples
-univariate_cox <- function(d.frame, status, time, scale=TRUE){
+univariate_cox <- function(d.frame, status, time, scale=TRUE, max.time = NA){
 
   library(foreach)
   library("survival")
@@ -1045,6 +1046,13 @@ univariate_cox <- function(d.frame, status, time, scale=TRUE){
 
   if(scale){d.frame = scale(d.frame, center = TRUE, scale = TRUE)}
 
+
+  if(!is.null(max.time)){
+    if(!is.numeric(max.time)){stop("Pls input days or months for max.time")}
+    # There not event in the maximum point.
+    status[time >= max.time & status] = 0
+    time[time >= max.time] = max.time
+  }
 
   all.res <- foreach(i=1:ncol(d.frame), .combine = rbind) %do%{
 
@@ -1092,18 +1100,27 @@ univariate_cox <- function(d.frame, status, time, scale=TRUE){
 #' @param status
 #' @param time OS, DFS, RFS et al.....
 #' @param scale
+#' @param max.time NA
 #'
 #' @return
 #' @export
 #'
 #' @examples
-univariate_cox_sthda <- function(d.frame, status, time, scale=TRUE){
+univariate_cox_sthda <- function(d.frame, status, time, scale=TRUE, max.time = NA){
 
   if(scale){d.frame = scale(d.frame, center = TRUE, scale = TRUE)}
 
   library(survival)
   # Clone frome http://www.sthda.com/english/wiki/cox-proportional-hazards-model
   covariates <- colnames(d.frame)
+
+
+  if(!is.null(max.time)){
+    if(!is.numeric(max.time)){stop("Pls input days or months for max.time")}
+    # There not event in the maximum point.
+    status[time >= max.time & status] = 0
+    time[time >= max.time] = max.time
+  }
 
   df <- data.frame(d.frame,
                    Time=time,

@@ -79,11 +79,13 @@ survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.pr
     cat("Best cut point is ", best.cut, "\n")
 
     surv.analysis.df$Variable = surv.analysis.df$Group
+
     surv.analysis.df$Group = loonR::splitGroupByCutoff(
       values = surv.analysis.df$Variable,
       cut.point = best.cut, cut.label = c("Low","High")
     )$New.Label
 
+    cat("----------------\nGroup count: ", table(surv.analysis.df$Group),"\n------------------\n" )
   }
 
   # if user specify
@@ -171,6 +173,14 @@ survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.pr
              surv.median.line = surv.median.line)
   rm(surv.analysis.df, surv.fit)
 
+  # covert to ggplot2 object
+  if(risk.table){
+    p1 = p$plot
+    p.table = p$table
+    if(!require(patchwork)){BiocManager::install("patchwork")}
+    library(patchwork)
+    p = p1/p.table
+  }
   p
 
 }

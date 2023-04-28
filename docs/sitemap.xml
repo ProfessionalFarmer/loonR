@@ -85,6 +85,9 @@
     <loc>/reference/build.randomforest.model.html</loc>
   </url>
   <url>
+    <loc>/reference/buildEnsembleModel.html</loc>
+  </url>
+  <url>
     <loc>/reference/buildGRangesObj.html</loc>
   </url>
   <url>
@@ -227,6 +230,9 @@
   </url>
   <url>
     <loc>/reference/forest_plot.html</loc>
+  </url>
+  <url>
+    <loc>/reference/formatTable.html</loc>
   </url>
   <url>
     <loc>/reference/fpkm2tpm.html</loc>
@@ -493,6 +499,9 @@
     <loc>/reference/randomOrderWithinGroup.html</loc>
   </url>
   <url>
+    <loc>/reference/rangeScale01.html</loc>
+  </url>
+  <url>
     <loc>/reference/readICGCExpFile.html</loc>
   </url>
   <url>
@@ -578,6 +587,9 @@
   </url>
   <url>
     <loc>/reference/suppa.get.final.table.html</loc>
+  </url>
+  <url>
+    <loc>/reference/surv_ROC_DCA.html</loc>
   </url>
   <url>
     <loc>/reference/survivaly_analysis.html</loc>

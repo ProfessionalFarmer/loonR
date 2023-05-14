@@ -21,7 +21,7 @@ testCategoricalVariableFreq <- function(sample1, sample2,
         raw.test.res = list()
         ######### Prepare
         sample1 = sample1[!is.na(sample1)]
-        sample2 = sample1[!is.na(sample2)]
+        sample2 = sample2[!is.na(sample2)]
         s1 = unlist(table(sample1))
         s2 = unlist(table(sample2))
 

@@ -269,7 +269,7 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
 #' @examples
 #' g1 = sample(c("G1","G2","G3"),10, replace = T)
 #' g2 = sample(c("1","2","3"),10, replace = T)
-#' res = loonR::hyperGeoTest(g1, g2, col.prefix = "E")
+#' res = loonR::multipleHyperGeoTest(g1, g2, col.prefix = "E")
 multipleHyperGeoTest <- function(main.row.group, minor.col.group, row.prefix = "", col.prefix = "", lower.tail = FALSE, title = "", log10.lowest = 5,
                                 print.fig = FALSE, adjusted.p=NULL, remove.na=FALSE, bar.color="npg", chiq.square.test = T, not.consider = NA){
 
@@ -290,11 +290,11 @@ multipleHyperGeoTest <- function(main.row.group, minor.col.group, row.prefix = "
   # 2023-04-28 convert to 2x2 matrix
   for (main.group in main.groups) {
      for(minor.group in minor.groups){
-          row.group = rep(paste0("non-",main.group), length(main.groups))
-          col.group = rep(paste0("non-",minor.group),length(minor.groups))
+          row.group = rep(paste0("non-",main.group), length(main.row.group))
+          col.group = rep(paste0("non-",minor.group),length(minor.col.group))
 
-          row.group[main.groups  == main.group ] = main.group
-          col.group[minor.groups == minor.group] = minor.group
+          row.group[main.row.group  == main.group ] = main.group
+          col.group[minor.col.group == minor.group] = minor.group
 
           tmp.res = loonR::hyperGeoTest(row.group, col.group,
                               lower.tail = lower.tail, title = title, log10.lowest = 5,
@@ -307,10 +307,10 @@ multipleHyperGeoTest <- function(main.row.group, minor.col.group, row.prefix = "
 
   # convert to 2xn
   for (main.group in main.groups) {
-      row.group = rep(paste0("non-",main.group), length(main.groups))
-      col.group = minor.groups
+      row.group = rep(paste0("non-",main.group), length(main.row.group))
+      col.group = minor.col.group
 
-      row.group[main.groups  == main.group ] = main.group
+      row.group[main.row.group  == main.group ] = main.group
 
       tmp.res = loonR::hyperGeoTest(row.group, col.group,
                                     lower.tail = lower.tail, title = title, log10.lowest = 5,

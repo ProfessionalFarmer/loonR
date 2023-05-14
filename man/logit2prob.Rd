@@ -9,9 +9,6 @@ logit2prob(logit)
 \arguments{
 \item{logit}{}
 }
-\value{
-
-}
 \description{
 Convert logti to probability
 }

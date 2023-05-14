@@ -26,12 +26,6 @@ cellline_drug_gene_correlation(
 
 \item{auc.cutoff}{Default 0.8}
 }
-\value{
-
-}
 \description{
 Drug and gene correlation analysis
-}
-\examples{
-
 }

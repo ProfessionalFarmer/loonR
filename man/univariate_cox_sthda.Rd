@@ -13,9 +13,6 @@ univariate_cox_sthda(d.frame, status, time, scale = TRUE, max.time = NA)
 
 \item{max.time}{NA}
 }
-\value{
-
-}
 \description{
 Copy http://www.sthda.com/english/wiki/cox-proportional-hazards-model
 }

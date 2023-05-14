@@ -11,9 +11,6 @@ riskCalibrationPlotSingleComplex(risk, label, color = "#4682B4", bins = 10)
 
 \item{bins}{Default 10}
 }
-\value{
-
-}
 \description{
 Calibration plot
 }

@@ -26,9 +26,6 @@ suppa.event.pie(
 
 \item{border}{Border color}
 }
-\value{
-
-}
 \description{
 Count each event type and draw pie chart
 }

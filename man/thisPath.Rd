@@ -6,9 +6,6 @@
 \usage{
 thisPath()
 }
-\value{
-
-}
 \description{
 Get current directory path
 }

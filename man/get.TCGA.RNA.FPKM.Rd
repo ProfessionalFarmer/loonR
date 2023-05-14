@@ -11,9 +11,6 @@ get.TCGA.RNA.FPKM(tcga.project = NULL, rawCount = FALSE, log2 = FALSE)
 
 \item{log2}{If to perform log2 transformation}
 }
-\value{
-
-}
 \description{
 Get TCGA RNA expression (RPKM) data
 }

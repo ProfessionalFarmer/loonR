@@ -11,9 +11,6 @@ plotVennLegacy(l.list, alpha = 0.5, palette = "aaas")
 
 \item{palette}{aaas}
 }
-\value{
-
-}
 \description{
 Plot venn diagram
 }

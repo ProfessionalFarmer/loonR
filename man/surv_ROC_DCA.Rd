@@ -9,9 +9,6 @@ surv_ROC_DCA(risk = NULL, event = NULL, time = NULL, timePoint = 12)
 \arguments{
 \item{timePoint}{}
 }
-\value{
-
-}
 \description{
 Time depend ROC and AUC
 }

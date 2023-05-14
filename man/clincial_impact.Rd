@@ -11,9 +11,6 @@ clincial_impact(risk.score, label, name = "Study", palette = "aaas")
 
 \item{palette}{Default "aaas"}
 }
-\value{
-
-}
 \description{
 Plot clinical impact: detail number of patients
 }

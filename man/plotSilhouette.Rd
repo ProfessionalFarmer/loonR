@@ -19,9 +19,6 @@ plotSilhouette(
 
 \item{label}{Default FALSE}
 }
-\value{
-
-}
 \description{
 Silhouette plot
 }

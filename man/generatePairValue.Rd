@@ -9,9 +9,6 @@ generatePairValue(value = NULL, names = NULL, sep = "_")
 \arguments{
 \item{sep}{Pair seperation}
 }
-\value{
-
-}
 \description{
 Generate gene pair value
 }

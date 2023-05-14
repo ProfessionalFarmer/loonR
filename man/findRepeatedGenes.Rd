@@ -20,9 +20,6 @@ findRepeatedGenes(
 
 \item{...}{}
 }
-\value{
-
-}
 \description{
 Return a vector indicate gene overlapping count
 }

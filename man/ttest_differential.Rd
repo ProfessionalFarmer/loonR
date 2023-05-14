@@ -22,9 +22,6 @@ ttest_differential(
 
 \item{paired}{Default FALSE}
 }
-\value{
-
-}
 \description{
 Calculate p value by t.test manually
 }

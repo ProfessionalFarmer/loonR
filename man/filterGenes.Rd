@@ -14,9 +14,6 @@ filterGenes(
 \arguments{
 \item{mean.expression}{}
 }
-\value{
-
-}
 \description{
 Filter genes by kinks of criteria
 }

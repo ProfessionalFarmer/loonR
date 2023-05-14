@@ -11,12 +11,6 @@ ssGSEA(expr, geneset)
 
 \item{geneset}{gmt path or a vector}
 }
-\value{
-
-}
 \description{
 ssGSEA
-}
-\examples{
-
 }

@@ -13,9 +13,6 @@ HosmerLemesGoodnessOfFitTest(pred = NULL, label = NULL, bin = 10)
 
 \item{bin}{Default 10}
 }
-\value{
-
-}
 \description{
 Hosmer-Lemeshow Goodness of Fit (GOF) Test
 }

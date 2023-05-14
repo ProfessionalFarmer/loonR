@@ -36,9 +36,6 @@ volcano_plot(
 
 \item{col.pal}{Default: c("blue", "gray", "red"). A vector with 3 elements. For significantly down, not significant, significantly up}
 }
-\value{
-
-}
 \description{
 Volcano Plot
 }

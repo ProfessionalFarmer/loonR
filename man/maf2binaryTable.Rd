@@ -9,9 +9,6 @@ maf2binaryTable(maf)
 \arguments{
 \item{maf}{File path or data.frame}
 }
-\value{
-
-}
 \description{
 Convert MAF format to a binary matrix
 }

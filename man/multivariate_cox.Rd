@@ -13,9 +13,6 @@ multivariate_cox(d.frame, status, time, scale = TRUE)
 
 \item{scale}{}
 }
-\value{
-
-}
 \description{
 Title
 }

@@ -9,9 +9,6 @@ confidence_interval(vector, interval)
 \arguments{
 \item{interval}{}
 }
-\value{
-
-}
 \description{
 confidence interval
 }

@@ -20,9 +20,6 @@ SNF_Similairity_Hist(
 
 \item{group.prefix}{Default Group. User can specify}
 }
-\value{
-
-}
 \description{
 Similairity count
 }

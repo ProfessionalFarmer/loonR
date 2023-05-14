@@ -34,9 +34,6 @@
 
 \item{smooth.method}{Smoothing method (function) to use, accepts either NULL or a character vector, e.g. "lm", "glm", "gam", "loess" or a function, e.g. MASS::rlm or mgcv::gam, stats::lm, or stats::loess. "auto" is also accepted for backwards compatibility.}
 }
-\value{
-
-}
 \description{
 Calibration plot
 }

@@ -36,9 +36,6 @@ feature.selection.RFE(
 
 \item{cores}{cores for parallel}
 }
-\value{
-
-}
 \description{
 Recursive feature elimnation
 }

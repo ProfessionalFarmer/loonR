@@ -23,14 +23,11 @@ multipleHyperGeoTest(
 \arguments{
 \item{not.consider}{}
 }
-\value{
-
-}
 \description{
 Multiple hyper geomatrix test, include 2xn, 2x2
 }
 \examples{
 g1 = sample(c("G1","G2","G3"),10, replace = T)
 g2 = sample(c("1","2","3"),10, replace = T)
-res = loonR::hyperGeoTest(g1, g2, col.prefix = "E")
+res = loonR::multipleHyperGeoTest(g1, g2, col.prefix = "E")
 }

@@ -11,9 +11,6 @@ group2class_file(group, file = "./class.cls")
 
 \item{file}{Default ./class.cls}
 }
-\value{
-
-}
 \description{
 Convert a vector to GenePattern class file
 }

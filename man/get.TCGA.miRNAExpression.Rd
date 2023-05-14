@@ -20,9 +20,6 @@ get.TCGA.miRNAExpression(
 
 \item{log2}{If to perform log2 transformation}
 }
-\value{
-
-}
 \description{
 Get TCGA miRNA expression data
 }

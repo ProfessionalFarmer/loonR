@@ -24,9 +24,6 @@ exportTable(
 
 \item{col.names}{T}
 }
-\value{
-
-}
 \description{
 Overwrite write.table with modified default option. Export data frame to file
 }

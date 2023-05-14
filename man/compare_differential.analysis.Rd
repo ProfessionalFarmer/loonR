@@ -16,9 +16,6 @@ compare_differential.analysis(
 
 \item{cal.auc}{If calculate AUC value}
 }
-\value{
-
-}
 \description{
 Perform differential analysis (1 vs others)
 }

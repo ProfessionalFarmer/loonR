@@ -27,9 +27,6 @@ scaleDF(
 
 \item{returnRaw}{if TRUE, return raw dataframe}
 }
-\value{
-
-}
 \description{
 Scale a data.frame by column or row
 }

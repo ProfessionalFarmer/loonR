@@ -11,9 +11,6 @@ vector.group(v, g)
 
 \item{g}{group}
 }
-\value{
-
-}
 \description{
 Group a vector into list by group
 }

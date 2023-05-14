@@ -13,9 +13,6 @@ randomOrderWithinGroup(group = NULL, ids = NULL, seed = 666)
 
 \item{seed}{Default 666}
 }
-\value{
-
-}
 \description{
 Randomly place the sample within group
 }

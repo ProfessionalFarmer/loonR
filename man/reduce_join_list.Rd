@@ -29,9 +29,6 @@ reduce_join_list(
 
 \item{right}{If TRUE, use right_join}
 }
-\value{
-
-}
 \description{
 Join a table list
 }

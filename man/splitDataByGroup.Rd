@@ -13,9 +13,6 @@ splitDataByGroup(data.frame = NULL, group = NULL, seed = 666, fraction = 0.5)
 
 \item{fraction}{0.5}
 }
-\value{
-
-}
 \description{
 split data frame by group
 }

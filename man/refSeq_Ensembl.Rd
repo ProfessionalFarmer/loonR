@@ -9,9 +9,6 @@ refSeq_Ensembl(nm.accessions)
 \arguments{
 \item{nm.accessions}{}
 }
-\value{
-
-}
 \description{
 RefSeq identifiers differ in format according to the type of record the identifiers are for as shown below:
 }

@@ -9,9 +9,6 @@ getTranscriptProteinSequence(IDs, type = "ensembl_transcript_id")
 \arguments{
 \item{type}{Default: ensembl_transcript_id, Available: ensembl_transcript_id, ensembl_transcript_id_version, refseq_mrna, Possible filters are given by the listFilters function. biomaRt::listFilters(mart)}
 }
-\value{
-
-}
 \description{
 Retrieve protein sequence by biomaRt
 }

@@ -27,9 +27,6 @@ get_individual_candidates_performance(
 
 \item{OR}{Default F. If calculate OR or not}
 }
-\value{
-
-}
 \description{
 Get individual_candidates_performance
 }

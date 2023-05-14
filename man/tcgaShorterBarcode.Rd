@@ -9,9 +9,6 @@ tcgaShorterBarcode(ids)
 \arguments{
 \item{ids}{}
 }
-\value{
-
-}
 \description{
 Get shorter TCGA ID
 }

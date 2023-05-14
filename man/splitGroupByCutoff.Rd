@@ -31,9 +31,6 @@ splitGroupByCutoff(
 
 \item{group.prefix}{""}
 }
-\value{
-
-}
 \description{
 Split group by various methods. Useful
 }

@@ -21,9 +21,6 @@ meltDataFrameByGroup(
 
 \item{group2}{The second group}
 }
-\value{
-
-}
 \description{
 Melt data frame by group
 }

@@ -29,9 +29,6 @@ runWGCNA(
 
 \item{nSelectHeatmap}{n (default 1000) genes to show in heatmap (a way to visualize network)}
 }
-\value{
-
-}
 \description{
 WGCNA, Weighted correlation network analysis
 }

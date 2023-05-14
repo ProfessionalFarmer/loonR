@@ -9,9 +9,6 @@ id_mapping(IDS, key = "ENSEMBL", column = c("SYMBOL"), clean = FALSE)
 \arguments{
 \item{clean}{If set TRUE, will only return mapped ID without duplicates}
 }
-\value{
-
-}
 \description{
 Title
 }

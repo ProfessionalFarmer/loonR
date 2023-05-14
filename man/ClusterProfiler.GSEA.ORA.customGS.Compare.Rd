@@ -24,9 +24,6 @@ ClusterProfiler.GSEA.ORA.customGS.Compare(
 
 \item{ova}{Default FALSE, overrepresentation test}
 }
-\value{
-
-}
 \description{
 Perform GSE analysis across multiple group by cluster profiler and user customed gene sets
 }

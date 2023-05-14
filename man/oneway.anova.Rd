@@ -24,9 +24,6 @@ oneway.anova(
 
 \item{parameter.test}{Default FALSE, so perform Nonparametric Tests: KruskalWallisTest}
 }
-\value{
-
-}
 \description{
 Kruskal Wallis Test One Way Anova by Ranks or F test
 }

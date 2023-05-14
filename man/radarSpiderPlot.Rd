@@ -32,9 +32,6 @@ radarSpiderPlot(
 
 \item{vlabels}{Character vector for the names for variables. If NULL, the names of the variables as colnames(df) are used. Default NULL.}
 }
-\value{
-
-}
 \description{
 Radar plot (aka spider plot)
 }

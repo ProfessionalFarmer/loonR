@@ -30,9 +30,6 @@ get_performance(
 
 \item{OR}{Default F. If calculate OR or not}
 }
-\value{
-
-}
 \description{
 Get model performace, sensitivity, sepcificity and others
 }

@@ -27,9 +27,6 @@ show_hcluster(
 
 \item{cutree}{Number of clusters}
 }
-\value{
-
-}
 \description{
 Perform hclustering analysis
 }

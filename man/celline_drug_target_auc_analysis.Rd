@@ -17,9 +17,6 @@ celline_drug_target_auc_analysis(
 
 \item{compare.method}{wilcox.test t.test}
 }
-\value{
-
-}
 \description{
 Analyze if gene is correlated with drug sensitivity
 }

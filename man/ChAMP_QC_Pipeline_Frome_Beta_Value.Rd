@@ -26,9 +26,6 @@ ChAMP_QC_Pipeline_Frome_Beta_Value(
 
 \item{batchname}{Batch variable name. Default is c("Slide")}
 }
-\value{
-
-}
 \description{
 ChAMP QC Pipeline for beta matrix
 }

@@ -22,9 +22,6 @@ build.psm.regression.model(
 
 \item{time.point}{Default 36.  Calculate the prob at a specific time point}
 }
-\value{
-
-}
 \description{
 Build parametric survival model
 }

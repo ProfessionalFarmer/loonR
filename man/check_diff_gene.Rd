@@ -24,9 +24,6 @@ check_diff_gene(
 
 \item{add}{Default is jitter}
 }
-\value{
-
-}
 \description{
 Check gene expression
 }

@@ -9,9 +9,6 @@ multiIntersection(...)
 \arguments{
 \item{...}{one or more group vector}
 }
-\value{
-
-}
 \description{
 Multiple intersction
 }

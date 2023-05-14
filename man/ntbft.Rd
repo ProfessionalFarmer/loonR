@@ -28,9 +28,6 @@ ntbft(
 
 \item{exterdt}{specify whether the prediction should be made in external dataset; this is useful for cross validation of the model. By default, the value is NULL, indicating the prediction is made in the same dataset as the training dataset}
 }
-\value{
-
-}
 \description{
 Net benifit
 }

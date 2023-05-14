@@ -73,9 +73,6 @@ plotJitterBoxplot(
 
 \item{facet.n.row}{}
 }
-\value{
-
-}
 \description{
 Boxplot with jitter, barplot with mean_se, violin plot with box
 }

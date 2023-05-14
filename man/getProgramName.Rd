@@ -9,9 +9,6 @@ getProgramName(arguments)
 \arguments{
 \item{arguments}{}
 }
-\value{
-
-}
 \description{
 Get current running program name
 }

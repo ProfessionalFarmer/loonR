@@ -6,8 +6,8 @@
 \usage{
 runImmunedeconv(
   expression.df,
-  method = c("quantiseq", "timer", "cibersort", "cibersort_abs", "mcp_counter",
-    "xcell", "epic"),
+  method = c("quantiseq", "timer", "cibersort", "cibersort_abs", "mcp_counter", "xcell",
+    "epic"),
   indication = ""
 )
 }
@@ -17,9 +17,6 @@ runImmunedeconv(
 \item{method}{c("quantiseq", "timer", "cibersort", "cibersort_abs", "mcp_counter", "xcell", "epic")}
 
 \item{indication}{When use timer, should be one of immunedeconv::timer_available_cancers}
-}
-\value{
-
 }
 \description{
 Run Immunedeconv

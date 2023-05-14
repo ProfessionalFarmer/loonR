@@ -23,9 +23,6 @@ get.palette.color(
 
 \item{show.color}{Default FALSE}
 }
-\value{
-
-}
 \description{
 RColorBrewer, ggsci, hue or grey/gray color palettes
 }

@@ -23,9 +23,6 @@ subtypeAssociationAnalysis(
 
 \item{print.message}{If print message}
 }
-\value{
-
-}
 \description{
 Subtype association: Calculate Jaccard similarity coefficient and perform hypergeometrix test
 }

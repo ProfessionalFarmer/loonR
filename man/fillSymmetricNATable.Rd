@@ -9,9 +9,6 @@ fillSymmetricNATable(symmetric.df)
 \arguments{
 \item{symmetric.df}{}
 }
-\value{
-
-}
 \description{
 Fill NA in symmetric table
 }

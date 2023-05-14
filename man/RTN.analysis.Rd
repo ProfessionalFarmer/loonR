@@ -27,9 +27,6 @@ RTN.analysis(
 
 \item{hits}{}
 }
-\value{
-
-}
 \description{
 RTN Reconstruction of Transcriptional regulatory Networks analysis
 }

@@ -13,9 +13,6 @@ miRBaseConverter(miR.IDs = NULL, miRBase.IDs = NULL, version = NULL)
 
 \item{version}{A character value representing the target miRBase version corresponding the Accessions. Default "v22"}
 }
-\value{
-
-}
 \description{
 miRBase convert
 }

@@ -11,9 +11,6 @@ genereateLabelsByGroup(label = NULL, ...)
 
 \item{...}{one or more group vector}
 }
-\value{
-
-}
 \description{
 Generate label based on group
 }

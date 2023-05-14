@@ -18,9 +18,6 @@ loadArrayExpressDataset(
 
 \item{Array.design}{adf.txt}
 }
-\value{
-
-}
 \description{
 Download dataset from ArrayExpress
 }

@@ -26,9 +26,6 @@ determineClusterNumber(
 
 \item{max.nc}{8 maximal number of clusters, between 2 and (number of objects - 1), greater or equal to min.nc.}
 }
-\value{
-
-}
 \description{
 Determine the best cluster numbers
 }

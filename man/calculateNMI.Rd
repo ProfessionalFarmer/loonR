@@ -11,9 +11,6 @@ calculateNMI(data.list, wall)
 
 \item{wall}{}
 }
-\value{
-
-}
 \description{
 Ranks each features by NMI (normalized mutual information) based on their clustering assingments
 }

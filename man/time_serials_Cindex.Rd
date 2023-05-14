@@ -13,9 +13,6 @@ time_serials_Cindex(list.cox.model, df, palette = "aaas", main = "")
 
 \item{main}{Default ""}
 }
-\value{
-
-}
 \description{
 Draw C index across times
 }

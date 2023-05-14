@@ -9,9 +9,6 @@ tcgabiolinks.get.450k.methylation(project)
 \arguments{
 \item{project}{e.g. TCGA-COAD. See getGDCprojects()$project_id}
 }
-\value{
-
-}
 \description{
 Download 450K methylation data
 }

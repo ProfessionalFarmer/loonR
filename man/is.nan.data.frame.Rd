@@ -9,9 +9,6 @@
 \arguments{
 \item{x}{}
 }
-\value{
-
-}
 \description{
 Generic is.nan function
 }

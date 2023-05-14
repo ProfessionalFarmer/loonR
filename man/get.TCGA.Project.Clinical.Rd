@@ -13,9 +13,6 @@ get.TCGA.Project.Clinical(project, subtype = FASLE, microsatellite = FALSE)
 
 \item{microsatellite}{if download microsatellite data}
 }
-\value{
-
-}
 \description{
 Get TCGA project clinical information
 }

@@ -19,9 +19,6 @@ feature.selection.boruta(
 
 \item{withTentative}{Default FALSE, not include tentative variable}
 }
-\value{
-
-}
 \description{
 Feature selection by Boruta
 }

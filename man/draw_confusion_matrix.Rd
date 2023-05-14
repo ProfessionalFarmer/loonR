@@ -13,9 +13,6 @@ draw_confusion_matrix(groups, risk.pro, best.cutoff = NA)
 
 \item{rs}{Predicted score}
 }
-\value{
-
-}
 \description{
 Confusion matrix visulization
 }

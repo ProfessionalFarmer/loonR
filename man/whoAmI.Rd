@@ -6,12 +6,6 @@
 \usage{
 whoAmI()
 }
-\value{
-
-}
 \description{
 Introduce me
-}
-\examples{
-
 }

@@ -70,9 +70,6 @@ survivaly_analysis(
 
 \item{maximum.days}{The maximum days or months}
 }
-\value{
-
-}
 \description{
 Survival analysis
 }

@@ -17,9 +17,6 @@ getTranscriptLength(
 
 \item{returnEndStartLength}{Not the real transcript length. Transcript end - transcript start}
 }
-\value{
-
-}
 \description{
 Obtain transcript length from gff file or GRanges object
 }

@@ -29,9 +29,6 @@ limma_differential(
 
 \item{cal.AUC}{If to calculate AUC}
 }
-\value{
-
-}
 \description{
 Differential analysis by LIMMA
 }

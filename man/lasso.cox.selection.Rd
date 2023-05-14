@@ -22,9 +22,6 @@ lasso.cox.selection(
 
 \item{nfolds}{Default 10}
 }
-\value{
-
-}
 \description{
 LASSO Cox selection
 }

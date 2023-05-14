@@ -14,9 +14,6 @@ findSurvivalCutPoint(
 \arguments{
 \item{time}{}
 }
-\value{
-
-}
 \description{
 Determine the Optimal Cutpoint for Continuous Variables
 }

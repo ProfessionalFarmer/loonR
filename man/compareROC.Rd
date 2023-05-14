@@ -18,9 +18,6 @@ compareROC(
 
 \item{alternative}{"two.sided", "less", "greater"}
 }
-\value{
-
-}
 \description{
 Compare two ROC curves
 }

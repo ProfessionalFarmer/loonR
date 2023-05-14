@@ -18,9 +18,6 @@ loadMethylationArraryData(
 
 \item{batchname}{Default c("Slide")}
 }
-\value{
-
-}
 \description{
 Load methylation arrary from directory
 }

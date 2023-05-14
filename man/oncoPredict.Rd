@@ -18,9 +18,6 @@ oncoPredict(
 
 \item{minNumSamples}{}
 }
-\value{
-
-}
 \description{
 Calculate drug sensitivity based on oncoPredict
 }

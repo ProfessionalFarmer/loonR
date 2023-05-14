@@ -9,9 +9,6 @@ extractTCGASampleType(TCGA.ids)
 \arguments{
 \item{TCGA.ids}{}
 }
-\value{
-
-}
 \description{
 Extract TCGA sample types
 }

@@ -23,9 +23,6 @@ findMaxMinColumnNamesForEachRow(
 
 \item{specified.column}{Numeric vector. Which columns want to be checked}
 }
-\value{
-
-}
 \description{
 Find the column name of maximum/minimum value for each row
 }

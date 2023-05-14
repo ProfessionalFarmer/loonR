@@ -9,9 +9,6 @@ get.YoudenIndex(pred, label)
 \arguments{
 \item{label}{}
 }
-\value{
-
-}
 \description{
 Get Youden index value
 }

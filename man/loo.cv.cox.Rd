@@ -15,9 +15,6 @@ loo.cv.cox(df, status, time, seed = 999, label = NA, scale = TRUE)
 
 \item{scale}{TRUE}
 }
-\value{
-
-}
 \description{
 Leave one out cross validation for cox regression
 }

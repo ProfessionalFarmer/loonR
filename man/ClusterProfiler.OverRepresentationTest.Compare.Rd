@@ -32,9 +32,6 @@ ClusterProfiler.OverRepresentationTest.Compare(
 
 \item{exp.gene.type}{RNA expression ID ENSEMBL. keytypes(org.Hs.eg.db)}
 }
-\value{
-
-}
 \description{
 Perform over-representation test across multiple group by cluster profiler
 }

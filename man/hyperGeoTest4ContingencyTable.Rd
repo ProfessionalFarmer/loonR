@@ -11,9 +11,6 @@ hyperGeoTest4ContingencyTable(df, lower.tail = FALSE)
 
 \item{lower.tail}{}
 }
-\value{
-
-}
 \description{
 Hyper geometrix test for contigency table
 }

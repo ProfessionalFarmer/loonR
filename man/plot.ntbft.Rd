@@ -25,9 +25,6 @@
 
 \item{palette}{}
 }
-\value{
-
-}
 \description{
 Plotting the Net benefit function. Coule be multiple curves
 }

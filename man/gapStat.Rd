@@ -13,9 +13,6 @@ gapStat(df, dist = "spearman", method = "average")
 
 \item{method}{Default "Average". The agglomeration method to be used. This should be (an unambiguous abbreviation of) one of "ward.D", "ward.D2", "single", "complete", "average" (= UPGMA), "mcquitty" (= WPGMA), "median" (= WPGMC) or "centroid" (= UPGMC)}
 }
-\value{
-
-}
 \description{
 Gap statistics
 }

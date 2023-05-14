@@ -11,11 +11,6 @@ log2dfQuantileNormalization(df)
 \arguments{
 \item{df}{}
 }
-\value{
-
-
-
-}
 \description{
 Quantile normalization for log2 data frame
 

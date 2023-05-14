@@ -15,9 +15,6 @@ build.coxregression.model(d.frame, status, time, seed = 666, scale = TRUE)
 
 \item{scale}{}
 }
-\value{
-
-}
 \description{
 Build cox regression model
 }

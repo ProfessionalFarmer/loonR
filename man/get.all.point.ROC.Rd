@@ -11,9 +11,6 @@ get.all.point.ROC(pred, label, ci = FALSE, boot.n = 2000)
 
 \item{boot.n}{2000}
 }
-\value{
-
-}
 \description{
 Get all point if you want to draw yourself
 }

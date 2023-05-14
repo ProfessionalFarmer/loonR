@@ -28,9 +28,6 @@ compare_GSE.HTSAnalyzer(
 
 \item{permutation}{Number of permutation}
 }
-\value{
-
-}
 \description{
 Perform GSEA across multiple groups (1 vs other)
 }

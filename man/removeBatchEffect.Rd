@@ -11,9 +11,6 @@ removeBatchEffect(df = NULL, batch = NULL, group = NULL, consider.group = T)
 
 \item{consider.group}{Model matrix for outcome of interest and other covariates besides batch}
 }
-\value{
-
-}
 \description{
 SVA combatc remove batch effect
 }

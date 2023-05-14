@@ -9,9 +9,6 @@ splitCharacter(vector, sep = NULL, index = 1)
 \arguments{
 \item{index}{}
 }
-\value{
-
-}
 \description{
 Splite vector and return the specific element
 }

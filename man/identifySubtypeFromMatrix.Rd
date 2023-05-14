@@ -21,9 +21,6 @@ identifySubtypeFromMatrix(
 
 \item{clusterPrefix}{}
 }
-\value{
-
-}
 \description{
 A matrix
 }

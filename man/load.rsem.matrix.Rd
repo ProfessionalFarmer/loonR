@@ -13,9 +13,6 @@ load.rsem.matrix(dirpath, isoform = FALSE, subdirs = TRUE)
 
 \item{subdirs}{If existing in subdirectory}
 }
-\value{
-
-}
 \description{
 Load quantification result from RSEM by tximport
 }

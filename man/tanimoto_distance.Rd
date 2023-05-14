@@ -11,9 +11,6 @@ tanimoto_distance(x, similarity = F)
 
 \item{similarity}{Default F. If true return similarity, else return distance}
 }
-\value{
-
-}
 \description{
 Calculate tanimoto distance
 }

@@ -21,9 +21,6 @@ decisionCurveAnalysis(
 
 \item{palette}{}
 }
-\value{
-
-}
 \description{
 Decision curve analysis. Similar with plot.ntbft
 }

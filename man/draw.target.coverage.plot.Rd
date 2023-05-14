@@ -9,9 +9,6 @@ draw.target.coverage.plot(dir)
 \arguments{
 \item{dir}{bedtools coverage output file should be in the same directory. File should suffix with "hist.all.txt$"}
 }
-\value{
-
-}
 \description{
 Draw target coverage plot
 }

@@ -38,9 +38,6 @@ forest_plot(
 
 \item{x.font.size}{x-axis label font size.}
 }
-\value{
-
-}
 \description{
 Forest plot
 }

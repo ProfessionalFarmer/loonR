@@ -30,9 +30,6 @@ multi_roc_with_ci(
 
 \item{SE.SP}{Whether to show SE and SP instead of CI of AUC}
 }
-\value{
-
-}
 \description{
 Plot multiple ROCs in one figure
 }

@@ -21,9 +21,6 @@ findSomaticSignature(
 \arguments{
 \item{n_sigs}{the number of signature will be identified}
 }
-\value{
-
-}
 \description{
 Identify signature from sample data
 }

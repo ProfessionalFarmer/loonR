@@ -11,9 +11,6 @@ formatTable(df, digit = 2)
 
 \item{digit}{default = 2}
 }
-\value{
-
-}
 \description{
 Format by digit
 }

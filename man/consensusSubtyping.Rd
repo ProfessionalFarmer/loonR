@@ -36,9 +36,6 @@ consensusSubtyping(
 
 \item{inflationConsensus}{Default equal to inflation. inflation is for one boot while inflationConsensus is for subtyping}
 }
-\value{
-
-}
 \description{
 Identification of consensus subtypes
 }

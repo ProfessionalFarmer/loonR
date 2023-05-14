@@ -21,9 +21,6 @@ riskCalibrationPlot(
 \arguments{
 \item{...}{}
 }
-\value{
-
-}
 \description{
 riskCalibrationPlot
 }

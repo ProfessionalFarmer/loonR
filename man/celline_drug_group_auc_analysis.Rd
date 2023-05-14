@@ -16,9 +16,6 @@ celline_drug_group_auc_analysis(
 
 \item{compare.method}{Default wilcox.test}
 }
-\value{
-
-}
 \description{
 Analyze if a durg sensitivity is correlated with group/subtype
 }

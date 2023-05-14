@@ -15,9 +15,6 @@ RTN.network.plot(rtni.obj, target.TFs, TF.fc, gene.fc, hits, font.size = 20)
 
 \item{hits}{Gene of interest, E.g. EMT gene}
 }
-\value{
-
-}
 \description{
 Plot RTN network
 }

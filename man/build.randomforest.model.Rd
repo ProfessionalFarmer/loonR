@@ -11,9 +11,6 @@ build.randomforest.model(df, group, seed = 666, scale = TRUE)
 
 \item{scale}{Default TRUE}
 }
-\value{
-
-}
 \description{
 Build a random forests model
 }

@@ -9,9 +9,6 @@ readICGCExpFile(filepath)
 \arguments{
 \item{filepath}{}
 }
-\value{
-
-}
 \description{
 Format ICGC dataframe
 }

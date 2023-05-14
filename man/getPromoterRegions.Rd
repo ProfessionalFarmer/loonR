@@ -24,9 +24,6 @@ getPromoterRegions(
 
 \item{ens.release}{Default 99 (for Ensembl)}
 }
-\value{
-
-}
 \description{
 Get promoters by GenomicFeatures package. Region needed
 }

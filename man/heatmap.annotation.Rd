@@ -24,9 +24,6 @@ heatmap.annotation(
 
 \item{column_split}{Default TRUE}
 }
-\value{
-
-}
 \description{
 Only draw annotation
 }

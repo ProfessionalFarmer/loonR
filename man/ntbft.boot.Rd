@@ -30,9 +30,6 @@ ntbft.boot(
 
 \item{response}{Should be 0 and 1}
 }
-\value{
-
-}
 \description{
 Net benefit Bootstrap method to correct overfitting
 }

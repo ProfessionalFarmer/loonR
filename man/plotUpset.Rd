@@ -9,9 +9,6 @@ plotUpset(lt, mode = "intersect")
 \arguments{
 \item{mode}{distinct, intersect, union}
 }
-\value{
-
-}
 \description{
 Upset plot
 }

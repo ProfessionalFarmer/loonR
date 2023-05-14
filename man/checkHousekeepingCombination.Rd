@@ -38,9 +38,6 @@ checkHousekeepingCombination(
 
 \item{scale}{}
 }
-\value{
-
-}
 \description{
 Iterate all the combination of housekeeping genes
 }

@@ -11,9 +11,6 @@ read_mirdeep2_result(file.path, add.names2df = TRUE)
 
 \item{add.names2df}{Default TRUE. If add miRNA and precusor names in the first two columns}
 }
-\value{
-
-}
 \description{
 Load miRDeep2 expression matrix
 }

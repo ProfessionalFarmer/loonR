@@ -9,9 +9,6 @@ rms_validate(rms.model, B = 100)
 \arguments{
 \item{B}{Bootstrap times}
 }
-\value{
-
-}
 \description{
 Resampling Validation of a Fitted Model's Indexes of Fit
 }

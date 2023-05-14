@@ -17,9 +17,6 @@ getOneRoundCVRes(df, label, k, seed = 1, times = 1, type = "response")
 
 \item{type}{"response" or "link"}
 }
-\value{
-
-}
 \description{
 Get one round CV result
 }

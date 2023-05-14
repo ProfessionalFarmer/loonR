@@ -24,9 +24,6 @@ plot_waterfall(
 
 \item{rotate.x}{Default 90. Rotate x axis text.}
 }
-\value{
-
-}
 \description{
 Waterfall plot
 }

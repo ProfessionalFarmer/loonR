@@ -24,9 +24,6 @@ DESeq2_differential(
 
 \item{cal.AUC}{}
 }
-\value{
-
-}
 \description{
 Differential analysis by DESEQ2
 }

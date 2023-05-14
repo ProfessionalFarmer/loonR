@@ -9,9 +9,6 @@ fillNADataframe(df, byRow = FALSE, byColumn = FALSE, f = "mean")
 \arguments{
 \item{f}{Default "mean"}
 }
-\value{
-
-}
 \description{
 Fill NA by row or column
 }

@@ -26,9 +26,6 @@ ClusterProfiler.GSEA.ORA.customGS(
 
 \item{qvalue}{0.05}
 }
-\value{
-
-}
 \description{
 Perform analysis using user custom gene sets
 }

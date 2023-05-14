@@ -26,9 +26,6 @@ lasso.select.feature(
 
 \item{scale}{Default TRUE}
 }
-\value{
-
-}
 \description{
 Feature selection by lasso
 }

@@ -9,9 +9,6 @@ ensembl_EntrezID(ensembl.ids)
 \arguments{
 \item{ensembl.ids}{}
 }
-\value{
-
-}
 \description{
 Title
 }

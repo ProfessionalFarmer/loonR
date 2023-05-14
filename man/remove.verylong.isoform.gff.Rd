@@ -11,9 +11,6 @@ remove.verylong.isoform.gff(gff, interval.length = 1500000)
 
 \item{interval.length}{the maximum length between isoform start and isoform end}
 }
-\value{
-
-}
 \description{
 Remove isforms with extremly long interval (isoform.End - isoform.Start)
 }

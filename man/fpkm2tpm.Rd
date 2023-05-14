@@ -9,9 +9,6 @@ fpkm2tpm(fpkm.exp.df)
 \arguments{
 \item{fpkm.exp.df}{}
 }
-\value{
-
-}
 \description{
 Convert FPKM data fram to TPM
 }

@@ -32,9 +32,6 @@ ClusterProfiler.OverRepresentationTest(
 
 \item{exp.gene.type}{RNA expression ID ENSEMBL. keytypes(org.Hs.eg.db)}
 }
-\value{
-
-}
 \description{
 Perform over-representation test by cluster profiler
 }

@@ -14,9 +14,6 @@ multivariate_or(d.frame, label, scale = TRUE)
 
 \item{scale}{}
 }
-\value{
-
-}
 \description{
 Variate logistic analysis
 Row: sample, Column: gene expression

@@ -26,9 +26,6 @@ cross.validation(
 
 \item{type}{"response" or "link"}
 }
-\value{
-
-}
 \description{
 k fold n times cross validation
 }

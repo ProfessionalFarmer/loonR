@@ -21,9 +21,6 @@ generateCombinations(
 
 \item{sep}{If return a vector, sep is needed}
 }
-\value{
-
-}
 \description{
 Gnenerate combinations with specified size
 }

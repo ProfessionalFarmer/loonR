@@ -16,9 +16,6 @@ dataframe2gct_file(
 
 \item{file}{Default ./expression.gcf}
 }
-\value{
-
-}
 \description{
 Convert data frame to GenePattern gct file
 }

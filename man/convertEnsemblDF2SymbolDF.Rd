@@ -9,9 +9,6 @@ convertEnsemblDF2SymbolDF(ensembl.df)
 \arguments{
 \item{ensembl.df}{Row is ENSG gene, col is sample}
 }
-\value{
-
-}
 \description{
 Convert Ensembl data frame to gene symbol dataframe
 }

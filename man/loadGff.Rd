@@ -9,9 +9,6 @@ loadGff(gff.path)
 \arguments{
 \item{gff.Path}{}
 }
-\value{
-
-}
 \description{
 Convert gff file to data frame
 }

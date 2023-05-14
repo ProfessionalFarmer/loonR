@@ -15,9 +15,6 @@ get.AUC(pred, label, raw = TRUE, direction = "auto")
 
 \item{direction}{<: (controls < t <= cases) ######  >: (controls > t >= cases)}
 }
-\value{
-
-}
 \description{
 Obtain AUC value
 }

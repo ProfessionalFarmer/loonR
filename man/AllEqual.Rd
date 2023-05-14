@@ -9,9 +9,6 @@ AllEqual(x = NULL, y = NULL)
 \arguments{
 \item{y}{}
 }
-\value{
-
-}
 \description{
 Check if all values in a vector are the same
 }

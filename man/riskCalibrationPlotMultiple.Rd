@@ -13,9 +13,6 @@ riskCalibrationPlotMultiple(risk.list = NULL, label = NULL, palette = "aaas")
 
 \item{palette}{}
 }
-\value{
-
-}
 \description{
 Plot multiple calibration plot by riskRegression
 }

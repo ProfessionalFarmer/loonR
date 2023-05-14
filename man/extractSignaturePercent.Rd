@@ -23,9 +23,6 @@ extractSignaturePercent(
 
 \item{tri.counts.method}{'default', 'genome' or 'exome' or 'exome2genome'. Default is does not result in further normalization. genome is : the input data frame is normalized by number of times each trinucleotide context is observed in the genome}
 }
-\value{
-
-}
 \description{
 Estimate signature percents
 }

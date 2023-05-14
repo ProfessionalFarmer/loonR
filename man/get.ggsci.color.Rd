@@ -13,9 +13,6 @@ get.ggsci.color(palette = "nrc", n = 7, alpha = 1)
 
 \item{alpha}{1}
 }
-\value{
-
-}
 \description{
 Get colors by ggsci
 }

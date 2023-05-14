@@ -13,9 +13,6 @@ loo.cv(df, label, seed = 999, scale = TRUE)
 
 \item{scale}{TRUE}
 }
-\value{
-
-}
 \description{
 Leave one out cross validation
 }

@@ -38,9 +38,6 @@ and scientific journal palettes from ggsci R package, e.g.: "npg", "aaas", "lanc
 
 \item{point.size}{Default 2}
 }
-\value{
-
-}
 \description{
 PCA plot
 Please note: scale will be performed autmaticly

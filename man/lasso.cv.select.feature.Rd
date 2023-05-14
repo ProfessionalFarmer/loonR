@@ -29,9 +29,6 @@ lasso.cv.select.feature(
 
 \item{scale}{Default TRUE}
 }
-\value{
-
-}
 \description{
 Perform multiple round lasso to select stable feature
 }

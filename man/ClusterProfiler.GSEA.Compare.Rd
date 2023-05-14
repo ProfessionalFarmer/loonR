@@ -32,9 +32,6 @@ ClusterProfiler.GSEA.Compare(
 
 \item{Hallmark}{TRUE}
 }
-\value{
-
-}
 \description{
 Perform GSE analysis across multiple group by cluster profiler
 }

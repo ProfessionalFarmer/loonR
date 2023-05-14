@@ -27,9 +27,6 @@ buildGRangesObj(
 
 \item{strand.field}{Default "strand"}
 }
-\value{
-
-}
 \description{
 Build Genomic Ranges from data.frame
 }

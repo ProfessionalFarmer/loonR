@@ -11,9 +11,6 @@ pairwiseAdonisTest(data, group)
 
 \item{group}{}
 }
-\value{
-
-}
 \description{
 pairwiseAdonis
 }

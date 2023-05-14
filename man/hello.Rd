@@ -6,9 +6,6 @@
 \usage{
 hello()
 }
-\value{
-
-}
 \description{
 Prints 'Hello, world!'.
 }

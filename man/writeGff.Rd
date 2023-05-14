@@ -11,9 +11,6 @@ writeGff(x, gff.path)
 
 \item{gff.path}{Output file path.}
 }
-\value{
-
-}
 \description{
 Write to gff file
 }

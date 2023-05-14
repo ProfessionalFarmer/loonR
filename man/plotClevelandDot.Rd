@@ -38,9 +38,6 @@ plotClevelandDot(
 
 \item{sample.name}{ylab, Default "Name"}
 }
-\value{
-
-}
 \description{
 Draw Celventland dot plot
 }

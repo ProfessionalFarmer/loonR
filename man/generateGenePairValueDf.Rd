@@ -9,9 +9,6 @@ generateGenePairValueDf(df)
 \arguments{
 \item{df}{row is gene, column is sample}
 }
-\value{
-
-}
 \description{
 Generate gene pair value data.frame
 }

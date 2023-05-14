@@ -9,9 +9,6 @@ rangeScale01(x)
 \arguments{
 \item{x}{}
 }
-\value{
-
-}
 \description{
 Scale the value to 0-1
 }

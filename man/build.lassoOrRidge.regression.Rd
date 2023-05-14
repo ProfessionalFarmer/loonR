@@ -28,9 +28,6 @@ build.lassoOrRidge.regression(
 
 \item{type.measure}{Default auc. Refer https://www.rdocumentation.org/packages/glmnet/versions/4.1-3/topics/cv.glmnet}
 }
-\value{
-
-}
 \description{
 Build lasso or ridge regression
 }

@@ -30,9 +30,6 @@ decisionCurveAnalysisSimple(
 
 \item{boots}{100 Bootstrape to avoid overfitting}
 }
-\value{
-
-}
 \description{
 Decision curve analysis using risk probability and label
 }

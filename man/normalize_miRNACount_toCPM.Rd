@@ -17,9 +17,6 @@ normalize_miRNACount_toCPM(
 
 \item{log}{}
 }
-\value{
-
-}
 \description{
 Normalize miRNA counts to CPM
 }

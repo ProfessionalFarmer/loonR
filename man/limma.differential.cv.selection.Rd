@@ -32,9 +32,6 @@ limma.differential.cv.selection(
 
 \item{FoldC.cut.off}{1}
 }
-\value{
-
-}
 \description{
 Perform multiple rounds differential analysis to select stable feature
 }

@@ -13,9 +13,6 @@ univariate_cox(d.frame, status, time, scale = TRUE, max.time = NA)
 
 \item{max.time}{NA}
 }
-\value{
-
-}
 \description{
 Univariate Cox analysis
 }

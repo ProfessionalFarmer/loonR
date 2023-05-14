@@ -29,9 +29,6 @@ decisionCurve.diff.pvalue(
 
 \item{model.name}{Default Model}
 }
-\value{
-
-}
 \description{
 Comparing two decision curves and reporting P value
 }

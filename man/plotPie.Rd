@@ -35,9 +35,6 @@ plotPie(
 
 \item{DonutChart}{If plot based on donut chart. More beautiful.}
 }
-\value{
-
-}
 \description{
 Count each event type and draw pie chart
 }

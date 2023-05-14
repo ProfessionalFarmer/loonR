@@ -30,9 +30,6 @@ lasso_best_lamda(
 
 \item{scale}{Default TRUE}
 }
-\value{
-
-}
 \description{
 Get best lamda by perform multiple round lasso-sv
 https://web.stanford.edu/~hastie/glmnet/glmnet_alpha.html#log

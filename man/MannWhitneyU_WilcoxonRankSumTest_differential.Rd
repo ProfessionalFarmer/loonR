@@ -30,9 +30,6 @@ MannWhitneyU_WilcoxonRankSumTest_differential(
 
 \item{paired}{Default FALSE}
 }
-\value{
-
-}
 \description{
 Calculate p value by MannWhitneyU (WilcoxonRankSum) Test manually
 }

@@ -9,9 +9,6 @@ generate.sequencial.color(colors = c("#c1e7ff", "#f3babc"), length = 10)
 \arguments{
 \item{colors}{}
 }
-\value{
-
-}
 \description{
 Generate sequencial color
 }

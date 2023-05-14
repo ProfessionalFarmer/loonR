@@ -11,9 +11,6 @@
 
 \item{cox}{If is a cox model}
 }
-\value{
-
-}
 \description{
 Calibration plot by rms.calibrate
 }

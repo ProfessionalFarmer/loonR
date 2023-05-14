@@ -9,9 +9,6 @@ countClassByColumn(df)
 \arguments{
 \item{df}{}
 }
-\value{
-
-}
 \description{
 Count the class by each column
 }

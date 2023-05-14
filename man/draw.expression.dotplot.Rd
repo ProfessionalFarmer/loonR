@@ -30,9 +30,6 @@ draw.expression.dotplot(
 
 \item{alternative}{c("two.sided", "less", "greater")}
 }
-\value{
-
-}
 \description{
 Draw expression by dotplot
 Need to be update

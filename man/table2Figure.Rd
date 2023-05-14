@@ -33,9 +33,6 @@ table2Figure(
 
 \item{vline}{}
 }
-\value{
-
-}
 \description{
 Convert a text table to figure
 }

@@ -33,9 +33,6 @@ run_SNF(
 
 \item{cnv.index}{Default 0. If CNV data index is specified, Euclidean will be used to calculate distance}
 }
-\value{
-
-}
 \description{
 Run similarity network fusion
 }

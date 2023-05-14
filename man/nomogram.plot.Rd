@@ -15,9 +15,6 @@ nomogram.plot(fit = NULL, data = NULL, fun.list = NA, lp = F)
 
 \item{lp}{线性预测If fun.list is NA, lp will be TRUE. Set to FALSE to suppress creation of an axis for scoring X beta}
 }
-\value{
-
-}
 \description{
 Nomogram plot by rms
 }

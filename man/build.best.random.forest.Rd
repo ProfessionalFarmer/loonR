@@ -15,9 +15,6 @@ build.best.random.forest(rf.df, group, ntree = 500, seed = 111, scale = TRUE)
 
 \item{scale}{If perform scale}
 }
-\value{
-
-}
 \description{
 Try different mtry and select the best fitted model
 }

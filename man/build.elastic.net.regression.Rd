@@ -22,9 +22,6 @@ build.elastic.net.regression(
 
 \item{summaryFunction}{Default twoClassSummary for computes sensitivity, specificity and the area under the ROC curve. Please refer https://www.rdocumentation.org/packages/caret/versions/6.0-90/topics/defaultSummary}
 }
-\value{
-
-}
 \description{
 Build elastic net regression
 }

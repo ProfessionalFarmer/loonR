@@ -742,7 +742,41 @@ ssGSEA <- function(expr, geneset){
 }
 
 
+#' GO annotation with word cloud
+#'
+#' @param go_ids A vector of GO IDs
+#' @param measure Semantic measure for the GO similarity, see https://rdrr.io/pkg/GOSemSim/man/termSim.html
+#'
+#' @param cluster_method https://jokergoo.github.io/simplifyEnrichment/reference/cluster_terms.html
+#'
+#' @return
+#' @export
+#'
+#' @examples
+simplifyEnrichment <- function(go_ids, measure = "Rel", cluster_method = "binary_cut"){
+  # 可以是其他的id而不仅仅是GO id，参考https://jokergoo.github.io/simplifyEnrichment/articles/simplifyEnrichment.html
+  # Semantic measures can be used for the similarity of GO terms.
+  # However, there are still a lot of ontologies (e.g. MsigDB gene sets)
+  # that are only represented as a list of genes where the similarity between gene sets
+  # are mainly measured by gene overlap. simplifyEnrichment provides the term_similarity()
+  # and other related functions (term_similarity_from_enrichResult(), term_similarity_from_KEGG(),
+  # term_similarity_from_Reactome(), term_similarity_from_MSigDB()
+  # and term_similarity_from_gmt()) which calculate the similarity of terms by the gene overlapping,
+  # with methods of Jaccard coefficient, Dice coefficient, overlap coefficient and kappa coefficient.
 
+  if(!require(simplifyEnrichment)){
+    devtools::install_github("jokergoo/simplifyEnrichment")
+    require(simplifyEnrichment)
+  }
+  mat = GO_similarity(go_ids, measure = measure)
+
+  df = simplifyGO(mat, cluster_method = cluster_method)
+
+  compare_clustering_methods(mat)
+  compare_clustering_methods(mat, plot_type = "heatmap")
+
+
+}
 
 
 

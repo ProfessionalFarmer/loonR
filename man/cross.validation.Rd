@@ -10,7 +10,8 @@ cross.validation(
   k = 5,
   n = 100,
   scale = TRUE,
-  type = "response"
+  type = "response",
+  seed = 1
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ cross.validation(
 \item{scale}{TRUE}
 
 \item{type}{"response" or "link"}
+
+\item{seed}{Default 1}
 }
 \description{
 k fold n times cross validation

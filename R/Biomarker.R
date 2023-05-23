@@ -58,6 +58,7 @@ getOneRoundCVRes <- function(df, label, k, seed = 1, times = 1, type = "response
 #' @param n Repeat times
 #' @param scale TRUE
 #' @param type "response" or "link"
+#' @param seed Default 1
 #'
 #' @return
 #' @export
@@ -66,7 +67,7 @@ getOneRoundCVRes <- function(df, label, k, seed = 1, times = 1, type = "response
 #' cv.res <- loonR::cross.validation(miR.df[, cf.candidates],
 #'             group == "Cancer",
 #'             k = 10, n = 100)
-cross.validation <- function(df = NULL, label = NULL, k = 5, n = 100, scale=TRUE, type = "response"){
+cross.validation <- function(df = NULL, label = NULL, k = 5, n = 100, scale=TRUE, type = "response", seed = 1){
 
   # df = up.mirs.exp
   # label = mir.sample.group
@@ -92,11 +93,11 @@ cross.validation <- function(df = NULL, label = NULL, k = 5, n = 100, scale=TRUE
   cv.res <- foreach::foreach(i= 1:n, .combine = rbind, .packages="foreach", .export=c("getOneRoundCVRes")) %do% {
   #res <- foreach::foreach(i= 1:n, .combine = rbind) %do% {
 
-    getOneRoundCVRes(df, label, k, seed=i, type = type)
+    loonR:::getOneRoundCVRes(df, label, k, seed=seed + i -1, type = type)
 
   }
 
-  cv.res.mean <- cv.res %>% group_by(Name, Label) %>% summarize(Mean = mean(Logit))
+  cv.res.mean <- cv.res %>% dplyr::group_by(Name, Label) %>% dplyr::summarize(Mean = mean(Logit))
 
   #stopCluster(cl)
   cv.res.mean <- cv.res.mean[match(row.names(df), cv.res.mean$Name), ]
@@ -469,6 +470,64 @@ build.lassoOrRidge.regression <- function(df, group, seed = 666, scale=TRUE, alp
   res
 
 }
+
+
+#' Build Support Vector Machines
+#'
+#' @param df row is sample
+#' @param group
+#' @param seed
+#' @param scale Default TRUE
+#'
+#' @return
+#' @export
+#'
+#' @examples
+build.SVM <- function(df, group, seed = 666, scale=TRUE){
+
+  cat("Pls note: Second unique variable is defined as experiment group\n")
+
+  if(scale){df = scale(df, center = TRUE, scale = TRUE)}
+
+  svm.df <- data.frame(
+    label = factor(group == unique(group)[2],
+                   levels = c(FALSE, TRUE), labels = c(0, 1)
+    ),
+    df, check.names = FALSE
+  )
+
+  if(!require(e1071)){
+    BiocManager::install("e1071")
+    require(e1071)
+  }
+
+  set.seed(seed)
+  svm.fit <- svm(label ~ ., data = svm.df, probability = TRUE)
+
+  pred <- predict(svm.fit, svm.df)
+  tab <- table(Predicted = pred, Actual = svm.df$label)
+  error.rate = 1-sum(diag(tab))/sum(tab)
+
+
+  predicted.prob <- predict(svm.fit, svm.df, probability=TRUE )
+  predicted.prob = attr(predicted.prob,"probabilities")[,2]
+  roc = loonR::roc_with_ci(svm.df$label, predicted.prob, ci=FALSE)
+  auc = loonR::get.AUC(predicted.prob, svm.df$label)
+
+
+  list(model = svm.fit,
+       predicted.label = pred,
+       predicted.prob = predicted.prob,
+       confusion = tab,
+       error.rate = error.rate,
+       ROC = roc,
+       AUC = auc
+  )
+
+
+}
+
+
 
 #' Get confusion matrix
 #'
@@ -952,7 +1011,7 @@ multivariate_or <- function(d.frame, label, scale=TRUE){
 
   if(scale){df = scale(d.frame, center = TRUE, scale = TRUE)}
 
-  res <- glm(status ~ . , data = data.frame(d.frame, Event=label, check.names = FALSE), family=binomial(logit))
+  res <- glm(Event ~ . , data = data.frame(d.frame, Event=label, check.names = FALSE), family=binomial(logit))
   #exp( coef(res) )
   #summary(res)
 
@@ -996,7 +1055,7 @@ univariate_or <- function(d.frame, label, scale=TRUE){
 
   all.res <- foreach(i=1:ncol(d.frame), .combine = rbind) %do%{
     #   for(i in 1:ncol(d.frame) ){
-    res <- glm(status ~ . , data = data.frame(Score = d.frame[,i], Event=label), family=binomial(logit))
+    res <- glm(Event ~ . , data = data.frame(Score = d.frame[,i], Event=label), family=binomial(logit))
     #exp( coef(res) )
     #summary(res)
 

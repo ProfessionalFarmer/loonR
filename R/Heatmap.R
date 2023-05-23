@@ -266,6 +266,49 @@ heatmap.annotation <- function(group = NULL, annotation.df = NULL, annotation.co
 
 
 
+#' Plot heatmap while perform word cloud analysis
+#'
+#' @param df row is sample, column is gene. Will perform gene correlation analysis instead of sample-wise
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' # https://jokergoo.github.io/simplifyEnrichment/articles/word_cloud_anno.html
+#'
+#' df = data.frame(`a b c dd` = c(1,2,1,1,1), `a d c bb a c` =  c(3,2,3,1,1), `bb aa cc dd` = c(4,2,5,7,6))
+#' M = cor(df)
+#' # show correlation
+#' corrplot(M, method = 'number', order = 'hclust')
+#'
+#'
+#'
+#'
+heatmap.with.wordcloud <- function(df){
+
+  # todo: 手动聚类，cutlabel之后，自己做词云分析然后画图，需要决定cut成几个簇
+  if(is.null(term)){
+    term = colnames(df)
+  }
+
+  if(!require(ComplexHeatmap)){
+    BiocManager::install("ComplexHeatmap")
+    require(ComplexHeatmap)
+  }
+  if(!require(simplifyEnrichment)){
+    devtools::install_github("jokergoo/simplifyEnrichment")
+    require(simplifyEnrichment)
+  }
+
+
+  Heatmap(mat, row_split = split,
+          right_annotation = rowAnnotation(wc = anno_word_cloud(split, term))
+  )
+
+
+}
+
+
 
 
 

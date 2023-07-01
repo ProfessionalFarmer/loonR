@@ -674,6 +674,8 @@ compare_GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=
   gse.res.single.table <- reshape::cast(gse.res.single.table, Gene.Set.Term + GSType ~GroupName, value = "Adjusted.Pvalue", fun.aggregate = mean)
   row.names(gse.res.single.table) <- gse.res.single.table$Gene.Set.Term
   result$heatmap.df.row.type = gse.res.single.table$GSType
+  names(result$heatmap.df.row.type) = gse.res.single.table$Gene.Set.Term
+
   gse.res.single.table <- as.data.frame(gse.res.single.table[,-c(1,2)])
   result$heatmap.df = gse.res.single.table
 

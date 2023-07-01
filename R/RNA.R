@@ -939,6 +939,45 @@ compare_differential.analysis <- function(rna.df.log, group, prefix="Group", cal
 
 }
 
+
+
+#' Perform differential analysis (1 vs others) by t test
+#'
+#' @param rna.df.log
+#' @param group
+#' @param prefix Default "Group"
+#' @param cal.auc If calculate AUC value
+#'
+#' @return
+#' @export
+#'
+#' @examples
+compare_differential.ttest.analysis <- function(rna.df.log, group, prefix="Group", cal.auc=FALSE){
+
+  function.analysis.res <- lapply(unique(group), function(x){
+
+    print(paste("Now, ", prefix, x))
+
+    ###### lapply start
+    # differential analysis
+    true.ind = which(group==x)
+    false.ind = which(group!=x)
+    limma.df = rna.df.log[ , c(false.ind, true.ind)]
+    limma.diff <- loonR::ttest_differential(limma.df, rep(c(FALSE,TRUE),c(length(false.ind), length(true.ind))), cal.AUC = cal.auc )
+
+    limma.diff
+  }
+  )
+  names(function.analysis.res) <- paste0(prefix,unique(group))
+  result = list(diffResult = function.analysis.res)
+
+
+  result
+
+}
+
+
+
 #' QuantileNormalization
 #'
 #' @param df

@@ -920,8 +920,6 @@ get_performance <- function(pred, labels, best.cutoff =NA, digit = 2, boot.n = 2
   }
 
 
-
-
   # value (conf) -> value  conf
   rname <- names(res)
   value <- sapply(strsplit(res," \\("), function(x) paste(x[1]) )
@@ -990,6 +988,34 @@ get_individual_candidates_performance <- function(scores, labels, best.cutoff =N
   row.names(performance.formated.df) <- row.names(performance.list[[1]])
 
   data.frame(performance.formated.df, check.names = F)
+
+}
+
+
+
+
+#' Return a table including all metrics across different threshold
+#'
+#' @param score
+#' @param label
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' score = c(10:20)
+#' label = c(0,0,1,0,1,0,1,1,0,1,1)
+#' loonR::get_all_performance_table(score, label)
+get_all_performance_table <- function(score = NULL, label = NULL){
+
+  if(is.null(score) | is.null(label) ){
+    stop("Pls input score and label")
+  }
+  library(pROC)
+  roc.obj <- roc(response = label, predictor = score)
+  coordinates <- coords(roc.obj, x = "all", input = "threshold",
+                        ret = c("threshold", "sensitivity", "specificity", "accuracy", "npv", "ppv"))
+  coordinates
 
 }
 

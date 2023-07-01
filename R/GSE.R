@@ -676,6 +676,36 @@ compare_GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=
   gse.res.single.table <- as.data.frame(gse.res.single.table[,-c(1)])
   result$heatmap.df = gse.res.single.table
 
+  heatmap.by.type = function(df, type = NULL){
+
+    if(!is.null(type)){
+      tmp.df = df %>% filter(GSType == type) # MSig_H PW_KEGG GO_BP MSig_H
+    }
+
+    tmp.df$Adjusted.Pvalue <- -log10(tmp.df$Adjusted.Pvalue)
+    tmp.df[which(is.infinite(tmp.df$Adjusted.Pvalue)), ]$Adjusted.Pvalue <- cutoff.log10
+    tmp.df$Adjusted.Pvalue[tmp.df$Adjusted.Pvalue >=
+                                       cutoff.log10] <- cutoff.log10
+    tmp.df$Adjusted.Pvalue <- tmp.df$Adjusted.Pvalue *
+      sign(tmp.df$Observed.score)
+    tmp.df <- tmp.df[, c(
+      "Gene.Set.Term",
+      "Adjusted.Pvalue", "GroupName"
+    )]
+    tmp.df <- reshape::cast(tmp.df,
+                                      Gene.Set.Term ~ GroupName,
+                                      value = "Adjusted.Pvalue",
+                                      fun.aggregate = mean
+    )
+    row.names(tmp.df) <- tmp.df$Gene.Set.Term
+    tmp.df <- as.data.frame(tmp.df[
+      ,
+      -c(1)
+    ])
+
+  }
+
+
   result
 
 }

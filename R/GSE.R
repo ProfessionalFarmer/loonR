@@ -569,6 +569,9 @@ compare_GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=
 
   function.analysis.res <- lapply(unique(group), function(x){
 
+
+
+
    print(paste("Now, ", prefix, x))
 
    ###### lapply start
@@ -604,6 +607,10 @@ compare_GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=
    }
 
    set.seed(111)
+   if (requireNamespace("doParallel", quietly=TRUE)) {
+     doParallel::registerDoParallel(cores = 40)
+   }
+
    ## support parallel calculation using multiple cores
    gsca2 <- analyze(gsca1,
                     para=list(pValueCutoff = 1, pAdjustMethod = "BH",
@@ -672,11 +679,12 @@ compare_GSE.HTSAnalyzer <- function(rna.df.log, group, prefix="Group", customGS=
 
   # cast data frame
   gse.res.single.table <- reshape::cast(gse.res.single.table, Gene.Set.Term + GSType ~ GroupName, value = "Adjusted.Pvalue", fun.aggregate = mean)
-  row.names(gse.res.single.table) <- gse.res.single.table$Gene.Set.Term
+  row.names(gse.res.single.table) <- paste0(gse.res.single.table$GSType,"_",gse.res.single.table$Gene.Set.Term)
 
-
+  # a vector
   result$heatmap.df.row.type = gse.res.single.table$GSType
   names(result$heatmap.df.row.type) = gse.res.single.table$Gene.Set.Term
+
   result$heatmap.df.includeGSType =gse.res.single.table
 
   gse.res.single.table <- as.data.frame(gse.res.single.table[,-c(1,2)])

@@ -189,7 +189,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=N
 #'
 #' annotation.color = list(Gender=Gender.col, Age=col_fun)
 #'
-#' heatmap.annotation(group = group, annotation.df = annotation.df,
+#' loonR::heatmap.annotation(group = group, annotation.df = annotation.df,
 #'                    annotation.color = annotation.color, sort.group = T)
 heatmap.annotation <- function(group = NULL, annotation.df = NULL, annotation.color = NULL, sort.group=TRUE, title = "",
                                group.color = "aaas", group.prefix ="", column_split = TRUE ){

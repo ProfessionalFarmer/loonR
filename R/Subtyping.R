@@ -795,6 +795,9 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
   core.annotation.df = core.annotation.df[,c(colnames(df),"HighFrequencySubtype")] # select by HighFrequencySubtype
   colnames(core.annotation.df) = c(colnames(df),"CMS")
 
+
+
+
   res$core.annotation.plot = loonR::heatmap.annotation(
                                       group = core.annotation.df$CMS,
                                       annotation.df = core.annotation.df[,colnames(df)],

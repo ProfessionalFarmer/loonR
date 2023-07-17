@@ -802,7 +802,50 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
                                       group = core.annotation.df$CMS,
                                       annotation.df = core.annotation.df[,colnames(df)],
                                       sort.group = T)
+
+  ############################################### 20230717 sample concordance
+  sample.concordance.res = list()
+
+  core.annotation.df = core.annotation.df[, -ncol(core.annotation.df)]
+  sample.concordance.res$raw.data = core.annotation.df
+
+  sample.matrix = matrix(nrow = nrow(core.annotation.df),
+                         ncol = nrow(core.annotation.df))
+
+  sample.matrix = as.data.frame(sample.matrix)
+
+  rownames(sample.matrix) = rownames(core.annotation.df)
+  colnames(sample.matrix) = rownames(core.annotation.df)
+
+  for(rsample in rownames(sample.matrix) ){
+
+    for(csample in rownames(sample.matrix) ){
+
+      if(rsample == csample){
+        sample.matrix[rsample, csample] = 0
+        next
+      }
+
+      rsample.labels = unlist(core.annotation.df[rsample,])
+      csample.labels = unlist(core.annotation.df[csample,])
+
+      concordance = sum(rsample.labels == csample.labels)/ length(csample.labels)
+      concordance = round(concordance, digits = 3)
+
+      sample.matrix[rsample,csample] = concordance
+    }
+
+  }
+  sample.concordance.res$concordance.matrix = sample.matrix
+
+  sample.matrix$Sample = rownames(sample.matrix)
+  sample.matrix = reshape2::melt(sample.matrix)
+  sample.matrix = sample.matrix %>% filter(value != 0)
+  sample.concordance.res$concordance.network = sample.matrix
+
   rm(core.annotation.df)
+
+  res$sample.concordance.res = sample.concordance.res
 
   ############################################# 20211019 add igraph and consensus map
 

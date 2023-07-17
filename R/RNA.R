@@ -525,6 +525,8 @@ unique_gene_expression <- function(expression.df, f = "max", gene = NULL, method
 #' @param label Point names which you want to show in plot. If you don't want to show, set NA
 #' @param title
 #' @param col.pal Default: c("blue", "gray", "red"). A vector with 3 elements. For significantly down, not significant, significantly up
+#' @param point.size Default 2
+#' @param alpha Color alpha. Default 1
 #'
 #' @return
 #' @export
@@ -532,7 +534,8 @@ unique_gene_expression <- function(expression.df, f = "max", gene = NULL, method
 #' @examples loonR::volcano_plot( tissue.exp.df.res$logFC, tissue.exp.df.res$adj.P.Val, lg2fc = 0.5, p = 0.05, label = label, restrict.vector = (tissue.exp.df.res$AUC > 0.7 & tissue.exp.df.res$AveExpr > 10)  )
 volcano_plot <- function(x, y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)",
                          lg2fc = 1, p = 0.05, restrict.vector=NA, label = NA,
-                         title = '', col.pal=c("blue", "gray", "red") ){
+                         title = '', col.pal=c("blue", "gray", "red"),
+                         point.size = 2, alpha = 1 ){
   # add text
   # https://biocorecrg.github.io/CRG_RIntroduction/volcano-plots.html
 
@@ -557,7 +560,7 @@ volcano_plot <- function(x, y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)
   if(sum(df$Significant=="Up")!=0){
     palette = c(palette, col.pal[3])
   }
-
+  palette = loonR::get.palette.color(palette, alpha = alpha)
 
   t = unlist( table(df$Significant) )
   df$Significant[ df$Significant == "Up" ] = paste("Up ","(",t["Up"],")",sep="")
@@ -573,7 +576,9 @@ volcano_plot <- function(x, y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)
             x="log2", y="P",
             xlab = xlab, ylab = ylab, title = title,
             color = "Significant", palette = palette,
-            legend = "right", label = "label", font.label = c(12, "plain", "black"), repel = TRUE
+            legend = "right", label = "label",
+            font.label = c(12, "plain", "black"),
+            repel = TRUE, size = point.size
   ) +
     geom_vline(xintercept=c(-lg2fc, lg2fc), col="gray") +
     # rremove("legend") +

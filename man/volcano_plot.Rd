@@ -14,7 +14,9 @@ volcano_plot(
   restrict.vector = NA,
   label = NA,
   title = "",
-  col.pal = c("blue", "gray", "red")
+  col.pal = c("blue", "gray", "red"),
+  point.size = 2,
+  alpha = 1
 )
 }
 \arguments{
@@ -35,6 +37,10 @@ volcano_plot(
 \item{label}{Point names which you want to show in plot. If you don't want to show, set NA}
 
 \item{col.pal}{Default: c("blue", "gray", "red"). A vector with 3 elements. For significantly down, not significant, significantly up}
+
+\item{point.size}{Default 2}
+
+\item{alpha}{Color alpha. Default 1}
 }
 \description{
 Volcano Plot

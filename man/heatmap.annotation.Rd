@@ -41,6 +41,6 @@ col_fun = circlize::colorRamp2(c(50, 100), c("blue", "red")) # continuous variab
 
 annotation.color = list(Gender=Gender.col, Age=col_fun)
 
-heatmap.annotation(group = group, annotation.df = annotation.df,
+loonR::heatmap.annotation(group = group, annotation.df = annotation.df,
                    annotation.color = annotation.color, sort.group = T)
 }

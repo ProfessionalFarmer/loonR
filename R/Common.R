@@ -276,7 +276,7 @@ show_hcluster <- function(df, group=NULL, dist.method = "euclidean", hclust.meth
                    rect = TRUE # Add rectangle around groups
     )
     p
-    res = list(Labels=cluster.labels, Plot=p)
+    res = list(Labels=cluster.labels, Plot=p, Order = sample.dist_hc$order)
     res
   }
 

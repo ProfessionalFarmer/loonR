@@ -29,14 +29,3 @@ ChAMP_QC_Pipeline_Frome_Beta_Value(
 \description{
 ChAMP QC Pipeline for beta matrix
 }
-\examples{
-
-library(ChAMP)
-testDir=system.file("extdata",package="ChAMPdata")
-myImport <- champ.import(testDir)
-
-beta.df = myImport$beta
-group = myImport$pd$Sample_Group
-loonR::ChAMP_QC_Pipeline_Frome_Beta_Value(Sample.beta.df=beta.df, Sample.Group=group)
-
-}

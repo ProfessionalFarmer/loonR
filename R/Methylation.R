@@ -106,8 +106,15 @@ loadMethylationArraryData <- function(dir, arraytype = 'EPIC', combat=FALSE, bat
 #'
 #' beta.df = myImport$beta
 #' group = myImport$pd$Sample_Group
-#' loonR::ChAMP_QC_Pipeline_Frome_Beta_Value(Sample.beta.df=beta.df, Sample.Group=group)
+#' myLoad = loonR::ChAMP_QC_Pipeline_Frome_Beta_Value(Sample.beta.df=beta.df, Sample.Group=group)
 #'
+#' ########### Step 1
+#' res = loonR::ChAMP_QC_Pipeline_Frome_Beta_Value
+#' myLoad = res$myLoad
+#'
+#' ########### Step 2
+#' res = res$followAnalysisImputeQCNormCombat(arraytype="450K)
+#' head(res$myNorm)
 ChAMP_QC_Pipeline_Frome_Beta_Value <- function(Sample.beta.df=NULL, Sample.Group='', Slide = '', arraytype=c("450K","EPIC"), CpG.GUI=FALSE, QC.GUI=FALSE, combat=FALSE, batchname=c("Slide") ){
 
   library(ChAMP)
@@ -131,6 +138,7 @@ ChAMP_QC_Pipeline_Frome_Beta_Value <- function(Sample.beta.df=NULL, Sample.Group
   res$pd = pd
 
   # 5.2 filter 过滤SNP和XY上的
+  warning("Start filtering \n")
   myLoad = champ.filter(
     beta = Sample.beta.df,
     pd = pd,
@@ -143,65 +151,79 @@ ChAMP_QC_Pipeline_Frome_Beta_Value <- function(Sample.beta.df=NULL, Sample.Group
     autoimpute=TRUE
   )
 
-  #if NAs are still existing
-  tmp.myLoad = champ.impute()
-  if(ncol(tmp.myLoad$beta)!=ncol(myLoad$beta)){
-    stop("Some samples are filtered out, pls make sure not samples were filtered")
-  }else{
-    myLoad$beta = tmp.myLoad
-    rm(tmp.myLoad)
+  followAnalysisImputeQCNormCombat <-  function(arraytype = NA){
+
+    res = list()
+
+    if(is.na(arraytype)){
+      stop("Pls set arraytype in this function\n")
+    }
+
+    #if NAs are still existing
+    tmp.myLoad = champ.impute()
+    if(ncol(tmp.myLoad$beta)!=ncol(myLoad$beta)){
+      stop("Some samples are filtered out, pls make sure not samples were filtered")
+    }else{
+      myLoad = tmp.myLoad
+      rm(tmp.myLoad)
+    }
+
+    warning("Start imputation \n")
+    if(sum(is.na(myLoad$beta))!=0){
+      warning("LoonR:: Because there still has NA values after filtering, we need to use champ.impute")
+      row.to.remove = rowSums(is.na(myLoad$beta)) > (ncol(myLoad$beta)/2)
+      warning("LoonR:: ", sum(row.to.remove), " Probes have 0.5 or above NA will be removed")
+
+      myLoad <- champ.impute(
+        beta=as.matrix(myLoad$beta[!row.to.remove, ]),
+        pd=myLoad$pd,
+        method="Combine",
+        k=5,
+        ProbeCutoff=0.2,
+        SampleCutoff=0.2
+      )
+    }
+    res$myLoad = myLoad
+
+    # 5.3 show CpG distribution, 也可以显示DMP的分布
+    # This is a useful function to demonstrate the distribution of your CpG list. If you get a DMP list, you may use this function to check your DMP’s distribution on chromosome.
+    if(CpG.GUI){
+      CpG.GUI(CpG=rownames(myLoad$beta),arraytype=arraytype)
+    }
+
+    # QC check
+    # champ.QC() function and QC.GUI() function would draw some plots for user to easily check their data’s quality.
+    warning("Start QC \n")
+    champ.QC()
+    if(QC.GUI){
+      QC.GUI(beta=myLoad$beta,arraytype=arraytype)
+    }
+
+    # 5.4 Normalization
+    warning("Start normalization \n")
+    myNorm <- champ.norm(beta=as.matrix(myLoad$beta), arraytype=arraytype, cores=1, method="BMIQ")
+    res$myNorm = myNorm
+
+    # QC check again
+    warning("Start QC \n")
+    champ.QC(beta = myNorm)
+    if(QC.GUI){
+      QC.GUI(beta=myNorm,arraytype=arraytype)
+    }
+
+    # 5.5
+    warning("Start SVD \n")
+    champ.SVD(beta=data.frame(myNorm, check.names = F),pd=myLoad$pd)
+
+    # 5.6 Batch Effect Correction
+    if(combat){
+      myCombat <- champ.runCombat(beta=myNorm,pd=myLoad$pd, batchname= batchname )
+      res$myCombat = myCombat
+    }
+    res$probe.features = probe.features
+    res
   }
-
-
-  if(sum(is.na(myLoad$beta))!=0){
-    warning("LoonR:: Because there still has NA values after filtering, we need to use champ.impute")
-    row.to.remove = rowSums(is.na(myLoad$beta)) > (ncol(myLoad$beta)/2)
-    warning("LoonR:: ", sum(row.to.remove), " Probes have 0.5 or above NA will be removed")
-
-    myLoad <- champ.impute(
-      beta=as.matrix(myLoad$beta[!row.to.remove, ]),
-      pd=myLoad$pd,
-      method="Combine",
-      k=5,
-      ProbeCutoff=0.2,
-      SampleCutoff=0.2
-    )
-  }
-  res$myLoad = myLoad
-
-  # 5.3 show CpG distribution, 也可以显示DMP的分布
-  # This is a useful function to demonstrate the distribution of your CpG list. If you get a DMP list, you may use this function to check your DMP’s distribution on chromosome.
-  if(CpG.GUI){
-    CpG.GUI(CpG=rownames(myLoad$beta),arraytype=arraytype)
-  }
-
-  # QC check
-  # champ.QC() function and QC.GUI() function would draw some plots for user to easily check their data’s quality.
-  champ.QC()
-  if(QC.GUI){
-    QC.GUI(beta=myLoad$beta,arraytype=arraytype)
-  }
-
-  # 5.4 Normalization
-  myNorm <- champ.norm(beta=myLoad$beta, arraytype=arraytype, cores=50, method="BMIQ")
-  res$myNorm = myNorm
-
-  # QC check again
-  champ.QC()
-  if(QC.GUI){
-    QC.GUI(beta=myNorm,arraytype=arraytype)
-  }
-
-  # 5.5
-  champ.SVD(beta=myNorm,pd=myLoad$pd)
-
-  # 5.6 Batch Effect Correction
-  if(combat){
-    myCombat <- champ.runCombat(beta=myNorm,pd=myLoad$pd, batchname= batchname )
-    res$myCombat = myCombat
-  }
-
+  res = list(myLoad = myLoad, followAnalysisImputeQCNormCombat = followAnalysisImputeQCNormCombat)
   res
-
 }
 

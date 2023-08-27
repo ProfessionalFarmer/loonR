@@ -1123,7 +1123,7 @@ univariate_or <- function(d.frame, label, scale=TRUE){
 #' @export
 #'
 #' @examples
-univariate_cox <- function(d.frame, status, time, scale=TRUE, max.time = NA){
+univariate_cox <- function(d.frame, status, time, scale=TRUE, max.time = NULL){
 
   library(foreach)
   library("survival")
@@ -1191,7 +1191,7 @@ univariate_cox <- function(d.frame, status, time, scale=TRUE, max.time = NA){
 #' @export
 #'
 #' @examples
-univariate_cox_sthda <- function(d.frame, status, time, scale=TRUE, max.time = NA){
+univariate_cox_sthda <- function(d.frame, status, time, scale=TRUE, max.time = NULL){
 
   if(scale){d.frame = scale(d.frame, center = TRUE, scale = TRUE)}
 

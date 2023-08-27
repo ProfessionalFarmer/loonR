@@ -94,6 +94,7 @@ loadMethylationArraryData <- function(dir, arraytype = 'EPIC', combat=FALSE, bat
 #' @param QC.GUI
 #' @param combat If perform combat to remove batch effect
 #' @param batchname Batch variable name. Default is c("Slide")
+#' @param cores
 #'
 #' @return
 #' @export
@@ -106,16 +107,15 @@ loadMethylationArraryData <- function(dir, arraytype = 'EPIC', combat=FALSE, bat
 #'
 #' beta.df = myImport$beta
 #' group = myImport$pd$Sample_Group
-#' myLoad = loonR::ChAMP_QC_Pipeline_Frome_Beta_Value(Sample.beta.df=beta.df, Sample.Group=group)
 #'
 #' ########### Step 1
-#' res = loonR::ChAMP_QC_Pipeline_Frome_Beta_Value
+#' res = loonR::ChAMP_QC_Pipeline_Frome_Beta_Value(Sample.beta.df=beta.df, Sample.Group=group)
 #' myLoad = res$myLoad
 #'
 #' ########### Step 2
-#' res = res$followAnalysisImputeQCNormCombat(arraytype="450K)
+#' res = res$followAnalysisImputeQCNormCombat(arraytype="450K")
 #' head(res$myNorm)
-ChAMP_QC_Pipeline_Frome_Beta_Value <- function(Sample.beta.df=NULL, Sample.Group='', Slide = '', arraytype=c("450K","EPIC"), CpG.GUI=FALSE, QC.GUI=FALSE, combat=FALSE, batchname=c("Slide") ){
+ChAMP_QC_Pipeline_Frome_Beta_Value <- function(Sample.beta.df=NULL, Sample.Group='', Slide = '', arraytype=c("450K","EPIC"), CpG.GUI=FALSE, QC.GUI=FALSE, combat=FALSE, batchname=c("Slide"), cores = 50 ){
 
   library(ChAMP)
   # https://www.bioconductor.org/packages/release/bioc/vignettes/ChAMP/inst/doc/ChAMP.html
@@ -151,7 +151,7 @@ ChAMP_QC_Pipeline_Frome_Beta_Value <- function(Sample.beta.df=NULL, Sample.Group
     autoimpute=TRUE
   )
 
-  followAnalysisImputeQCNormCombat <-  function(arraytype = NA){
+  followAnalysisImputeQCNormCombat <-  function(arraytype = NA, CpG.GUI = FALSE, cores = 1){
 
     res = list()
 
@@ -160,7 +160,7 @@ ChAMP_QC_Pipeline_Frome_Beta_Value <- function(Sample.beta.df=NULL, Sample.Group
     }
 
     #if NAs are still existing
-    tmp.myLoad = champ.impute()
+    tmp.myLoad = champ.impute(beta = as.matrix(myLoad$beta), pd = myLoad$pd, SampleCutoff = 0.2)
     if(ncol(tmp.myLoad$beta)!=ncol(myLoad$beta)){
       stop("Some samples are filtered out, pls make sure not samples were filtered")
     }else{
@@ -194,21 +194,21 @@ ChAMP_QC_Pipeline_Frome_Beta_Value <- function(Sample.beta.df=NULL, Sample.Group
     # QC check
     # champ.QC() function and QC.GUI() function would draw some plots for user to easily check their data’s quality.
     warning("Start QC \n")
-    champ.QC()
+    champ.QC(beta = myLoad$beta, resultsDir = "1stQC")
     if(QC.GUI){
-      QC.GUI(beta=myLoad$beta,arraytype=arraytype)
+      QC.GUI(beta = myLoad$bet, arraytype = arraytype)
     }
 
     # 5.4 Normalization
     warning("Start normalization \n")
-    myNorm <- champ.norm(beta=as.matrix(myLoad$beta), arraytype=arraytype, cores=1, method="BMIQ")
+    myNorm <- champ.norm(beta = myLoad$beta, arraytype=arraytype, cores=cores, method="BMIQ")
     res$myNorm = myNorm
 
     # QC check again
     warning("Start QC \n")
-    champ.QC(beta = myNorm)
+    champ.QC(beta = myNorm, resultsDir = "2ndQC.Norm")
     if(QC.GUI){
-      QC.GUI(beta=myNorm,arraytype=arraytype)
+      QC.GUI(beta = myNorm, arraytype = arraytype)
     }
 
     # 5.5

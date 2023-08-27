@@ -216,6 +216,127 @@ CorrelationHeatmapTwoDf <- function(x.axis.df, y.axis.df, cor.method = "spearman
 }
 
 
+#' Perform correlation analysis between two data.frame
+#'
+#' @param x.axis.df Row is sample, column variable will be column names in new correlation heatmap.
+#' @param y.axis.df Row is sample, column variable will be row names in new correlation heatmap.
+#' @param cor.method Defaut spearman
+#'
+#' @return A ggplot2 object
+#' @export
+#'
+#' @examples
+CorrelationHeatmapTwoDfMantelTest <- function(x.axis.df, y.axis.df, cor.method = "spearman", spec.select.list = NULL){
+
+  # wechat post: 像Science一样绘制相关性热图，看这一篇就够了
+  # wechat post: R语言 | 终于实现了Mantel检验的相关性热图
+  # check samples
+  sample.names = intersect(rownames(x.axis.df), rownames(y.axis.df))
+  if(length(sample.names)!=nrow(x.axis.df) & length(sample.names)!=nrow(y.axis.df) ){
+    stop("Sample name is not the same")
+  }
+
+  # the same order
+  x.axis.df = x.axis.df[sample.names,]
+  y.axis.df = y.axis.df[sample.names,]
+
+  if(!require("vegan")){
+    BiocManager::install("vegan")
+    library("vegan")
+  }
+  if(!require("linkET")){
+    dvetools:install_github("Hy4m/linkET")
+    library("linkET")
+  }
+
+  if(is.null(spec.select.list)){
+
+    # single x col is a spec
+    # spec.select.list = lapply(1:ncol(x.axis.df), function(x){
+    #   x
+    # })
+    # names(spec.select.list) = colnames(x.axis.df)
+    #
+    # library(dplyr)
+    #
+    # mantel <- linkET::mantel_test(x.axis.df, y.axis.df,
+    #                               spec_select  = spec.select.list) %>%
+    #   mutate(rd = cut(r, breaks = c(-Inf, 0.2, 0.4, Inf),
+    #                   labels = c("< 0.2", "0.2 - 0.4", ">= 0.4")),
+    #          pd = cut(p, breaks = c(-Inf, 0.01, 0.05, Inf),
+    #                   labels = c("< 0.01", "0.01 - 0.05", ">= 0.05")))
+
+    # start from x colnames
+    library(foreach)
+    cor.res = foreach(x.axis.label = colnames(x.axis.df), .combine = rbind ) %do% {
+
+      x.axis.label.value = as.numeric(as.vector(x.axis.df[,x.axis.label]) )
+
+      # start from y colnames
+      t = foreach(y.axis.label = colnames(y.axis.df), .combine = rbind ) %do% {
+
+        y.axis.label.value = as.numeric(as.vector(y.axis.df[,y.axis.label]) )
+
+        cor_res = cor.test(x.axis.label.value, y.axis.label.value, method = cor.method)
+
+        c(x.axis.label, y.axis.label, cor_res$p.value, cor_res$estimate)
+      }
+      t
+    }
+    mantel = data.frame(cor.res)
+    colnames(mantel) = c("x", "y", "p", "r")
+    mantel$p = as.numeric(mantel$p)
+    mantel$r = as.numeric(mantel$r)
+
+    test.method = cor.method
+  }else{
+    # # mantel test could perform between multiple x (spe) and single y
+    # multiple x col is a spec
+    library(dplyr)
+
+    mantel <- linkET::mantel_test(x.axis.df, y.axis.df,
+                                  spec_select  = spec.select.list)
+    test.method = "Mantel"
+  }
+
+
+  mantel = mantel %>%
+    mutate(rd = cut(r, breaks = c(-Inf, 0.2, 0.4, Inf),
+                    labels = c("< 0.2", "0.2 - 0.4", ">= 0.4")),
+           pd = cut(p, breaks = c(-Inf, 0.01, 0.05, Inf),
+                    labels = c("< 0.01", "0.01 - 0.05", ">= 0.05")))
+
+
+  qcorrplot(correlate(y.axis.df, method = cor.method), type = "lower", diag = FALSE) +
+    geom_square() +
+    geom_couple(aes(xend = .xend+ 1.25,#定义连线
+                    yend = .yend +0.5,
+                    colour = pd,
+                    size = rd),
+                data = mantel, curvature = 0.1) +
+    geom_diag_label(mapping = aes(y = .y + 0.05),#定义对角线上的文字
+                    hjust = 0.15) +
+    scale_fill_gradientn(colours = RColorBrewer::brewer.pal(11, "RdBu")) +#定义方块颜色
+    scale_size_manual(values = c(0.5, 1, 2)) +
+    scale_colour_manual(values = color_pal(3)) +
+    guides(size = guide_legend(title = paste0(test.method, "'s r"),#定义图例
+                               override.aes = list(colour = "grey35"),
+                               order = 2),
+           colour = guide_legend(title = paste0(test.method, "'s p"),
+                                 override.aes = list(size = 3),
+                                 order = 1),
+           fill = guide_colorbar(title = paste0(cor.method,"'s r"), order = 3)) +
+    theme(axis.text.y = element_blank())
+
+
+
+
+}
+
+
+
+
+
 
 
 #' Immune related gene

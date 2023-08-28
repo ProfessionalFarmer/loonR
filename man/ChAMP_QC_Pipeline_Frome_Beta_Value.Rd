@@ -12,7 +12,8 @@ ChAMP_QC_Pipeline_Frome_Beta_Value(
   CpG.GUI = FALSE,
   QC.GUI = FALSE,
   combat = FALSE,
-  batchname = c("Slide")
+  batchname = c("Slide"),
+  cores = 50
 )
 }
 \arguments{
@@ -25,7 +26,26 @@ ChAMP_QC_Pipeline_Frome_Beta_Value(
 \item{combat}{If perform combat to remove batch effect}
 
 \item{batchname}{Batch variable name. Default is c("Slide")}
+
+\item{cores}{}
 }
 \description{
 ChAMP QC Pipeline for beta matrix
+}
+\examples{
+
+library(ChAMP)
+testDir=system.file("extdata",package="ChAMPdata")
+myImport <- champ.import(testDir)
+
+beta.df = myImport$beta
+group = myImport$pd$Sample_Group
+
+########### Step 1
+res = loonR::ChAMP_QC_Pipeline_Frome_Beta_Value(Sample.beta.df=beta.df, Sample.Group=group)
+myLoad = res$myLoad
+
+########### Step 2
+res = res$followAnalysisImputeQCNormCombat(arraytype="450K")
+head(res$myNorm)
 }

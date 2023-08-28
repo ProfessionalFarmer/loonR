@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.55</span>
       </span>
     </div>
 
@@ -52,7 +52,8 @@
 <span>  CpG.GUI <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  QC.GUI <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  combat <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  batchname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Slide"</span><span class="op">)</span></span>
+<span>  batchname <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Slide"</span><span class="op">)</span>,</span>
+<span>  cores <span class="op">=</span> <span class="fl">50</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -77,13 +78,11 @@
 <dt>batchname</dt>
 <dd><p>Batch variable name. Default is c("Slide")</p></dd>
 
+
+<dt>cores</dt>
+<dd></dd>
+
 </dl></div>
-    <div id="value">
-    <h2>Value</h2>
-    
-
-
-    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
@@ -91,14 +90,8 @@
 <span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">ChAMP</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: minfi</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: BiocGenerics</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: parallel</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘BiocGenerics’</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:parallel’:</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     clusterExport, clusterMap, parApply, parCapply, parLapply,</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     parLapplyLB, parRapply, parSapply, parSapplyLB</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:loonR’:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     plotPCA</span>
@@ -127,9 +120,9 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:dplyr’:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>     first, rename</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from ‘package:base’:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> The following objects are masked from ‘package:base’:</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     expand.grid</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     I, expand.grid, unname</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: IRanges</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: ‘IRanges’</span>
@@ -188,13 +181,15 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: bumphunter</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: foreach</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: iterators</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: parallel</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: locfit</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> locfit 1.5-9.4 	 2020-03-24</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> locfit 1.5-9.8 	 2023-06-11</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Setting options('download.file.method.GEOquery'='auto')</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Setting options('GEOquery.inmemory.gpl'=FALSE)</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: ChAMPdata</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: DMRcate</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>replacing previous import 'minfi::getMeth' by 'bsseq::getMeth' when loading 'DMRcate'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>replacing previous import 'matrixStats::rowMedians' by 'Biobase::rowMedians' when loading 'DSS'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>replacing previous import 'matrixStats::anyMissing' by 'Biobase::anyMissing' when loading 'DSS'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: Illumina450ProbeVariants.db</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: IlluminaHumanMethylationEPICmanifest</span>
@@ -207,14 +202,14 @@
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>replacing previous import 'plyr::arrange' by 'plotly::arrange' when loading 'ChAMP'</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>replacing previous import 'plyr::mutate' by 'plotly::mutate' when loading 'ChAMP'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>replacing previous import 'plotly::subplot' by 'Hmisc::subplot' when loading 'ChAMP'</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>replacing previous import 'plyr::is.discrete' by 'Hmisc::is.discrete' when loading 'ChAMP'</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>replacing previous import 'plyr::summarize' by 'Hmisc::summarize' when loading 'ChAMP'</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>replacing previous import 'plotly::subplot' by 'Hmisc::subplot' when loading 'ChAMP'</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>replacing previous import 'GenomicRanges::sort' by 'globaltest::sort' when loading 'ChAMP'</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>replacing previous import 'plotly::last_plot' by 'ggplot2::last_plot' when loading 'ChAMP'</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>replacing previous import 'globaltest::model.matrix' by 'stats::model.matrix' when loading 'ChAMP'</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>replacing previous import 'globaltest::p.adjust' by 'stats::p.adjust' when loading 'ChAMP'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> &gt;&gt; Package version 2.20.1 loaded &lt;&lt;</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> &gt;&gt; Package version 2.21.1 loaded &lt;&lt;</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>        ___ _      _   __  __ ___ </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>       / __| |_   /_\ |  \/  | _ \</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>      | (__| ' \ / _ \| |\/| |  _/</span>
@@ -232,47 +227,47 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -----------------------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [ Section 1: Read PD Files Start ]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   CSV Directory: /data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/lung_test_set.csv</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   CSV Directory: /master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/lung_test_set.csv</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Find CSV Success</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Reading CSV File</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>incomplete final line found on '/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/lung_test_set.csv'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>incomplete final line found on '/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/lung_test_set.csv'</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Replace Sentrix_Position into Array</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Replace Sentrix_ID into Slide</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [ Section 1: Read PD file Done ]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [ Section 2: Read IDAT files Start ]</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/7990895118_R03C02_Grn.idat ---- (1/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/7990895118_R03C02_Grn.idat ---- (1/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/7990895118_R05C02_Grn.idat ---- (2/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/7990895118_R05C02_Grn.idat ---- (2/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/9247377086_R01C01_Grn.idat ---- (3/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/9247377086_R01C01_Grn.idat ---- (3/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/9247377086_R02C01_Grn.idat ---- (4/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/9247377086_R02C01_Grn.idat ---- (4/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/7766130112_R06C01_Grn.idat ---- (5/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/7766130112_R06C01_Grn.idat ---- (5/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/7766130112_R01C02_Grn.idat ---- (6/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/7766130112_R01C02_Grn.idat ---- (6/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/7990895118_R01C01_Grn.idat ---- (7/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/7990895118_R01C01_Grn.idat ---- (7/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/7990895118_R01C02_Grn.idat ---- (8/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/7990895118_R01C02_Grn.idat ---- (8/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/7990895118_R03C02_Red.idat ---- (1/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/7990895118_R03C02_Red.idat ---- (1/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/7990895118_R05C02_Red.idat ---- (2/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/7990895118_R05C02_Red.idat ---- (2/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/9247377086_R01C01_Red.idat ---- (3/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/9247377086_R01C01_Red.idat ---- (3/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/9247377086_R02C01_Red.idat ---- (4/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/9247377086_R02C01_Red.idat ---- (4/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/7766130112_R06C01_Red.idat ---- (5/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/7766130112_R06C01_Red.idat ---- (5/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/7766130112_R01C02_Red.idat ---- (6/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/7766130112_R01C02_Red.idat ---- (6/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/7990895118_R01C01_Red.idat ---- (7/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/7990895118_R01C01_Red.idat ---- (7/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/data0/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/ChAMPdata/extdata/7990895118_R01C02_Red.idat ---- (8/8)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   Loading:/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/ChAMPdata/extdata/7990895118_R01C02_Red.idat ---- (8/8)</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>truncating string with embedded nuls</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span>   Extract Mean value for Green and Red Channel Success</span>
@@ -309,7 +304,10 @@
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">beta.df</span> <span class="op">=</span> <span class="va">myImport</span><span class="op">$</span><span class="va">beta</span></span></span>
 <span class="r-in"><span><span class="va">group</span> <span class="op">=</span> <span class="va">myImport</span><span class="op">$</span><span class="va">pd</span><span class="op">$</span><span class="va">Sample_Group</span></span></span>
-<span class="r-in"><span><span class="fu">loonR</span><span class="fu">::</span><span class="fu">ChAMP_QC_Pipeline_Frome_Beta_Value</span><span class="op">(</span>Sample.beta.df<span class="op">=</span><span class="va">beta.df</span>, Sample.Group<span class="op">=</span><span class="va">group</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">########### Step 1</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">loonR</span><span class="fu">::</span><span class="fu">ChAMP_QC_Pipeline_Frome_Beta_Value</span><span class="op">(</span>Sample.beta.df<span class="op">=</span><span class="va">beta.df</span>, Sample.Group<span class="op">=</span><span class="va">group</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Start filtering </span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [===========================]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [&lt;&lt;&lt;&lt; ChAMP.FILTER START &gt;&gt;&gt;&gt;&gt;]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -----------------------------</span>
@@ -365,12 +363,1305 @@
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [&lt;&lt;&lt;&lt;&lt; ChAMP.FILTER END &gt;&gt;&gt;&gt;&gt;&gt;]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [===========================]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [You may want to process champ.QC() next.]</span>
+<span class="r-in"><span><span class="va">myLoad</span> <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="va">myLoad</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">########### Step 2</span></span></span>
+<span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="va">res</span><span class="op">$</span><span class="fu">followAnalysisImputeQCNormCombat</span><span class="op">(</span>arraytype<span class="op">=</span><span class="st">"450K"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [===========================]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> [&lt;&lt;&lt; ChAMP.IMPUTE START &gt;&gt;&gt;&gt;]</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> -----------------------------</span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> &lt;method&gt;:Combine. (Suitable for Large Data Set)</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in apply(beta, 2, function(x) length(which(is.na(x)))/length(x)):</span> object 'myLoad' not found</span>
-<span class="r-in"><span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> (1): 0 Samples contain 0.2 or above NA will be removed.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> (2): 0 Probes contain 0.2 or above NA will be removed.</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 412481 broken into 200578 211903 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 200578 broken into 147638 52940 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 147638 broken into 44391 103247 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 44391 broken into 15694 28697 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 15694 broken into 10967 4727 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 10967 broken into 6686 4281 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 6686 broken into 3832 2854 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3832 broken into 1620 2212 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1620 broken into 1097 523 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1097 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 523 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1620 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2212 broken into 1611 601 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1611 broken into 788 823 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 788 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 823 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1611 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 601 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2212 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3832 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2854 broken into 1295 1559 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1295 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1559 broken into 653 906 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 653 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 906 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1559 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2854 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 6686 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4281 broken into 2130 2151 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2130 broken into 1389 741 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1389 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 741 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2130 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2151 broken into 680 1471 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 680 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1471 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2151 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4281 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 10967 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4727 broken into 1179 3548 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1179 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3548 broken into 1675 1873 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1675 broken into 1091 584 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1091 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 584 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1675 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1873 broken into 809 1064 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 809 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1064 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1873 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3548 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4727 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 15694 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 28697 broken into 1647 27050 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1647 broken into 1156 491 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1156 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 491 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1647 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 27050 broken into 17240 9810 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 17240 broken into 11479 5761 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 11479 broken into 3947 7532 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3947 broken into 1062 2885 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1062 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2885 broken into 1420 1465 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1420 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1465 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2885 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3947 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 7532 broken into 3237 4295 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3237 broken into 634 2603 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 634 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2603 broken into 966 1637 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 966 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1637 broken into 795 842 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 795 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 842 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1637 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2603 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3237 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4295 broken into 1981 2314 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1981 broken into 833 1148 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 833 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1148 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1981 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2314 broken into 839 1475 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 839 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1475 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2314 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4295 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 7532 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 11479 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5761 broken into 1855 3906 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1855 broken into 1587 268 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1587 broken into 919 668 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 919 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 668 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1587 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 268 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1855 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3906 broken into 857 3049 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 857 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3049 broken into 1694 1355 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1694 broken into 833 861 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 833 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 861 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1694 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1355 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3049 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3906 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5761 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 17240 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 9810 broken into 4949 4861 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4949 broken into 3165 1784 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3165 broken into 2004 1161 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2004 broken into 999 1005 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 999 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1005 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2004 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1161 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3165 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1784 broken into 1036 748 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1036 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 748 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1784 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4949 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4861 broken into 1597 3264 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1597 broken into 896 701 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 896 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 701 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1597 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3264 broken into 1187 2077 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1187 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2077 broken into 1466 611 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1466 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 611 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2077 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3264 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4861 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 9810 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 27050 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 28697 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 44391 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 103247 broken into 52713 50534 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 52713 broken into 20972 31741 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 20972 broken into 7005 13967 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 7005 broken into 4414 2591 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4414 broken into 2552 1862 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2552 broken into 771 1781 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 771 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1781 broken into 626 1155 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 626 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1155 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1781 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2552 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1862 broken into 734 1128 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 734 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1128 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1862 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4414 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2591 broken into 1790 801 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1790 broken into 543 1247 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 543 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1247 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1790 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 801 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2591 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 7005 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 13967 broken into 11905 2062 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 11905 broken into 6043 5862 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 6043 broken into 2891 3152 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2891 broken into 1609 1282 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1609 broken into 651 958 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 651 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 958 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1609 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1282 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2891 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3152 broken into 84 3068 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 84 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3068 broken into 1140 1928 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1140 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1928 broken into 1102 826 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1102 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 826 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1928 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3068 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3152 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 6043 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5862 broken into 4284 1578 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4284 broken into 3334 950 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3334 broken into 1577 1757 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1577 broken into 1119 458 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1119 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 458 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1577 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1757 broken into 632 1125 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 632 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1125 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1757 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3334 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 950 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4284 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1578 broken into 1251 327 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1251 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 327 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1578 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5862 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 11905 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2062 broken into 1020 1042 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1020 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1042 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2062 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 13967 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 20972 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 31741 broken into 8510 23231 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 8510 broken into 3093 5417 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3093 broken into 1402 1691 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1402 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1691 broken into 606 1085 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 606 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1085 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1691 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3093 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5417 broken into 2488 2929 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2488 broken into 1689 799 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1689 broken into 773 916 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 773 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 916 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1689 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 799 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2488 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2929 broken into 1204 1725 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1204 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1725 broken into 678 1047 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 678 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1047 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1725 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2929 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5417 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 8510 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 23231 broken into 9821 13410 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 9821 broken into 4568 5253 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4568 broken into 747 3821 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 747 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3821 broken into 1789 2032 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1789 broken into 1163 626 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1163 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 626 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1789 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2032 broken into 788 1244 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 788 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1244 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2032 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3821 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4568 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5253 broken into 1755 3498 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1755 broken into 1138 617 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1138 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 617 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1755 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3498 broken into 1096 2402 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1096 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2402 broken into 1093 1309 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1093 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1309 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2402 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3498 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5253 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 9821 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 13410 broken into 8015 5395 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 8015 broken into 4463 3552 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4463 broken into 2589 1874 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2589 broken into 1479 1110 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1479 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1110 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2589 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1874 broken into 1816 58 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1816 broken into 615 1201 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 615 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1201 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1816 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 58 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1874 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4463 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3552 broken into 1467 2085 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1467 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2085 broken into 1073 1012 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1073 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1012 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2085 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3552 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 8015 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5395 broken into 276 5119 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 276 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5119 broken into 2070 3049 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2070 broken into 1362 708 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1362 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 708 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2070 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3049 broken into 732 2317 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 732 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2317 broken into 1206 1111 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1206 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1111 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2317 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3049 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5119 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5395 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 13410 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 23231 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 31741 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 52713 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 50534 broken into 25018 25516 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 25018 broken into 15412 9606 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 15412 broken into 1551 13861 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1551 broken into 535 1016 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 535 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1016 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1551 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 13861 broken into 3557 10304 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3557 broken into 2548 1009 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2548 broken into 1117 1431 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1117 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1431 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2548 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1009 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3557 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 10304 broken into 4659 5645 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4659 broken into 1998 2661 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1998 broken into 1099 899 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1099 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 899 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1998 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2661 broken into 1187 1474 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1187 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1474 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2661 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4659 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5645 broken into 2564 3081 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2564 broken into 1622 942 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1622 broken into 1200 422 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1200 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 422 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1622 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 942 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2564 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3081 broken into 1634 1447 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1634 broken into 869 765 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 869 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 765 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1634 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1447 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3081 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5645 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 10304 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 13861 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 15412 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 9606 broken into 3601 6005 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3601 broken into 2600 1001 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2600 broken into 1618 982 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1618 broken into 555 1063 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 555 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1063 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1618 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 982 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2600 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1001 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3601 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 6005 broken into 3447 2558 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3447 broken into 1509 1938 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1509 broken into 659 850 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 659 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 850 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1509 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1938 broken into 944 994 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 944 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 994 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1938 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3447 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2558 broken into 1518 1040 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1518 broken into 530 988 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 530 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 988 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1518 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1040 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2558 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 6005 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 9606 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 25018 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 25516 broken into 8459 17057 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 8459 broken into 2517 5942 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2517 broken into 1329 1188 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1329 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1188 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2517 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5942 broken into 5620 322 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5620 broken into 1693 3927 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1693 broken into 510 1183 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 510 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1183 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1693 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3927 broken into 2111 1816 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2111 broken into 1450 661 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1450 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 661 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2111 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1816 broken into 950 866 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 950 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 866 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1816 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3927 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5620 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 322 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5942 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 8459 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 17057 broken into 6851 10206 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 6851 broken into 4511 2340 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4511 broken into 2538 1973 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2538 broken into 1175 1363 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1175 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1363 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2538 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1973 broken into 796 1177 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 796 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1177 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1973 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4511 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2340 broken into 952 1388 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 952 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1388 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2340 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 6851 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 10206 broken into 4907 5299 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4907 broken into 2119 2788 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2119 broken into 959 1160 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 959 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1160 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2119 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2788 broken into 1926 862 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1926 broken into 1136 790 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1136 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 790 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1926 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 862 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2788 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4907 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5299 broken into 2275 3024 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2275 broken into 992 1283 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 992 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1283 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2275 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3024 broken into 1538 1486 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1538 broken into 935 603 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 935 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 603 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1538 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1486 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3024 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5299 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 10206 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 17057 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 25516 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 50534 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 103247 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 147638 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 52940 broken into 37548 15392 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 37548 broken into 19849 17699 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 19849 broken into 8825 11024 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 8825 broken into 4456 4369 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4456 broken into 1822 2634 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1822 broken into 617 1205 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 617 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1205 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1822 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2634 broken into 1875 759 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1875 broken into 113 1762 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 113 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1762 broken into 1111 651 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1111 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 651 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1762 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1875 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 759 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2634 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4456 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4369 broken into 2741 1628 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2741 broken into 1092 1649 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1092 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1649 broken into 607 1042 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 607 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1042 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1649 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2741 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1628 broken into 1041 587 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1041 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 587 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1628 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4369 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 8825 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 11024 broken into 8201 2823 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 8201 broken into 4724 3477 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4724 broken into 1397 3327 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1397 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3327 broken into 1501 1826 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1501 broken into 806 695 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 806 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 695 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1501 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1826 broken into 605 1221 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 605 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1221 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1826 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3327 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4724 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3477 broken into 1922 1555 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1922 broken into 1085 837 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1085 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 837 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1922 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1555 broken into 1014 541 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1014 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 541 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1555 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3477 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 8201 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2823 broken into 940 1883 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 940 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1883 broken into 950 933 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 950 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 933 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1883 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2823 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 11024 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 19849 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 17699 broken into 7564 10135 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 7564 broken into 2749 4815 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2749 broken into 1509 1240 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1509 broken into 730 779 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 730 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 779 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1509 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1240 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2749 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4815 broken into 2323 2492 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2323 broken into 1316 1007 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1316 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1007 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2323 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2492 broken into 1312 1180 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1312 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1180 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2492 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4815 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 7564 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 10135 broken into 6322 3813 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 6322 broken into 3064 3258 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3064 broken into 1452 1612 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1452 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1612 broken into 697 915 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 697 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 915 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1612 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3064 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3258 broken into 1264 1994 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1264 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1994 broken into 1077 917 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1077 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 917 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1994 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3258 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 6322 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3813 broken into 1537 2276 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1537 broken into 552 985 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 552 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 985 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1537 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2276 broken into 1271 1005 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1271 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1005 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2276 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3813 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 10135 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 17699 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 37548 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 15392 broken into 6628 8764 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 6628 broken into 3562 3066 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3562 broken into 1783 1779 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1783 broken into 1080 703 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1080 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 703 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1783 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1779 broken into 838 941 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 838 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 941 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1779 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3562 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3066 broken into 1505 1561 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1505 broken into 862 643 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 862 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 643 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1505 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1561 broken into 933 628 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 933 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 628 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1561 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3066 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 6628 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 8764 broken into 3939 4825 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3939 broken into 2181 1758 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2181 broken into 959 1222 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 959 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1222 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2181 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1758 broken into 704 1054 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 704 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1054 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1758 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3939 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4825 broken into 2278 2547 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2278 broken into 1042 1236 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1042 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1236 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2278 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2547 broken into 1256 1291 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1256 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1291 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2547 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4825 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 8764 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 15392 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 52940 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 200578 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 211903 broken into 133669 78234 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 133669 broken into 52322 81347 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 52322 broken into 36395 15927 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 36395 broken into 16524 19871 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 16524 broken into 9822 6702 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 9822 broken into 7650 2172 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 7650 broken into 3829 3821 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3829 broken into 2543 1286 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2543 broken into 1163 1380 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1163 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1380 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2543 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1286 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3829 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3821 broken into 2132 1689 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2132 broken into 661 1471 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 661 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1471 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2132 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1689 broken into 947 742 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 947 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 742 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1689 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3821 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 7650 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2172 broken into 1116 1056 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1116 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1056 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2172 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 9822 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 6702 broken into 1660 5042 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1660 broken into 1022 638 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1022 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 638 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1660 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5042 broken into 4546 496 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4546 broken into 2578 1968 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2578 broken into 1088 1490 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1088 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1490 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2578 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1968 broken into 858 1110 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 858 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1110 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1968 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4546 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 496 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5042 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 6702 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 16524 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 19871 broken into 13707 6164 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 13707 broken into 8834 4873 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 8834 broken into 4310 4524 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4310 broken into 2311 1999 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2311 broken into 1139 1172 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1139 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1172 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2311 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1999 broken into 1137 862 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1137 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 862 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1999 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4310 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4524 broken into 2076 2448 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2076 broken into 867 1209 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 867 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1209 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2076 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2448 broken into 1168 1280 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1168 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1280 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2448 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4524 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 8834 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4873 broken into 2479 2394 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2479 broken into 1071 1408 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1071 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1408 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2479 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2394 broken into 1327 1067 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1327 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1067 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2394 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4873 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 13707 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 6164 broken into 3884 2280 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3884 broken into 2138 1746 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2138 broken into 653 1485 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 653 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1485 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2138 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1746 broken into 992 754 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 992 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 754 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1746 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3884 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2280 broken into 1170 1110 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1170 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1110 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2280 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 6164 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 19871 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 36395 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 15927 broken into 10432 5495 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 10432 broken into 3861 6571 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3861 broken into 2114 1747 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2114 broken into 1533 581 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1533 broken into 301 1232 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 301 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1232 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1533 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 581 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2114 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1747 broken into 752 995 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 752 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 995 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1747 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3861 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 6571 broken into 2776 3795 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2776 broken into 1205 1571 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1205 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1571 broken into 878 693 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 878 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 693 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1571 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2776 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3795 broken into 1503 2292 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1503 broken into 258 1245 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 258 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1245 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1503 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2292 broken into 1058 1234 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1058 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1234 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2292 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3795 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 6571 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 10432 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5495 broken into 3574 1921 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3574 broken into 2008 1566 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2008 broken into 469 1539 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 469 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1539 broken into 710 829 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 710 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 829 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1539 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2008 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1566 broken into 539 1027 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 539 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1027 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1566 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3574 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1921 broken into 1611 310 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1611 broken into 1068 543 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1068 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 543 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1611 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 310 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1921 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5495 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 15927 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 52322 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 81347 broken into 41321 40026 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 41321 broken into 24688 16633 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 24688 broken into 8267 16421 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 8267 broken into 4982 3285 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4982 broken into 1557 3425 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1557 broken into 878 679 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 878 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 679 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1557 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3425 broken into 1441 1984 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1441 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1984 broken into 747 1237 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 747 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1237 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1984 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3425 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4982 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3285 broken into 1434 1851 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1434 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1851 broken into 893 958 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 893 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 958 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1851 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3285 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 8267 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 16421 broken into 6590 9831 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 6590 broken into 4664 1926 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4664 broken into 2528 2136 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2528 broken into 1001 1527 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1001 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1527 broken into 529 998 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 529 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 998 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1527 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2528 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2136 broken into 1027 1109 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1027 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1109 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2136 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4664 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1926 broken into 1366 560 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1366 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 560 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1926 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 6590 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 9831 broken into 4009 5822 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4009 broken into 1448 2561 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1448 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2561 broken into 1691 870 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1691 broken into 1027 664 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1027 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 664 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1691 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 870 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2561 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4009 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5822 broken into 1023 4799 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1023 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4799 broken into 2684 2115 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2684 broken into 988 1696 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 988 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1696 broken into 992 704 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 992 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 704 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1696 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2684 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2115 broken into 770 1345 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 770 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1345 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2115 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4799 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5822 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 9831 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 16421 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 24688 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 16633 broken into 11285 5348 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 11285 broken into 9125 2160 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 9125 broken into 4884 4241 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4884 broken into 2936 1948 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2936 broken into 2077 859 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2077 broken into 1083 994 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1083 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 994 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2077 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 859 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2936 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1948 broken into 1507 441 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1507 broken into 591 916 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 591 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 916 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1507 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 441 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1948 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4884 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4241 broken into 1874 2367 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1874 broken into 970 904 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 970 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 904 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1874 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2367 broken into 1689 678 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1689 broken into 753 936 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 753 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 936 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1689 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 678 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2367 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4241 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 9125 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2160 broken into 473 1687 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 473 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1687 broken into 738 949 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 738 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 949 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1687 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2160 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 11285 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5348 broken into 3378 1970 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3378 broken into 668 2710 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 668 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2710 broken into 1053 1657 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1053 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1657 broken into 745 912 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 745 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 912 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1657 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2710 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3378 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1970 broken into 1202 768 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1202 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 768 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1970 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5348 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 16633 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 41321 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 40026 broken into 23436 16590 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 23436 broken into 16134 7302 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 16134 broken into 10746 5388 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 10746 broken into 2379 8367 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2379 broken into 834 1545 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 834 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1545 broken into 1201 344 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1201 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 344 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1545 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2379 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 8367 broken into 2083 6284 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2083 broken into 845 1238 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 845 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1238 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2083 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 6284 broken into 2648 3636 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2648 broken into 1490 1158 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1490 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1158 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2648 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3636 broken into 1726 1910 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1726 broken into 867 859 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 867 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 859 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1726 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1910 broken into 583 1327 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 583 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1327 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1910 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3636 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 6284 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 8367 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 10746 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5388 broken into 1990 3398 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1990 broken into 1139 851 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1139 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 851 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1990 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3398 broken into 1007 2391 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1007 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2391 broken into 1833 558 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1833 broken into 816 1017 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 816 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1017 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1833 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 558 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2391 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3398 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5388 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 16134 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 7302 broken into 3388 3914 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3388 broken into 1086 2302 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1086 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2302 broken into 790 1512 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 790 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1512 broken into 862 650 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 862 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 650 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1512 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2302 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3388 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3914 broken into 1674 2240 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1674 broken into 1161 513 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1161 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 513 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1674 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2240 broken into 1129 1111 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1129 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1111 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2240 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3914 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 7302 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 23436 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 16590 broken into 12063 4527 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 12063 broken into 3735 8328 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3735 broken into 2460 1275 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2460 broken into 1017 1443 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1017 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1443 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2460 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1275 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3735 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 8328 broken into 3210 5118 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3210 broken into 1233 1977 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1233 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1977 broken into 838 1139 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 838 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1139 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1977 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3210 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5118 broken into 2900 2218 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2900 broken into 2141 759 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2141 broken into 851 1290 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 851 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1290 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2141 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 759 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2900 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2218 broken into 919 1299 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 919 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1299 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2218 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5118 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 8328 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 12063 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4527 broken into 3212 1315 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3212 broken into 1487 1725 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1487 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1725 broken into 1012 713 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1012 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 713 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1725 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3212 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1315 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4527 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 16590 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 40026 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 81347 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 133669 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 78234 broken into 40545 37689 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 40545 broken into 18779 21766 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 18779 broken into 9239 9540 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 9239 broken into 3672 5567 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3672 broken into 2245 1427 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2245 broken into 1311 934 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1311 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 934 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2245 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1427 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3672 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5567 broken into 2006 3561 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2006 broken into 845 1161 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 845 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1161 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2006 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3561 broken into 2060 1501 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2060 broken into 934 1126 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 934 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1126 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2060 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1501 broken into 796 705 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 796 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 705 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1501 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3561 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5567 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 9239 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 9540 broken into 3955 5585 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3955 broken into 1974 1981 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1974 broken into 1209 765 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1209 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 765 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1974 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1981 broken into 844 1137 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 844 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1137 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1981 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3955 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5585 broken into 2662 2923 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2662 broken into 1576 1086 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1576 broken into 732 844 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 732 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 844 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1576 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1086 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2662 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2923 broken into 1697 1226 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1697 broken into 792 905 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 792 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 905 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1697 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1226 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2923 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5585 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 9540 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 18779 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 21766 broken into 12623 9143 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 12623 broken into 7165 5458 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 7165 broken into 3002 4163 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3002 broken into 1578 1424 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1578 broken into 940 638 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 940 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 638 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1578 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1424 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3002 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4163 broken into 1997 2166 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1997 broken into 931 1066 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 931 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1066 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1997 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2166 broken into 1278 888 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1278 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 888 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2166 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4163 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 7165 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5458 broken into 3171 2287 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3171 broken into 1341 1830 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1341 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1830 broken into 878 952 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 878 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 952 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1830 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3171 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2287 broken into 990 1297 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 990 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1297 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2287 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5458 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 12623 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 9143 broken into 6076 3067 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 6076 broken into 3655 2421 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3655 broken into 1812 1843 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1812 broken into 951 861 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 951 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 861 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1812 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1843 broken into 912 931 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 912 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 931 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1843 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3655 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2421 broken into 1204 1217 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1204 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1217 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2421 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 6076 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3067 broken into 1967 1100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1967 broken into 1138 829 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1138 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 829 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1967 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1100 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3067 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 9143 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 21766 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 40545 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 37689 broken into 21572 16117 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 21572 broken into 6713 14859 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 6713 broken into 2295 4418 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2295 broken into 1324 971 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1324 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 971 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2295 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4418 broken into 2984 1434 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2984 broken into 2053 931 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2053 broken into 1204 849 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1204 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 849 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2053 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 931 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2984 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1434 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4418 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 6713 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 14859 broken into 4909 9950 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4909 broken into 1700 3209 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1700 broken into 837 863 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 837 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 863 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1700 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3209 broken into 1382 1827 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1382 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1827 broken into 831 996 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 831 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 996 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1827 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3209 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4909 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 9950 broken into 4837 5113 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 4837 broken into 2294 2543 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2294 broken into 1009 1285 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1009 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1285 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2294 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2543 broken into 1126 1417 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1126 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1417 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2543 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 4837 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5113 broken into 2573 2540 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2573 broken into 1515 1058 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1515 broken into 636 879 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 636 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 879 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1515 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1058 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2573 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2540 broken into 1118 1422 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1118 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1422 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2540 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5113 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 9950 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 14859 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 21572 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 16117 broken into 6831 9286 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 6831 broken into 3227 3604 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3227 broken into 1908 1319 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1908 broken into 829 1079 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 829 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1079 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1908 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1319 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3227 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3604 broken into 1598 2006 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1598 broken into 862 736 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 862 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 736 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1598 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2006 broken into 943 1063 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 943 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1063 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2006 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3604 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 6831 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 9286 broken into 5324 3962 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 5324 broken into 2873 2451 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2873 broken into 1641 1232 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1641 broken into 724 917 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 724 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 917 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1641 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1232 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2873 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2451 broken into 1420 1031 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1420 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1031 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2451 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 5324 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 3962 broken into 1194 2768 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1194 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 2768 broken into 1249 1519 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1249 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Cluster size 1519 broken into 650 869 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 650 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 869 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 1519 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 2768 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 3962 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 9286 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 16117 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 37689 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 78234 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> Done cluster 211903 </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> (3): The rest NA are imputed by KNN method which parameter k as 5.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [&lt;&lt;&lt;&lt;&lt; ChAMP.IMPUTE END &gt;&gt;&gt;&gt;]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [===========================]</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Start imputation </span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Start QC </span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [===========================]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [&lt;&lt;&lt;&lt;&lt; ChAMP.QC START &gt;&gt;&gt;&gt;&gt;&gt;]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> -----------------------------</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> champ.QC Results will be saved in 1stQC</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [QC plots will be proceed with 412481 probes and 8 samples.]</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> [0 Zeros dectect in your dataset, will be replaced with 0.000001]</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in champ.QC(beta = myLoad$beta, resultsDir = "1stQC"):</span> object 'myLoad' not found</span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="va">res</span><span class="op">$</span><span class="va">myNorm</span><span class="op">)</span></span></span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
 </code></pre></div>
     </div>
   </div>

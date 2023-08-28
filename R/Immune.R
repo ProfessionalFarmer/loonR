@@ -221,12 +221,25 @@ CorrelationHeatmapTwoDf <- function(x.axis.df, y.axis.df, cor.method = "spearman
 #' @param x.axis.df Row is sample, column variable will be column names in new correlation heatmap.
 #' @param y.axis.df Row is sample, column variable will be row names in new correlation heatmap.
 #' @param cor.method Defaut spearman
+#' @param spec.select.list list(group1 = c(1,2,3), grou2 = c(4,5)) numbers are col indexin x.axis.df
+#' @param rho.cutoff Default 0.3
+#' @param p.color c("#D95F02", "#CCCCCC99", "#1B9E77")
 #'
 #' @return A ggplot2 object
 #' @export
 #'
 #' @examples
-CorrelationHeatmapTwoDfMantelTest <- function(x.axis.df, y.axis.df, cor.method = "spearman", spec.select.list = NULL){
+#'
+#' library(vegan)
+#' data(varespec)
+#' data(varechem)
+#'
+#' loonR::CorrelationHeatmapTwoDfMantelTest(varespec[,c(1,2)], varechem)
+#'
+#' l = list(Community_Diversity= 1:5, Community_structure =6:14)
+#' loonR::CorrelationHeatmapTwoDfMantelTest(varespec, varechem, spec.select.list = l)
+#'
+CorrelationHeatmapTwoDfMantelTest <- function(x.axis.df, y.axis.df, cor.method = "spearman", spec.select.list = NULL, rho.cutoff = 0.3, p.color = c("#D95F02", "#CCCCCC99", "#1B9E77") ){
 
   # wechat post: 像Science一样绘制相关性热图，看这一篇就够了
   # wechat post: R语言 | 终于实现了Mantel检验的相关性热图
@@ -288,48 +301,76 @@ CorrelationHeatmapTwoDfMantelTest <- function(x.axis.df, y.axis.df, cor.method =
     mantel$p = as.numeric(mantel$p)
     mantel$r = as.numeric(mantel$r)
 
+    mantel = mantel %>%  mutate(rd = cut(r, breaks = c(-Inf, -1 * rho.cutoff, rho.cutoff, Inf),
+                      labels = c(paste0("< -",rho.cutoff), paste0("-", rho.cutoff, " - ", rho.cutoff), paste0(">= ", rho.cutoff) ) ),
+             pd = cut(p, breaks = c(-Inf, 0.01, 0.05, Inf),
+                      labels = c("< 0.01", "0.01 - 0.05", ">= 0.05")))
+
+
     test.method = cor.method
+
+    # # # # # # # # # # # # # # # # # # # # # # # #
+    plot = qcorrplot(correlate(y.axis.df, method = cor.method), type = "lower", diag = FALSE) +
+      geom_square() +
+      geom_couple(aes(xend = .xend + 1.25,#定义连线
+                      yend = .yend + 0.1,
+                      colour = rd,
+                      size = pd),
+                  data = mantel, curvature = 0.1) +
+      geom_diag_label(mapping = aes(y = .y + 0.05),#定义对角线上的文字
+                      hjust = 0.15) +
+      scale_fill_gradientn(colours = RColorBrewer::brewer.pal(11, "RdBu")) +#定义方块颜色
+      scale_size_manual(values = c(2, 1, 0.5)) +
+      scale_colour_manual(values = p.color) +
+      guides(size = guide_legend(title = paste0(test.method, "'s p"),#定义图例
+                                 override.aes = list(colour = "grey35"),
+                                 order = 2),
+             colour = guide_legend(title = paste0(test.method, "'s r"),
+                                   override.aes = list(size = 3),
+                                   order = 1),
+             fill = guide_colorbar(title = paste0(cor.method,"'s r"), order = 3)) +
+      theme(axis.text.y = element_blank())
+
   }else{
     # # mantel test could perform between multiple x (spe) and single y
     # multiple x col is a spec
     library(dplyr)
 
     mantel <- linkET::mantel_test(x.axis.df, y.axis.df,
-                                  spec_select  = spec.select.list)
+                                  spec_select  = spec.select.list) %>%
+      mutate(rd = cut(r, breaks = c(-Inf, 0.2, 0.4, Inf),
+                      labels = c("< 0.2", "0.2 - 0.4", ">= 0.4")),
+             pd = cut(p, breaks = c(-Inf, 0.01, 0.05, Inf),
+                      labels = c("< 0.01", "0.01 - 0.05", ">= 0.05")))
     test.method = "Mantel"
+
+    # # # # # # # # # # # # # # # # # # # # # # # #
+    plot = qcorrplot(correlate(y.axis.df, method = cor.method), type = "lower", diag = FALSE) +
+      geom_square() +
+      geom_couple(aes(xend = .xend + 1.25,#定义连线
+                      yend = .yend + 0.1,
+                      colour = pd,
+                      size = rd),
+                  data = mantel, curvature = 0.1) +
+      geom_diag_label(mapping = aes(y = .y + 0.05),#定义对角线上的文字
+                      hjust = 0.15) +
+      scale_fill_gradientn(colours = RColorBrewer::brewer.pal(11, "RdBu")) +#定义方块颜色
+      scale_size_manual(values = c(0.5, 1, 2)) +
+      scale_colour_manual(values = p.color) +
+      guides(size = guide_legend(title = paste0(test.method, "'s r"),#定义图例
+                                 override.aes = list(colour = "grey35"),
+                                 order = 2),
+             colour = guide_legend(title = paste0(test.method, "'s p"),
+                                   override.aes = list(size = 3),
+                                   order = 1),
+             fill = guide_colorbar(title = paste0(cor.method,"'s r"), order = 3)) +
+      theme(axis.text.y = element_blank())
+
+
   }
 
 
-  mantel = mantel %>%
-    mutate(rd = cut(r, breaks = c(-Inf, 0.2, 0.4, Inf),
-                    labels = c("< 0.2", "0.2 - 0.4", ">= 0.4")),
-           pd = cut(p, breaks = c(-Inf, 0.01, 0.05, Inf),
-                    labels = c("< 0.01", "0.01 - 0.05", ">= 0.05")))
-
-
-  qcorrplot(correlate(y.axis.df, method = cor.method), type = "lower", diag = FALSE) +
-    geom_square() +
-    geom_couple(aes(xend = .xend+ 1.25,#定义连线
-                    yend = .yend +0.5,
-                    colour = pd,
-                    size = rd),
-                data = mantel, curvature = 0.1) +
-    geom_diag_label(mapping = aes(y = .y + 0.05),#定义对角线上的文字
-                    hjust = 0.15) +
-    scale_fill_gradientn(colours = RColorBrewer::brewer.pal(11, "RdBu")) +#定义方块颜色
-    scale_size_manual(values = c(0.5, 1, 2)) +
-    scale_colour_manual(values = color_pal(3)) +
-    guides(size = guide_legend(title = paste0(test.method, "'s r"),#定义图例
-                               override.aes = list(colour = "grey35"),
-                               order = 2),
-           colour = guide_legend(title = paste0(test.method, "'s p"),
-                                 override.aes = list(size = 3),
-                                 order = 1),
-           fill = guide_colorbar(title = paste0(cor.method,"'s r"), order = 3)) +
-    theme(axis.text.y = element_blank())
-
-
-
+  plot
 
 }
 

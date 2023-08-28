@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.55</span>
       </span>
     </div>
 
@@ -100,36 +100,40 @@
 <dd><p>x-axis label font size.</p></dd>
 
 </dl></div>
-    <div id="value">
-    <h2>Value</h2>
-    
-
-
-    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">LIRI</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">or.res</span> <span class="op">&lt;-</span> <span class="fu">loonR</span><span class="fu">::</span><span class="fu"><a href="univariate_or.html">univariate_or</a></span><span class="op">(</span><span class="va">LIRI</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span><span class="op">]</span>,<span class="va">LIRI</span><span class="op">$</span><span class="va">status</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in {    res &lt;- glm(status ~ ., data = data.frame(Score = d.frame[,         i], Event = label), family = binomial(logit))    c.name &lt;- colnames(d.frame)[i]    res &lt;- c(exp(cbind(coef(res), confint(res)))[2, ], summary(res)$coefficients[2,         1], summary(res)$coefficients[2, 4])    c(Name = c.name, round(res, 3))}:</span> task 1 failed - "object 'status' not found"</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting for profiling to be done...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting for profiling to be done...</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Waiting for profiling to be done...</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">estimate.data</span> <span class="op">=</span> <span class="va">or.res</span><span class="op">[</span>,<span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>,<span class="fl">3</span>,<span class="fl">4</span><span class="op">)</span><span class="op">]</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'or.res' not found</span>
 <span class="r-in"><span><span class="va">text.data</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>Variate <span class="op">=</span> <span class="va">or.res</span><span class="op">$</span><span class="va">Variate</span>, OR <span class="op">=</span> <span class="va">or.res</span><span class="op">$</span><span class="va">OR</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in data.frame(Variate = or.res$Variate, OR = or.res$OR):</span> object 'or.res' not found</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">loonR</span><span class="fu">::</span><span class="fu">forest_plot</span><span class="op">(</span><span class="va">text.data</span>, <span class="va">estimate.data</span>, graph.pos <span class="op">=</span> <span class="fl">2</span>, specify.summary <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: forestplot</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: checkmate</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Attaching package: 'checkmate'</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from 'package:Biobase':</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     anyMissing</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> The following object is masked from 'package:matrixStats':</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span>     anyMissing</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in nrow(tabletext):</span> object 'text.data' not found</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>there is no package called 'forestplot'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 'getOption("repos")' replaces Bioconductor standard repositories, see</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 'help("repositories", package = "BiocManager")' for details.</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Replacement repositories:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     CRAN: https://cran.rstudio.com/</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Bioconductor version 3.15 (BiocManager 1.30.22), R 4.2.1 (2022-06-23)</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Installing package(s) 'forestplot'</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Installation paths not writeable, unable to update packages</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   path: /opt/R/4.2.1/lib/R/library</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   packages:</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     KernSmooth, MASS, Matrix, boot, brew, cachem, callr, class, cli, cluster,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     codetools, commonmark, cpp11, crayon, curl, digest, downlit, evaluate,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     fansi, fastmap, fontawesome, foreign, fs, gert, gh, highr, htmltools,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     htmlwidgets, httr, jsonlite, knitr, lattice, lifecycle, mgcv, nlme, nnet,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     openssl, pillar, pkgbuild, pkgload, processx, profvis, ps, purrr, remotes,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     rlang, rpart, rstudioapi, sourcetools, spatial, stringi, stringr, survival,</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>     sys, tibble, tinytex, usethis, utf8, vctrs, waldo, whisker, xfun, yaml, zip</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> Old packages: 'RCurl', 'XML', 'colourpicker', 'glmnet', 'gtable', 'igraph',</span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span>   'markdown', 'mvtnorm', 'recipes', 'wk', 'xml2', 'yulab.utils'</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in forestplot(tabletext, estimate.data, hrzl_lines = hrzl_lines,     new_page = TRUE, vertices = TRUE, is.summary = summary.label,     graph.pos = graph.pos, clip = clipping, xlog = TRUE, boxsize = 0.15,     xticks = xticks, col = fpColors(box = "black", line = "black",         summary = "black", hrz_lines = "black"), xlab = xlab,     txt_gp = fpTxtGp(ticks = gpar(cex = x.font.size))):</span> could not find function "forestplot"</span>
 </code></pre></div>
     </div>
   </div>

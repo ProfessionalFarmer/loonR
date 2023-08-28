@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.55</span>
       </span>
     </div>
 
@@ -58,31 +58,19 @@
 <dd></dd>
 
 </dl></div>
-    <div id="value">
-    <h2>Value</h2>
-    
-
-
-    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">LIRI</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">loonR</span><span class="fu">::</span><span class="fu">findSurvivalCutPoint</span><span class="op">(</span><span class="va">LIRI</span><span class="op">[</span>,<span class="fl">3</span><span class="op">]</span>,<span class="va">LIRI</span><span class="op">$</span><span class="va">status</span>, <span class="va">LIRI</span><span class="op">$</span><span class="va">time</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>the condition has length &gt; 1 and only the first element will be used</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Global cutpoint for is  4.437316 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> Global cutpoint for is  4.437316 </span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> Loading required package: gtsummary</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> <span style="color: #BBBB00;">!</span> Use of `vars()` is now <span style="font-weight: bold;">deprecated</span> and support will soon be removed. Please replace calls to `vars()` with `c()`.</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>  p &lt; 0.0001</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in if (is.na(df$Event)) {    warning("We will remove NA, pls take care")}:</span> the condition has length &gt; 1</span>
 <span class="r-in"><span><span class="va">res</span><span class="op">$</span><span class="va">pval</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'res' not found</span>
 <span class="r-in"><span><span class="va">res</span><span class="op">$</span><span class="va">surv.plot</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> NULL</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'res' not found</span>
 <span class="r-in"><span><span class="va">res</span><span class="op">$</span><span class="va">estimated.point</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 4.437316</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'res' not found</span>
 </code></pre></div>
     </div>
   </div>

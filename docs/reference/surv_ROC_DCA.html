@@ -17,7 +17,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">loonR</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.15</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="">0.2.55</span>
       </span>
     </div>
 
@@ -53,18 +53,13 @@
 <dd></dd>
 
 </dl></div>
-    <div id="value">
-    <h2>Value</h2>
-    
-
-
-    </div>
 
     <div id="ref-examples">
     <h2>Examples</h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">mayo</span>, package <span class="op">=</span> <span class="st">"survivalROC"</span><span class="op">)</span></span></span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in find.package(package, lib.loc, verbose = verbose):</span> there is no package called 'survivalROC'</span>
 <span class="r-in"><span><span class="va">res</span> <span class="op">=</span> <span class="fu">loonR</span><span class="fu">::</span><span class="fu">surv_ROC_DCA</span><span class="op">(</span><span class="va">mayo</span><span class="op">$</span><span class="va">mayoscore5</span>, <span class="va">mayo</span><span class="op">$</span><span class="va">censor</span>, <span class="va">mayo</span><span class="op">$</span><span class="va">time</span><span class="op">/</span><span class="fl">30</span>, timePoint <span class="op">=</span> <span class="fl">24</span><span class="op">)</span></span></span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in roc(label, rs, ci = TRUE, plot = FALSE):</span> unused arguments (ci = TRUE, plot = FALSE)</span>
+<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in loonR::surv_ROC_DCA(mayo$mayoscore5, mayo$censor, mayo$time/30,     timePoint = 24):</span> object 'mayo' not found</span>
 <span class="r-in"><span><span class="va">res</span><span class="op">$</span><span class="va">ROC</span></span></span>
 <span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in eval(expr, envir, enclos):</span> object 'res' not found</span>
 </code></pre></div>

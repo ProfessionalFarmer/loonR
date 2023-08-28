@@ -4,7 +4,7 @@
 \alias{univariate_cox}
 \title{Univariate Cox analysis}
 \usage{
-univariate_cox(d.frame, status, time, scale = TRUE, max.time = NA)
+univariate_cox(d.frame, status, time, scale = TRUE, max.time = NULL)
 }
 \arguments{
 \item{d.frame}{Data.frame --- Row: sample, Column: gene expression}

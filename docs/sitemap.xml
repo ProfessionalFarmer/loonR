@@ -43,6 +43,9 @@
     <loc>/reference/CorrelationHeatmapTwoDf.html</loc>
   </url>
   <url>
+    <loc>/reference/CorrelationHeatmapTwoDfMantelTest.html</loc>
+  </url>
+  <url>
     <loc>/reference/DESeq2_differential.html</loc>
   </url>
   <url>
@@ -62,6 +65,9 @@
   </url>
   <url>
     <loc>/reference/SNF_Similairity_Hist.html</loc>
+  </url>
+  <url>
+    <loc>/reference/build.SVM.html</loc>
   </url>
   <url>
     <loc>/reference/build.best.random.forest.html</loc>
@@ -125,6 +131,9 @@
   </url>
   <url>
     <loc>/reference/compare_differential.analysis.html</loc>
+  </url>
+  <url>
+    <loc>/reference/compare_differential.ttest.analysis.html</loc>
   </url>
   <url>
     <loc>/reference/confidence_interval.html</loc>
@@ -310,6 +319,9 @@
     <loc>/reference/getTranscriptProteinSequence.html</loc>
   </url>
   <url>
+    <loc>/reference/get_all_performance_table.html</loc>
+  </url>
+  <url>
     <loc>/reference/get_full_mapping_table.html</loc>
   </url>
   <url>
@@ -328,10 +340,16 @@
     <loc>/reference/heatmap.with.lgfold.riskpro.html</loc>
   </url>
   <url>
+    <loc>/reference/heatmap.with.wordcloud.html</loc>
+  </url>
+  <url>
     <loc>/reference/hello.html</loc>
   </url>
   <url>
     <loc>/reference/hyperGeoTest.html</loc>
+  </url>
+  <url>
+    <loc>/reference/hyperGeoTest4ContingencyTable.html</loc>
   </url>
   <url>
     <loc>/reference/id_mapping.html</loc>
@@ -382,6 +400,12 @@
     <loc>/reference/loadGff.html</loc>
   </url>
   <url>
+    <loc>/reference/loadICGC.exp.html</loc>
+  </url>
+  <url>
+    <loc>/reference/loadICGC.methy.html</loc>
+  </url>
+  <url>
     <loc>/reference/loadMethylationArraryData.html</loc>
   </url>
   <url>
@@ -416,6 +440,9 @@
   </url>
   <url>
     <loc>/reference/multi_roc_with_ci.html</loc>
+  </url>
+  <url>
+    <loc>/reference/multipleHyperGeoTest.html</loc>
   </url>
   <url>
     <loc>/reference/multiplePlotPredictedPro.html</loc>
@@ -565,6 +592,9 @@
     <loc>/reference/show_hcluster.html</loc>
   </url>
   <url>
+    <loc>/reference/simplifyEnrichment.html</loc>
+  </url>
+  <url>
     <loc>/reference/splitCharacter.html</loc>
   </url>
   <url>
@@ -614,6 +644,9 @@
   </url>
   <url>
     <loc>/reference/tcgabiolinks.get.junction.coverage.html</loc>
+  </url>
+  <url>
+    <loc>/reference/testCategoricalVariableFreq.html</loc>
   </url>
   <url>
     <loc>/reference/thisPath.html</loc>

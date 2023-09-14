@@ -14,9 +14,9 @@ CorrelationHeatmapTwoDfMantelTest(
 )
 }
 \arguments{
-\item{x.axis.df}{Row is sample, column variable will be column names in new correlation heatmap.}
+\item{x.axis.df}{Row is sample, column variable will be point names.}
 
-\item{y.axis.df}{Row is sample, column variable will be row names in new correlation heatmap.}
+\item{y.axis.df}{Row is sample, column variable will be names in new correlation heatmap.}
 
 \item{cor.method}{Defaut spearman}
 

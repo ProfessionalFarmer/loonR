@@ -218,8 +218,8 @@ CorrelationHeatmapTwoDf <- function(x.axis.df, y.axis.df, cor.method = "spearman
 
 #' Perform correlation analysis between two data.frame
 #'
-#' @param x.axis.df Row is sample, column variable will be column names in new correlation heatmap.
-#' @param y.axis.df Row is sample, column variable will be row names in new correlation heatmap.
+#' @param x.axis.df Row is sample, column variable will be point names.
+#' @param y.axis.df Row is sample, column variable will be names in new correlation heatmap.
 #' @param cor.method Defaut spearman
 #' @param spec.select.list list(group1 = c(1,2,3), grou2 = c(4,5)) numbers are col indexin x.axis.df
 #' @param rho.cutoff Default 0.3
@@ -250,7 +250,16 @@ CorrelationHeatmapTwoDfMantelTest <- function(x.axis.df, y.axis.df, cor.method =
   }
 
   # the same order
-  x.axis.df = x.axis.df[sample.names,]
+  if(ncol(x.axis.df)==1){ # in case of only one column
+    clnm = colnames(x.axis.df)
+    x.axis.df = data.frame(x.axis.df[sample.names,], row.names = sample.names)
+    colnames(x.axis.df) = clnm
+    rm(clnm)
+  }else{
+    x.axis.df = x.axis.df[sample.names,]
+  }
+
+
   y.axis.df = y.axis.df[sample.names,]
 
   if(!require("vegan")){
@@ -312,13 +321,11 @@ CorrelationHeatmapTwoDfMantelTest <- function(x.axis.df, y.axis.df, cor.method =
     # # # # # # # # # # # # # # # # # # # # # # # #
     plot = qcorrplot(correlate(y.axis.df, method = cor.method), type = "lower", diag = FALSE) +
       geom_square() +
-      geom_couple(aes(xend = .xend + 1.25,#定义连线
-                      yend = .yend + 0.1,
-                      colour = rd,
+      geom_couple(aes(colour = rd,
                       size = pd),
                   data = mantel, curvature = 0.1) +
-      geom_diag_label(mapping = aes(y = .y + 0.05),#定义对角线上的文字
-                      hjust = 0.15) +
+      #geom_diag_label(mapping = aes(y = .y + 0.05),#定义对角线上的文字
+      #                hjust = 0.15) +
       scale_fill_gradientn(colours = RColorBrewer::brewer.pal(11, "RdBu")) +#定义方块颜色
       scale_size_manual(values = c(2, 1, 0.5)) +
       scale_colour_manual(values = p.color) +
@@ -328,8 +335,7 @@ CorrelationHeatmapTwoDfMantelTest <- function(x.axis.df, y.axis.df, cor.method =
              colour = guide_legend(title = paste0(test.method, "'s r"),
                                    override.aes = list(size = 3),
                                    order = 1),
-             fill = guide_colorbar(title = paste0(cor.method,"'s r"), order = 3)) +
-      theme(axis.text.y = element_blank())
+             fill = guide_colorbar(title = paste0(cor.method,"'s r"), order = 3))
 
   }else{
     # # mantel test could perform between multiple x (spe) and single y
@@ -347,13 +353,11 @@ CorrelationHeatmapTwoDfMantelTest <- function(x.axis.df, y.axis.df, cor.method =
     # # # # # # # # # # # # # # # # # # # # # # # #
     plot = qcorrplot(correlate(y.axis.df, method = cor.method), type = "lower", diag = FALSE) +
       geom_square() +
-      geom_couple(aes(xend = .xend + 1.25,#定义连线
-                      yend = .yend + 0.1,
-                      colour = pd,
+      geom_couple(aes(colour = pd,
                       size = rd),
                   data = mantel, curvature = 0.1) +
-      geom_diag_label(mapping = aes(y = .y + 0.05),#定义对角线上的文字
-                      hjust = 0.15) +
+      #geom_diag_label(mapping = aes(y = .y + 0.05),#定义对角线上的文字
+      #                hjust = 0.15) +
       scale_fill_gradientn(colours = RColorBrewer::brewer.pal(11, "RdBu")) +#定义方块颜色
       scale_size_manual(values = c(0.5, 1, 2)) +
       scale_colour_manual(values = p.color) +
@@ -363,8 +367,8 @@ CorrelationHeatmapTwoDfMantelTest <- function(x.axis.df, y.axis.df, cor.method =
              colour = guide_legend(title = paste0(test.method, "'s p"),
                                    override.aes = list(size = 3),
                                    order = 1),
-             fill = guide_colorbar(title = paste0(cor.method,"'s r"), order = 3)) +
-      theme(axis.text.y = element_blank())
+             fill = guide_colorbar(title = paste0(cor.method,"'s r"), order = 3))
+    # + theme(axis.text.y = element_blank())
 
 
   }

@@ -657,7 +657,7 @@ MA_plot <- function(M, A, p, m.cutoff=0, a.cutoff=0, p.cutoff=0.05,
 #' Directory tree: dir/sample_quant/quant.sf
 load.salmon.matrix <- function(dirPath, isoform = TRUE, countsFromAbundance = "no", dir.pattern = ""){
 
-  warning("Pls not isoform paramter: ", isoform)
+  warning("Pls note isoform paramter: ", isoform)
 
 
   library(tximport)

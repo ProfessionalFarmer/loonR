@@ -249,6 +249,10 @@ CorrelationHeatmapTwoDfMantelTest <- function(x.axis.df, y.axis.df, cor.method =
     stop("Sample name is not the same")
   }
 
+  if(is.numeric(cor.method)){
+    stop("cor.method should be character while rho.cutoff is numeric")
+  }
+
   # the same order
   if(ncol(x.axis.df)==1){ # in case of only one column
     clnm = colnames(x.axis.df)
@@ -270,6 +274,7 @@ CorrelationHeatmapTwoDfMantelTest <- function(x.axis.df, y.axis.df, cor.method =
     dvetools:install_github("Hy4m/linkET")
     library("linkET")
   }
+  library(ggplot2)
 
   if(is.null(spec.select.list)){
 
@@ -374,8 +379,8 @@ CorrelationHeatmapTwoDfMantelTest <- function(x.axis.df, y.axis.df, cor.method =
   }
 
 
-  plot
-
+  res = list(plot = plot, mantel = mantel)
+  res
 }
 
 

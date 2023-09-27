@@ -109,6 +109,9 @@ get_full_mapping_table <- function(){
   # Check that it is indeed GRCh38:
   searchDatasets(mart = mart, pattern = 'hsapiens')
 
+  # list attributes
+  # biomaRt::listAttributes(mart)
+
   # Now generate the table:
   transcriptLookup <- getBM(
       mart = mart,
@@ -128,7 +131,9 @@ get_full_mapping_table <- function(){
       'hgnc_id',
       'external_gene_name',
       "entrezgene_id",
-      'gene_biotype'),
+      'gene_biotype',
+      "mirbase_accession",
+      "mirbase_trans_name"),
     uniqueRows = TRUE)
 
   annotLookup <- dplyr::full_join(transcriptLookup, geneLookup, by = "ensembl_transcript_id")

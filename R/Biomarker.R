@@ -2285,7 +2285,7 @@ forest_plot <- function(tabletext, estimate.data, appendHeader = NULL, specify.s
 
   names(hrzl_lines) = hline
 
-  forestplot(tabletext, estimate.data,
+  forestplot(as.matrix(tabletext), as.matrix(estimate.data),
              hrzl_lines = hrzl_lines,
              new_page = TRUE, vertices = TRUE,
              is.summary = summary.label,

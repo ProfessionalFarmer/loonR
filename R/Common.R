@@ -318,6 +318,7 @@ show_hcluster <- function(df, group=NULL, dist.method = "euclidean", hclust.meth
 #' @param remove.element Please refer https://rpkgs.datanovia.com/ggpubr/reference/rremove.html
 #' @param element_text_size Facet title text size
 #' @param facet.n.row
+#' @param scales fixed or free
 #'
 #' @return
 #' @export
@@ -341,7 +342,7 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
                               comparisons = NULL, method = "wilcox.test", label.y = NULL, add = NULL,
                               alternative = "two.sided", rotate.x = 0, outlier.shape = 19, ylim=NULL, stat = FALSE,
                               barplot = FALSE, violin = FALSE, facet=FALSE, dotplot=FALSE,
-                              shape.color.by = "black", fill.color.by = NULL, legend.pos = "",
+                              shape.color.by = "black", fill.color.by = NULL, legend.pos = "", scales = "fixed",
                               group.position = ggplot2::position_dodge(0.9), remove.element = NULL, element_text_size = 14, facet.n.row = 1){
 
   if(!is.numeric(rotate.x)){
@@ -395,7 +396,7 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
     }
     p = ggpar(p, legend.title = "", legend = legend.pos, palette = color, ylim = ylim)
     p = p + rotate_x_text(angle = rotate.x)
-    p = facet(p, facet.by = "X", nrow = facet.n.row)
+    p = facet(p, facet.by = "X", nrow = facet.n.row, scales = scales)
 
     if(stat & !is.null(comparisons)  ){# label = "p.signif"
       p <- p + stat_compare_means(method = method,

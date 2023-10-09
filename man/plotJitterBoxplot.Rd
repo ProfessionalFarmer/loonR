@@ -30,6 +30,7 @@ plotJitterBoxplot(
   shape.color.by = "black",
   fill.color.by = NULL,
   legend.pos = "",
+  scales = "fixed",
   group.position = ggplot2::position_dodge(0.9),
   remove.element = NULL,
   element_text_size = 14,
@@ -65,13 +66,13 @@ plotJitterBoxplot(
 
 \item{legend.pos}{one of c("", "top", "bottom", "left", "right", "none")}
 
+\item{scales}{fixed or free}
+
 \item{group.position}{Allowed values include "identity", "stack", "dodge", "position_dodge(0.9)", position_stack(). Position adjustment, either as a string, or the result of a call to a position adjustment function}
 
 \item{remove.element}{Please refer https://rpkgs.datanovia.com/ggpubr/reference/rremove.html}
 
 \item{element_text_size}{Facet title text size}
-
-\item{facet.n.row}{}
 }
 \description{
 Boxplot with jitter, barplot with mean_se, violin plot with box

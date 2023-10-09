@@ -227,3 +227,201 @@ ChAMP_QC_Pipeline_Frome_Beta_Value <- function(Sample.beta.df=NULL, Sample.Group
   res
 }
 
+
+#' RNA and methylation analysis
+#'
+#' @param rna.df row name should be ensembl ID
+#' @param met.df row name should be probeID
+#' @param group normal 在前, cancer 在后
+#' @param genome hg19 or hg38
+#' @param met.platform 450K or EPIC
+#' @param beta.dif Default 0.2. Beta difference
+#' @param dir.group1 It can be "hypo" which means the probes are hypomethylated in group1; "hyper" which means the probes are hypermethylated in group1
+#' @param specify.probes Specify methylation probe instead of ELMER
+#' @param TF.motif Default FALSE. If perform TF and motif analysi
+#' @param run.diff If run methylation analysis
+#'
+#' @return
+#' @export
+#'
+#' @examples
+ELMER_RNA_Met_analysis <- function(rna.df = NULL, met.df = NULL, group = NULL, genome = "hg19", met.platform = "450K", beta.dif = 0.2, dir.group1 = "hyper",
+                                   specify.probes = NULL, TF.motif = FALSE, run.diff = TRUE){
+
+  if(!require(sesameData)){
+    pacman::p_load_gh("zwdzwd/sesameData")
+  }
+  if(!require(ELMER.data)){
+    pacman::p_load_gh("tiagochst/ELMER.data")
+  }
+  if(!require(ELMER)){
+    pacman::p_load_gh("tiagochst/ELMER")
+  }
+
+  pacman::p_load(ELMER.data, ELMER)
+
+  if( is.null(rna.df) | is.null(met.df) | is.null(group) ){
+    stop("Exp or met data.frame, or group should not be NA")
+  }
+
+  if( ! loonR::AllEqual(colnames(rna.df), colnames(met.df) ) ){
+    stop("RNA and met data.frame should be the same")
+  }
+
+  if(ncol(rna.df) != ncol(met.df) ){
+    stop("Exp and met should have the same sample")
+  }
+
+  if(ncol(rna.df) != length(group) ){
+    stop("Exp, met, group should have the same number of samples")
+  }
+
+
+  # https://www.bioconductor.org/packages/release/bioc/vignettes/ELMER/inst/doc/index.html
+  ####################### get distal probes that are 2kb away from TSS on chromosome 1
+  distal.probes <- get.feature.probe(
+    genome = genome,
+    met.platform = met.platform,
+    rm.chr = paste0("chr",c("X","Y"))
+  )
+
+  sample.info = data.frame(row.names = colnames(rna.df),
+                           primary = colnames(rna.df),
+                           sample = colnames(rna.df),
+                           group = group)
+
+
+  assay <- c(
+    rep("DNA methylation", ncol(met.df)),
+    rep("Gene expression", ncol(rna.df))
+  )
+  primary <- c(colnames(met.df),colnames(rna.df))
+  colname <- c(colnames(met.df),colnames(rna.df))
+  sampleMap <- data.frame(assay,primary,colname)
+  rm(assay, primary, colname)
+
+  ####################### Creation of a MAE object
+  mae <- createMAE(
+    exp = rna.df, # ensembl ID
+    met = met.df,
+    colData = sample.info,
+    sampleMap = sampleMap,
+    save = TRUE,
+    linearize.exp = TRUE,
+    save.filename = "ELMERresult/mae.rda",
+    filter.probes = distal.probes,
+    met.platform = met.platform,
+    genome = genome,
+    TCGA = FALSE
+  )
+  res = list(mae = mae)
+
+
+  ############# Identifying differentially methylated probes
+  if(run.diff){
+  library(SummarizedExperiment)
+  library(DT)
+  # A group from group.col. ELMER will run group1 vs group2.
+  # That means, if direction is hyper, get probes hypermethylated in group 1 compared to group 2.
+  sig.diff <- get.diff.meth(
+    data = mae,
+    group.col = "group",
+    group1 = unique(group)[1], # group2 is normal ELMER run group1 vs group2. Hypo means hypomethylated probes in group 1
+    group2 = unique(group)[2], # group2 is cancer.
+    minSubgroupFrac = 1, # if supervised mode set to 1
+    sig.dif = beta.dif,
+    diff.dir = dir.group1, # Search for hypermethylated probes in group 1 (hypo in group2)
+    cores = 50,
+    dir.out ="ELMERresult",
+    pvalue = 0.05
+  )
+
+  ############# result
+  res$sig.diff = sig.diff
+  }
+
+
+
+  ############ Identifying putative probe-gene pairs
+  if(is.null(specify.probes)){
+    nearGenes <- GetNearGenes(
+      data = mae,
+      probes = sig.diff$probe,
+      numFlankingGenes = 20
+    ) # 10 upstream and 10 dowstream genes
+  }else{
+    nearGenes <- GetNearGenes(
+      data = mae,
+      probes = specify.probes,
+      numFlankingGenes = 20
+    ) # 10 u
+    res$specified.probes = specify.probes
+  }
+
+
+
+  # https://www.bioconductor.org/packages/release/bioc/vignettes/ELMER/inst/doc/analysis_get_pair.html
+  probe.gene.pair <- get.pair(
+    data = mae,
+    group.col = "group",
+    group1 = unique(group)[1], # normal
+    group2 = unique(group)[2], # cancer
+    nearGenes = nearGenes,
+    # If diff.dir is "hypo, U will be the group 1 and M the group2.
+    # If diff.dir is "hyper" M group will be the group1 and U the group2.
+    mode = "supervised",
+    # It can be "hypo" which means the probes are hypomethylated in group1;
+    # "hyper" which means the probes are hypermethylated in group1
+    diff.dir = dir.group1,
+    permu.dir = "ELMERresult/permu",
+    permu.size = 100000, # Please set to 100000 to get significant results
+    raw.pvalue = 0.05,
+    Pe = 0.001, # Please set to 0.001 to get significant results
+    # when preAssociationProbeFiltering: U > 0.3, M < 0.3
+    filter.probes = TRUE, # See preAssociationProbeFiltering function
+    filter.percentage = 0.05,
+    filter.portion = 0.3,
+    dir.out = "ELMERresult",
+    cores = 1,
+    label = dir.group1
+  )
+
+  res$probe.gene.pair = probe.gene.pair
+
+  if(TF.motif){
+  # 3.4 - Motif enrichment analysis on the selected probes
+  enriched.motif <- get.enriched.motif(
+    data = mae,
+    probes = probe.gene.pair$Probe,
+    dir.out = "ELMERresult",
+    label = dir.group1,
+    min.incidence = 10,
+    lower.OR = 1.1
+  )
+  res$enriched.motif = enriched.motif
+
+
+  # 3.5 - Identifying regulatory TFs
+  TF <- get.TFs(
+    data = mae,
+    group.col = "group",
+    group1 = unique(group)[1],
+    group2 = unique(group)[2],
+    mode = "supervised",
+    enriched.motif = enriched.motif,
+    dir.out = "ELMERresult",
+    cores = 30,
+    label = ELMERresult,
+    save.plots = TRUE
+  )
+  res$TF = TF
+  }
+
+
+  res$PlotTutorial = "https://www.bioconductor.org/packages/release/bioc/vignettes/ELMER/inst/doc/plots_scatter.html"
+
+  res
+}
+
+
+

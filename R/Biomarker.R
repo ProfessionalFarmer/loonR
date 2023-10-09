@@ -2263,6 +2263,7 @@ forest_plot <- function(tabletext, estimate.data, appendHeader = NULL, specify.s
     tabletext = rbind( appendHeader, tabletext)
     estimate.data <- rbind(NA, estimate.data)
     hline[2] = 3
+    hline[3] = hline[3] + 1
   }
 
   hrzl_lines_width = 1:ncol(tabletext)
@@ -2291,7 +2292,7 @@ forest_plot <- function(tabletext, estimate.data, appendHeader = NULL, specify.s
              is.summary = summary.label,
              graph.pos = graph.pos,
              clip = clipping,
-             xlog = TRUE, boxsize = 0.15,
+             xlog = F, boxsize = 0.15,
              xticks = xticks,
              col = fpColors(box       = "black",
                             line      = "black",

@@ -2515,6 +2515,7 @@ compareROC <- function(risk1, lab1, risk2, lab2, method = c("delong", "bootstrap
 #' @param value
 #' @param names
 #' @param sep Pair seperation
+#' @param upRegulatedGene If input upRegulatedGene, ratio and rank will consider high/low.
 #'
 #' @return
 #' @export
@@ -2527,7 +2528,7 @@ compareROC <- function(risk1, lab1, risk2, lab2, method = c("delong", "bootstrap
 #' names(v) = n
 #' loonR::generatePairValue(v,n)
 #'
-generatePairValue <- function(value=NULL, names = NULL, sep ="_"){
+generatePairValue <- function(value=NULL, names = NULL, sep ="_", upRegulatedGene = NULL){
 
   if(is.null(value)){
       stop("Pls set parameter value")
@@ -2539,9 +2540,15 @@ generatePairValue <- function(value=NULL, names = NULL, sep ="_"){
       stop("Names should be the same")
     }
   }
+  if(is.null(upRegulatedGene)){
+    combs = loonR::generateCombinations(names, size = 2, vector = T, sep=sep)
+    combs = combs[,1]
+  }else{
+    combs = expand.grid(upRegulatedGene, setdiff(names, upRegulatedGene))
+    combs$concat = paste(combs$Var1, combs$Var2, sep = sep)
+    combs = combs[,3]
+  }
 
-  combs = loonR::generateCombinations(names, size = 2, vector = T, sep=sep)
-  combs = combs[,1]
 
   value.rank = rank(-1*value)
 
@@ -2557,13 +2564,15 @@ generatePairValue <- function(value=NULL, names = NULL, sep ="_"){
       value[gene1], value[gene2], value.rank[gene1], value.rank[gene2],
       value[gene1] - value[gene2],
       value.rank[gene2] - value.rank[gene1],
-      value.rank[gene2] > value.rank[gene1]))
+      value.rank[gene2] > value.rank[gene1],
+      value[gene1]/value[gene2]))
       )
   }
   colnames(diff) = c("G1","G2","Value1","Value2","Rank1","Rank2",
                            "Value.diff",
                            "Rank.diff",
-                           "Binary")
+                           "Binary",
+                           "Ratio")
   rownames(diff) = combs
   diff = data.frame(diff, stringsAsFactors = F, check.names = F)
 
@@ -2576,6 +2585,7 @@ generatePairValue <- function(value=NULL, names = NULL, sep ="_"){
 #' Generate gene pair value data.frame
 #'
 #' @param df row is gene, column is sample
+#' @param upRegulatedGene If input upRegulatedGene, ratio and rank will consider high/low.
 #'
 #' @return
 #' @export
@@ -2588,7 +2598,7 @@ generatePairValue <- function(value=NULL, names = NULL, sep ="_"){
 #' rownames(df) = paste0("Gene",1:100)
 #' res = loonR::generateGenePairValueDf(df)
 #' head(res$Binary.res)
-generateGenePairValueDf <- function(df){
+generateGenePairValueDf <- function(df, upRegulatedGene = NULL){
 
   df = as.matrix(df)
 
@@ -2596,8 +2606,8 @@ generateGenePairValueDf <- function(df){
 
   for(sample in colnames(df)){
     sample.value = df[,sample]
-    sample.paired.value = loonR::generatePairValue(sample.value)
-    sample.gene.pair.value.list[[sample]]=sample.paired.value
+    sample.paired.value = loonR::generatePairValue(sample.value, upRegulatedGene = upRegulatedGene)
+    sample.gene.pair.value.list[[sample]] = sample.paired.value
   }
   names(sample.gene.pair.value.list) = colnames(df)
 
@@ -2631,11 +2641,21 @@ generateGenePairValueDf <- function(df){
   rownames(binary.res) = rname
   binary.res = loonR::convertDfToNumeric(binary.res)
 
+  ratio.res = foreach(sample=colnames(df), .combine = cbind) %do%{
+    t = sample.gene.pair.value.list[[sample]][rname,"Ratio"]
+    as.vector(t)
+  }
+  colnames(ratio.res) = colnames(df)
+  rownames(ratio.res) = rname
+  ratio.res = loonR::convertDfToNumeric(ratio.res)
+
+
   res = list(
     RawSampleDataList=sample.gene.pair.value.list,
     Binary.res = binary.res,
     Value.diff.res = value.diff.res,
-    Rank.diff.res = rank.diff.res
+    Rank.diff.res = rank.diff.res,
+    Ratio.res = ratio.res
   )
 
   res

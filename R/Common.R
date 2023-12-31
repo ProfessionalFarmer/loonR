@@ -172,7 +172,7 @@ plotPie <- function(data, color = "jco", colid = 2, alpha =1 , title = "",
     data <- as.vector(data[,colid]) # now data is a vector class
   }
   n.color <- length(unique(data))
-  if(n.color >= 9 & color != "Most" & length(color) <9 ){
+  if(n.color >= 9 & color[1] != "Most" & length(color) <9 ){
     stop("Please check, too many colors (More than 9)")
   }
 

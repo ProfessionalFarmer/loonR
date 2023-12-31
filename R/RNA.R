@@ -1257,3 +1257,26 @@ readICGCExpFile = function(filepath){
 
 
 }
+
+
+
+
+#' Convert count to TPM
+#'
+#' @param mat row is gene, col is sample
+#' @param gene_length
+#'
+#' @return
+#' @export
+#'
+#' @examples
+count_to_tpm<- function(mat, gene_length){
+  mat<- mat/gene_length
+  total_per_sample<- colSums(mat)
+  mat<- t(t(mat)/total_per_sample)
+  return(mat*1000000)
+}
+
+
+
+

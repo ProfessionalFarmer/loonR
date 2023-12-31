@@ -19,6 +19,8 @@ loadICGC.exp = function(file.path){
     pivot_wider(names_from = 'icgc_specimen_id',values_from = "normalized_read_count")%>%
     summarise_all(function(x){ifelse(is.na(x),0,x)})
   table(is.na(expr))
+
+
   #######将ENSG名转换为gene名
   library(org.Hs.eg.db)
   gene_id <- expr$gene_id

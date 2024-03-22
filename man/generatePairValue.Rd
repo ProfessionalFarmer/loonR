@@ -4,10 +4,17 @@
 \alias{generatePairValue}
 \title{Generate gene pair value}
 \usage{
-generatePairValue(value = NULL, names = NULL, sep = "_")
+generatePairValue(
+  value = NULL,
+  names = NULL,
+  sep = "_",
+  upRegulatedGene = NULL
+)
 }
 \arguments{
 \item{sep}{Pair seperation}
+
+\item{upRegulatedGene}{If input upRegulatedGene, ratio and rank will consider high/low.}
 }
 \description{
 Generate gene pair value

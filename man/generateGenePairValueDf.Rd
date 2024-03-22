@@ -4,10 +4,12 @@
 \alias{generateGenePairValueDf}
 \title{Generate gene pair value data.frame}
 \usage{
-generateGenePairValueDf(df)
+generateGenePairValueDf(df, upRegulatedGene = NULL)
 }
 \arguments{
 \item{df}{row is gene, column is sample}
+
+\item{upRegulatedGene}{If input upRegulatedGene, ratio and rank will consider high/low.}
 }
 \description{
 Generate gene pair value data.frame

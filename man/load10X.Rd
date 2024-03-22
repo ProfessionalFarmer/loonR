@@ -10,11 +10,13 @@ load10X(
   min.cells = 3,
   min.features = 200,
   gene.column = 1,
+  remove_doublet = T,
   max_nCount_RNA = 10000,
   max_nFeature_RNA = 8000,
   max_percent.mt = 20,
   integrate_CCA = FALSE,
-  top_variable_features = 2000
+  top_variable_features = 2000,
+  remove_cc = T
 )
 }
 \arguments{

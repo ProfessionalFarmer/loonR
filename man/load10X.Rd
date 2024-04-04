@@ -20,7 +20,7 @@ load10X(
   remove_cc = T,
   remove_mt = F,
   integrate_harmony = F,
-  harmony_batch = "batch"
+  harmony_batch_colName = "batch"
 )
 }
 \arguments{
@@ -40,7 +40,7 @@ load10X(
 
 \item{top_variable_features}{2000}
 
-\item{harmony_batch}{}
+\item{harmony_batch_colName}{Column names from batch correction}
 }
 \description{
 Read data: raw to PCA

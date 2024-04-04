@@ -15,9 +15,10 @@
 #' @param remove_mt
 #' @param integrate_harmony
 #' @param batch Default 1
-#' @param harmony_batch Column names from batch correction
+#' @param harmony_batch_colName Column names from batch correction
+#' @param find_marker Specify detail DE method: e.g. wilcox_limma
 #'
-#' @return
+#' @return res
 #' @export
 #'
 #' @examples
@@ -25,7 +26,7 @@ load10X <- function(paths = NA, sample_names = NA, min.cells = 10,
           min.features = 200, gene.column = 1, remove_doublet = T, batch = NULL,
           max_nCount_RNA = 10000, max_nFeature_RNA = 8000, max_percent.mt = 20,
           integrate_CCA = FALSE, top_variable_features = 2000, remove_cc = T, remove_mt = F,
-          integrate_harmony = F, harmony_batch = "batch"){
+          integrate_harmony = F, harmony_batch_colName = "orig.ident", find_marker = NULL){
 
   library(Seurat)
   library(dplyr)
@@ -140,7 +141,7 @@ load10X <- function(paths = NA, sample_names = NA, min.cells = 10,
 
 
   }else if(integrate_harmony){
-    cat("\n--------------------------\nPerform harmony integration\n")
+    cat("\n--------------------------\nPerform SCTransfomr integration\n")
 
     filter.data = merge(Object_list_filter[[1]], Object_list_filter[2:length(Object_list_filter)])
 
@@ -151,10 +152,11 @@ load10X <- function(paths = NA, sample_names = NA, min.cells = 10,
     filter.data <- RunPCA(filter.data, assay = last.assay.name)
 
     #filter.data <- RunPCA(filter.data, features = VariableFeatures(filter.data) )
+    cat("\n--------------------------\nPerform harmony integration\n")
 
-    filter.data <- harmony::RunHarmony(filter.data, vars_use = harmony_batch,
+    filter.data <- harmony::RunHarmony(filter.data, group.by.vars = harmony_batch_colName,
                                        reduction = "pca", assay.use = "SCT",
-                                       reduction.save = "harmony")
+                                       reduction.save = "harmony", lambda = rep(1, length(harmony_batch_colName)) )
     last.assay.name = "SCT"
     reduction = "harmony"
 
@@ -188,9 +190,11 @@ load10X <- function(paths = NA, sample_names = NA, min.cells = 10,
   }
 
 
-  filter.data <- FindNeighbors(filter.data, dims = 1:30, assay = last.assay.name )
-
   cat("\n--------------------------\nFind Cluster\n")
+
+  DefaultAssay(filter.data) = last.assay.name
+
+  filter.data <- FindNeighbors(filter.data, dims = 1:30, reduction = reduction, assay = last.assay.name )
 
   #计算SNN
   filter.data <- FindClusters(
@@ -207,8 +211,16 @@ load10X <- function(paths = NA, sample_names = NA, min.cells = 10,
 
   DefaultAssay(filter.data) = "RNA"
 
+
   # https://cran.r-project.org/web/packages/harmony/vignettes/Seurat.html
   res = list(raw = raw.data, filter = filter.data)
+
+
+  if(!is.null(find_marker)){
+    res$markers = FindAllMarkers(data.filt, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25, test.use = "wilcox_limma", assay = "RNA")
+  }
+
+  cat("\n--------------------------\nDone \n")
 
   res
 }

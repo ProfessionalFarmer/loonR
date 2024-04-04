@@ -838,7 +838,6 @@ scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRU
 #' @param group group
 #' @param palette Default aaas, if group not set, use #00AFBB
 #' @param dot.size Default 2
-#' @param ylab
 #' @param legend.title Default "Group"
 #' @param title Default ""
 #' @param cleveland
@@ -853,7 +852,7 @@ scaleDF <- function( df, byRow=FALSE, byColumn=FALSE, center = TRUE, scale = TRU
 #' data(LIRI)
 #' loonR::plotClevelandDot(1:10, LIRI$ANLN[1:10], lollipop = T )
 #'
-plotClevelandDot <- function(name, value, group=NA, palette = "aaas", dot.size = 2, ylab = NULL, legend.title = "Group", title = "",
+plotClevelandDot <- function(name, value, group=NA, palette = "aaas", dot.size = 2,  legend.title = "Group", title = "",
                              cleveland = TRUE, lollipop = FALSE, value.name = "Value",  sample.name = "Name"){
 
   # http://www.sthda.com/english/articles/24-ggpubr-publication-ready-plots/
@@ -875,7 +874,7 @@ plotClevelandDot <- function(name, value, group=NA, palette = "aaas", dot.size =
                     rotate = TRUE,                                # Rotate vertically
                     dot.size = dot.size,                          # Large dot size
                     y.text.col = TRUE,                            # Color y text by groups
-                    ylab = ylab, position = position_dodge(0.3),
+                    position = position_dodge(0.3),
                     ggtheme = theme_pubr()                        # ggplot2 theme
     )  +  theme_cleveland()                                      # Add dashed grids
   }else if(lollipop){

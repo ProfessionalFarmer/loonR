@@ -10,7 +10,6 @@ plotClevelandDot(
   group = NA,
   palette = "aaas",
   dot.size = 2,
-  ylab = NULL,
   legend.title = "Group",
   title = "",
   cleveland = TRUE,

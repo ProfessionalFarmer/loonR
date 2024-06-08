@@ -497,6 +497,9 @@ return_immune_genes <- function(type=c("default", "checkpoint") ){
     message("https://www.sciencedirect.com/science/article/pii/S1936523319303389#:~:text=These%20include%20the%20coinhibitory%20molecules,and%20VISTA%20and%20CD277%2C%20the")
     message("Table 1. A List of All Potential Checkpoints on the Cancer/APC Side if the Immunological Synapse.")
 
+    message("https://academic.oup.com/bib/article/22/3/bbaa176/5894466#supplementary-data")
+    message("In total, 79 ICGs were identified from a review of the literature [1, 25, 26], and most of the ICGs were ligands, receptors or important molecules in immune checkpoint pathways (Supplementary Table S1). W")
+
   }
 
 

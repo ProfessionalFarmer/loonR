@@ -20,7 +20,9 @@ load10X(
   remove_cc = T,
   remove_mt = F,
   integrate_harmony = F,
-  harmony_batch_colName = "batch"
+  harmony_batch_colName = "orig.ident",
+  find_marker = NULL,
+  dims = 1:30
 )
 }
 \arguments{
@@ -41,6 +43,11 @@ load10X(
 \item{top_variable_features}{2000}
 
 \item{harmony_batch_colName}{Column names from batch correction}
+
+\item{find_marker}{Specify detail DE method: e.g. wilcox_limma}
+}
+\value{
+res
 }
 \description{
 Read data: raw to PCA

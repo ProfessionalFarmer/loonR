@@ -311,21 +311,25 @@ SCT_Harmony_cluster <- function(seurat.obj, vars.to.regress = NULL, group.by.var
   #future::plan(strategy = "multicore", workers = 50)
   #options(future.globals.maxSize = 3000 * 1024^2) # 3G
 
+  assay = "RNA"
+  reduction = "pca"
   if(runSCT){
     seurat.obj = seurat.obj %>% SCTransform(vars.to.regress = vars.to.regress) %>%
       RunPCA(assay = "SCT")
+      assay = "SCT"
   }
   if(runHarmony){
     seurat.obj = seurat.obj %>%
       harmony::RunHarmony(group.by.vars = group.by.vars,
                           reduction = "pca", assay.use = "SCT",
                           reduction.save = "harmony", lambda = rep(1, length(group.by.vars)) )
+    reduction = "harmony"
   }
   seurat.obj = seurat.obj %>%
-    FindNeighbors(dims = dims, reduction = "harmony", assay = "SCT" ) %>%
+    FindNeighbors(dims = dims, reduction = reduction, assay = assay ) %>%
     FindClusters( resolution = c(seq(.1, 1, .2))) %>%  #计算SNN
-    RunUMAP(dims = dims, reduction = "harmony", assay = "SCT" )  %>%
-    RunTSNE(dims = dims, reduction = "harmony", assay = "SCT")
+    RunUMAP(dims = dims, reduction = reduction, assay = assay )  %>%
+    RunTSNE(dims = dims, reduction = reduction, assay = assay)
 
   #future::plan(strategy = "multicore", workers = 1)
 

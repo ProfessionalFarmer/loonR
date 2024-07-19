@@ -399,6 +399,8 @@ DESeq2_differential <- function(rawcount, group, prop.expressed.sample = 0.5, pr
   ## Must add first column if tidy=TRUE
   countData = data.frame(Gene=row.names(countData),countData)
 
+  names(countData) = stringr::str_replace(names(countData), "\\.","-")
+
 
   # Construct DESEQDataSet Object
   dds <- DESeqDataSetFromMatrix(
@@ -407,8 +409,8 @@ DESeq2_differential <- function(rawcount, group, prop.expressed.sample = 0.5, pr
       row.names = colnames(rawcount),
       Sample = colnames(rawcount),
       Group = group),
-    design=~Group,
-    tidy = TRUE
+      design = ~ Group,
+      tidy = TRUE
     )
 
   # estimation of size factors（estimateSizeFactors) --> estimation of dispersion（estimateDispersons) --> Negative Binomial GLM fitting and Wald statistics（nbinomWaldTest）

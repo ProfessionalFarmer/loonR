@@ -17,7 +17,8 @@ hyperGeoTest(
   remove.na = FALSE,
   bar.color = "npg",
   chiq.square.test = T,
-  not.consider = NA
+  not.consider = NA,
+  top.piont.color = "#0269A4"
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ hyperGeoTest(
 \item{bar.color}{palatte for barplot}
 
 \item{not.consider}{A vector that not consider the inside element}
+
+\item{top.piont.color}{Default "#0269A4"}
 }
 \value{
 list(barplot, pval.df.log, pval.df, plot)

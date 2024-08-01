@@ -937,3 +937,6 @@ dimPlotWithCountBar <- function (object = NULL, color = NULL, dim = "umap", rm.a
   popViewport()
 }
 
+
+
+

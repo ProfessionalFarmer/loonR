@@ -84,6 +84,7 @@ hyperGeoTest4ContingencyTable <- function(df, lower.tail = FALSE){
 #' @param bar.color palatte for barplot
 #' @param chiq.square.test
 #' @param not.consider A vector that not consider the inside element
+#' @param top.piont.color Default "#0269A4"
 #'
 #' @return list(barplot, pval.df.log, pval.df, plot)
 #' @export
@@ -93,7 +94,8 @@ hyperGeoTest4ContingencyTable <- function(df, lower.tail = FALSE){
 #' g2 = sample(c("1","2","3"),10, replace = T)
 #' loonR::hyperGeoTest(g1, g2, col.prefix = "E")
 hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "", lower.tail = FALSE, title = "", log10.lowest = 5,
-                         print.fig = TRUE, adjusted.p=NULL, remove.na=FALSE, bar.color="npg", chiq.square.test = T, not.consider = NA){
+                         print.fig = TRUE, adjusted.p=NULL, remove.na=FALSE, bar.color="npg", chiq.square.test = T, not.consider = NA,
+                         top.piont.color = "#0269A4"){
 
   # https://www.omicsclass.com/article/324
   # 1-phyper(抽取样本中属于“特定类别”的数量-1,总样本中“特定类别”的数量, 总样本数-总样本中“特定类别”的数量, 从总样本中随机抽取的数量,)
@@ -216,7 +218,7 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
 
   # # # # # # # # # # # # # # # # # # Option 2
   col_fun = circlize::colorRamp2(c(0, -log10(0.05)-0.1, log10.lowest-0.5),
-                                 c("#FFFFFF", "#FFFFFF", "#0269A4")  )
+                                 c("#FFFFFF", "#FFFFFF", top.piont.color)  )
 
   library(grid)
   res$plot = ComplexHeatmap::Heatmap(as.matrix(tmpgeo.log),
@@ -241,10 +243,42 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
   }
 
 
+  # # # # 2024-08-01
+  melted.pval.log = res$pval.df.log
+  melted.pval.log$row = rownames(melted.pval.log)
+  melted.pval.log = reshape2::melt(melted.pval.log)
+  colnames(melted.pval.log) = c("Row", "Col", "LogP")
+
+  melted.count = data.frame(res$table)
+  melted.count$row = rownames(melted.count)
+  melted.count = reshape2::melt(melted.count)
+  colnames(melted.count) = c("Row", "Col", "Count")
+
+  melted.merged = dplyr::full_join(melted.pval.log, melted.count,by =c("Row","Col"))
+  rm(melted.count, melted.pval.log)
+
+  col_fun = circlize::colorRamp2(c(0, -log10(0.05)-0.1, max(melted.merged$LogP)-0),
+                                 c("gray", "gray", top.piont.color)  ) #
+  col_fun = col_fun(seq(0, max(melted.merged$LogP)-0.5, 0.1))
+
+  library(ggplot2)
+  p.dot =  ggplot(melted.merged, aes(x=Col, y = Row, color = LogP, size = Count)) +
+    geom_point() +
+    cowplot::theme_cowplot() +
+    # theme(axis.line  = element_blank()) +
+    theme(axis.text.x = element_text(angle = 0, vjust = 0.5, hjust=0.5)) +
+    ylab('') + xlab('') +
+    theme(axis.ticks = element_blank())+
+    scale_color_gradientn(colours = col_fun, limits = c(0,max(melted.merged$LogP)), oob = scales::squish, name = '-logP')
+  # # # # # # # # #
+  res$dotplot = p.dot
+
   # return res
   res
 
 }
+
+
 
 
 #' Multiple hyper geomatrix test, include 2xn, 2x2

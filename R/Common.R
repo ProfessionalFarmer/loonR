@@ -1097,7 +1097,7 @@ splitGroupByCutoff <- function(group = NULL, values = NULL, fun = NULL, quantile
 
   if(length(cut.label)!=2 & !is.null(fun) ){  stop("Error, cut.label should be two elements")  }
   if(length(cut.label)!=(length(quantile.cutoff)+1)& !is.null(quantile.cutoff)){        stop("Error, according to quantile.cutoff, cut.label should be", length(quantile.cutoff)+1,"elements")      }
-  if(length(cut.label)!=(length(cut.point)+1) & !is.null(cut.point)){ stop("Error, according to cut.point, cut.label should be", length(cut.point)+1,"elements")  }
+  if(length(cut.label)!=(length(cut.point)+1) & !is.null(cut.point)){ stop("Error, according to cut.point, cut.label should be ", length(cut.point)+1," elements")  }
 
 
   ######### if not specify group

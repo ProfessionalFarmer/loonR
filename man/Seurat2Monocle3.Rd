@@ -6,7 +6,6 @@
 \usage{
 Seurat2Monocle3(
   seu.obj,
-  partition.col.name = NULL,
   use_partition = F,
   auto.root = T,
   root.cluster.name = NULL,

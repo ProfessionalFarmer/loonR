@@ -1143,7 +1143,7 @@ univariate_cox <- function(d.frame, status, time, scale=TRUE, max.time = NULL){
 
 
     res <- coxph( Surv(time, status) ~ Score ,
-                  data = data.frame(Score = d.frame[,i],
+                  data = data.frame(Score = d.frame[[i]],
                                     Time=time, Status =status, check.names = F ) )
     #exp( coef(res) )
     #summary(res)

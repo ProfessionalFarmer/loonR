@@ -7,16 +7,28 @@
 runInferCNV(
   seurat.obj,
   ref_group_names = NULL,
+  HMM = F,
+  denoise = F,
   gene_pos = "~/ref/hg38/gencode.v44/human_genes_pos.txt",
-  save_local_path = NULL
+  save_local_path = NULL,
+  num_threads = 40,
+  no_plot = FALSE
 )
 }
 \arguments{
 \item{ref_group_names}{Reference cell type}
 
+\item{HMM}{when set to True, runs HMM to predict CNV level (default: FALSE)}
+
+\item{denoise}{If True, turns on denoising according to options below (default: FALSE)}
+
 \item{gene_pos}{gene order file}
 
 \item{save_local_path}{Path to save rds}
+
+\item{num_threads}{Default: 40}
+
+\item{no_plot}{}
 }
 \description{
 Run inferCNV

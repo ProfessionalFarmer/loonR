@@ -4,12 +4,14 @@
 \alias{group2class_file}
 \title{Convert a vector to GenePattern class file}
 \usage{
-group2class_file(group, file = "./class.cls")
+group2class_file(group, file = "./class.cls", convertGroupStrToNum = FALSE)
 }
 \arguments{
 \item{group}{A vector}
 
 \item{file}{Default ./class.cls}
+
+\item{convertGroupStrToNum}{convert group levels to numeric value}
 }
 \description{
 Convert a vector to GenePattern class file

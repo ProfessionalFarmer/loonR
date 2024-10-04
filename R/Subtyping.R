@@ -249,17 +249,18 @@ hyperGeoTest <- function(row.group, col.group, row.prefix = "", col.prefix = "",
   melted.pval.log = reshape2::melt(melted.pval.log)
   colnames(melted.pval.log) = c("Row", "Col", "LogP")
 
-  melted.count = data.frame(res$table)
+  melted.count = data.frame(res$table, check.names = F)
   melted.count$row = rownames(melted.count)
   melted.count = reshape2::melt(melted.count)
   colnames(melted.count) = c("Row", "Col", "Count")
 
-  melted.merged = dplyr::full_join(melted.pval.log, melted.count,by =c("Row","Col"))
+  melted.merged = dplyr::full_join(melted.pval.log, melted.count,by =c("Row"="Row","Col"="Col"))
   rm(melted.count, melted.pval.log)
 
   col_fun = circlize::colorRamp2(c(0, -log10(0.05)-0.1, max(melted.merged$LogP)-0),
                                  c("gray", "gray", top.piont.color)  ) #
-  col_fun = col_fun(seq(0, max(melted.merged$LogP)-0.5, 0.1))
+  #max(melted.merged$LogP)-0.5 有可能是负值，导致报错，修改成，max(max(melted.merged$LogP)-0.5, 0)
+  col_fun = col_fun(seq(0, max(max(melted.merged$LogP)-0.5, 0), 0.1))
 
   library(ggplot2)
   p.dot =  ggplot(melted.merged, aes(x=Col, y = Row, color = LogP, size = Count)) +
@@ -890,7 +891,7 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
   # filter by value control the edge
   res$consensus.map.for.cytoscape = loonR::meltDataFrameByGroup(consensus.map, rownames(consensus.map),variable_name = "Subtype2") %>% filter(value>0.0)
 
-res$ConsensusSubtype.clean$Subtype
+  res$ConsensusSubtype.clean$Subtype
 
   plotNetwork <- function(){
 
@@ -923,6 +924,10 @@ res$ConsensusSubtype.clean$Subtype
 
   }
   res$plotNetwork = plotNetwork
+
+  #############  full information for cytoscape
+  consensus.map.for.cytoscape
+  ConsensusSubtype.clean
 
   ######################################## 20211019 Consensus map
   sort.ind = order(res$ConsensusSubtype.clean$Cluster[ match(colnames(res$consensusMatrix), res$ConsensusSubtype.clean$Subtype)])
@@ -1092,12 +1097,13 @@ dataframe2gct_file = function(df, file = "./expression.gcf", description = NULL,
 #'
 #' @param group A vector
 #' @param file Default ./class.cls
+#' @param convertGroupStrToNum convert group levels to numeric value
 #'
 #' @return
 #' @export
 #'
 #' @examples
-group2class_file = function(group, file = "./class.cls"){
+group2class_file = function(group, file = "./class.cls", convertGroupStrToNum = FALSE){
 
 # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC3893799/
 # https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2065909/
@@ -1117,8 +1123,11 @@ group2class_file = function(group, file = "./class.cls"){
   OUT <- file(file, "w")
   writeLines( stringr::str_c( length(group), length(unique(group)), version, sep =" "), OUT)
   writeLines( stringr::str_c( "#", paste0( unique(group), collapse = " " ), sep = " "), OUT)
-  writeLines( stringr::str_c( paste0(  as.numeric(as.factor(group)) - 1 , collapse = " " ) , sep = " "), OUT)
-
+  if(convertGroupStrToNum){
+    writeLines( stringr::str_c( paste0(group, collapse = " " ) , sep = " "), OUT)
+  }else{
+      writeLines( stringr::str_c( paste0(  as.numeric(as.factor(group)) - 1 , collapse = " " ) , sep = " "), OUT)
+  }
   close(OUT)
 
 }

@@ -446,7 +446,7 @@ scViolinPlot <- function(object, groupBy, MarkerSelected, marker.group, color = 
 #' @export
 #'
 #' @examples
-Seurat2Monocle3 = function(seu.obj, partition.col.name = NULL, use_partition = F, auto.root = T, root.cluster.name = NULL, cluster.col.name = NULL){
+Seurat2Monocle3 = function(seu.obj, use_partition = F, auto.root = T, root.cluster.name = NULL, cluster.col.name = NULL){
 
   if(!require(monocle3)){
     devtools::install_github('cole-trapnell-lab/monocle3')
@@ -459,20 +459,11 @@ Seurat2Monocle3 = function(seu.obj, partition.col.name = NULL, use_partition = F
   seu.obj.mnc = SeuratWrappers::as.cell_data_set(seu.obj)
 
   # https://www.jianshu.com/p/afbef525a03b
+  # 自己做clustering，则不用mapping
+  seu.obj.mnc <- cluster_cells(cds = seu.obj.mnc, reduction_method = "UMAP")
+
   #mapping cluster
-  #cds对象的cds2@clusters$UMAP$clusters是一个named vector。
   seu.obj.mnc@clusters$UMAP$clusters <- Idents(seu.obj)[rownames(colData(seu.obj.mnc))]
-
-  #parition的数目根据自己的实际情况处理，如果后面的 learn_graph(cds2, use_partition = F)的use_partition为F，则不用partition来做不同pseudotime推测，没有没有必要设置partition；
-  if(is.null(partition.col.name)){
-    seu.obj.mnc@clusters$UMAP$partitions <- factor(x = rep(1, length(rownames(colData(seu.obj.mnc)))), levels = 1)
-  }else{
-    seu.obj.mnc@clusters$UMAP$partitions <- factor(seu.obj@meta.data[rownames(colData(seu.obj.mnc)), partition.col.name])
-
-  }
-
-
-  names(seu.obj.mnc@clusters$UMAP$partitions) <- rownames(colData(seu.obj.mnc))
 
   # 从seurat obj transfer过去的cds对象没有做estimate size factor参数
   ## Calculate size factors using built-in function in monocle3
@@ -483,61 +474,64 @@ Seurat2Monocle3 = function(seu.obj, partition.col.name = NULL, use_partition = F
 
   seu.obj.mnc@rowRanges@elementMetadata@listData$gene_short_name <- rownames(seu.obj.mnc)
 
-  #如果出现了order_cells(cds)报错"object 'V1' not found"，否则不执行
-  #来源：https://github.com/cole-trapnell-lab/monocle3/issues/130](https://github.com/cole-trapnell-lab/monocle3/issues/130
-
-  # # # # # # # # # # # # # # # # # # # #
-  rownames(seu.obj.mnc@principal_graph_aux[["UMAP"]]$dp_mst) <- NULL
-  # colnames(cds@reducedDims$UMAP) <- NULL
-  colnames(seu.obj.mnc@int_colData@listData$reducedDims@listData$UMAP) <- NULL
-  # # # # # # # # # # # # # # # # # # # #
-
-  seu.obj.mnc <- learn_graph(seu.obj.mnc, use_partition = use_partition)
+  # use_parition这里一直是true，但具体的partition在前面指定
+  seu.obj.mnc <- learn_graph(seu.obj.mnc, use_partition = T)
 
 
   if(auto.root){
-    if(is.null(root.cluster.name) | is.null(cluster.col.name)){
+    if(is.null(cluster.col.name)){
       stop("Pls set root name and column name when automaticlly find root")
     }
 
     get_earliest_principal_node <- function(cds, time_bin = root.cluster.name){
-      cell_ids <- which(colData(cds)[, cluster.col.name] == time_bin)
+      cell_ids <- which(colData(cds)[, "ident"] == time_bin)
 
-      closest_vertex <-
-        cds@principal_graph_aux[["UMAP"]]$pr_graph_cell_proj_closest_vertex
+      closest_vertex <- cds@principal_graph_aux[["UMAP"]]$pr_graph_cell_proj_closest_vertex
+
       closest_vertex <- as.matrix(closest_vertex[colnames(cds), ])
-      root_pr_nodes <-
-        igraph::V(principal_graph(cds)[["UMAP"]])$name[as.numeric(names
+      root_pr_nodes <- igraph::V(principal_graph(cds)[["UMAP"]])$name[as.numeric(names
                                                                   (which.max(table(closest_vertex[cell_ids,]))))]
 
       root_pr_nodes
     }
-    seu.obj.mnc <- order_cells(seu.obj.mnc, root_pr_nodes=get_earliest_principal_node(seu.obj.mnc))
+    seu.obj.mnc <- order_cells(seu.obj.mnc, root_pr_nodes=get_earliest_principal_node(seu.obj.mnc, root.cluster.name))
 
   }else{
     seu.obj.mnc <- order_cells(seu.obj.mnc, reduction_method = "UMAP")
   }
 
+  plot_cells(
+    cds = seu.obj.mnc,
+    color_cells_by = "pseudotime",
+    show_trajectory_graph = TRUE
+  )
+
   # https://cloud.tencent.com/developer/article/1819550
   ##寻找拟时轨迹差异基因
   #graph_test分析最重要的结果是莫兰指数（morans_I），其值在-1至1之间，0代表此基因没有
   #空间共表达效应，1代表此基因在空间距离相近的细胞中表达值高度相似。
-  Track_genes <- graph_test(seu.obj.mnc, neighbor_graph="principal_graph", cores=10)
+  Track_genes <- graph_test(seu.obj.mnc, neighbor_graph="principal_graph", cores=5)
   #挑选top10画图展示
   Track_genes_sig <- Track_genes %>% top_n(n=10, morans_I) %>%
     pull(gene_short_name) %>% as.character()
   #基因表达趋势图
-  plot_genes_in_pseudotime(seu.obj.mnc[Track_genes_sig,], color_cells_by="predicted.id",
+
+  plot_genes_in_pseudotime(seu.obj.mnc[Track_genes_sig,], color_cells_by="ident",
                            min_expr=0.5, ncol = 2)
+
   #FeaturePlot图
   plot_cells(seu.obj.mnc, genes=Track_genes_sig, show_trajectory_graph=FALSE,
              label_cell_groups=FALSE,  label_leaves=FALSE)
   ##寻找共表达模块
   genelist <- pull(Track_genes, gene_short_name) %>% as.character()
+
   gene_module <- find_gene_modules(seu.obj.mnc[genelist,], resolution=1e-2, cores = 10)
+
   cell_group <- tibble::tibble(cell=row.names(colData(seu.obj.mnc)),
                                cell_group=colData(seu.obj.mnc)$predicted.id)
+
   agg_mat <- aggregate_gene_expression(seu.obj.mnc, gene_module, cell_group)
+
   row.names(agg_mat) <- stringr::str_c("Module ", row.names(agg_mat))
   pheatmap::pheatmap(agg_mat, scale="column", clustering_method="ward.D2")
 
@@ -549,6 +543,292 @@ Seurat2Monocle3 = function(seu.obj, partition.col.name = NULL, use_partition = F
   res
 }
 
+
+#' Run pesudo analysis
+#'
+#' @param seu.obj Seurat object
+#' @param start.clus NULL
+#' @param approx_points 150
+#'
+#' @return slingshot object with multiple function variable
+#' @export
+#'
+#' @examples
+#' # Pls run runSlingshot first
+#' # Next run f1, f2 function
+#' # Then run runTradeSeq in the backend and save to continue
+#' # Final run f4 and f5
+runSlingshot <- function(seu.obj, start.clus = NULL, approx_points = 150){
+
+  # 用于构建 sce 的对象
+  library(Seurat)
+  library(slingshot)
+
+  sce <- as.SingleCellExperiment(seu.obj, assay = "RNA")
+
+  sce_slingshot <- slingshot(sce,      #输入单细胞对象
+                              reducedDim = 'UMAP',  #降维方式
+                              clusterLabels = sce$ident,  #cell类型
+                              reweight = FALSE , # 让细胞不会在多个轨迹间重复评估
+                              start.clus = start.clus,     #轨迹起点,也可以不定义
+                              approx_points = approx_points)
+
+  res = list(slingshot = sce_slingshot)
+
+
+  ###### 画图参考 https://www.jianshu.com/p/e85d23a25a43
+
+  plot_trajectory <- function(sce_slingshot = NULL, seu.obj = NULL, color = NULL, lineage.ind = NULL){
+
+    if(is.null(sce_slingshot)){
+      stop("sligshot obj is required")
+    }
+    if(is.null(seu.obj)){
+      stop("Seurat obj is required")
+    }
+    if(is.null(color)){
+      stop("Pls set named color vector")
+    }
+
+    #### 如果lineage ind为NULL，则画所有的
+    if(is.null(lineage.ind)){
+        cell_colors <- color[sce_slingshot$ident]
+        plot(reducedDims(sce_slingshot)$UMAP, col = cell_colors, pch=16, asp = 1, cex = 0.8)
+        lines(SlingshotDataSet(sce_slingshot), lwd=2, col='black')
+
+        ###################### 1 轨迹图
+        #计算celltype坐标位置，用于图中标记
+        celltype_label <- seu.obj@reductions$umap@cell.embeddings %>%
+          as.data.frame() %>%
+          cbind(celltype = Idents(seu.obj) ) %>%
+          group_by(celltype) %>%
+          summarise(UMAP1 = median(umap_1),
+                    UMAP2 = median(umap_2))
+
+        for (i in 1:length(unique(sce_slingshot$ident))) {
+          text(celltype_label$celltype[i], x=celltype_label$UMAP1[i]-1, y=celltype_label$UMAP2[i])
+        }
+    }else{
+        plot(reducedDims(sce_slingshot)$UMAP, asp = 1, pch = 16, xlab = "UMAP_1", ylab = "UMAP_2",
+             col = hcl.colors(100, alpha = 0.5)[cut(slingPseudotime(sce_slingshot)[,lineage.ind], breaks = 100)])
+
+        lines(SlingshotDataSet(sce_slingshot), linInd = lineage.ind, lwd = 2, col = 'black')
+    }
+
+  }
+  res$f1_plot_trajectory = plot_trajectory
+
+
+  ####################### 2 密度图
+  plot_density = function(sce_slingshot = NULL, color = NULL, lineage.id = NULL){
+
+    # 查看多少lineage SlingshotDataSet(sce_slingshot)
+
+    if(is.null(sce_slingshot)){
+      stop("sligshot obj is required")
+    }
+    if(is.null(color)){
+      stop("Pls set named color vector")
+    }
+    if(is.null(lineage.id)){
+      stop("Pls set lineage ID")
+    }
+    density.list = lapply(unique(sce_slingshot$ident), function(x){
+      density(slingPseudotime(sce_slingshot)[colData(sce_slingshot)$ident == x, lineage.id], na.rm = T)
+    })
+    names(density.list) = unique(sce_slingshot$ident)
+
+    #作图范围
+    xlim <- range( unlist( lapply(density.list, function(x) x$x) ) )
+    ylim <- range( unlist( lapply(density.list, function(x) x$y) ))
+
+    par(mar=c(6, 6, 6, 6), xpd = TRUE)
+    plot(xlim, ylim, col = "white", xlab = "Pseudotime", ylab = "")  #基本作图
+    #添加密度图
+    for(i in names(density.list)) {
+      polygon(c(min(density.list[[i]]$x),density.list[[i]]$x, max(density.list[[i]]$x)), c(0, density.list[[i]]$y, 0),
+              col = color[i], alpha = 0.5)
+    }
+
+    # legend("right",
+    #        inset= -0.2,#legend位于画框右侧正中
+    #        pch=15,
+    #        legend= names(density.list),
+    #        bty="n",
+    #        col = color,
+    #        border="black",
+    #        title = "celltype",
+    #        cex = 0.5)
+
+  }
+  res$f2_plot_density = plot_density
+
+
+  # # # ## #########运行 tradeseq时间长，可以单独跑然后保存
+  # 微信文章：【单细胞高级分析. 26】slingshot：赏心悦目的轨迹分析图
+  # https://blog.csdn.net/qq_43022495/article/details/132708255
+  runTradeSeq <- function(sce_slingshot = NULL, variable.features = NULL, nknots = 6){
+
+    # 整体比较 https://www.jianshu.com/p/e85d23a25a43
+    # 谱系内比较 https://blog.csdn.net/qq_43022495/article/details/132708255
+    if(is.null(sce_slingshot)){
+      stop("sligshot obj is required")
+    }
+    if(is.null(variable.features)){
+      stop("Pls set variable features by VariableFeatures(seu.obj)")
+    }
+    library(tradeSeq)
+
+    # Fit negative binomial model
+    counts <- sce_slingshot@assays@data$counts[variable.features,]
+    crv <- SlingshotDataSet(sce_slingshot)
+    pseudotime <- slingPseudotime(sce_slingshot, na = FALSE)
+    cellWeights <- slingCurveWeights(sce_slingshot)
+
+
+    # 在使用NB-GAM模型之前，需要确定用于构建模型的基函数的数量。
+    # 这些基函数被称为节点（knots），它们在模型的拟合过程中起到关键作用。
+    # 使用evaluateK函数。该函数会运行一段时间
+
+    # 2k cells ~16min(如果你的轨迹较多的话，时间更长)
+    # 运行之后会自动出现图
+    # icMat <- evaluateK(counts = counts,
+    #                    sds = crv, nGenes = 500,
+    #                    k = 3:10,verbose = T, plot = TRUE)
+    # https://statomics.github.io/tradeSeq/articles/fitGAM.html
+    # 拟合
+
+    library(BiocParallel)
+    set.seed(111)
+    tradeseq.sce <- fitGAM(counts = counts,
+                  pseudotime = pseudotime,
+                  cellWeights = cellWeights,
+                  nknots = nknots, verbose = TRUE,
+                  BPPARAM = MulticoreParam(20),parallel=T)
+
+    table(rowData(tradeseq.sce)$tradeSeq$converged)#查看收敛基因个数
+
+    # 整体比较
+    assocRes <- associationTest(tradeseq.sce, lineages = TRUE, l2fc = log2(2))
+    rowData(tradeseq.sce)$assocRes <- assocRes[order(assocRes$waldStat, decreasing = TRUE),]
+
+    # https://blog.csdn.net/qq_43022495/article/details/132708255
+    # 整体比较 https://www.jianshu.com/p/e85d23a25a43
+    # 谱系内比较 https://blog.csdn.net/qq_43022495/article/details/132708255
+    startRes <- startVsEndTest(tradeseq.sce, lineages=T)
+    rowData(tradeseq.sce)$assocRes.start = startRes[ order(startRes$waldStat, decreasing = TRUE), ]
+
+    #### 谱系间比较
+    endRes <- diffEndTest(tradeseq.sce,pairwise=T)
+    rowData(tradeseq.sce)$assocRes.end <- endRes[order(endRes$waldStat, decreasing = TRUE),]
+
+    tradeseq.sce
+  }
+  res$f3_runTradeSeq = runTradeSeq
+
+  ############# 基因表达和伪时间
+  plot_gene_pesudo_exp = function(gene = NULL, tradeseq.sce = NULL){
+    if(is.null(gene) | is.null(tradeseq.sce)){
+      stop("Pls set gene name and trade seq objc")
+    }
+    library(ggpubr)
+    p1 = plotSmoothers(tradeseq.sce, assays(tradeseq.sce)$counts,
+                      gene = gene, alpha = 0.6, border = T, lwd = 2)+
+      ggtitle(gene)
+    p1
+  }
+  res$f4_plot_gene_pesudo_exp = plot_gene_pesudo_exp
+
+
+  add_pesudoTime_to_seuratMeat <- function(seurat.obj, sce_slingshot.obj){
+    t = slingPseudotime(sce_slingshot) %>% data.frame(check.names = F)
+    seurat.obj = Seurat::AddMetaData(
+      seurat.obj, t
+    )
+    seurat.obj
+  }
+  ###################### 拟时间热图
+
+  plot_pesudo_heatmap <- function(seurat.obj = NULL, lineage.name = NULL, genes = NULL,
+                                       n_bins = 100,#拟时需要分割的区间，将相似的拟时区间合并，这类似于我们monocle3中的方式
+                                       min_exp = 0.2, cutree_rows = 5)
+  {
+    if(is.null(seurat.obj)| is.null(lineage.name)){
+      stop("Pls set Seurat object and lineage.name")
+    }
+    if(is.null(gene)){
+      stop("Pls set candidates genes after test\n\n
+           intersect( rownames( rowData(tradeseq.sce)$assocRes.end)[1:50], rownames( rowData(tradeseq.sce)$assocRes.start)[1:50] )
+           \n\n")
+    }
+    seurat_meta = seurat.obj@meta.data
+    seurat_meta = as_tibble(cbind(cell.id = as.character(rownames(seurat_meta)), seurat_meta))
+    warning("Not consider the cell belong to other lineages")
+    seurat_meta = seurat_meta[!is.na(seurat_meta[[lineage.name]]), ]
+
+    seurat_meta = seurat_meta[order(seurat_meta[[lineage.name]]),]
+
+
+    pl_cells = as.character(seurat_meta$cell.id)
+
+    #提取表达矩阵,并将cell id的exp排序与前面排序好的cell id一致
+    expr_mat = as.matrix( seurat.obj@assays$RNA$data[genes,pl_cells] )
+
+    clust_expr_mat = matrix(nrow = nrow(expr_mat),
+                            ncol = n_bins, dimnames = list(rownames(expr_mat), 1:n_bins))
+
+    max_pseudotime = max(seurat_meta[[lineage.name]])
+    pseudotime_bin_size = max_pseudotime/n_bins
+
+    pseudotime_cluster_stat = NULL
+    seurat_meta$pseudotime_bin = NA_integer_
+
+    for (i in 1 : n_bins){
+      # 属于特定bin范围内的细胞
+      bin_cells = seurat_meta$cell.id[(seurat_meta[[lineage.name]] > (i-1)*pseudotime_bin_size &
+                                         seurat_meta[[lineage.name]] <= i*pseudotime_bin_size)]
+
+      # 对细胞归到某个组
+      seurat_meta$pseudotime_bin[seurat_meta$cell.id %in% bin_cells] = i
+
+      #计算基因平均表达量
+      if (length(bin_cells)>10){
+        m2 = expr_mat[,colnames(expr_mat) %in% bin_cells]
+        clust_expr_mat[,i] = apply(m2, 1, mean, na.rm = TRUE)
+      }
+
+    }
+
+    #数据缩放一下，为了更好的展现热图，并删除低表达基因
+    mm = clust_expr_mat - apply(clust_expr_mat, 1, mean, na.rm = TRUE)
+    mm = mm[apply(abs(mm),1, max, na.rm = TRUE)> min_exp,]
+
+    ####### 画图
+    max_range = max(range(is.finite(mm)))
+    lim = c(-max_range, max_range)
+
+    library(pheatmap)
+    heatmap1 = pheatmap(mm, show_rownames=F, cluster_rows = TRUE,
+                        cluster_cols = FALSE, show_colnames = FALSE,
+                        clustering_distance_rows = "euclidean",
+                        clustering_method = "ward.D2",
+                        treeheight_row = 50,
+                        cutree_rows = cutree_rows,
+                        color = colorRampPalette(rev(RColorBrewer::brewer.pal(9, "PRGn")))(250),
+                        breaks = seq(lim[1]/4, lim[2]/4, length.out = 251),
+                        border_color = NA)
+    heatmap1
+
+   ########## 获取模块的基因
+    tree_module = cutree(heatmap1$tree_row, k=cutree_rows)
+    tree_module = tibble(gene = names(tree_module), module = as.character(tree_module))
+    tree_module = tree_module[heatmap1$tree_row$order,]
+    tree_module
+  }
+  res$f5_plot_pesudo_heatmap = plot_pesudo_heatmap
+
+  res
+}
 
 
 export2CellphoneDB <- function(seu.obj, cell.type.column= NULL, dir = NULL, diff.gene = NULL){
@@ -584,7 +864,93 @@ export2CellphoneDB <- function(seu.obj, cell.type.column= NULL, dir = NULL, diff
 
 }
 
+#' Run cellchat
+#'
+#' @param seurat.obj
+#' @param type
+#' @param min.cells minimum 100 for analysis
+#' @param cores Default 20
+#'
+#' @return cellChat.Object
+#' @export
+#'
+#' @examples
+run_cellChat = function(seurat.obj, type = "triMean", min.cells = 100, cores = 20){
 
+
+  if(length(intersect("samples", colnames(seurat.obj@meta.data) ) ) == 0 ){
+    stop("Plse set @meta.data$samples")
+  }
+
+  library(CellChat)
+
+  ####### step create cellchat object
+  # Starting from a Seurat object
+  if(class(seurat.obj) == "Seurat"){
+    cellchat <- createCellChat(object = seurat.obj, group.by = "ident", assay = "RNA")
+  }else if(class(seurat.obj) == "CellChat"){
+    cellchat = seurat.obj
+  }
+
+  # https://htmlpreview.github.io/?https://github.com/jinworks/CellChat/blob/master/tutorial/CellChat-vignette.html#part-ii-inference-of-cell-cell-communication-network
+
+  ############ Step Select database
+  # Set the ligand-receptor interaction database
+  CellChatDB <- CellChatDB.human # use CellChatDB.mouse if running on mouse data
+  showDatabaseCategory(CellChatDB)
+  # use all CellChatDB for cell-cell communication analysis
+  CellChatDB.use <- CellChatDB # simply use the default CellChatDB. We do not suggest to use it in this way because CellChatDB v2 includes "Non-protein Signaling" (i.e., metabolic and synaptic signaling).
+  rm(CellChatDB)
+
+  # set the used database in the object
+  cellchat@DB <- CellChatDB.use
+
+  # This step is necessary even if using the whole database
+  cellchat <- subsetData(cellchat)
+
+  ########## step Preprocessing the expression data for cell-cell communication analysis
+  # https://developer.aliyun.com/article/1256526
+  future::plan("multisession", workers = cores) # do parallel
+  # #识别过表达基因
+  print("identifyOverExpressedGenes")
+  cellchat <- identifyOverExpressedGenes(cellchat)
+  # #识别过表达配体受体对
+  print("identifyOverExpressedInteractions")
+  cellchat <- identifyOverExpressedInteractions(cellchat)
+  #> The number of highly variable ligand-receptor pairs used for signaling inference is 692
+
+  # project gene expression data onto PPI (Optional: when running it, USER should set `raw.use = FALSE` in the function `computeCommunProb()` in order to use the projected data)
+  # cellchat <- projectData(cellchat, PPI.human)
+
+  options(future.globals.maxSize = 150000 * 1024^2)  # 30G
+
+  ####### Part II: Inference of cell-cell communication network
+  # The key parameter for this analysis is type, the method for computing
+  # the average gene expression per cell group. By default type = "triMean",
+  # producing fewer but stronger interactions. When setting type = "truncatedMean",
+  # a value should be assigned to trim, producing more interactions.
+  # Please check above in detail on the method for calculating the average gene expression per cell group.
+  print("computeCommunProb")
+  cellchat <- computeCommunProb(cellchat, type = type)
+
+  # Users can filter out the cell-cell communication if there are only
+  # few cells in certain cell groups. By default, the minimum number
+  # of cells required in each cell group for cell-cell communication is 10.
+  print("filterCommunication")
+  cellchat <- filterCommunication(cellchat, min.cells = min.cells)
+
+
+  ####  step Infer the cell-cell communication at a signaling pathway level
+  # NB: The inferred intercellular communication network of each ligand-receptor pair and each signaling pathway is
+  # stored in the slot ‘net’ and ‘netP’, respectively.
+  print("computeCommunProbPathway")
+  cellchat <- computeCommunProbPathway(cellchat)
+
+  ######## step Calculate the aggregated cell-cell communication network
+  cellchat <- aggregateNet(cellchat)
+
+  cellchat
+}
 
 #' Pseudo differential analysis
 #'
@@ -679,12 +1045,63 @@ exportScenicLoom <- function(seurat.obj, dir = "scenic", prefix = "scenic"){
   cat("motif–TF: ", "https://resources.aertslab.org/cistarget/motif2tf/motifs-v10nr_clust-nr.hgnc-m0.001-o0.0.tbl", "\n")
   cat("Database: ","https://resources.aertslab.org/cistarget/databases/homo_sapiens/hg38/refseq_r80/mc_v10_clust/gene_based/", "\n")
 
-
-
-
 }
 
+#' AUC heatmap for scenic
+#'
+#' @param auc.file
+#' @param seu.obj
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' loonR::scenicHeatmap(auc.file.path, seu.obj)
+scenicHeatmap = function(auc.file =NULL, seu.obj = NULL, color = NULL){
+  if(is.null(auc.file)|is.null(seu.obj)){
+    stop("set auc.file and seu.obj")
+  }
+  if(is.null(color)){
+    stop("A named vector should be set")
+  }
+  # load("/master/zhu_zhong_xu/work/TACE-AH/2024-07-09/2024-07-07-allsamples.noRMcc.rdata-hcc.Rdata")
+  # auc.file= "/master/zhu_zhong_xu/work/TACE-AH/scenic/hcc.auc_mtx.csv"
+  # seu.obj = hcc.cell
+  # library(ggsci)
+  # pal_npg(alpha = 0.6)(10)
+  # color = c(pal_npg(alpha = 0.6)(10),pal_jama(alpha = 0.6)(7), pal_lancet(alpha = 0.6)(9))
+  # color = color[c(2:12, 22, 18, 26, 19:25, 13:17)]
 
+  library(Seurat)
+
+  auc.df = read.csv(auc.file, check.names = F, row.names = 1)
+  auc.df = auc.df[rownames(seu.obj@meta.data),]
+
+  seu.obj = Seurat::AddMetaData(
+    seu.obj, auc.df, colnames(auc.df)
+  )
+  co2_vector <- c(as.matrix(auc.df))
+  hist(co2_vector)
+
+  loonR::heatmap.with.lgfold.riskpro(t(auc.df), Idents(seu.obj),palette = color,
+                                     show.lgfold = F, show.risk.pro = F, show_row_names = F,
+                                     cluster_rows = T)
+
+
+  # Seurat::DotPlot(seu.obj, colnames(auc.df))
+
+  auc.df.melted = loonR::meltDataFrameByGroup(auc.df,Idents(seu.obj))
+  auc.df$Cell.Type = Idents(seu.obj)
+
+  library(dplyr)
+  auc.df.melted = auc.df.melted %>%
+    group_by(Group, Gene) %>%
+    summarise(mean= mean(value), max = max(value), min = min(value))
+
+  res = list(matrix = auc.df, melt.df = auc.df.melted)
+  res
+
+}
 
 #' Run inferCNV
 #'
@@ -692,14 +1109,18 @@ exportScenicLoom <- function(seurat.obj, dir = "scenic", prefix = "scenic"){
 #' @param ref_group_names Reference cell type
 #' @param gene_pos gene order file
 #' @param save_local_path Path to save rds
+#' @param num_threads Default: 40
+#' @param HMM when set to True, runs HMM to predict CNV level (default: FALSE)
+#' @param denoise If True, turns on denoising according to options below (default: FALSE)
+#' @param no_plot
 #'
 #' @return
 #' @export
 #'
 #' @examples
-runInferCNV <- function(seurat.obj, ref_group_names = NULL,
+runInferCNV <- function(seurat.obj, ref_group_names = NULL,HMM = F, denoise = F,
                         gene_pos = "~/ref/hg38/gencode.v44/human_genes_pos.txt",
-                        save_local_path = NULL){
+                        save_local_path = NULL, num_threads = 40, no_plot = FALSE){
 
   if(is.null(ref_group_names)){
     stop("Provide ref group")
@@ -733,7 +1154,7 @@ runInferCNV <- function(seurat.obj, ref_group_names = NULL,
   # write.table(gene_order, file = tmp.file, sep = "\t", col.names = F, row.names = F, quote = F)
 
   # get annotation
-  anno <- data.frame(Idents(seurat.obj))
+  anno <- data.frame(Idents(seurat.obj), check.names = F)
 
   #先把脚本下载下来，再处理gtf文件，生成human_genes_pos.txt，https://github.com/broadinstitute/infercnv/tree/master/scripts
   #python ./scripts/gtf_to_position_file.py --attribute_name "gene_name" your_reference.gtf human_genes_pos.txt
@@ -748,13 +1169,14 @@ runInferCNV <- function(seurat.obj, ref_group_names = NULL,
                                       ref_group_names = ref_group_names)
 
   # run inferCNV
+  # https://github.com/broadinstitute/infercnv/issues/418
   infercnv_obj = infercnv::run(infercnv_obj,
                                cutoff = 0.1,
                                out_dir = "./infercnv",
-                               cluster_by_groups = T,
-                               HMM = T,
-                               denoise = TRUE,
-                               num_threads = 40)
+                               cluster_by_groups = T, write_expr_matrix = T,
+                               HMM = HMM, useRaster=FALSE,
+                               denoise = denoise, no_plot = no_plot,
+                               num_threads = num_threads)
 
   if(!is.null(save_local_path)){
     warning("save data to local file: ", save_local_path)
@@ -765,6 +1187,65 @@ runInferCNV <- function(seurat.obj, ref_group_names = NULL,
 
 }
 
+
+#' Cal_CNV score
+#'
+#' @param file_path infercnv.observations.txt
+#' @param save_path save path for cnv score
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' cal_cnvScore("infercnv.observations.txt",  "cnv.score.rdata")
+cal_cnvScore <- function(file_path = NULL, save_path = NULL){
+
+  library(dplyr)
+  if(is.null(file_path)|is.null(save_path)){
+     stop("Pls set file input and output path")
+  }
+
+  data = data.table::fread(file_path, nThread = 20, data.table = F)  %>% tibble::column_to_rownames("V1")
+  library(dplyr)
+  data <- data %>% as.matrix() %>%
+    t() %>%
+    scale() %>%
+    scales::rescale(to=c(-1, 1)) %>%
+    t()
+
+  cnv_score <- as.data.frame(colSums(data * data) )
+  rownames(cnv_score) = colnames(data)
+  colnames(cnv_score) = "cnv.score"
+
+  save(cnv_score, file = save_path)
+}
+
+
+
+
+#' CopyKAT
+#'
+#' @param seurat.obj
+#' @param sam.name
+#' @param n.cores
+#'
+#' @return
+#' @export
+#'
+#' @examples
+runCopyKAT <- function(seurat.obj = NULL, sam.name = NULL,n.cores =40){
+
+  if(!require(copykat)){
+    devtools::install_github("navinlabcode/copykat")
+  }
+  library(copykat)
+  if(is.null(seurat.obj)|is.null(sam.name)){
+    stop("Pls set seurat object and sam name")
+  }
+  copykat.res <- copykat::copykat(rawmat = seurat.obj@assays$RNA$counts, sam.name = sam.name, n.cores = n.cores)
+  copykat.res
+
+}
 
 
 
@@ -833,6 +1314,10 @@ dimPlotWithCountBar <- function (object = NULL, color = NULL, dim = "umap", rm.a
           cell.id = NULL, bar.width = 0.2, point.size = 1, rm.barplot = FALSE,
           legend.psize = 1.5, arrow.len = 0.2)
 {
+  library(Seurat)
+  library(ggplot2)
+  library(grid)
+
   reduc <- data.frame(Seurat::Embeddings(object, reduction = dim))
   meta <- object@meta.data
   pc12 <- cbind(reduc, meta)
@@ -939,4 +1424,174 @@ dimPlotWithCountBar <- function (object = NULL, color = NULL, dim = "umap", rm.a
 
 
 
+#' Correlation plot based on average expression
+#'
+#' @param seurat.obj
+#' @param group.by
+#' @param features
+#'
+#' @return correlation plot
+#' @export
+#'
+#' @examples
+groupCorrelation <- function(seurat.obj, group.by = "ident",
+                             features = NULL){
 
+  av.expr = Seurat::AggregateExpression(
+      seurat.obj,
+      assays = "RNA",
+      features = features,
+      return.seurat = FALSE,
+      group.by = group.by)
+
+  av.expr = data.frame(av.expr, check.names = F)
+  colnames(av.expr) = stringr::str_remove(colnames(av.expr),"^RNA.g")
+
+  cg = names(head( sort( apply(av.expr, 1, mad), decreasing = T ), 1000))
+
+
+  M = cor(av.expr[cg,])
+
+
+  cor.mtest <- function(mat, ...) {
+    mat <- as.matrix(mat)
+    n <- ncol(mat)
+    p.mat<- matrix(NA, n, n)
+    diag(p.mat) <- 0
+    for (i in 1:(n - 1)) {
+      for (j in (i + 1):n) {
+        tmp <- cor.test(mat[, i], mat[, j], ...)
+        p.mat[i, j] <- p.mat[j, i] <- tmp$p.value
+      }
+    }
+    colnames(p.mat) <- rownames(p.mat) <- colnames(mat)
+    p.mat
+  }
+  # matrix of the p-value of the correlation
+  p.mat <- cor.mtest(av.expr[cg,])
+
+
+  color = colorRampPalette(colors=c("black", "gray", "#FFFFFF", "steelblue", "red"))(20)
+
+  corrplot::corrplot(M, method="circle", type="lower",
+                     order="hclust", col= color, cl.pos = 'n',
+                     # bg="lightblue",
+                     col.lim = c(0, 1) )
+
+
+
+}
+
+#' Run metaflux pipeline
+#'
+#' @param seurat.obj
+#' @param myident
+#' @param n_bootstrap
+#' @param seed
+#' @param medium
+#'
+#' @return
+#' @export
+#'
+#' @examples
+runMetaFlux <- function(seurat.obj = NULL, myident = NULL, n_bootstrap = 100, seed=1, medium = NULL){
+  library(METAFlux)
+
+  if(is.null(medium)){
+    print("Medium not set, will use medium = cell_medium")
+    print("Else you may set human_blood")
+    medium = cell_medium
+  }else if(medium == "cell_medium"){
+    medium = cell_medium
+  }else if(medium == "human_blood"){
+    medium = human_blood
+  }else{
+    stop("Pls set medium correctlly: human_blood or cell medium")
+  }
+
+  if(is.null(seurat.obj)){
+    stop("Pls input seurat object")
+  }
+  if(is.null(myident)){
+    stop("Pls set idents col name in metadata")
+  }
+
+  # https://htmlpreview.github.io/?https://github.com/KChen-lab/METAFlux/blob/main/Tutorials/pipeline.html
+  generate_boots <- function(celltype, n) {
+    dt <- data.frame(cluster = celltype, id = 1:length(celltype))
+    index <- do.call(cbind, sapply(1:n, function(x) {
+      splits <- dt %>%
+        group_by(cluster) %>%
+        sample_n(dplyr::n(), replace = TRUE) %>%
+        ungroup() %>%
+        dplyr::select("id")
+    }))
+    return(index)
+  }
+
+  get_ave_exp <- function(i, myseurat, samples,myident) {
+    meta.data=myseurat@meta.data[samples[,i],]
+    sample <-GetAssayData(myseurat, assay = "RNA")[,samples[,i]]
+    name <- colnames(sample)
+    for (j in 1:length(name)) {
+      name[j] <- paste0(name[j], "_", j)
+    }
+    colnames(sample) <- name
+    rownames(meta.data) <- name
+    SeuratObject<-suppressWarnings(
+      CreateSeuratObject(count=sample, meta.data = meta.data))
+    SeuratObject<-NormalizeData(SeuratObject,verbose = TRUE)
+    ave<-GetAssayData(AverageExpression(SeuratObject,group.by = myident,return.seurat = T), assay = "RNA") %>% as.data.frame()
+    return(ave)
+  }
+
+
+
+  #Calculate the mean expression for bootstrap samples from seurat object
+  #Using "Cell_type" in seurat as my grouping variable
+  #For the sake of demonstration, we only set the number of bootstraps to 3.
+  #In real analysis, the number of bootstraps should be much higher(e.g. 100, 200....)
+  ###### https://github.com/KChen-lab/METAFlux/issues/11
+  edit_calculate_avg_exp <- function(myseurat,myident,n_bootstrap,seed) {
+    set.seed(seed)
+    samples=generate_boots(myseurat@meta.data[,myident],n_bootstrap)
+    exp <- lapply(1:n_bootstrap,get_ave_exp,myseurat,samples,myident)
+    exp <- do.call(cbind, exp)
+    return(exp)
+  }
+
+
+  mean_exp = edit_calculate_avg_exp(myseurat = seurat.obj, myident = myident, n_bootstrap = n_bootstrap, seed = seed)
+
+  # Calculate MRAS(Metabolic Reaction Activity Score)
+  # We can calculate single sample normalized MRAS from data using Gene-protein-reaction (GPR).This step is the same with the bulk RNA-seq pipeline.
+  scores <- calculate_reaction_score(data=mean_exp)
+
+  #calculate the fractions of celltype/clusters
+
+  fra.tb = round(table(seurat.obj[[myident]])/nrow(seurat.obj@meta.data),1)
+  fra.tb = data.frame(fra.tb, check.names = F)
+  fra.vec = fra.tb$Freq
+  names(fra.vec) = fra.tb$groups
+  rm(fra.tb)
+  ## re-order
+  fra.vec = fra.vec[colnames(mean_exp)[1:length(unique(unlist(seurat.obj[[myident]])))]]
+
+  #num_cell=number of cell types/clusters, here we have 4 cell types, thus input is 4. Make sure the sum of cell percentage is 1.The order of fraction should be the same as that of "Mean_exp" data
+  flux = compute_sc_flux(num_cell = length(fra.vec), fraction = fra.vec, fluxscore = scores, medium = medium)
+
+  #optional: flux scores normalization
+  cbrt <- function(x) {
+    sign(x) * abs(x)^(1/3)
+  }
+
+  flux=cbrt(flux)
+
+  data("human_gem")
+  data("nutrient_lookup_files")
+
+  res = list(MetabolicReactionActivityScore = scores, flux = flux, medium = medium, human_gem = human_gem, nutrient_lookup_files = nutrient_lookup_files)
+
+  res
+
+}

@@ -16,7 +16,9 @@
 #' @param integrate_harmony
 #' @param batch Default 1
 #' @param harmony_batch_colName Column names from batch correction
-#' @param find_marker Specify detail DE method: e.g. wilcox_limma
+#' @param find_marker Default NULL. Specify detail DE method from SeuratWrappers::RunPrestoAll: e.g. wilcox_limma
+#' @param dims
+#' @param max_precent.hb Default 10
 #'
 #' @return res
 #' @export
@@ -27,7 +29,7 @@ load10X <- function(paths = NA, sample_names = NA, min.cells = 10,
           max_nCount_RNA = 10000, max_nFeature_RNA = 8000, max_percent.mt = 20,
           integrate_CCA = FALSE, top_variable_features = 2000, remove_cc = T, remove_mt = F,
           integrate_harmony = F, harmony_batch_colName = "orig.ident",
-          find_marker = NULL, dims = 1:30){
+          find_marker = NULL, dims = 1:30, max_precent.hb = 10){
 
   library(Seurat)
   library(dplyr)
@@ -72,15 +74,15 @@ load10X <- function(paths = NA, sample_names = NA, min.cells = 10,
     data[["orig.ident"]] = sample_names[i]
     data[["batch"]] = batch[i]
 
-    data[["percent.mt"]] <- PercentageFeatureSet(data, pattern = "^MT-")
+    data[["percent.mt"]]   <- PercentageFeatureSet(data, pattern = "^MT-")
     data[["percent.ribo"]] <- PercentageFeatureSet(data, pattern = "^RP[SL]")
+    data[["percent.hb"]]   <- PercentageFeatureSet(data, pattern = "^HB[^(P|E|S)]")
 
     ############### filtering
     data.filt <- subset(data,
                         subset= nCount_RNA > min.features & nCount_RNA < max_nCount_RNA &
                           nFeature_RNA > min.features & nFeature_RNA < max_nFeature_RNA &
-                          percent.mt < max_percent.mt )
-
+                          percent.mt < max_percent.mt & percent.hb < max_precent.hb )
 
 
 
@@ -224,9 +226,7 @@ load10X <- function(paths = NA, sample_names = NA, min.cells = 10,
       stop("Pls specify detailed method for FindAllMarkers")
     }
     cat("\n", as.character( Sys.time() ),"\n--------------------------\nRun Find Markers \n")
-    #future::plan(strategy = "multicore", workers = 30)
-    res$markers = FindAllMarkers(filter.data, only.pos = TRUE, min.pct = 0.25, logfc.threshold = 0.25, test.use = "wilcox_limma", assay = "RNA")
-    #future::plan(strategy = "multicore", workers = 1)
+    res$markers = SeuratWrappers::RunPrestoAll(filter.data, only.pos = F, min.pct = 0.25, logfc.threshold = 0.25, test.use = find_marker, assay = "RNA")
   }
 
   cat("\n", as.character( Sys.time() ),"\n--------------------------\nDone \n")
@@ -1595,3 +1595,166 @@ runMetaFlux <- function(seurat.obj = NULL, myident = NULL, n_bootstrap = 100, se
   res
 
 }
+
+
+
+#' run spotlight
+#'
+#' @param scRNA Seurat object
+#' @param spatial Seurat object
+#' @param downsample Default 100
+#' @param feature.auc Default 0.75 when selecting cluster marker
+#' @param top_n_feature Default 50
+#'
+#' @return
+#' @export
+#'
+#' @examples
+run_spotlight = function(scRNA=NULL, spatial=NULL, downsample=100, feature.auc = 0.75, top_n_feature = 50){
+
+  if(is.null(scRNA)|is.null(spatial)){
+    stop("provide scRNA and spatial RNA")
+  }
+
+  library(scater)
+  library(scran)
+  library(dplyr)
+  library(Seurat)
+
+  library(SPOTlight)
+  cat("\nConvert to sce object\n")
+
+  scRNA$spot.cluster= Idents(scRNA)
+
+  sce <- as.SingleCellExperiment(scRNA)
+
+  cat("\nFeature selection\n")
+  ### Feature selection
+  sce <- logNormCounts(sce)
+
+  # Get vector indicating which genes are neither ribosomal or mitochondrial
+  genes <- !grepl(pattern = "^Rp[l|s]|Mt", x = rownames(sce))
+
+  dec <- modelGeneVar(sce, subset.row = genes)
+  plot(dec$mean, dec$total, xlab = "Mean log-expression", ylab = "Variance")
+  curve(metadata(dec)$trend(x), col = "blue", add = TRUE)
+
+  cat("\nTop genes\n")
+  # Get the top 3000 genes.
+  hvg <- getTopHVGs(dec, n = 3000)
+
+  # 加上细胞注释信息
+  colLabels(sce) <- colData(sce)$spot.cluster
+
+  # Compute marker genes
+  mgs <- scoreMarkers(sce, subset.row = genes)
+
+  # 保留最相关的marker基因
+  mgs_fil <- lapply(names(mgs), function(i) {
+    x <- mgs[[i]]
+    # Filter and keep relevant marker genes, those with AUC > 0.8
+    x <- x[x$mean.AUC > feature.auc, ]
+    # Sort the genes from highest to lowest weight
+    x <- x[order(x$mean.AUC, decreasing = TRUE), ]
+    # Add gene and cluster id to the dataframe
+    x$gene <- rownames(x)
+    x$cluster <- i
+    data.frame(x)
+  })
+  mgs_df <- do.call(rbind, mgs_fil)
+
+  mgs_df <- mgs_df %>% group_by(cluster) %>% top_n(top_n_feature, mean.AUC) %>% ungroup() %>% as.data.frame()
+
+  cat("\nMarkers \n")
+  cat(table(mgs_df$cluster))
+
+  # split cell indices by identity
+  idx <- split(seq(ncol(sce)), sce$spot.cluster)
+  # downsample to at most 20 per identity & subset
+  # We are using 5 here to speed up the process but set to 75-100 for your real
+  # life analysis
+  n_cells <- downsample
+  cs_keep <- lapply(idx, function(i) {
+    n <- length(i)
+    if (n < n_cells)
+      n_cells <- n
+    set.seed(111)
+    sample(i, n_cells)
+  })
+  sce <- sce[, unlist(cs_keep)]
+
+  cat("\nRun spotlight\n")
+  res <- SPOTlight(
+    x = sce,
+    y = spatial@assays$Spatial$counts,
+    groups = as.character(sce$spot.cluster),
+    mgs = mgs_df,
+    hvg = hvg,
+    weight_id = "mean.AUC",
+    group_id = "cluster",
+    gene_id = "gene")
+
+  # 提取比例矩阵
+  deconv_mat <- res$mat
+  spatial@meta.data <- cbind(spatial@meta.data, deconv_mat)
+  spatial
+}
+
+
+#' run_RCTD
+#'
+#' @param scRNA
+#' @param spatial
+#' @param rctd_mode RCTD has three modes, each suited for different spatial technologies: "doublet": Assigns 1-2 cell types per pixel. Best for high-resolution technologies like Slide-seq and MERFISH. "multi": Like doublet mode but can assign more cell types (up to max_multi_types). Best for lower-resolution technologies like 100-micron Visium. "full": No restrictions on number of cell types.
+#'
+#' @return
+#' @export
+#'
+#' @examples
+run_RCTD = function(scRNA=NULL, spatial=NULL, rctd_mode = "doublet", max_multi_types = 10){
+
+  if(is.null(scRNA)|is.null(spatial)){
+    stop("provide scRNA and spatial RNA")
+  }
+  library(SpatialExperiment)
+  library(SummarizedExperiment)
+
+  library(spacexr)
+  library(Seurat)
+  # Create SummarizedExperiment.
+
+  reference_se <- SummarizedExperiment(
+    assays = list(counts = scRNA@assays$RNA$counts),
+    colData = data.frame(cell_type = Idents(scRNA),
+                         row.names = rownames(scRNA@meta.data) )
+  )
+
+
+  # 获取坐标信息
+  coords <- GetTissueCoordinates(spatial)
+  # 为 RCTD 准备坐标
+  spatial_coords <- data.frame(
+    row.names =  rownames(coords),
+    x = coords$imagecol,
+    y = coords$imagerow
+  )
+
+  # Create SpatialExperiment.
+  spatial_spe <- SpatialExperiment(
+      assay = spatial@assays$Spatial$counts,
+      spatialCoords = as.matrix(spatial_coords)
+  )
+
+  # Preprocess data
+  rctd_data <- createRctd(spatial_spe, reference_se)
+  results_spe <- runRctd(rctd_data, rctd_mode = rctd_mode, max_cores = 50, max_multi_types = 10)
+  resutts_weight = data.frame(assays(results_spe)[["weights"]], check.names = F)
+  resutts_weight = t(resutts_weight)
+
+  spatial@meta.data <- cbind(spatial@meta.data,
+                             data.frame(resutts_weight, check.names=F)[rownames(spatial@meta.data),])
+  spatial
+
+}
+
+

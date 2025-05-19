@@ -28,7 +28,7 @@ checkHousekeepingCombination <- function(raw.ct.df, housekeeping.ct.df, group, a
   normalized.ct.res = list()
   differential.res = list()
 
-  alternative <- match.arg(alternative, choices = c("less", "greater", "both"), several.ok = FALSE)
+  alternative <- match.arg(alternative, choices = c("less", "greater", "two.sided"), several.ok = FALSE)
 
 
   iteration.res <- foreach(comb.size=1:ncol(housekeeping.ct.df), .combine = rbind) %do% {
@@ -67,7 +67,7 @@ checkHousekeepingCombination <- function(raw.ct.df, housekeeping.ct.df, group, a
         candidates.res <- diff.res %>% filter(P < p.cutoff & Difference < difference.cutoff)
       }else if (alternative=="greater"){
         candidates.res <- diff.res %>% filter(P < p.cutoff & Difference > difference.cutoff)
-      }else if (alternative=="both"){
+      }else if (alternative=="two.sided"){
         candidates.res <- diff.res %>% filter(P < p.cutoff & abs(Difference) > difference.cutoff)
       }
 

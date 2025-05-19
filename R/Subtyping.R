@@ -926,8 +926,8 @@ consensusSubtyping <- function(df, replicate=100, seed=1, proportion = 0.8, adju
   res$plotNetwork = plotNetwork
 
   #############  full information for cytoscape
-  consensus.map.for.cytoscape
-  ConsensusSubtype.clean
+  #consensus.map.for.cytoscape
+  #ConsensusSubtype.clean
 
   ######################################## 20211019 Consensus map
   sort.ind = order(res$ConsensusSubtype.clean$Cluster[ match(colnames(res$consensusMatrix), res$ConsensusSubtype.clean$Subtype)])

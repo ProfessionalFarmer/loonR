@@ -1280,5 +1280,48 @@ count_to_tpm<- function(mat, gene_length){
 }
 
 
+#' Beautiful ridge plot
+#'
+#' @param term
+#' @param value
+#' @param logP
+#' @param xlab
+#' @param Legend
+#' @param ylab
+#'
+#' @return
+#' @export
+#'
+#' @examples
+#' term = sample(LETTERS[1:10], 100, TRUE)
+#' value = rnorm(100,0,1)
+ridge_plot = function(term = NULL, value = NULL, logP = NULL, xlab = "Log2FoldChange", Legend = "-Log10(pvalue)", ylab = ""){
 
+  if(is.null(term) | is.null(value)){
+    stop("Pls provide term and value")
+  }
+  if(is.null(logP)){
+    df = data.frame(Description = term, logfc = value, log10P = 1)
+  }else{
+    df = data.frame(Description = term, logfc = value, log10P = logP)
+  }
+
+  custom_colors <- colorRampPalette(c("#8075ad", "#f5edf0","#f5da73", "#ffb800"))(100)
+
+  ggplot(df, aes(x = logfc, y = Description, fill = log10P)) +
+    ggridges::geom_density_ridges(alpha = 0.7, scale = 1.5) +
+    labs(x = xlab, y = ylab) +
+    scale_fill_gradientn(colors = custom_colors,name = Legend) +
+    theme(
+      panel.background = element_blank(),
+      panel.grid = element_blank(),
+      panel.border = element_rect(colour = "black", fill = NA, linewidth = 1),
+      axis.text = element_text(color = "black", size = 12),
+      axis.title = element_text(size = 12),
+      legend.text = element_text(size = 12),
+      legend.title = element_text(size = 12)
+    )
+
+
+}
 

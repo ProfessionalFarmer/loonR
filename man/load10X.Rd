@@ -22,7 +22,8 @@ load10X(
   integrate_harmony = F,
   harmony_batch_colName = "orig.ident",
   find_marker = NULL,
-  dims = 1:30
+  dims = 1:30,
+  max_precent.hb = 10
 )
 }
 \arguments{
@@ -44,7 +45,9 @@ load10X(
 
 \item{harmony_batch_colName}{Column names from batch correction}
 
-\item{find_marker}{Specify detail DE method: e.g. wilcox_limma}
+\item{find_marker}{Default NULL. Specify detail DE method from SeuratWrappers::RunPrestoAll: e.g. wilcox_limma}
+
+\item{max_precent.hb}{Default 10}
 }
 \value{
 res

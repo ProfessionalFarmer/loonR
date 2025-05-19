@@ -221,7 +221,7 @@ CorrelationHeatmapTwoDf <- function(x.axis.df, y.axis.df, cor.method = "spearman
 #' @param x.axis.df Row is sample, column variable will be point names.
 #' @param y.axis.df Row is sample, column variable will be names in new correlation heatmap.
 #' @param cor.method Defaut spearman
-#' @param spec.select.list list(group1 = c(1,2,3), grou2 = c(4,5)) numbers are col indexin x.axis.df
+#' @param spec.select.list list(group1 = c(1,2,3), grou2 = c(4,5)) numbers are col index in x.axis.df
 #' @param rho.cutoff Default 0.3
 #' @param p.color c("#D95F02", "#CCCCCC99", "#1B9E77")
 #'

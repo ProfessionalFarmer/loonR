@@ -11,7 +11,7 @@ survivaly_analysis(
   group.prefix = NA,
   ylab = "Survival probability",
   title = "",
-  palette = "lancet",
+  palette = "npj",
   conf.int = FALSE,
   legend.position = "none",
   linetype = 1,

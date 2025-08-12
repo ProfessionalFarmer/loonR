@@ -20,7 +20,7 @@ CorrelationHeatmapTwoDfMantelTest(
 
 \item{cor.method}{Defaut spearman}
 
-\item{spec.select.list}{list(group1 = c(1,2,3), grou2 = c(4,5)) numbers are col indexin x.axis.df}
+\item{spec.select.list}{list(group1 = c(1,2,3), grou2 = c(4,5)) numbers are col index in x.axis.df}
 
 \item{rho.cutoff}{Default 0.3}
 

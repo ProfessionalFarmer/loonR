@@ -589,6 +589,172 @@ volcano_plot <- function(x, y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)
 
 }
 
+#' Volcano plot
+#'
+#' @param logFC Required
+#' @param adjusted.p Required
+#' @param gene.names Required
+#' @param p.cutoff 0.05
+#' @param logFC.cutoff 1
+#' @param show.top.n 5
+#' @param sig.genes specific genes to show
+#' @param title Default Volcano Plot
+#' @param subtitle Default NULL
+#'
+#' @return
+#' @export
+#'
+#' @examples
+volcano_plot_V2 = function(logFC = NULL, adjusted.p = NULL, gene.names = NULL, p.cutoff = 0.05,
+                           logFC.cutoff = 1, show.top.n =5,  sig.genes = NULL, title = "Volcano Plot", subtitle = NULL){
+
+  library(tidyverse)
+  library(ggrepel)
+  library(ggfun)
+  library(grid)
+  if(is.null(logFC)|is.null(adjusted.p)|is.null(gene.names)){
+    stop("logFC, adjusted.p and gene.names required")
+  }
+  df = data.frame(
+    log2FoldChange = logFC,
+    padj = adjusted.p,
+    SYMBOL = gene.names
+  )
+  df$specific.gene = F
+  df$specific.gene[df$SYMBOL %in% sig.genes] = T
+
+  df$change = "Unchanged"
+  df$change[df$padj < p.cutoff & df$log2FoldChange > logFC.cutoff] = "Up"
+  df$change[df$padj < p.cutoff & df$log2FoldChange < -1 * logFC.cutoff] = "Down"
+
+
+  ggplot(data = df) +
+    geom_point(aes(x = log2FoldChange, y = -log10(padj),
+                   color = log2FoldChange,
+                   size = -log10(padj))) +
+    geom_point(data =  df %>%
+                 tidyr::drop_na() %>%
+                 dplyr::filter(change != "Unchanged") %>%
+                 dplyr::arrange(desc(-log10(padj))) %>%
+                 dplyr::group_by(change) %>%
+                 dplyr::slice(1:show.top.n),
+               aes(x = log2FoldChange, y = -log10(padj),
+                   # fill = log2FoldChange,
+                   size = -log10(padj)),
+               shape = 21, show.legend = F, color = "#000000") +
+    geom_text_repel(data =  df %>%
+                      tidyr::drop_na() %>%
+                      dplyr::filter(change == "Up") %>%
+                      dplyr::arrange(desc(-log10(padj))) %>%
+                      dplyr::slice(1:show.top.n)  ,
+                    aes(x = log2FoldChange, y = -log10(padj), label = SYMBOL),
+                    box.padding = 0.5,
+                    nudge_x = 0.5,
+                    nudge_y = 0.2,
+                    segment.curvature = -0.1,
+                    segment.ncp = 3,
+                    # segment.angle = 10,
+                    direction = "y",
+                    hjust = "left"
+    ) +
+    geom_text_repel(data =  df %>%
+                      tidyr::drop_na() %>%
+                      dplyr::filter(change == "Down") %>%
+                      dplyr::arrange(desc(-log10(padj))) %>%
+                      dplyr::slice(1:show.top.n)  ,
+                    aes(x = log2FoldChange, y = -log10(padj), label = SYMBOL),
+                    box.padding = 0.5,
+                    nudge_x = -0.2,
+                    nudge_y = 0.2,
+                    segment.curvature = -0.1,
+                    segment.ncp = 3,
+                    segment.angle = 20,
+                    direction = "y",
+                    hjust = "right"
+    ) +
+    geom_text_repel(data =  df %>%
+                      tidyr::drop_na() %>%
+                      dplyr::filter(specific.gene) ,
+                    aes(x = log2FoldChange, y = -log10(padj), label = SYMBOL),
+                    box.padding = 0.5,
+                    #nudge_x = -0.2,
+                    nudge_y = 0.2,
+                    segment.curvature = -0.1,
+                    segment.ncp = 3,
+                    #segment.angle = 20,
+                    direction = "y",
+                    hjust = "right"
+    ) +
+    scale_color_gradientn(colours = c("#3288bd", "#66c2a5","#ffffbf", "#f46d43", "#9e0142"),
+                          values = seq(0, 1, 0.2)) +
+    scale_fill_gradientn(colours = c("#3288bd", "#66c2a5","#ffffbf", "#f46d43", "#9e0142"),
+                         values = seq(0, 1, 0.2)) +
+    geom_vline(xintercept = c(-1 * logFC.cutoff, logFC.cutoff), linetype = 2) +
+    geom_hline(yintercept = -log10(p.cutoff), linetype = 4) +
+    scale_size(range = c(1,7)) +
+    ggtitle(label = title,
+            subtitle = subtitle) +
+    xlim(c(-3, 3)) +
+    #ylim(c(-1, 90)) +
+    theme_bw() +
+    theme(panel.grid = element_blank(),
+          legend.background = element_roundrect(color = "#808080", linetype = 1),
+          axis.text = element_text(size = 13, color = "#000000"),
+          axis.title = element_text(size = 15),
+          plot.title = element_text(hjust = 0.5),
+          plot.subtitle = element_text(hjust = 0.5)
+    ) +
+    #annotate(geom = "text", x = 2.5, y = 0.25, label = "p = 0.05", size = 5) +
+    coord_cartesian(clip = "off") +
+    annotation_custom(
+      grob = grid::segmentsGrob(
+        y0 = unit(-10, "pt"),
+        y1 = unit(-10, "pt"),
+        arrow = arrow(angle = 45, length = unit(.2, "cm"), ends = "first"),
+        gp = grid::gpar(lwd = 3, col = "#74add1")
+      ),
+      xmin = -3,
+      xmax = -1,
+      ymin = 90,
+      ymax = 90
+    ) +
+    annotation_custom(
+      grob = grid::textGrob(
+        label = "Down",
+        gp = grid::gpar(col = "#74add1")
+      ),
+      xmin = -3,
+      xmax = -1,
+      ymin = 90,
+      ymax = 90
+    ) +
+    annotation_custom(
+      grob = grid::segmentsGrob(
+        y0 = unit(-10, "pt"),
+        y1 = unit(-10, "pt"),
+        arrow = arrow(angle = 45, length = unit(.2, "cm"), ends = "last"),
+        gp = grid::gpar(lwd = 3, col = "#d73027")
+      ),
+      xmin = 3,
+      xmax = 1,
+      ymin = 90,
+      ymax = 90
+    ) +
+    annotation_custom(
+      grob = grid::textGrob(
+        label = "Up",
+        gp = grid::gpar(col = "#d73027")
+      ),
+      xmin = 3,
+      xmax = 1,
+      ymin = 90,
+      ymax = 90
+    ) + ylab("-log10(Adjusted P)")
+
+
+}
+
+
 
 
 #' M-A plot
@@ -1325,3 +1491,51 @@ ridge_plot = function(term = NULL, value = NULL, logP = NULL, xlab = "Log2FoldCh
 
 }
 
+#' Title
+#'
+#' @param nes.score required
+#' @param adjusted.p required
+#' @param geneset.names required
+#' @param geneset.size required
+#' @param category
+#' @param color
+#' @param terms.to.show
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot_pathway_bubble <- function(nes.score=NULL, adjusted.p=NULL, geneset.names=NULL, geneset.size = NULL, category = NULL,color = c("chartreuse4", "brown2", "cornflowerblue"), terms.to.show=NULL){
+
+  df = data.frame(x = as.numeric(nes.score),
+                  y = as.numeric(-log10(adjusted.p)),
+                  name = geneset.names,
+                  size = as.numeric(geneset.size))
+  df$category = category
+  df$terms.show = F
+
+  df$terms.show[df$name %in% terms.to.show] =T
+
+  ggplot(df, aes(x, y, fill = category, size = size)) +
+    labs(title = title, x = "NES", y = "-log (adj p-value)") +
+    geom_point(shape = 21, col = "black", alpha = 1 / 2) +
+    geom_hline(yintercept = 1.3, col = "orange") +
+    scale_fill_manual(values = color, guide = "none") +
+    geom_text_repel(
+      data = df %>%
+        tidyr::drop_na() %>%
+        dplyr::filter(terms.show),
+      aes(x = x, y = y, label = name),
+      box.padding = 0.5,
+      nudge_x = 0.5,
+      nudge_y = 0.2,
+      segment.curvature = -0.1,
+      segment.ncp = 3, show.legend = F
+    ) +
+    theme(
+      axis.line = element_line(colour = "grey80"),
+      axis.ticks = element_line(colour = "grey80"), panel.border = element_rect(fill = "transparent", colour = "grey80"), panel.background = element_blank(), panel.grid = element_blank(), plot.background = element_blank()
+    )
+
+
+}

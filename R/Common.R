@@ -455,6 +455,36 @@ plotJitterBoxplot <- function(xvalues, yvalues, group, title = "", xlab = "", yl
 
 
 
+#' Plot half violin
+#'
+#' @param value
+#' @param group
+#' @param title
+#' @param color
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot_half_violin <- function(value, group, title=NULL, color = c("#46788E","#78B7C9","#F6E093","#E58B7B","#97B319")){
+
+  fct.df = data.frame(
+    value = value,
+    group = group
+  )
+
+  library(ggdist)
+  library(gghalves)
+  ggplot(fct.df, mapping = aes(x=group,y=value,color=group))+
+    gghalves::geom_half_point(aes(),side = "l", range_scale =0.3, alpha =0.5)+
+    geom_boxplot(aes(fill=group),position = position_nudge(),linetype="solid",width=0.2,color='gray12',size=0.8)+
+    stat_halfeye(mapping = aes(fill=group),width = 0.25, justification = -0.65,.width = 0,point_colour = NA)+
+    scale_color_manual(values=color)+
+    scale_fill_manual(values=color)+
+    labs(x="", y="value", title = title)+theme_classic()+
+    theme(axis.text=element_text(colour='black',size=9))
+
+}
 
 
 
@@ -1991,3 +2021,43 @@ formatTable <- function(df, digit = 2) {
   res
 }
 
+
+#' Find outlier position
+#'
+#' @param x
+#' @param zscore
+#' @param quantile
+#'
+#' @return
+#' @export
+#'
+#' @examples
+find_outlier_index = function(x, zscore=NULL, quantile=NULL){
+
+  if(is.null(zscore)&is.null(quantile)){
+    stop("Set one method: z score or quantile")
+  }
+
+  index = rep(F, length(x))
+
+  if(!is.null(zscore)){
+    # 计算 Z-score
+    z_scores <- (x-mean(x, na.rm = T))/sd(x, na.rm = T)
+    # 选择 Z-score 大于 3 或小于 -3 的点
+    index = index | (abs(z_scores) > 3)
+  }
+  if(!is.null(quantile)){
+    # 计算 IQR
+    Q1 <- quantile(x, 0.25, na.rm = T)
+    Q3 <- quantile(x, 0.75, na.rm = T)
+    IQR <- Q3 - Q1
+
+    # 识别离群点
+    lower_bound <- Q1 - 1.5 * IQR
+    upper_bound <- Q3 + 1.5 * IQR
+    index = index | (x < lower_bound | x > upper_bound)
+  }
+  cat("Total outlier: ", sum(index, na.rm = T),"\n")
+  cat("Total NA: ", sum(is.na(index), na.rm = T),"\n")
+  index
+}

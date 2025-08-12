@@ -1130,7 +1130,7 @@ univariate_cox <- function(d.frame, status, time, scale=TRUE, max.time = NULL){
   library("survminer")
 
   if(scale){d.frame = scale(d.frame, center = TRUE, scale = TRUE)}
-
+  d.frame = data.frame(d.frame, check.names = F)
 
   if(!is.null(max.time)){
     if(!is.numeric(max.time)){stop("Pls input days or months for max.time")}

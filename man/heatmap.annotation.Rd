@@ -32,7 +32,7 @@ set.seed(111)
 group = sample(c(1,2),10,replace = T)
 annotation.df = data.frame(Gender = sample(c("Male","Female"),10,replace = T),
                            Age = runif(10, min=50, max=80),
-                           stringsAsFactors = FALSE)
+                           stringsAsFactors = FALSE))
 #Gender.col = loonR::get.palette.color("aaas",2)
 #names(Gender.col) = unique(annotation.df$Gender)
 Gender.col = c("Male"="blue", "Female"="red")

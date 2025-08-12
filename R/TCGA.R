@@ -51,427 +51,150 @@ fpkm2tpm <- function(fpkm.exp.df){
 
 
 
-#' Download RAN expression by TCGAbiolinks
+
+#' Download TCGA data through TCGABiolinks
 #'
-#' @param project E.g. TCGA-LIHC
-#' @param dir Raw data directory
-#' @param remove.Raw If to remove raw data
+#' @param project.id
+#' @param mRNA Default T
+#' @param miRNA Default T
+#' @param met Default T
+#' @param protein Default T
+#' @param mutation Default T
+#' @param cnv Default T
+#' @param clin Default T
+#' @param subtype
+#' @param dir Default current directory
 #'
-#' @return list(clinical = clinical, expression = expression.df, group = group)
-#' Expression was log2 transformed.
-#' Group is a data.frame including label, short name and sample barcode
-#' Clinical is a list
+#' @return
 #' @export
 #'
 #' @examples
-tcgabiolinks.get.RNA.expression.log2tpm <- function(project, remove.Raw = FALSE, dir="~/rspace/GDCdata"){
+download.TCGA.Biolinks = function(project.id = NULL,
+                                  mRNA = T, miRNA = T,
+                                  met =T, protein =T, mutation = T,
+                                  cnv = T, clin = T, subtype = T, dir = "./"){
 
+  if(is.null(project.id)){
+    stop("Pls run TCGAbiolinks::getGDCprojects()$project_id")
+  }
   library(TCGAbiolinks)
   library(SummarizedExperiment)
-
-  fpkm2tpm <- function(fpkm){
-    tpm <- exp(log(fpkm) - log(sum(fpkm,na.rm=T)) + log(1e6))
-    tpm[which(is.na(tpm))] <- 0
-    return(tpm)
-  }
-
-
-  query <- TCGAbiolinks::GDCquery(project = project,
-                                  data.category = "Transcriptome Profiling",
-                                  workflow.type = "HTSeq - FPKM", # HTSeq - FPKM-UQ or HTSeq - Counts
-                                  data.type = "Gene Expression Quantification",
-                                  experimental.strategy = "RNA-Seq",
-                                  legacy = FALSE
-  )
-  TCGAbiolinks::GDCdownload(query, directory = dir)
-  project.data <- TCGAbiolinks::GDCprepare(query = query, directory = dir)
-
-
-
-  # Expression
-  expression.df <- SummarizedExperiment::assay(project.data)
-  gene.information <- SummarizedExperiment::rowRanges(project.data)
-  rm(project.data)
-  # convert to tpm
-  expression.df <- apply(expression.df, 2, fpkm2tpm)
-
-  normal.sample <- TCGAbiolinks::TCGAquery_SampleTypes(barcode = colnames(expression.df),
-                                                       typesample = "NT")
-  tumor.sample <- TCGAbiolinks::TCGAquery_SampleTypes(barcode = colnames(expression.df),
-                                                      typesample = "TP")
-
-  group <- data.frame(
-    Label = rep( c("Normal","Tumor"), c(length(normal.sample), length(tumor.sample))  ),
-    Short.Name = substr(c(normal.sample,tumor.sample),1,12),
-    Barcode = c(normal.sample,tumor.sample),
-    stringsAsFactors = FALSE
-  )
-
-  # log2 transformation
-  expression.df <- log2(expression.df[,c(normal.sample,tumor.sample)]+1)
-
-
-
-  ## clinical
-  query <- TCGAbiolinks::GDCquery(project = project,
-                                  data.category = "Clinical",
-                                  data.type = "Clinical Supplement",
-                                  data.format = "BCR Biotab")
-  TCGAbiolinks::GDCdownload(query, directory = dir)
-  clinical <- TCGAbiolinks::GDCprepare(query, directory = dir)
-
-
-
-  if(remove.Raw){
-    file.remove( paste(dir,"/",project,sep="",collapse = "")  )
-  }
-
-  result <- list(clinical = clinical,
-                 expression = expression.df,
-                 group = group,
-                 Gene.info = gene.information,
-                 query = query
-  )
-
-
-}
-
-
-
-
-#' Download junction data by TCGAbiolinks. Pls note, V2 tag and Illumina HiSeq platform were selected
-#'
-#' @param project E.g. TCGA-LIHC
-#' @param dir Raw data directory
-#' @param remove.Raw If to remove raw data
-#' @param tags V2
-#'
-#' @return list(clinical = clinical, expression = expression.df, group = group)
-#' Group is a data.frame including label, short name and sample barcode
-#' Clinical is a list
-#' @export
-#'
-#' @examples
-tcgabiolinks.get.junction.coverage <- function(project, remove.Raw = FALSE, dir="~/rspace/GDCdata", tag = 'v2', platform = "Illumina HiSeq"){
-  library(TCGAbiolinks)
-  query <- TCGAbiolinks::GDCquery(project = project,
-                                  legacy = TRUE,
-                                  data.category = "Gene expression",
-                                  data.type = "Exon junction quantification",
-                                  experimental.strategy = "RNA-Seq",
-                                  platform = platform
-
-  )
-
-  query[[1]][[1]] <- query[[1]][[1]][grep(tag,query[[1]][[1]]$tags), ]
-
-
-
-  TCGAbiolinks::GDCdownload(query, directory = dir)
-  project.data <- TCGAbiolinks::GDCprepare(query = query, directory = dir)
-
-
-
-  # Expression
-  expression.df <- SummarizedExperiment::assay(project.data)
-  gene.information <- rowRanges(data)
-  rm(project.data)
-
-  normal.sample <- TCGAbiolinks::TCGAquery_SampleTypes(barcode = colnames(expression.df),
-                                                       typesample = "NT")
-  tumor.sample <- TCGAbiolinks::TCGAquery_SampleTypes(barcode = colnames(expression.df),
-                                                      typesample = "TP")
-
-  group <- data.frame(
-    Label = rep( c("Normal","Tumor"), c(length(normal.sample), length(tumor.sample))  ),
-    Short.Name = substr(c(normal.sample,tumor.sample),1,12),
-    Barcode = c(normal.sample,tumor.sample),
-    stringsAsFactors = FALSE
-  )
-
-
-  ## clinical
-  query <- TCGAbiolinks::GDCquery(project = project,
-                                  data.category = "Clinical",
-                                  data.type = "Clinical Supplement",
-                                  data.format = "BCR Biotab")
-  TCGAbiolinks::GDCdownload(query, directory = dir)
-  clinical <- TCGAbiolinks::GDCprepare(query, directory = dir)
-
-
-  if(remove.Raw){
-    file.remove( paste(dir,"/",project,sep="",collapse = "")  )
-  }
-
-  result <- list(clinical = clinical,
-                 expression = expression.df,
-                 group = group,
-                 Gene.info = gene.information,
-                 query = query
-  )
-
-
-}
-
-
-
-
-#' Get TCGA RNA expression (RPKM) data
-#'
-#' @param tcga.project See ?RTCGA.miRNASeq::miRNASeq. For example: COAD
-#' @param log2 If to perform log2 transformation
-#'
-#' @return
-#' @export
-#'
-#' @examples
-#' This function is similar to get.TCGA.miRNAExpression in Biomarker.R file.
-#' Data source is illumina hiseq Level 3 RSEM normalized expression data. Data from 2015-11-01 snapshot.
-#' The RNAseq gene expression level 3 data contains Reads per Kilobase per Million mapped reads (RPKM)
-get.TCGA.RNA.FPKM <- function(tcga.project=NULL, rawCount=FALSE, log2=FALSE){
-
-  if(is.null(tcga.project)){
-    warning(?RTCGA.miRNASeq::miRNASeq)
-    stop("Please specify a TCGA project. See ?RTCGA.miRNASeq::miRNASeq")
-  }
-
-
-
-
-  if (!require(RTCGA))BiocManager::install("RTCGA")
-  if (!require(RTCGA.rnaseq))BiocManager::install("RTCGA.rnaseq")
-  if (!require(RTCGA.clinical))BiocManager::install("RTCGA.clinical")
-
-  # Expression
-  ##-##-###-###-##-###-##-###-###-##-###-##-###-###-##-###-##-###-###-##-###
-  expression.df = get( paste0(tcga.project,".rnaseq") )
-
-  row.names(expression.df) = expression.df$bcr_patient_barcode
-  expression.df = expression.df[,-c(1)]
-
-  patient_ids <- rownames(expression.df)
-
-  # convert string to numeric
-  expression.df <- apply(as.matrix.noquote(expression.df),2,as.numeric)
-
-  patient_ids -> rownames(expression.df)
-
-  if(log2){
-    expression.df = t(log2(expression.df+1))
-  }else{
-    expression.df = t( expression.df )
-  }
-
-  # Clinical
-  ##-##-###-###-##-###-##-###-###-##-###-##-###-###-##-###-##-###-###-##-###
-  # https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/sample-type-codes
-  group_list <- ifelse(substr(patient_ids,14,15)=='01','Tumor','Normal')
-
   library(dplyr)
-  if(any( ! substr(patient_ids,14,15) %in% c(01,11)  )){
-    stop("It seems some samples are not primary tumor or normal samples")
+  library(DT)
+
+  #Simple Nucleotide Variation  √
+  #Sequencing Reads
+  #Biospecimen
+  #Clinical
+  #Copy Number Variation  profiling √
+  #DNA Methylation √
+  #Proteome Profiling √
+  #Somatic Structural Variation  √
+  #Structural Variation ×
+  #miRNA Expression Quantification  √
+  #GDCquery( project = c("TCGA-LGG") )
+
+  data = list()
+
+  if(mRNA){
+    query <- GDCquery(
+           project = project.id,
+           data.category = "Transcriptome Profiling",
+           data.type = "Gene Expression Quantification",
+           workflow.type = "STAR - Counts"
+    )
+    cat("Downloading mRNA\n\n")
+    GDCdownload(query, files.per.chunk = 50)
+    GDCprepare(query, save = T, save.filename = paste0(dir, "/", project.id,".mRNA.rdata"))
   }
 
-
-  meta <- get( paste0(tcga.project,".clinical") )
-  meta$patient.bcr_patient_barcode <- stringr::str_to_upper( meta$patient.bcr_patient_barcode )
-
-  meta <- meta[match(substr(patient_ids,1,12),
-                     meta$patient.bcr_patient_barcode),]
-
-  row.names(meta) <- patient_ids
-  meta$Label = group_list
-
-  res = list(meta=meta,
-             expr=expression.df,
-             label=group_list)
-
-  res
-}
-
-
-
-
-
-#' Get TCGA miRNA expression data
-#'
-#' @param tcga.project See ?RTCGA.miRNASeq::miRNASeq. For example: COAD
-#' @param rawCount If to download raw count data
-#' @param CPM If to download CPM data
-#' @param log2 If to perform log2 transformation
-#'
-#' @return
-#' @export
-#'
-#' @examples
-get.TCGA.miRNAExpression <- function(tcga.project=NULL, rawCount=FALSE, CPM=FALSE, log2=FALSE){
-
-  if(is.null(tcga.project)){
-    warning(?RTCGA.miRNASeq::miRNASeq)
-    stop("Please specify a TCGA project. See ?RTCGA.miRNASeq::miRNASeq")
-  }
-  if(!rawCount & !CPM){
-    stop("Please specify download rawCount or CPM. Should only set one as TRUE")
-  }else if(rawCount & CPM){
-    stop("Should only set one as TRUE. Raw Count or CPM?")
+  if(miRNA){
+    query <- GDCquery(
+      project = project.id,
+      data.category = "Transcriptome Profiling",
+      data.type = "miRNA Expression Quantification",
+      workflow.type = "BCGSC miRNA Profiling"
+    )
+    cat("Downloading miRNA\n\n")
+    GDCdownload(query, files.per.chunk = 300)
+    GDCprepare(query, save = T, save.filename = paste0(dir, "/", project.id,".miRNA.rdata"))
   }
 
-
-
-  if (!require(RTCGA))BiocManager::install("RTCGA")
-  if (!require(RTCGA.miRNASeq))BiocManager::install("RTCGA.miRNASeq")
-  if (!require(RTCGA.clinical))BiocManager::install("RTCGA.clinical")
-
-  # Expression
-  ##-##-###-###-##-###-##-###-###-##-###-##-###-###-##-###-##-###-###-##-###
-  expression.df = get( paste0(tcga.project,".miRNASeq") )
-
-  if(rawCount){
-    col.ind <- grep("read_count", expression.df$miRNA_ID)
-  }else if(CPM){
-    col.ind <- grep("reads_per_million_miRNA_mapped", expression.df$miRNA_ID)
+  if(met){
+    query <- GDCquery(
+      project = project.id,
+      data.category = "DNA Methylation",
+      data.type = "Methylation Beta Value",
+      platform = c("Illumina Human Methylation 450")
+    )
+    cat("Downloading 450k\n\n")
+    GDCdownload(query, files.per.chunk = 10)
+    GDCprepare(query, save = T, save.filename = paste0(dir, "/", project.id,".met.450k.rdata"))
   }
 
-  expression.df = expression.df[col.ind,-c(1,2)]
-
-  patient_ids <- rownames(expression.df)
-
-  # convert string to numeric
-  expression.df <- apply(as.matrix.noquote(expression.df),2,as.numeric)
-
-  patient_ids -> rownames(expression.df)
-
-  library(dplyr)
-  if(any( ! substr(patient_ids,14,15) %in% c("01","11")  )){
-    warning("It seems some samples are not primary tumor or normal samples\nWe have removed\n")
-    patient_ids = patient_ids[ substr(patient_ids,14,15) %in% c("01","11") ]
-    expression.df = expression.df[patient_ids,]
+  if(protein & project.id!= "TCGA-LAML" & project.id!= "TCGA-THCA"){
+    query <- GDCquery(
+        project = project.id,
+        data.category = "Proteome Profiling",
+        data.type = "Protein Expression Quantification"
+    )
+    cat("Downloading protein\n\n")
+    GDCdownload(query, files.per.chunk = 300)
+    GDCprepare(query, save = T, save.filename = paste0(dir, "/", project.id,".protein.rppa.rdata"))
   }
 
+  if(mutation){
+    query <- GDCquery(
+      project = project.id,
+      data.category = "Simple Nucleotide Variation",
+      access = "open",
+      data.type = "Masked Somatic Mutation",
+      workflow.type = "Aliquot Ensemble Somatic Variant Merging and Masking"
+    )
+    cat("Downloading mutation\n\n")
+    GDCdownload(query, files.per.chunk = 50)
+    GDCprepare(query, save = T, save.filename = paste0(dir, "/", project.id,".mutation.maf.rdata"))
+  }
 
-  if(log2){
-    expression.df = t(log2(expression.df+1))
-  }else{
-    expression.df = t( expression.df )
+  if(cnv){
+    query <- GDCquery(
+      project = project.id,
+      data.category = "Copy Number Variation",
+      data.type = "Masked Copy Number Segment"
+    )
+    cat("Downloading CNV\n\n")
+    GDCdownload(query, files.per.chunk = 50)
+    GDCprepare(query, save = T, save.filename = paste0(dir, "/", project.id,".cnv.seg.rdata"))
 
   }
 
-  # Clinical
-  ##-##-###-###-##-###-##-###-###-##-###-##-###-###-##-###-##-###-###-##-###
-  # https://gdc.cancer.gov/resources-tcga-users/tcga-code-tables/sample-type-codes
-  group_list <- ifelse(substr(patient_ids,14,15)=='01','Tumor','Normal')
-
-  ind = order(group_list)
-  group_list = group_list[ind]
-  expression.df = expression.df[,ind]
-  rm(ind)
-
-  meta <- get( paste0(tcga.project,".clinical") )
-  meta$patient.bcr_patient_barcode <- stringr::str_to_upper( meta$patient.bcr_patient_barcode )
-
-  meta <- meta[match(substr(patient_ids,1,12),
-                     meta$patient.bcr_patient_barcode),]
-
-  row.names(meta) <- patient_ids
-  meta$Label = group_list
-
-  res = list(meta=meta,
-             expr=expression.df,
-             label=group_list)
-
-  res
-}
-
-
-#' Get TCGA project clinical information
-#'
-#' @param project ESCA. TCGAbiolinks::getGDCprojects()$project_id without "TCGA_"
-#' @param subtype if download subtype information
-#' @param microsatellite if download microsatellite data
-#'
-#' @return
-#' @export
-#'
-#' @examples
-get.TCGA.Project.Clinical <- function(project, subtype=FASLE, microsatellite=FALSE){
-
-  library(TCGAbiolinks)
-
-  res = list()
-
-  # 1 Clinical indexed data
-  clinical = TCGAbiolinks::GDCquery_clinic(project = paste0(c("TCGA-",project), sep="", collapse = "" ), type = "clinical")
-  res$clinical = clinical
-
-  # 2 BCR Biotab: tsv files parsed from XML files
-  query <- TCGAbiolinks::GDCquery(project = paste0(c("TCGA-",project), sep="", collapse = "" ),
-                    data.category = "Clinical",
-                    data.type = "Clinical Supplement",
-                    data.format = "BCR Biotab")
-  GDCdownload(query)
-  clinical.BCRtab.all <- GDCprepare(query)
-  res$clinical.BCRtab.all = clinical.BCRtab.all
-
-
-
-  # 3 MSI-Mono-Dinucleotide Assay is performed to test a panel of four mononucleotide repeat loci
-  if(microsatellite){
-    query <- GDCquery(project = paste0(c("TCGA-",project), sep="", collapse = "" ),
-                      data.category = "Other",
-                      legacy = TRUE,
-                      access = "open",
-                      data.type = "Auxiliary test"  )
+  if(clin){
+    query <- GDCquery(
+      project = project.id,
+      data.category = "Clinical",
+      data.type = "Clinical Supplement",
+      data.format = "BCR Biotab"
+    )
+    cat("Downloading clinical information\n\n")
     GDCdownload(query)
-    msi_results <- GDCprepare_clinic(query, "msi")
+    clinical.BCRtab.all <- GDCprepare(query)
+    save(clinical.BCRtab.all, file = paste0(dir, "/", project.id, ".clin.brc.rdata") )
+  }
+  subtype.available = c("TCGA-ACC", "TCGA-BRCA", "TCGA-BLCA", "TCGA-CESC", "TCGA-CHOL", "TCGA-COAD", "TCGA-ESCA", "TCGA-GBM", "TCGA-HNSC", "TCGA-KICH", "TCGA-KIRC", "TCGA-KIRP", "TCGA-LGG", "TCGA-LIHC", "TCGA-LUAD", "TCGA-LUSC", "TCGA-PAAD", "TCGA-PCPG", "TCGA-PRAD", "TCGA-READ", "TCGA-SKCM", "TCGA-SARC", "TCGA-STAD", "TCGA-THCA", "TCGA-UCEC", "TCGA-UCS", "TCGA-UVM")
 
-    res$msi = msi_results
+  if(subtype & project.id%in%subtype.available){
+
+    cat("Downloading subtype information\n\n")
+    subtype <- TCGAquery_subtype(tumor = stringr::str_to_lower(stringr::str_remove(project.id, "TCGA-")))
+    save(subtype, file = paste0(dir, "/", project.id,".subtype.rdata") )
   }
 
-  if(subtype){
-    subtype = TCGAbiolinks::TCGAquery_subtype(tumor = project)
-    res$subtype.info = subtype
-  }
-
-  res
 
 }
 
-
-#' Download 450K methylation data
-#'
-#' @param project e.g. TCGA-COAD. See getGDCprojects()$project_id
-#'
-#' @return
-#' @export
-#'
-#' @examples
-tcgabiolinks.get.450k.methylation <- function(project){
-
-  library(TCGAbiolinks)
-  library(SummarizedExperiment)
-
-  query <- GDCquery(project = project,
-                    data.category = "DNA Methylation",
-                    platform = "Illumina Human Methylation 450"
-  )
-  GDCdownload(query)
-  met.dat <- GDCprepare(
-    query = query,
-    summarizedExperiment = TRUE
-  )
-
-  clin = data.frame( colData(met.dat) )
-
-  met.dat <- assay(met.dat)
-
-  list(clinical=clin, data=met.dat)
-
+get.pancancer.subtype = function(){
+  TCGAbiolinks::PanCancerAtlas_subtypes()
 }
-
-
-
-TCGA.ids = c("TCGA-3X-AAV9-01", "TCGA-3X-AAVA-01", "TCGA-3X-AAVE-01", "TCGA-4G-AAZO-01", "TCGA-4G-AAZT-01", "TCGA-W5-AA2G-01", "TCGA-W5-AA2I-01", "TCGA-W5-AA2I-11", "TCGA-W5-AA2O-01", "TCGA-W5-AA2Q-01", "TCGA-W5-AA2Q-11", "TCGA-W5-AA2R-01", "TCGA-W5-AA2R-11")
-
 
 #' Extract TCGA sample types
 #'

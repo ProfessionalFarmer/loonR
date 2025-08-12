@@ -289,12 +289,17 @@ lasso.cv.select.feature <- function(data.matrix, label, folds = 5, seed = 666, n
     feature.coef = data.frame(name = feature.coef@Dimnames[[1]][feature.coef@i + 1], coefficient = feature.coef@x)
 
     feature.coef = feature.coef[-c(1), ] # remove Intercept
-    feature.coef$auc = apply(data.frame( data.matrix[ind,feature.coef$name]) , 2,function(x){
-      suppressMessages(roc <- pROC::roc(label[ind], x)  )
-      roc$auc
-    })
+    if(nrow(feature.coef[-c(1), ]) == 0){
+      warning("Seed: ", seed+i, " No feature selected")
+      NA
+    }else{
+      feature.coef$auc = apply(data.frame( data.matrix[ind,feature.coef$name]) , 2,function(x){
+        suppressMessages(roc <- pROC::roc(label[ind], x)  )
+        roc$auc
+      })
+      feature.coef
+    }
 
-    feature.coef
   }
 
   # identify candidates

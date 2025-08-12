@@ -31,7 +31,7 @@
 #' loonR::survivaly_analysis(LIRI$status, LIRI$time, LIRI$ANLN > mean(LIRI$ANLN), legend.position="right", risk.table = F )
 #' loonR::survivaly_analysis(LIRI$status, LIRI$time, LIRI$ANLN, best.point = T)
 survivaly_analysis <- function(Event = NULL, Time = NULL, Group = NULL, group.prefix = NA, ylab = "Survival probability",
-                               title = "", palette = "lancet", conf.int = FALSE, legend.position="none",
+                               title = "", palette = "npj", conf.int = FALSE, legend.position="none",
                                linetype = 1, calculate.pval = FALSE, remove.na = FALSE,
                                only.consider.group = NULL, not.consider.group = NULL, risk.table = TRUE,
                                best.point = F, cut.quantile = NULL, cut.label = NULL,

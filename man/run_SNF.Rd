@@ -10,7 +10,7 @@ run_SNF(
   K = 20,
   Iterations = 20,
   dist.method = "Euclidean",
-  survival = NA,
+  survival = NULL,
   max.cluster = 5,
   std.normalize = TRUE,
   cnv.index = 0

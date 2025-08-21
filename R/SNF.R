@@ -210,10 +210,11 @@ tanimoto_distance <- function(x, similarity=F) {
 #' @examples run_SNF( list( t(mRNA.snf.df), t(methylation.snf.df), t(cnv.snf.df) ),  alpha = 0.5, K = 20, Iterations = 20    )
 #' https://cran.r-project.org/web/packages/SNFtool/SNFtool.pdf
 #' Distance reference: https://www.rdocumentation.org/packages/bioDist/versions/1.44.0
-run_SNF <- function(dataL = NULL, alpha = 0.5, K = 20, Iterations = 20, dist.method ="Euclidean", survival=NA, max.cluster = 5, std.normalize = TRUE, cnv.index = 0){
+run_SNF <- function(dataL = NULL, alpha = 0.5, K = 20, Iterations = 20, dist.method ="Euclidean", survival=NULL, max.cluster = 5, std.normalize = TRUE, cnv.index = 0){
 
   library(SNFtool)
   library(bioDist)
+  library(survival)
 
   T = Iterations
 
@@ -280,7 +281,7 @@ run_SNF <- function(dataL = NULL, alpha = 0.5, K = 20, Iterations = 20, dist.met
   #Plot given similarity matrix by clusters
   #displayClusters(W, snf.group)
   p.survival = NA
-  if (!is.na(survival)) {
+  if (!is.null(survival)) {
     # 1对应的是2个分组
     tmp.surv.df <- survival[names(snf.group[[1]]),]
     best1 = estimationResult$`Eigen-gap best`

@@ -12,7 +12,8 @@ check_diff_gene(
   stat = NULL,
   comparisions = NULL,
   outlier.shape = 19,
-  add = "jitter"
+  add = "jitter",
+  nrow = 1
 )
 }
 \arguments{

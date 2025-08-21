@@ -600,13 +600,15 @@ volcano_plot <- function(x, y, xlab="Log2 Fold Change", ylab="-log10(Adjusted P)
 #' @param sig.genes specific genes to show
 #' @param title Default Volcano Plot
 #' @param subtitle Default NULL
+#' @param xlim
 #'
 #' @return
 #' @export
 #'
 #' @examples
 volcano_plot_V2 = function(logFC = NULL, adjusted.p = NULL, gene.names = NULL, p.cutoff = 0.05,
-                           logFC.cutoff = 1, show.top.n =5,  sig.genes = NULL, title = "Volcano Plot", subtitle = NULL){
+                           logFC.cutoff = 1, show.top.n =5,  sig.genes = NULL,
+                           title = "Volcano Plot", subtitle = NULL, xlim = c(-3, 3) ){
 
   library(tidyverse)
   library(ggrepel)
@@ -628,7 +630,7 @@ volcano_plot_V2 = function(logFC = NULL, adjusted.p = NULL, gene.names = NULL, p
   df$change[df$padj < p.cutoff & df$log2FoldChange < -1 * logFC.cutoff] = "Down"
 
 
-  ggplot(data = df) +
+  p = ggplot(data = df) +
     geom_point(aes(x = log2FoldChange, y = -log10(padj),
                    color = log2FoldChange,
                    size = -log10(padj))) +
@@ -641,50 +643,57 @@ volcano_plot_V2 = function(logFC = NULL, adjusted.p = NULL, gene.names = NULL, p
                aes(x = log2FoldChange, y = -log10(padj),
                    # fill = log2FoldChange,
                    size = -log10(padj)),
-               shape = 21, show.legend = F, color = "#000000") +
-    geom_text_repel(data =  df %>%
-                      tidyr::drop_na() %>%
-                      dplyr::filter(change == "Up") %>%
-                      dplyr::arrange(desc(-log10(padj))) %>%
-                      dplyr::slice(1:show.top.n)  ,
-                    aes(x = log2FoldChange, y = -log10(padj), label = SYMBOL),
-                    box.padding = 0.5,
-                    nudge_x = 0.5,
-                    nudge_y = 0.2,
-                    segment.curvature = -0.1,
-                    segment.ncp = 3,
-                    # segment.angle = 10,
-                    direction = "y",
-                    hjust = "left"
+               shape = 21, show.legend = F, color = "#000000")
+
+  if(show.top.n!=0){
+    p = p + geom_text_repel(data =  df %>%
+                                tidyr::drop_na() %>%
+                                dplyr::filter(change == "Up") %>%
+                                dplyr::arrange(desc(-log10(padj))) %>%
+                                dplyr::slice(1:show.top.n)  ,
+                              aes(x = log2FoldChange, y = -log10(padj), label = SYMBOL),
+                              box.padding = 0.5,
+                              nudge_x = 0.5,
+                              nudge_y = 0.2,
+                              segment.curvature = -0.1,
+                              segment.ncp = 3,
+                              # segment.angle = 10,
+                              direction = "y",
+                              hjust = "left"
     ) +
-    geom_text_repel(data =  df %>%
-                      tidyr::drop_na() %>%
-                      dplyr::filter(change == "Down") %>%
-                      dplyr::arrange(desc(-log10(padj))) %>%
-                      dplyr::slice(1:show.top.n)  ,
-                    aes(x = log2FoldChange, y = -log10(padj), label = SYMBOL),
-                    box.padding = 0.5,
-                    nudge_x = -0.2,
-                    nudge_y = 0.2,
-                    segment.curvature = -0.1,
-                    segment.ncp = 3,
-                    segment.angle = 20,
-                    direction = "y",
-                    hjust = "right"
-    ) +
-    geom_text_repel(data =  df %>%
-                      tidyr::drop_na() %>%
-                      dplyr::filter(specific.gene) ,
-                    aes(x = log2FoldChange, y = -log10(padj), label = SYMBOL),
-                    box.padding = 0.5,
-                    #nudge_x = -0.2,
-                    nudge_y = 0.2,
-                    segment.curvature = -0.1,
-                    segment.ncp = 3,
-                    #segment.angle = 20,
-                    direction = "y",
-                    hjust = "right"
-    ) +
+      geom_text_repel(data =  df %>%
+                        tidyr::drop_na() %>%
+                        dplyr::filter(change == "Down") %>%
+                        dplyr::arrange(desc(-log10(padj))) %>%
+                        dplyr::slice(1:show.top.n)  ,
+                      aes(x = log2FoldChange, y = -log10(padj), label = SYMBOL),
+                      box.padding = 0.5,
+                      nudge_x = -0.2,
+                      nudge_y = 0.2,
+                      segment.curvature = -0.1,
+                      segment.ncp = 3,
+                      segment.angle = 20,
+                      direction = "y",
+                      hjust = "right"
+      )
+  }
+  if(!is.null(sig.genes)){
+    p = p + geom_text_repel(data =  df %>%
+                             tidyr::drop_na() %>%
+                             dplyr::filter(specific.gene) ,
+                           aes(x = log2FoldChange, y = -log10(padj), label = SYMBOL),
+                           box.padding = 0.5,
+                           #nudge_x = -0.2,
+                           nudge_y = 0.2,
+                           segment.curvature = -0.1,
+                           segment.ncp = 3,
+                           #segment.angle = 20,
+                           direction = "y",
+                           hjust = "right"
+    )
+  }
+
+   p  +
     scale_color_gradientn(colours = c("#3288bd", "#66c2a5","#ffffbf", "#f46d43", "#9e0142"),
                           values = seq(0, 1, 0.2)) +
     scale_fill_gradientn(colours = c("#3288bd", "#66c2a5","#ffffbf", "#f46d43", "#9e0142"),
@@ -694,7 +703,7 @@ volcano_plot_V2 = function(logFC = NULL, adjusted.p = NULL, gene.names = NULL, p
     scale_size(range = c(1,7)) +
     ggtitle(label = title,
             subtitle = subtitle) +
-    xlim(c(-3, 3)) +
+    xlim(xlim) +
     #ylim(c(-1, 90)) +
     theme_bw() +
     theme(panel.grid = element_blank(),
@@ -1287,7 +1296,7 @@ loadArrayExpressDataset <- function(accession_id = NULL, Processed.data=NULL, re
 #' @export
 #'
 #' @examples
-check_diff_gene <- function (gene, genes_expr, group_list, color ="aaas", stat = NULL, comparisions = NULL, outlier.shape = 19, add = "jitter")
+check_diff_gene <- function (gene, genes_expr, group_list, color ="aaas", stat = NULL, comparisions = NULL, outlier.shape = 19, add = "jitter", nrow = 1)
 {
 
   library(ggpubr)
@@ -1333,7 +1342,7 @@ check_diff_gene <- function (gene, genes_expr, group_list, color ="aaas", stat =
                           palette = color, add = add,
                           shape = "group", outlier.shape = 19)
 
-    p = facet(p, facet.by = "gene", nrow = 1)
+    p = facet(p, facet.by = "gene", nrow = nrow)
 
     if(!is.null(stat)){
       p = p + stat_compare_means(

@@ -2061,3 +2061,64 @@ find_outlier_index = function(x, zscore=NULL, quantile=NULL){
   cat("Total NA: ", sum(is.na(index), na.rm = T),"\n")
   index
 }
+
+
+
+
+
+#' Plot pathway
+#'
+#' @param pathway.name
+#' @param p
+#' @param class up/dn vector
+#' @param patwahy.geneID
+#' @param title
+#'
+#' @return
+#' @export
+#'
+#' @examples
+plot.pathway = function(pathway.name = NULL, p = NULL,class = "class",  patwahy.geneID = NULL, title = "Pathway enrichment"){
+
+  if(is.null(pathway.name)|is.null(class)|is.null(p)|is.null(patwahy.geneID)){
+    stop("Provide pathway name, class, p, gene ids")
+  }
+
+
+  # 先自定义主题：
+  mytheme <- theme(
+    axis.title = element_text(size = 13),
+    axis.text = element_text(size = 11),
+    axis.text.y = element_blank(), # 在自定义主题中去掉 y 轴通路标签:
+    axis.ticks.length.y = unit(0,"cm"),
+    plot.title = element_text(size = 13, hjust = 0.5, face = "bold"),
+    legend.title = element_text(size = 13),
+    legend.text = element_text(size = 11),
+    plot.margin = margin(t = 5.5, r = 10, l = 5.5, b = 5.5)
+  )
+
+  kk.df = data.frame(
+    pvalue = p,
+    Description = pathway.name,
+    geneID = patwahy.geneID
+  )
+  kk.df$Class = class
+  kk.df = kk.df[order(kk.df$pvalue, decreasing = T),]
+  kk.df$Description = factor(kk.df$Description, levels = kk.df$Description)
+
+  p <- ggplot(data = kk.df, aes(x = -log10(pvalue), y = Description, fill = Class)) +
+    scale_fill_manual(values =c('#6bb9d2', '#d55640')) +
+    geom_bar(stat = "identity", width = 0.5, alpha = 0.8) +
+    scale_x_continuous(expand = c(0,0)) + # 调整柱子底部与y轴紧贴
+    labs(x = "-Log10(pvalue)", y = " ", title = title) +
+    # x = 0.61 用数值向量控制文本标签起始位置
+    geom_text(size=3.8, aes(x = 0.05, label = Description), hjust = 0) + # hjust = 0,左对齐
+    geom_text(size=3.2, aes(x = 0.05, label = geneID), hjust = 0, vjust = 2.5, color=rep(c('#6bb9d2'), each=nrow(kk.df))) + # hjust = 0,左对齐
+    theme_classic() +
+    mytheme + rremove("legend")
+
+  p
+
+}
+
+

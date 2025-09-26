@@ -352,8 +352,8 @@ ClusterProfiler.GSEA.Compare <- function(gene, minGSSize = 10, qvalue = 0.05, ex
 
   if(MSigDb){
 
-    c5 <- read.gmt("/data/home2/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/clusterProfiler/extdata/c5.all.v7.3.entrez.gmt")
-    c2 <- read.gmt("/data/home2/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/clusterProfiler/extdata/c2.all.v7.3.entrez.gmt")
+    c5 <- read.gmt("/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/clusterProfiler/extdata/c5.all.v2025.1.Hs.entrez.gmt")
+    c2 <- read.gmt("/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/clusterProfiler/extdata/c2.all.v2025.1.Hs.entrez.gmt")
     #H <- read.gmt("/data/home2/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/clusterProfiler/extdata/h.all.v7.4.symbols.gmt")
 
     c2c5 <- rbind(c2,c5)
@@ -374,7 +374,7 @@ ClusterProfiler.GSEA.Compare <- function(gene, minGSSize = 10, qvalue = 0.05, ex
   }
 
   if(Hallmark){
-    H <- read.gmt("/data/home2/Zhongxu/R/x86_64-pc-linux-gnu-library/4.0/clusterProfiler/extdata/h.all.v7.4.entrez.gmt")
+    H <- read.gmt("/master/zhu_zhong_xu/R/x86_64-pc-linux-gnu-library/4.2/clusterProfiler/extdata/h.all.v2025.1.Hs.entrez.gmt")
 
     f <- function(entrez.sort.by.fc){
       GSEA(geneList     = entrez.sort.by.fc,

@@ -13,7 +13,8 @@ volcano_plot_V2(
   show.top.n = 5,
   sig.genes = NULL,
   title = "Volcano Plot",
-  subtitle = NULL
+  subtitle = NULL,
+  xlim = c(-3, 3)
 )
 }
 \arguments{
@@ -34,6 +35,8 @@ volcano_plot_V2(
 \item{title}{Default Volcano Plot}
 
 \item{subtitle}{Default NULL}
+
+\item{xlim}{}
 }
 \description{
 Volcano plot

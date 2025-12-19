@@ -192,7 +192,7 @@ heatmap.with.lgfold.riskpro <- function(heatmap.df, label, risk.pro=NA, lgfold=N
 #' loonR::heatmap.annotation(group = group, annotation.df = annotation.df,
 #'                    annotation.color = annotation.color, sort.group = T)
 heatmap.annotation <- function(group = NULL, annotation.df = NULL, annotation.color = NULL, sort.group=TRUE, title = "",
-                               group.color = "aaas", group.prefix ="", column_split = TRUE ){
+                               group.color = "aaas", group.prefix ="", column_split = TRUE, na_col ="grey" ){
 
   if(!require(ComplexHeatmap)){
     BiocManager::install("ComplexHeatmap")
@@ -239,7 +239,7 @@ heatmap.annotation <- function(group = NULL, annotation.df = NULL, annotation.co
   ha = HeatmapAnnotation(
     df = annotation.df,
     col = annotation.color,
-    annotation_name_side = "left"
+    annotation_name_side = "left", na_col = na_col
   )
 
 
@@ -257,7 +257,6 @@ heatmap.annotation <- function(group = NULL, annotation.df = NULL, annotation.co
           show_column_names = FALSE,
           column_split = column_split,
           heatmap_legend_param = list(ncol=3)
-
   )
 
 }

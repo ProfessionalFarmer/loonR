@@ -1555,7 +1555,7 @@ meltDataFrameByGroup <- function(d.frame=NULL, group=NULL, na.rm = TRUE, variabl
 #' rownames(df) <- paste("mister" , letters[1:3] , sep="-")
 #' loonR::radarSpiderPlot(df)
 #'
-radarSpiderPlot <- function(df, palette = "aaas", min = 0, max = NULL, fill.color=FALSE, axistype = 0, cglcol = "navy", vlabels = NULL){
+radarSpiderPlot <- function(df, palette = "aaas", min = 0, max = NULL, fill.color=FALSE, axistype = 0, cglcol = "navy", vlabels = NULL, legend =T){
   # https://www.r-graph-gallery.com/143-spider-chart-with-saveral-individuals.html
   # Use ggradar
   # https://github.com/ricardo-bion/ggradar
@@ -1604,9 +1604,10 @@ radarSpiderPlot <- function(df, palette = "aaas", min = 0, max = NULL, fill.colo
     vlcex=0.8 #  group labels size
   )
 
-  # Add a legend
-  legend(x=0.7, y=1.4, legend = rownames(df[-c(1,2),]), bty = "n", pch=20 , col=colors_border , text.col = "black", cex=1.2, pt.cex=3)
-
+  if(legend){
+    # Add a legend
+    legend(x=0.7, y=1.4, legend = rownames(df[-c(1,2),]), bty = "n", pch=20 , col=colors_border , text.col = "black", cex=1.2, pt.cex=3)
+  }
 }
 
 

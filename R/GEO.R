@@ -91,7 +91,7 @@ download.geo.dataset <- function(geo.accession.id, platform = NULL, destdir = "~
   # 2022-06-10 updated, great
   if (id.mapping) {
     ids <- AnnoProbe::idmap(platform, type = "soft")
-    # only keep the max value one. Down by AnnoProbe
+    # only keep the max value one. Done by AnnoProbe
     result$geneExpressionMaxValue <- AnnoProbe::filterEM(exp.df, ids)
 
     result$id.mapping <- ids

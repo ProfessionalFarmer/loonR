@@ -1024,7 +1024,7 @@ exportScenicLoom <- function(seurat.obj, dir = "scenic", prefix = "scenic"){
   library(Seurat)
 
     ## Get data from sce object:
-  exprMat <- GetAssayData(object = seurat.obj, assay = "RNA", slot = "counts")
+  exprMat <- GetAssayData(object = seurat.obj, assay = "RNA", layer = "counts")
   # To use Seurat clusters as cell annotation (e.g. for visualization):
   cellInfo <- data.frame(seuratCluster=Idents(seurat.obj))
 
@@ -1040,8 +1040,8 @@ exportScenicLoom <- function(seurat.obj, dir = "scenic", prefix = "scenic"){
   loom <- SCENIC::add_cell_annotation(loom, cellInfo)
   SCopeLoomR::close_loom(loom)
 
-  cat("Resource: ","https://github.com/aertslab/pySCENIC/tree/master/resources", "\n")
-  cat("TF:", "https://resources.aertslab.org/cistarget/tf_lists/", "\n")
+  cat("Resource: ","https://github.com/aertslab/pySCENIC/tree/master/resources/hs_hgnc_tfs.txt", "\n")
+  cat("TF:", "https://resources.aertslab.org/cistarget/tf_lists/allTFs_hg38.txt", "\n")
   cat("motif–TF: ", "https://resources.aertslab.org/cistarget/motif2tf/motifs-v10nr_clust-nr.hgnc-m0.001-o0.0.tbl", "\n")
   cat("Database: ","https://resources.aertslab.org/cistarget/databases/homo_sapiens/hg38/refseq_r80/mc_v10_clust/gene_based/", "\n")
 
